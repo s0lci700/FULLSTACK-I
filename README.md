@@ -1,6 +1,6 @@
 # FULLSTACK-I — Proyecto Semestral
 
-> **Docente:** Mauricio González V. | **Institución:** DUOC UC
+> **Docente:** Mauricio González V. | **Institución:** holas DUOC UC
 
 Sistema de aplicación basado en **microservicios** desarrollado con Spring Boot, que implementa múltiples operaciones CRUD, reglas de negocio, seguridad y comunicación entre servicios.
 
