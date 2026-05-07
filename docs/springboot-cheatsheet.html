@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spring Boot — Cheatsheet Microservicios</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0f1117;
+    --bg2: #161b22;
+    --bg3: #1c2128;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text2: #8b949e;
+    --text3: #6e7681;
+    --accent: #58a6ff;
+    --green: #3fb950;
+    --yellow: #d29922;
+    --red: #f85149;
+    --purple: #bc8cff;
+    --cyan: #39d353;
+    --orange: #f0883e;
+    --pink: #ff7b72;
+    --mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); font-size: 13px; line-height: 1.6; }
+
+  /* NAV */
+  .nav { position: sticky; top: 0; z-index: 100; background: var(--bg2); border-bottom: 1px solid var(--border); padding: 0 16px; display: flex; gap: 2px; overflow-x: auto; }
+  .nav-btn { padding: 10px 14px; background: transparent; border: none; color: var(--text2); cursor: pointer; font-size: 12px; font-weight: 500; border-bottom: 2px solid transparent; white-space: nowrap; transition: all .15s; }
+  .nav-btn:hover { color: var(--text); }
+  .nav-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* HEADER */
+  .header { background: linear-gradient(135deg, #161b22 0%, #0d1117 100%); border-bottom: 1px solid var(--border); padding: 20px 20px 16px; }
+  .header h1 { font-size: 20px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .header p { font-size: 12px; color: var(--text2); }
+  .tags { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+  .tag { padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 600; letter-spacing: .04em; }
+  .tag-green { background: rgba(63,185,80,.15); color: var(--green); border: 1px solid rgba(63,185,80,.3); }
+  .tag-blue { background: rgba(88,166,255,.15); color: var(--accent); border: 1px solid rgba(88,166,255,.3); }
+  .tag-yellow { background: rgba(210,153,34,.15); color: var(--yellow); border: 1px solid rgba(210,153,34,.3); }
+  .tag-red { background: rgba(248,81,73,.15); color: var(--red); border: 1px solid rgba(248,81,73,.3); }
+  .tag-purple { background: rgba(188,140,255,.15); color: var(--purple); border: 1px solid rgba(188,140,255,.3); }
+
+  /* SECTIONS */
+  .page { display: none; padding: 16px; max-width: 1400px; }
+  .page.active { display: block; }
+
+  /* GRID */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  @media(max-width:900px) { .grid2,.grid3 { grid-template-columns:1fr; } }
+
+  /* CARD */
+  .card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .card-head { padding: 8px 12px; background: var(--bg3); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+  .card-title { font-size: 12px; font-weight: 600; color: var(--text); }
+  .card-badge { padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: 600; }
+  .badge-obligatorio { background: rgba(248,81,73,.2); color: var(--red); }
+  .badge-importante { background: rgba(210,153,34,.2); color: var(--yellow); }
+  .badge-extra { background: rgba(63,185,80,.2); color: var(--green); }
+
+  /* CODE */
+  pre { margin: 0; padding: 12px; overflow-x: auto; font-family: var(--mono); font-size: 11.5px; line-height: 1.7; }
+  code { font-family: var(--mono); }
+  .inline-code { background: var(--bg3); padding: 1px 5px; border-radius: 3px; font-family: var(--mono); font-size: 11px; color: var(--orange); }
+
+  /* SYNTAX HIGHLIGHTING */
+  .kw { color: #ff7b72; } /* keywords: @, import, class, etc */
+  .an { color: #79c0ff; } /* annotations */
+  .str { color: #a5d6ff; } /* strings */
+  .cm { color: #6e7681; font-style: italic; } /* comments */
+  .ty { color: #ffa657; } /* types */
+  .fn { color: #d2a8ff; } /* function names */
+  .num { color: #79c0ff; } /* numbers */
+  .pkg { color: #8b949e; } /* package/import */
+
+  /* TABLES */
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { background: var(--bg3); color: var(--text2); font-weight: 600; padding: 7px 10px; text-align: left; border-bottom: 1px solid var(--border); font-size: 11px; }
+  td { padding: 6px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  td:first-child { font-family: var(--mono); font-size: 11px; color: var(--accent); white-space: nowrap; }
+  tr:hover td { background: var(--bg3); }
+
+  /* PILLS */
+  .pill { display: inline-block; padding: 1px 7px; border-radius: 10px; font-size: 10px; font-weight: 600; margin: 1px; }
+  .pill-green { background: rgba(63,185,80,.15); color: var(--green); }
+  .pill-red { background: rgba(248,81,73,.15); color: var(--red); }
+  .pill-blue { background: rgba(88,166,255,.15); color: var(--accent); }
+
+  /* SECTION HEADER */
+  .section-title { font-size: 14px; font-weight: 600; color: var(--text); margin: 20px 0 10px; display: flex; align-items: center; gap: 8px; }
+  .section-title::after { content:''; flex:1; height:1px; background:var(--border); }
+
+  /* ALERT */
+  .alert { border-radius: 6px; padding: 10px 14px; font-size: 12px; margin-bottom: 12px; border-left: 3px solid; }
+  .alert-red { background: rgba(248,81,73,.08); border-color: var(--red); color: #ffbcb9; }
+  .alert-blue { background: rgba(88,166,255,.08); border-color: var(--accent); color: #b3d9ff; }
+  .alert-yellow { background: rgba(210,153,34,.08); border-color: var(--yellow); color: #ffd666; }
+
+  /* FLOW */
+  .flow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 10px; }
+  .flow-box { padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 600; text-align: center; }
+  .flow-arrow { color: var(--text3); font-size: 16px; }
+
+  .mb12 { margin-bottom: 12px; }
+  .mt12 { margin-top: 12px; }
+  .p12 { padding: 12px; }
+  .text2 { color: var(--text2); font-size: 12px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>☕ Spring Boot — Cheatsheet Completo</h1>
+  <p>Microservicios · Patrón CSR · JPA · Bean Validation · Feign · Eureka · API Gateway</p>
+  <div class="tags">
+    <span class="tag tag-red">OBLIGATORIO en evaluación</span>
+    <span class="tag tag-blue">Spring Boot 3.x</span>
+    <span class="tag tag-green">MySQL + JPA</span>
+    <span class="tag tag-yellow">Feign Client</span>
+    <span class="tag tag-purple">Eureka + Gateway</span>
+  </div>
+</div>
+
+<nav class="nav">
+  <button class="nav-btn active" onclick="show('deps')">📦 Dependencias</button>
+  <button class="nav-btn" onclick="show('config')">⚙️ application.properties</button>
+  <button class="nav-btn" onclick="show('csr')">🏗️ Patrón CSR</button>
+  <button class="nav-btn" onclick="show('jpa')">🗄️ JPA / Entidades</button>
+  <button class="nav-btn" onclick="show('validation')">✅ Validaciones</button>
+  <button class="nav-btn" onclick="show('exceptions')">🚨 Excepciones</button>
+  <button class="nav-btn" onclick="show('rest')">🌐 REST / ResponseEntity</button>
+  <button class="nav-btn" onclick="show('logs')">📋 Logs SLF4J</button>
+  <button class="nav-btn" onclick="show('feign')">🔗 Feign / WebClient</button>
+  <button class="nav-btn" onclick="show('infra')">🏛️ Eureka + Gateway</button>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- 1. DEPENDENCIAS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="page-deps" class="page active">
+  <div class="alert alert-red">Siempre generar proyectos en <strong>start.spring.io</strong> con Java 17+, Maven, Spring Boot 3.x. Cada microservicio tiene su propio pom.xml.</div>
+
+  <div class="grid2">
+
+    <div class="card mb12">
+      <div class="card-head"><span class="card-title">Microservicio de Negocio (ms-*)</span><span class="card-badge badge-obligatorio">OBLIGATORIO</span></div>
+      <pre><span class="cm">&lt;!-- pom.xml de cada microservicio de negocio --&gt;</span>
+<span class="kw">&lt;dependencies&gt;</span>
+
+  <span class="cm">&lt;!-- REST API --&gt;</span>
+  <span class="kw">&lt;dependency&gt;</span>
+    <span class="kw">&lt;groupId&gt;</span>org.springframework.boot<span class="kw">&lt;/groupId&gt;</span>
+    <span class="kw">&lt;artifactId&gt;</span>spring-boot-starter-web<span class="kw">&lt;/artifactId&gt;</span>
+  <span class="kw">&lt;/dependency&gt;</span>
+
+  <span class="cm">&lt;!-- JPA + Hibernate --&gt;</span>
+  <span class="kw">&lt;dependency&gt;</span>
+    <span class="kw">&lt;groupId&gt;</span>org.springframework.boot<span class="kw">&lt;/groupId&gt;</span>
+    <span class="kw">&lt;artifactId&gt;</span>spring-boot-starter-data-jpa<span class="kw">&lt;/artifactId&gt;</span>
+  <span class="kw">&lt;/dependency&gt;</span>
+
+  <span class="cm">&lt;!-- MySQL driver --&gt;</span>
+  <span class="kw">&lt;dependency&gt;</span>
+    <span class="kw">&lt;groupId&gt;</span>com.mysql<span class="kw">&lt;/groupId&gt;</span>
+    <span class="kw">&lt;artifactId&gt;</span>mysql-connector-j<span class="kw">&lt;/artifactId&gt;</span>
+    <span class="kw">&lt;scope&gt;</span>runtime<span class="kw">&lt;/scope&gt;</span>
+  <span class="kw">&lt;/dependency&gt;</span>
+
+  <span class="cm">&lt;!-- Bean Validation --&gt;</span>
+  <span class="kw">&lt;dependency&gt;</span>
+    <span class="kw">&lt;groupId&gt;</span>org.springframework.boot<span class="kw">&lt;/groupId&gt;</span>
+    <span class="kw">&lt;artifactId&gt;</span>spring-boot-starter-validation<span class="kw">&lt;/artifactId&gt;</span>
+  <span class="kw">&lt;/dependency&gt;</span>
+
+  <span class="cm">&lt;!-- Eureka Client (para registrarse) --&gt;</span>
+  <span class="kw">&lt;dependency&gt;</span>
+    <span class="kw">&lt;groupId&gt;</span>org.springframework.cloud<span class="kw">&lt;/groupId&gt;</span>
+    <span class="kw">&lt;artifactId&gt;</span>spring-cloud-starter-netflix-eureka-client<span class="kw">&lt;/artifactId&gt;</span>
+  <span class="kw">&lt;/dependency&gt;</span>
+
+  <span class="cm">&lt;!-- Feign Client (comunicación entre ms) --&gt;</span>
+  <span class="kw">&lt;dependency&gt;</span>
+    <span class="kw">&lt;groupId&gt;</span>org.springframework.cloud<span class="kw">&lt;/groupId&gt;</span>
+    <span class="kw">&lt;artifactId&gt;</span>spring-cloud-starter-openfeign<span class="kw">&lt;/artifactId&gt;</span>
+  <span class="kw">&lt;/dependency&gt;</span>
+
+  <span class="cm">&lt;!-- Lombok (opcional pero recomendado) --&gt;</span>
+  <span class="kw">&lt;dependency&gt;</span>
+    <span class="kw">&lt;groupId&gt;</span>org.projectlombok<span class="kw">&lt;/groupId&gt;</span>
+    <span class="kw">&lt;artifactId&gt;</span>lombok<span class="kw">&lt;/artifactId&gt;</span>
+    <span class="kw">&lt;optional&gt;</span>true<span class="kw">&lt;/optional&gt;</span>
+  <span class="kw">&lt;/dependency&gt;</span>
+
+<span class="kw">&lt;/dependencies&gt;</span>
+
+<span class="cm">&lt;!-- OBLIGATORIO si usas Eureka o Feign --&gt;</span>
+<span class="kw">&lt;dependencyManagement&gt;</span>
+  <span class="kw">&lt;dependencies&gt;</span>
+    <span class="kw">&lt;dependency&gt;</span>
+      <span class="kw">&lt;groupId&gt;</span>org.springframework.cloud<span class="kw">&lt;/groupId&gt;</span>
+      <span class="kw">&lt;artifactId&gt;</span>spring-cloud-dependencies<span class="kw">&lt;/artifactId&gt;</span>
+      <span class="kw">&lt;version&gt;</span>2023.0.3<span class="kw">&lt;/version&gt;</span>
+      <span class="kw">&lt;type&gt;</span>pom<span class="kw">&lt;/type&gt;</span>
+      <span class="kw">&lt;scope&gt;</span>import<span class="kw">&lt;/scope&gt;</span>
+    <span class="kw">&lt;/dependency&gt;</span>
+  <span class="kw">&lt;/dependencies&gt;</span>
+<span class="kw">&lt;/dependencyManagement&gt;</span></pre>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card">
+        <div class="card-head"><span class="card-title">Eureka Server</span><span class="card-badge badge-obligatorio">INFRAESTRUCTURA</span></div>
+        <pre><span class="kw">&lt;dependency&gt;</span>
+  <span class="kw">&lt;groupId&gt;</span>org.springframework.cloud<span class="kw">&lt;/groupId&gt;</span>
+  <span class="kw">&lt;artifactId&gt;</span>spring-cloud-starter-netflix-eureka-server<span class="kw">&lt;/artifactId&gt;</span>
+<span class="kw">&lt;/dependency&gt;</span></pre>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><span class="card-title">API Gateway</span><span class="card-badge badge-obligatorio">INFRAESTRUCTURA</span></div>
+        <pre><span class="cm">&lt;!-- Spring Cloud Gateway usa NETTY, NO incluir spring-boot-starter-web --&gt;</span>
+<span class="kw">&lt;dependency&gt;</span>
+  <span class="kw">&lt;groupId&gt;</span>org.springframework.cloud<span class="kw">&lt;/groupId&gt;</span>
+  <span class="kw">&lt;artifactId&gt;</span>spring-cloud-starter-gateway<span class="kw">&lt;/artifactId&gt;</span>
+<span class="kw">&lt;/dependency&gt;</span>
+<span class="kw">&lt;dependency&gt;</span>
+  <span class="kw">&lt;groupId&gt;</span>org.springframework.cloud<span class="kw">&lt;/groupId&gt;</span>
+  <span class="kw">&lt;artifactId&gt;</span>spring-cloud-starter-netflix-eureka-client<span class="kw">&lt;/artifactId&gt;</span>
+<span class="kw">&lt;/dependency&gt;</span></pre>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><span class="card-title">WebClient (alternativa a Feign)</span><span class="card-badge badge-importante">ALTERNATIVA</span></div>
+        <pre><span class="cm">&lt;!-- WebClient viene incluido en spring-boot-starter-webflux --&gt;</span>
+<span class="kw">&lt;dependency&gt;</span>
+  <span class="kw">&lt;groupId&gt;</span>org.springframework.boot<span class="kw">&lt;/groupId&gt;</span>
+  <span class="kw">&lt;artifactId&gt;</span>spring-boot-starter-webflux<span class="kw">&lt;/artifactId&gt;</span>
+<span class="kw">&lt;/dependency&gt;</span></pre>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><span class="card-title">Auth Service (JWT)</span><span class="card-badge badge-obligatorio">SEGURIDAD</span></div>
+        <pre><span class="cm">&lt;!-- JWT --&gt;</span>
+<span class="kw">&lt;dependency&gt;</span>
+  <span class="kw">&lt;groupId&gt;</span>io.jsonwebtoken<span class="kw">&lt;/groupId&gt;</span>
+  <span class="kw">&lt;artifactId&gt;</span>jjwt-api<span class="kw">&lt;/artifactId&gt;</span>
+  <span class="kw">&lt;version&gt;</span>0.11.5<span class="kw">&lt;/version&gt;</span>
+<span class="kw">&lt;/dependency&gt;</span>
+<span class="kw">&lt;dependency&gt;</span>
+  <span class="kw">&lt;groupId&gt;</span>io.jsonwebtoken<span class="kw">&lt;/groupId&gt;</span>
+  <span class="kw">&lt;artifactId&gt;</span>jjwt-impl<span class="kw">&lt;/artifactId&gt;</span>
+  <span class="kw">&lt;version&gt;</span>0.11.5<span class="kw">&lt;/version&gt;</span>
+  <span class="kw">&lt;scope&gt;</span>runtime<span class="kw">&lt;/scope&gt;</span>
+<span class="kw">&lt;/dependency&gt;</span>
+<span class="cm">&lt;!-- BCrypt viene en spring-security-crypto --&gt;</span>
+<span class="kw">&lt;dependency&gt;</span>
+  <span class="kw">&lt;groupId&gt;</span>org.springframework.security<span class="kw">&lt;/groupId&gt;</span>
+  <span class="kw">&lt;artifactId&gt;</span>spring-security-crypto<span class="kw">&lt;/artifactId&gt;</span>
+<span class="kw">&lt;/dependency&gt;</span></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- 2. APPLICATION.PROPERTIES -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="page-config" class="page">
+  <div class="grid2">
+    <div class="card mb12">
+      <div class="card-head"><span class="card-title">Microservicio de negocio</span><span class="card-badge badge-obligatorio">OBLIGATORIO</span></div>
+      <pre><span class="cm"># ---- IDENTITY ----</span>
+<span class="an">spring.application.name</span>=ms-reservas
+<span class="an">server.port</span>=<span class="num">8086</span>
+
+<span class="cm"># ---- DATASOURCE (MySQL XAMPP puerto 3307) ----</span>
+<span class="an">spring.datasource.url</span>=jdbc:mysql://localhost:<span class="num">3307</span>/db_reservas?useSSL=false&amp;serverTimezone=UTC
+<span class="an">spring.datasource.username</span>=root
+<span class="an">spring.datasource.password</span>=
+<span class="an">spring.datasource.driver-class-name</span>=com.mysql.cj.jdbc.Driver
+
+<span class="cm"># ---- JPA / HIBERNATE ----</span>
+<span class="an">spring.jpa.hibernate.ddl-auto</span>=update
+<span class="an">spring.jpa.show-sql</span>=true
+<span class="an">spring.jpa.properties.hibernate.dialect</span>=org.hibernate.dialect.MySQLDialect
+<span class="an">spring.jpa.properties.hibernate.format_sql</span>=true
+
+<span class="cm"># ---- EUREKA (registro) ----</span>
+<span class="an">eureka.client.service-url.defaultZone</span>=http://localhost:<span class="num">8761</span>/eureka/
+<span class="an">eureka.instance.prefer-ip-address</span>=true</pre>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card">
+        <div class="card-head"><span class="card-title">Eureka Server</span></div>
+        <pre><span class="an">spring.application.name</span>=eureka-server
+<span class="an">server.port</span>=<span class="num">8761</span>
+
+<span class="an">eureka.client.register-with-eureka</span>=false
+<span class="an">eureka.client.fetch-registry</span>=false</pre>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><span class="card-title">API Gateway</span></div>
+        <pre><span class="an">spring.application.name</span>=api-gateway
+<span class="an">server.port</span>=<span class="num">8080</span>
+
+<span class="an">eureka.client.service-url.defaultZone</span>=http://localhost:<span class="num">8761</span>/eureka/
+
+<span class="cm"># Rutas del gateway</span>
+<span class="an">spring.cloud.gateway.routes[0].id</span>=ms-reservas
+<span class="an">spring.cloud.gateway.routes[0].uri</span>=lb://ms-reservas
+<span class="an">spring.cloud.gateway.routes[0].predicates[0]</span>=Path=/api/reservas/**
+
+<span class="an">spring.cloud.gateway.routes[1].id</span>=ms-espacios
+<span class="an">spring.cloud.gateway.routes[1].uri</span>=lb://ms-espacios
+<span class="an">spring.cloud.gateway.routes[1].predicates[0]</span>=Path=/api/espacios/**</pre>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><span class="card-title">ddl-auto — valores posibles</span></div>
+        <table>
+          <tr><th>Valor</th><th>Qué hace</th></tr>
+          <tr><td>create</td><td>Borra y crea tablas cada vez que arranca</td></tr>
+          <tr><td>create-drop</td><td>Crea al iniciar, borra al cerrar</td></tr>
+          <tr><td>update</td><td>Actualiza tablas existentes (no borra datos) ← <strong>usar en dev</strong></td></tr>
+          <tr><td>validate</td><td>Solo valida, no modifica BD</td></tr>
+          <tr><td>none</td><td>No hace nada ← usar en producción</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- 3. PATRÓN CSR -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="page-csr" class="page">
+  <div class="alert alert-blue">El patrón CSR exige separación clara: Controller solo recibe/responde HTTP. Service contiene toda la lógica de negocio. Repository solo accede a la BD. Los DTOs viajan entre Controller y Service, las Entidades entre Service y Repository.</div>
+
+  <div class="section-title">Estructura de paquetes</div>
+  <div class="grid2 mb12">
+    <div class="card">
+      <div class="card-head"><span class="card-title">Estructura de carpetas obligatoria</span></div>
+      <pre><span class="cm">ms-reservas/src/main/java/com/proyecto/msreservas/</span>
+<span class="kw">├── MsReservasApplication.java</span>   <span class="cm">← @SpringBootApplication</span>
+<span class="kw">├── controller/</span>
+<span class="kw">│   └── ReservaController.java</span>   <span class="cm">← @RestController</span>
+<span class="kw">├── service/</span>
+<span class="kw">│   ├── ReservaService.java</span>      <span class="cm">← interfaz (opcional)</span>
+<span class="kw">│   └── ReservaServiceImpl.java</span>  <span class="cm">← @Service</span>
+<span class="kw">├── repository/</span>
+<span class="kw">│   └── ReservaRepository.java</span>  <span class="cm">← @Repository / JpaRepository</span>
+<span class="kw">├── model/</span>
+<span class="kw">│   └── Reserva.java</span>            <span class="cm">← @Entity</span>
+<span class="kw">├── dto/</span>
+<span class="kw">│   ├── ReservaRequestDTO.java</span>  <span class="cm">← datos de entrada con validaciones</span>
+<span class="kw">│   └── ReservaResponseDTO.java</span> <span class="cm">← datos de salida</span>
+<span class="kw">├── exception/</span>
+<span class="kw">│   ├── ResourceNotFoundException.java</span>
+<span class="kw">│   └── GlobalExceptionHandler.java</span> <span class="cm">← @ControllerAdvice</span>
+<span class="kw">└── client/</span>
+<span class="kw">    └── EspacioClient.java</span>      <span class="cm">← @FeignClient</span></pre>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card">
+        <div class="card-head"><span class="card-title">Controller — solo orquesta HTTP</span><span class="card-badge badge-obligatorio">OBLIGATORIO</span></div>
+        <pre><span class="an">@RestController</span>
+<span class="an">@RequestMapping</span>(<span class="str">"/api/reservas"</span>)
+<span class="kw">public class</span> <span class="ty">ReservaController</span> {
+
+    <span class="kw">private final</span> <span class="ty">ReservaService</span> reservaService;
+
+    <span class="cm">// Constructor injection (recomendado)</span>
+    <span class="kw">public</span> <span class="fn">ReservaController</span>(<span class="ty">ReservaService</span> reservaService) {
+        <span class="kw">this</span>.reservaService = reservaService;
+    }
+
+    <span class="an">@GetMapping</span>
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">List</span>&lt;<span class="ty">ReservaResponseDTO</span>&gt;&gt; <span class="fn">getAll</span>() {
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">ok</span>(reservaService.<span class="fn">findAll</span>());
+    }
+
+    <span class="an">@PostMapping</span>
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">ReservaResponseDTO</span>&gt; <span class="fn">create</span>(
+            <span class="an">@Valid</span> <span class="an">@RequestBody</span> <span class="ty">ReservaRequestDTO</span> dto) {
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">status</span>(<span class="ty">HttpStatus</span>.CREATED)
+                             .<span class="fn">body</span>(reservaService.<span class="fn">save</span>(dto));
+    }
+}</pre>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><span class="card-title">Service — toda la lógica de negocio</span><span class="card-badge badge-obligatorio">OBLIGATORIO</span></div>
+        <pre><span class="an">@Service</span>
+<span class="kw">public class</span> <span class="ty">ReservaServiceImpl</span> <span class="kw">implements</span> <span class="ty">ReservaService</span> {
+
+    <span class="kw">private static final</span> <span class="ty">Logger</span> log =
+        <span class="ty">LoggerFactory</span>.<span class="fn">getLogger</span>(<span class="ty">ReservaServiceImpl</span>.class);
+
+    <span class="kw">private final</span> <span class="ty">ReservaRepository</span> repository;
+
+    <span class="kw">public</span> <span class="fn">ReservaServiceImpl</span>(<span class="ty">ReservaRepository</span> repository) {
+        <span class="kw">this</span>.repository = repository;
+    }
+
+    <span class="an">@Override</span>
+    <span class="kw">public</span> <span class="ty">ReservaResponseDTO</span> <span class="fn">save</span>(<span class="ty">ReservaRequestDTO</span> dto) {
+        log.<span class="fn">info</span>(<span class="str">"Creando reserva para vehículo: {}"</span>, dto.<span class="fn">getPatente</span>());
+        <span class="ty">Reserva</span> reserva = <span class="fn">mapToEntity</span>(dto);
+        <span class="ty">Reserva</span> saved = repository.<span class="fn">save</span>(reserva);
+        log.<span class="fn">info</span>(<span class="str">"Reserva creada con ID: {}"</span>, saved.<span class="fn">getId</span>());
+        <span class="kw">return</span> <span class="fn">mapToDTO</span>(saved);
+    }
+}</pre>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><span class="card-title">Repository — solo acceso a datos</span><span class="card-badge badge-obligatorio">OBLIGATORIO</span></div>
+        <pre><span class="an">@Repository</span>
+<span class="kw">public interface</span> <span class="ty">ReservaRepository</span>
+    <span class="kw">extends</span> <span class="ty">JpaRepository</span>&lt;<span class="ty">Reserva</span>, <span class="ty">Long</span>&gt; {
+
+    <span class="cm">// Métodos derivados automáticos de JPA:</span>
+    <span class="ty">List</span>&lt;<span class="ty">Reserva</span>&gt; <span class="fn">findByEstado</span>(<span class="ty">String</span> estado);
+    <span class="ty">Optional</span>&lt;<span class="ty">Reserva</span>&gt; <span class="fn">findByPatenteAndEstado</span>(<span class="ty">String</span> patente, <span class="ty">String</span> estado);
+    <span class="kw">boolean</span> <span class="fn">existsByEspacioId</span>(<span class="ty">Long</span> espacioId);
+}</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- 4. JPA / ENTIDADES -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="page-jpa" class="page">
+
+  <div class="section-title">Tabla de anotaciones JPA</div>
+  <div class="card mb12">
+    <table>
+      <tr><th>Anotación</th><th>Dónde va</th><th>Qué hace</th></tr>
+      <tr><td>@Entity</td><td>Clase</td><td>Marca la clase como tabla de BD</td></tr>
+      <tr><td>@Table(name="...")</td><td>Clase</td><td>Nombre personalizado de la tabla</td></tr>
+      <tr><td>@Id</td><td>Campo</td><td>Define la clave primaria</td></tr>
+      <tr><td>@GeneratedValue(strategy=GenerationType.IDENTITY)</td><td>Campo</td><td>Auto-increment de MySQL</td></tr>
+      <tr><td>@Column(name="...", nullable=false, length=100)</td><td>Campo</td><td>Configuración de columna</td></tr>
+      <tr><td>@OneToMany(mappedBy="...", cascade=CascadeType.ALL)</td><td>Campo</td><td>Relación uno a muchos (lado "uno")</td></tr>
+      <tr><td>@ManyToOne</td><td>Campo</td><td>Relación muchos a uno (lado "muchos")</td></tr>
+      <tr><td>@JoinColumn(name="fk_id")</td><td>Campo</td><td>Nombre de la columna FK en la tabla</td></tr>
+      <tr><td>@ManyToMany</td><td>Campo</td><td>Relación muchos a muchos</td></tr>
+      <tr><td>@JoinTable</td><td>Campo</td><td>Tabla intermedia para @ManyToMany</td></tr>
+      <tr><td>@OneToOne</td><td>Campo</td><td>Relación uno a uno</td></tr>
+      <tr><td>@Enumerated(EnumType.STRING)</td><td>Campo</td><td>Guarda el enum como texto en BD</td></tr>
+      <tr><td>@Transient</td><td>Campo</td><td>No persiste este campo en BD</td></tr>
+      <tr><td>@CreationTimestamp</td><td>Campo</td><td>Timestamp automático al crear (Hibernate)</td></tr>
+      <tr><td>@UpdateTimestamp</td><td>Campo</td><td>Timestamp automático al actualizar (Hibernate)</td></tr>
+    </table>
+  </div>
+
+  <div class="grid2">
+    <div class="card mb12">
+      <div class="card-head"><span class="card-title">Entidad completa — Reserva</span><span class="card-badge badge-obligatorio">EJEMPLO REAL</span></div>
+      <pre><span class="an">@Entity</span>
+<span class="an">@Table</span>(name = <span class="str">"reservas"</span>)
+<span class="kw">public class</span> <span class="ty">Reserva</span> {
+
+    <span class="an">@Id</span>
+    <span class="an">@GeneratedValue</span>(strategy = <span class="ty">GenerationType</span>.IDENTITY)
+    <span class="kw">private</span> <span class="ty">Long</span> id;
+
+    <span class="an">@Column</span>(nullable = <span class="kw">false</span>, length = <span class="num">10</span>)
+    <span class="kw">private</span> <span class="ty">String</span> patente;
+
+    <span class="an">@Column</span>(name = <span class="str">"espacio_id"</span>, nullable = <span class="kw">false</span>)
+    <span class="kw">private</span> <span class="ty">Long</span> espacioId; <span class="cm">// FK lógica (no física entre ms)</span>
+
+    <span class="an">@Column</span>(nullable = <span class="kw">false</span>)
+    <span class="kw">private</span> <span class="ty">LocalDateTime</span> fechaInicio;
+
+    <span class="kw">private</span> <span class="ty">LocalDateTime</span> fechaFin;
+
+    <span class="an">@Enumerated</span>(<span class="ty">EnumType</span>.STRING)
+    <span class="an">@Column</span>(nullable = <span class="kw">false</span>)
+    <span class="kw">private</span> <span class="ty">EstadoReserva</span> estado;
+
+    <span class="cm">// Relación real dentro del mismo ms:</span>
+    <span class="an">@ManyToOne</span>
+    <span class="an">@JoinColumn</span>(name = <span class="str">"usuario_id"</span>)
+    <span class="kw">private</span> <span class="ty">Usuario</span> usuario;
+
+    <span class="an">@CreationTimestamp</span>
+    <span class="kw">private</span> <span class="ty">LocalDateTime</span> creadoEn;
+
+    <span class="cm">// Getters y Setters...</span>
+}
+
+<span class="kw">public enum</span> <span class="ty">EstadoReserva</span> {
+    PENDIENTE, CONFIRMADA, CANCELADA, COMPLETADA
+}</pre>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card">
+        <div class="card-head"><span class="card-title">Relación @OneToMany / @ManyToOne</span><span class="card-badge badge-obligatorio">OBLIGATORIO</span></div>
+        <pre><span class="cm">// Entidad "Uno" — Usuario</span>
+<span class="an">@Entity</span>
+<span class="kw">public class</span> <span class="ty">Usuario</span> {
+    <span class="an">@Id</span> <span class="an">@GeneratedValue</span>(strategy = <span class="ty">GenerationType</span>.IDENTITY)
+    <span class="kw">private</span> <span class="ty">Long</span> id;
+
+    <span class="an">@OneToMany</span>(mappedBy = <span class="str">"usuario"</span>, cascade = <span class="ty">CascadeType</span>.ALL)
+    <span class="kw">private</span> <span class="ty">List</span>&lt;<span class="ty">Vehiculo</span>&gt; vehiculos = <span class="kw">new</span> <span class="ty">ArrayList</span>&lt;&gt;();
+}
+
+<span class="cm">// Entidad "Muchos" — Vehiculo</span>
+<span class="an">@Entity</span>
+<span class="kw">public class</span> <span class="ty">Vehiculo</span> {
+    <span class="an">@Id</span> <span class="an">@GeneratedValue</span>(strategy = <span class="ty">GenerationType</span>.IDENTITY)
+    <span class="kw">private</span> <span class="ty">Long</span> id;
+
+    <span class="an">@ManyToOne</span>
+    <span class="an">@JoinColumn</span>(name = <span class="str">"usuario_id"</span>, nullable = <span class="kw">false</span>)
+    <span class="kw">private</span> <span class="ty">Usuario</span> usuario;
+}</pre>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><span class="card-title">JpaRepository — métodos disponibles</span></div>
+        <table>
+          <tr><th>Método</th><th>Para qué sirve</th></tr>
+          <tr><td>findAll()</td><td>Lista todos los registros</td></tr>
+          <tr><td>findById(id)</td><td>Busca por PK → Optional</td></tr>
+          <tr><td>save(entity)</td><td>Crea o actualiza</td></tr>
+          <tr><td>deleteById(id)</td><td>Elimina por PK</td></tr>
+          <tr><td>existsById(id)</td><td>Verifica si existe</td></tr>
+          <tr><td>count()</td><td>Total de registros</td></tr>
+          <tr><td>findAll(Sort.by(...))</td><td>Ordenado</td></tr>
+          <tr><td>findAll(PageRequest.of(0,10))</td><td>Paginado</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><span class="card-title">DTO — separar entidad de entrada/salida</span><span class="card-badge badge-obligatorio">OBLIGATORIO</span></div>
+        <pre><span class="cm">// DTO de entrada (con validaciones)</span>
+<span class="kw">public class</span> <span class="ty">ReservaRequestDTO</span> {
+    <span class="an">@NotBlank</span>
+    <span class="kw">private</span> <span class="ty">String</span> patente;
+    <span class="an">@NotNull</span>
+    <span class="kw">private</span> <span class="ty">Long</span> espacioId;
+    <span class="an">@NotNull</span>
+    <span class="kw">private</span> <span class="ty">LocalDateTime</span> fechaInicio;
+    <span class="cm">// getters/setters</span>
+}
+
+<span class="cm">// DTO de salida (lo que devuelves al cliente)</span>
+<span class="kw">public class</span> <span class="ty">ReservaResponseDTO</span> {
+    <span class="kw">private</span> <span class="ty">Long</span> id;
+    <span class="kw">private</span> <span class="ty">String</span> patente;
+    <span class="kw">private</span> <span class="ty">String</span> estado;
+    <span class="kw">private</span> <span class="ty">LocalDateTime</span> fechaInicio;
+}</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- 5. VALIDACIONES -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="page-validation" class="page">
+  <div class="alert alert-red">Siempre usar <strong>@Valid</strong> en el Controller para activar las validaciones. Sin @Valid, las anotaciones son ignoradas.</div>
+
+  <div class="section-title">Tabla de anotaciones Bean Validation (JSR 380)</div>
+  <div class="card mb12">
+    <table>
+      <tr><th>Anotación</th><th>Tipo de campo</th><th>Qué valida</th><th>Ejemplo</th></tr>
+      <tr><td>@NotNull</td><td>Cualquiera</td><td>No puede ser null</td><td>@NotNull Long id</td></tr>
+      <tr><td>@NotBlank</td><td>String</td><td>No null, no vacío, no solo espacios</td><td>@NotBlank String nombre</td></tr>
+      <tr><td>@NotEmpty</td><td>String, Collection</td><td>No null, no vacío (permite espacios)</td><td>@NotEmpty List&lt;?&gt; items</td></tr>
+      <tr><td>@Size(min=2, max=50)</td><td>String, Collection</td><td>Tamaño entre min y max</td><td>@Size(min=2,max=50) String nombre</td></tr>
+      <tr><td>@Min(value=1)</td><td>int, long, etc.</td><td>Valor mínimo</td><td>@Min(1) int horas</td></tr>
+      <tr><td>@Max(value=100)</td><td>int, long, etc.</td><td>Valor máximo</td><td>@Max(100) int capacidad</td></tr>
+      <tr><td>@Email</td><td>String</td><td>Formato email válido</td><td>@Email String correo</td></tr>
+      <tr><td>@Pattern(regexp="...")</td><td>String</td><td>Expresión regular</td><td>@Pattern(regexp="[A-Z]{2}\\d{4}") String patente</td></tr>
+      <tr><td>@Positive</td><td>Número</td><td>Mayor que 0</td><td>@Positive double monto</td></tr>
+      <tr><td>@PositiveOrZero</td><td>Número</td><td>Mayor o igual a 0</td><td>@PositiveOrZero int cantidad</td></tr>
+      <tr><td>@Future</td><td>Date, LocalDateTime</td><td>Debe ser una fecha futura</td><td>@Future LocalDateTime fechaInicio</td></tr>
+      <tr><td>@Past</td><td>Date, LocalDateTime</td><td>Debe ser una fecha pasada</td><td>@Past LocalDate fechaNacimiento</td></tr>
+      <tr><td>@DecimalMin("0.0")</td><td>Decimal</td><td>Valor decimal mínimo</td><td>@DecimalMin("0.0") BigDecimal precio</td></tr>
+    </table>
+  </div>
+
+  <div class="grid2">
+    <div class="card mb12">
+      <div class="card-head"><span class="card-title">DTO con validaciones completas</span><span class="card-badge badge-obligatorio">PATRÓN CORRECTO</span></div>
+      <pre><span class="kw">public class</span> <span class="ty">VehiculoRequestDTO</span> {
+
+    <span class="an">@NotBlank</span>(message = <span class="str">"La patente es obligatoria"</span>)
+    <span class="an">@Size</span>(min = <span class="num">6</span>, max = <span class="num">6</span>, message = <span class="str">"La patente debe tener 6 caracteres"</span>)
+    <span class="an">@Pattern</span>(regexp = <span class="str">"[A-Z]{2}\\d{4}|[A-Z]{4}\\d{2}"</span>,
+             message = <span class="str">"Formato de patente inválido"</span>)
+    <span class="kw">private</span> <span class="ty">String</span> patente;
+
+    <span class="an">@NotBlank</span>(message = <span class="str">"La marca es obligatoria"</span>)
+    <span class="an">@Size</span>(max = <span class="num">50</span>)
+    <span class="kw">private</span> <span class="ty">String</span> marca;
+
+    <span class="an">@NotBlank</span>
+    <span class="kw">private</span> <span class="ty">String</span> modelo;
+
+    <span class="an">@NotNull</span>
+    <span class="an">@Min</span>(<span class="num">1900</span>) <span class="an">@Max</span>(<span class="num">2025</span>)
+    <span class="kw">private</span> <span class="ty">Integer</span> anio;
+
+    <span class="an">@NotNull</span>(message = <span class="str">"El ID de usuario es obligatorio"</span>)
+    <span class="an">@Positive</span>
+    <span class="kw">private</span> <span class="ty">Long</span> usuarioId;
+
+    <span class="cm">// getters y setters</span>
+}</pre>
+    </div>
+
+    <div class="card mb12">
+      <div class="card-head"><span class="card-title">@Valid en el Controller — activar validación</span><span class="card-badge badge-obligatorio">CLAVE</span></div>
+      <pre><span class="an">@PostMapping</span>
+<span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">VehiculoResponseDTO</span>&gt; <span class="fn">crear</span>(
+        <span class="an">@Valid</span> <span class="an">@RequestBody</span> <span class="ty">VehiculoRequestDTO</span> dto,
+        <span class="ty">BindingResult</span> result) { <span class="cm">// opcional, para manejar errores manual</span>
+
+    <span class="kw">if</span> (result.<span class="fn">hasErrors</span>()) {
+        <span class="cm">// Si no usas @ControllerAdvice, puedes manejar aquí:</span>
+        <span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">String</span>&gt; errores = <span class="kw">new</span> <span class="ty">HashMap</span>&lt;&gt;();
+        result.<span class="fn">getFieldErrors</span>().<span class="fn">forEach</span>(e ->
+            errores.<span class="fn">put</span>(e.<span class="fn">getField</span>(), e.<span class="fn">getDefaultMessage</span>()));
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">badRequest</span>().<span class="fn">build</span>();
+    }
+    <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">status</span>(<span class="num">201</span>)
+                         .<span class="fn">body</span>(vehiculoService.<span class="fn">save</span>(dto));
+}
+
+<span class="cm">// Con @ControllerAdvice (recomendado) el BindingResult</span>
+<span class="cm">// no hace falta — se captura automáticamente.</span></pre>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- 6. EXCEPCIONES -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="page-exceptions" class="page">
+  <div class="alert alert-red">@ControllerAdvice captura excepciones de TODOS los controllers. Es el patrón que evalúan. Siempre retornar ResponseEntity con código HTTP correcto.</div>
+
+  <div class="grid2">
+    <div class="card mb12">
+      <div class="card-head"><span class="card-title">GlobalExceptionHandler — @ControllerAdvice</span><span class="card-badge badge-obligatorio">OBLIGATORIO</span></div>
+      <pre><span class="an">@ControllerAdvice</span>
+<span class="kw">public class</span> <span class="ty">GlobalExceptionHandler</span> {
+
+    <span class="kw">private static final</span> <span class="ty">Logger</span> log =
+        <span class="ty">LoggerFactory</span>.<span class="fn">getLogger</span>(<span class="ty">GlobalExceptionHandler</span>.class);
+
+    <span class="cm">// 404 — Recurso no encontrado</span>
+    <span class="an">@ExceptionHandler</span>(<span class="ty">ResourceNotFoundException</span>.class)
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">ErrorResponse</span>&gt; <span class="fn">handleNotFound</span>(
+            <span class="ty">ResourceNotFoundException</span> ex) {
+        log.<span class="fn">error</span>(<span class="str">"Recurso no encontrado: {}"</span>, ex.<span class="fn">getMessage</span>());
+        <span class="ty">ErrorResponse</span> error = <span class="kw">new</span> <span class="ty">ErrorResponse</span>(
+            <span class="num">404</span>, ex.<span class="fn">getMessage</span>(), <span class="ty">LocalDateTime</span>.<span class="fn">now</span>());
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">status</span>(<span class="ty">HttpStatus</span>.NOT_FOUND).<span class="fn">body</span>(error);
+    }
+
+    <span class="cm">// 400 — Validación fallida (@Valid)</span>
+    <span class="an">@ExceptionHandler</span>(<span class="ty">MethodArgumentNotValidException</span>.class)
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">String</span>&gt;&gt; <span class="fn">handleValidation</span>(
+            <span class="ty">MethodArgumentNotValidException</span> ex) {
+        <span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">String</span>&gt; errores = <span class="kw">new</span> <span class="ty">HashMap</span>&lt;&gt;();
+        ex.<span class="fn">getBindingResult</span>().<span class="fn">getFieldErrors</span>().<span class="fn">forEach</span>(e ->
+            errores.<span class="fn">put</span>(e.<span class="fn">getField</span>(), e.<span class="fn">getDefaultMessage</span>()));
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">badRequest</span>().<span class="fn">body</span>(errores);
+    }
+
+    <span class="cm">// 409 — Conflicto de negocio</span>
+    <span class="an">@ExceptionHandler</span>(<span class="ty">BusinessException</span>.class)
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">ErrorResponse</span>&gt; <span class="fn">handleBusiness</span>(
+            <span class="ty">BusinessException</span> ex) {
+        log.<span class="fn">warn</span>(<span class="str">"Regla de negocio violada: {}"</span>, ex.<span class="fn">getMessage</span>());
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">status</span>(<span class="ty">HttpStatus</span>.CONFLICT)
+            .<span class="fn">body</span>(<span class="kw">new</span> <span class="ty">ErrorResponse</span>(<span class="num">409</span>, ex.<span class="fn">getMessage</span>(), <span class="ty">LocalDateTime</span>.<span class="fn">now</span>()));
+    }
+
+    <span class="cm">// 500 — Error genérico</span>
+    <span class="an">@ExceptionHandler</span>(<span class="ty">Exception</span>.class)
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">ErrorResponse</span>&gt; <span class="fn">handleGeneric</span>(<span class="ty">Exception</span> ex) {
+        log.<span class="fn">error</span>(<span class="str">"Error inesperado: {}"</span>, ex.<span class="fn">getMessage</span>(), ex);
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">internalServerError</span>()
+            .<span class="fn">body</span>(<span class="kw">new</span> <span class="ty">ErrorResponse</span>(<span class="num">500</span>, <span class="str">"Error interno del servidor"</span>, <span class="ty">LocalDateTime</span>.<span class="fn">now</span>()));
+    }
+}</pre>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card">
+        <div class="card-head"><span class="card-title">Excepciones personalizadas</span><span class="card-badge badge-obligatorio">OBLIGATORIO</span></div>
+        <pre><span class="cm">// ResourceNotFoundException.java</span>
+<span class="kw">public class</span> <span class="ty">ResourceNotFoundException</span>
+        <span class="kw">extends</span> <span class="ty">RuntimeException</span> {
+
+    <span class="kw">public</span> <span class="fn">ResourceNotFoundException</span>(<span class="ty">String</span> message) {
+        <span class="kw">super</span>(message);
+    }
+
+    <span class="cm">// Constructor conveniente:</span>
+    <span class="kw">public</span> <span class="fn">ResourceNotFoundException</span>(<span class="ty">String</span> entity, <span class="ty">Long</span> id) {
+        <span class="kw">super</span>(entity + <span class="str">" con ID "</span> + id + <span class="str">" no encontrado"</span>);
+    }
+}
+
+<span class="cm">// BusinessException.java</span>
+<span class="kw">public class</span> <span class="ty">BusinessException</span> <span class="kw">extends</span> <span class="ty">RuntimeException</span> {
+    <span class="kw">public</span> <span class="fn">BusinessException</span>(<span class="ty">String</span> message) {
+        <span class="kw">super</span>(message);
+    }
+}
+
+<span class="cm">// Uso en el Service:</span>
+<span class="ty">Reserva</span> r = repository.<span class="fn">findById</span>(id)
+    .<span class="fn">orElseThrow</span>(() -> <span class="kw">new</span> <span class="ty">ResourceNotFoundException</span>(<span class="str">"Reserva"</span>, id));</pre>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><span class="card-title">ErrorResponse — cuerpo de error</span></div>
+        <pre><span class="kw">public class</span> <span class="ty">ErrorResponse</span> {
+    <span class="kw">private int</span> status;
+    <span class="kw">private</span> <span class="ty">String</span> message;
+    <span class="kw">private</span> <span class="ty">LocalDateTime</span> timestamp;
+
+    <span class="kw">public</span> <span class="fn">ErrorResponse</span>(<span class="kw">int</span> status, <span class="ty">String</span> message,
+                         <span class="ty">LocalDateTime</span> timestamp) {
+        <span class="kw">this</span>.status = status;
+        <span class="kw">this</span>.message = message;
+        <span class="kw">this</span>.timestamp = timestamp;
+    }
+    <span class="cm">// getters...</span>
+}
+
+<span class="cm">// JSON que devuelve:</span>
+<span class="cm">// {</span>
+<span class="cm">//   "status": 404,</span>
+<span class="cm">//   "message": "Reserva con ID 5 no encontrada",</span>
+<span class="cm">//   "timestamp": "2025-05-04T10:30:00"</span>
+<span class="cm">// }</span></pre>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><span class="card-title">try/catch en el Service</span><span class="card-badge badge-importante">ALTERNATIVA</span></div>
+        <pre><span class="kw">public</span> <span class="ty">ReservaResponseDTO</span> <span class="fn">confirmar</span>(<span class="ty">Long</span> id) {
+    <span class="kw">try</span> {
+        <span class="ty">Reserva</span> r = repository.<span class="fn">findById</span>(id)
+            .<span class="fn">orElseThrow</span>(() -> <span class="kw">new</span> <span class="ty">ResourceNotFoundException</span>(<span class="str">"Reserva"</span>, id));
+        r.<span class="fn">setEstado</span>(<span class="ty">EstadoReserva</span>.CONFIRMADA);
+        <span class="kw">return</span> <span class="fn">mapToDTO</span>(repository.<span class="fn">save</span>(r));
+    } <span class="kw">catch</span> (<span class="ty">ResourceNotFoundException</span> e) {
+        log.<span class="fn">error</span>(<span class="str">"No se pudo confirmar: {}"</span>, e.<span class="fn">getMessage</span>());
+        <span class="kw">throw</span> e; <span class="cm">// relanzar para que @ControllerAdvice lo capture</span>
+    }
+}</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- 7. REST / RESPONSEENTITY -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="page-rest" class="page">
+
+  <div class="section-title">Códigos HTTP más usados</div>
+  <div class="card mb12">
+    <table>
+      <tr><th>Código</th><th>Nombre</th><th>Cuándo usarlo</th><th>ResponseEntity</th></tr>
+      <tr><td>200 OK</td><td>OK</td><td>GET, PUT, DELETE exitosos</td><td>ResponseEntity.ok(body)</td></tr>
+      <tr><td>201 Created</td><td>Creado</td><td>POST que crea un recurso</td><td>ResponseEntity.status(201).body(dto)</td></tr>
+      <tr><td>204 No Content</td><td>Sin contenido</td><td>DELETE sin cuerpo de respuesta</td><td>ResponseEntity.noContent().build()</td></tr>
+      <tr><td>400 Bad Request</td><td>Solicitud inválida</td><td>Validación fallida, datos incorrectos</td><td>ResponseEntity.badRequest().body(errores)</td></tr>
+      <tr><td>404 Not Found</td><td>No encontrado</td><td>Recurso no existe</td><td>ResponseEntity.notFound().build()</td></tr>
+      <tr><td>409 Conflict</td><td>Conflicto</td><td>Violación de regla de negocio</td><td>ResponseEntity.status(409).body(error)</td></tr>
+      <tr><td>500 Internal Error</td><td>Error del servidor</td><td>Error no esperado</td><td>ResponseEntity.internalServerError().body(msg)</td></tr>
+    </table>
+  </div>
+
+  <div class="grid2">
+    <div class="card mb12">
+      <div class="card-head"><span class="card-title">Controller completo con todos los métodos</span><span class="card-badge badge-obligatorio">CRUD COMPLETO</span></div>
+      <pre><span class="an">@RestController</span>
+<span class="an">@RequestMapping</span>(<span class="str">"/api/espacios"</span>)
+<span class="kw">public class</span> <span class="ty">EspacioController</span> {
+
+    <span class="kw">private final</span> <span class="ty">EspacioService</span> service;
+    <span class="kw">public</span> <span class="fn">EspacioController</span>(<span class="ty">EspacioService</span> service) {
+        <span class="kw">this</span>.service = service;
+    }
+
+    <span class="cm">// GET /api/espacios</span>
+    <span class="an">@GetMapping</span>
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">List</span>&lt;<span class="ty">EspacioResponseDTO</span>&gt;&gt; <span class="fn">getAll</span>() {
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">ok</span>(service.<span class="fn">findAll</span>());
+    }
+
+    <span class="cm">// GET /api/espacios/5</span>
+    <span class="an">@GetMapping</span>(<span class="str">"/{id}"</span>)
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">EspacioResponseDTO</span>&gt; <span class="fn">getById</span>(
+            <span class="an">@PathVariable</span> <span class="ty">Long</span> id) {
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">ok</span>(service.<span class="fn">findById</span>(id));
+    }
+
+    <span class="cm">// GET /api/espacios/disponibles?zona=A</span>
+    <span class="an">@GetMapping</span>(<span class="str">"/disponibles"</span>)
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">List</span>&lt;<span class="ty">EspacioResponseDTO</span>&gt;&gt; <span class="fn">getDisponibles</span>(
+            <span class="an">@RequestParam</span>(<span class="str">"zona"</span>) <span class="ty">String</span> zona) {
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">ok</span>(service.<span class="fn">findDisponibles</span>(zona));
+    }
+
+    <span class="cm">// POST /api/espacios</span>
+    <span class="an">@PostMapping</span>
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">EspacioResponseDTO</span>&gt; <span class="fn">create</span>(
+            <span class="an">@Valid</span> <span class="an">@RequestBody</span> <span class="ty">EspacioRequestDTO</span> dto) {
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>
+            .<span class="fn">status</span>(<span class="ty">HttpStatus</span>.CREATED)
+            .<span class="fn">body</span>(service.<span class="fn">save</span>(dto));
+    }
+
+    <span class="cm">// PUT /api/espacios/5</span>
+    <span class="an">@PutMapping</span>(<span class="str">"/{id}"</span>)
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">EspacioResponseDTO</span>&gt; <span class="fn">update</span>(
+            <span class="an">@PathVariable</span> <span class="ty">Long</span> id,
+            <span class="an">@Valid</span> <span class="an">@RequestBody</span> <span class="ty">EspacioRequestDTO</span> dto) {
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">ok</span>(service.<span class="fn">update</span>(id, dto));
+    }
+
+    <span class="cm">// DELETE /api/espacios/5</span>
+    <span class="an">@DeleteMapping</span>(<span class="str">"/{id}"</span>)
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">Void</span>&gt; <span class="fn">delete</span>(
+            <span class="an">@PathVariable</span> <span class="ty">Long</span> id) {
+        service.<span class="fn">delete</span>(id);
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">noContent</span>().<span class="fn">build</span>();
+    }
+}</pre>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card">
+        <div class="card-head"><span class="card-title">Anotaciones de mapeo HTTP</span></div>
+        <table>
+          <tr><th>Anotación</th><th>Método HTTP</th><th>Uso</th></tr>
+          <tr><td>@GetMapping</td><td>GET</td><td>Obtener recursos</td></tr>
+          <tr><td>@PostMapping</td><td>POST</td><td>Crear recursos</td></tr>
+          <tr><td>@PutMapping</td><td>PUT</td><td>Actualizar completo</td></tr>
+          <tr><td>@PatchMapping</td><td>PATCH</td><td>Actualizar parcial</td></tr>
+          <tr><td>@DeleteMapping</td><td>DELETE</td><td>Eliminar</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><span class="card-title">Anotaciones de parámetros</span></div>
+        <table>
+          <tr><th>Anotación</th><th>Obtiene de</th><th>Ejemplo URL</th></tr>
+          <tr><td>@PathVariable</td><td>URL path</td><td>/api/item/5</td></tr>
+          <tr><td>@RequestParam</td><td>Query string</td><td>/api/items?estado=activo</td></tr>
+          <tr><td>@RequestBody</td><td>Body JSON</td><td>{ "nombre": "..." }</td></tr>
+          <tr><td>@RequestHeader</td><td>Header HTTP</td><td>Authorization: Bearer ...</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><span class="card-title">ResponseEntity — todas las formas</span></div>
+        <pre><span class="cm">// Forma 1 — corta</span>
+<span class="ty">ResponseEntity</span>.<span class="fn">ok</span>(body)                    <span class="cm">// 200</span>
+<span class="ty">ResponseEntity</span>.<span class="fn">badRequest</span>().<span class="fn">build</span>()        <span class="cm">// 400</span>
+<span class="ty">ResponseEntity</span>.<span class="fn">notFound</span>().<span class="fn">build</span>()          <span class="cm">// 404</span>
+<span class="ty">ResponseEntity</span>.<span class="fn">noContent</span>().<span class="fn">build</span>()        <span class="cm">// 204</span>
+<span class="ty">ResponseEntity</span>.<span class="fn">internalServerError</span>().<span class="fn">build</span>() <span class="cm">// 500</span>
+
+<span class="cm">// Forma 2 — status personalizado</span>
+<span class="ty">ResponseEntity</span>.<span class="fn">status</span>(<span class="num">201</span>).<span class="fn">body</span>(dto)
+<span class="ty">ResponseEntity</span>.<span class="fn">status</span>(<span class="ty">HttpStatus</span>.CREATED).<span class="fn">body</span>(dto)
+<span class="ty">ResponseEntity</span>.<span class="fn">status</span>(<span class="ty">HttpStatus</span>.CONFLICT).<span class="fn">body</span>(error)
+
+<span class="cm">// Forma 3 — con headers</span>
+<span class="ty">ResponseEntity</span>.<span class="fn">ok</span>()
+    .<span class="fn">header</span>(<span class="str">"X-Total-Count"</span>, String.<span class="fn">valueOf</span>(total))
+    .<span class="fn">body</span>(lista)</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- 8. LOGS SLF4J -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="page-logs" class="page">
+  <div class="alert alert-yellow">Los logs deben estar en puntos estratégicos: creación, actualización, eliminación, errores y validaciones fallidas. Deben permitir trazar el flujo entre capas.</div>
+
+  <div class="grid2">
+    <div class="card mb12">
+      <div class="card-head"><span class="card-title">Configuración y uso básico</span><span class="card-badge badge-obligatorio">OBLIGATORIO</span></div>
+      <pre><span class="cm">// SLF4J ya viene incluido en spring-boot-starter-web</span>
+<span class="cm">// Importar:</span>
+<span class="kw">import</span> <span class="pkg">org.slf4j.Logger</span>;
+<span class="kw">import</span> <span class="pkg">org.slf4j.LoggerFactory</span>;
+
+<span class="an">@Service</span>
+<span class="kw">public class</span> <span class="ty">PagoServiceImpl</span> {
+
+    <span class="cm">// Declarar en cada clase:</span>
+    <span class="kw">private static final</span> <span class="ty">Logger</span> log =
+        <span class="ty">LoggerFactory</span>.<span class="fn">getLogger</span>(<span class="ty">PagoServiceImpl</span>.class);
+
+    <span class="kw">public</span> <span class="ty">PagoResponseDTO</span> <span class="fn">procesarPago</span>(<span class="ty">PagoRequestDTO</span> dto) {
+
+        <span class="cm">// DEBUG — solo en desarrollo</span>
+        log.<span class="fn">debug</span>(<span class="str">"Iniciando procesamiento de pago: {}"</span>, dto);
+
+        <span class="cm">// INFO — eventos importantes del flujo</span>
+        log.<span class="fn">info</span>(<span class="str">"Procesando pago para reserva ID: {}"</span>, dto.<span class="fn">getReservaId</span>());
+
+        <span class="kw">try</span> {
+            <span class="ty">Double</span> tarifa = tarifaClient.<span class="fn">getTarifa</span>(dto.<span class="fn">getTipoVehiculo</span>());
+            log.<span class="fn">info</span>(<span class="str">"Tarifa obtenida: {} para tipo: {}"</span>,
+                      tarifa, dto.<span class="fn">getTipoVehiculo</span>());
+
+            <span class="ty">Pago</span> pago = <span class="fn">mapToEntity</span>(dto);
+            pago.<span class="fn">setMonto</span>(tarifa * dto.<span class="fn">getHoras</span>());
+            <span class="ty">Pago</span> saved = repository.<span class="fn">save</span>(pago);
+
+            log.<span class="fn">info</span>(<span class="str">"Pago creado exitosamente. ID: {}, Monto: {}"</span>,
+                      saved.<span class="fn">getId</span>(), saved.<span class="fn">getMonto</span>());
+            <span class="kw">return</span> <span class="fn">mapToDTO</span>(saved);
+
+        } <span class="kw">catch</span> (<span class="ty">FeignException</span> e) {
+            <span class="cm">// WARN — situación inesperada pero recuperable</span>
+            log.<span class="fn">warn</span>(<span class="str">"No se pudo obtener tarifa del ms-tarifas: {}"</span>,
+                      e.<span class="fn">getMessage</span>());
+            <span class="kw">throw</span> <span class="kw">new</span> <span class="ty">BusinessException</span>(<span class="str">"No se pudo procesar el pago"</span>);
+
+        } <span class="kw">catch</span> (<span class="ty">Exception</span> e) {
+            <span class="cm">// ERROR — fallo inesperado</span>
+            log.<span class="fn">error</span>(<span class="str">"Error procesando pago: {}"</span>, e.<span class="fn">getMessage</span>(), e);
+            <span class="kw">throw</span> e;
+        }
+    }
+}</pre>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card">
+        <div class="card-head"><span class="card-title">Niveles de log — cuándo usar cada uno</span></div>
+        <table>
+          <tr><th>Nivel</th><th>Cuándo usarlo</th></tr>
+          <tr><td>log.trace()</td><td>Máximo detalle (raramente usado)</td></tr>
+          <tr><td>log.debug()</td><td>Depuración en desarrollo</td></tr>
+          <tr><td>log.info()</td><td>Flujo normal: creación, confirmación, éxito</td></tr>
+          <tr><td>log.warn()</td><td>Situación anormal pero recuperable</td></tr>
+          <tr><td>log.error()</td><td>Error que afecta el funcionamiento</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><span class="card-title">Configuración en application.properties</span></div>
+        <pre><span class="cm"># Nivel de log global</span>
+<span class="an">logging.level.root</span>=INFO
+
+<span class="cm"># Logs de tu paquete (más detallado)</span>
+<span class="an">logging.level.com.proyecto.msreservas</span>=DEBUG
+
+<span class="cm"># Ver SQL de Hibernate</span>
+<span class="an">logging.level.org.hibernate.SQL</span>=DEBUG
+
+<span class="cm"># Guardar logs en archivo</span>
+<span class="an">logging.file.name</span>=logs/ms-reservas.log</pre>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><span class="card-title">Buenas prácticas de logging</span></div>
+        <pre><span class="cm">// ✅ BIEN — usar placeholders {}</span>
+log.<span class="fn">info</span>(<span class="str">"Reserva {} creada para usuario {}"</span>, id, usuarioId);
+
+<span class="cm">// ❌ MAL — concatenar strings (caro en memoria)</span>
+log.<span class="fn">info</span>(<span class="str">"Reserva "</span> + id + <span class="str">" creada"</span>);
+
+<span class="cm">// ✅ BIEN — incluir excepción como último parámetro</span>
+log.<span class="fn">error</span>(<span class="str">"Error al crear reserva"</span>, ex);
+
+<span class="cm">// ✅ Puntos estratégicos:</span>
+<span class="cm">// - Al inicio de cada operación (info)</span>
+<span class="cm">// - Al terminar exitosamente (info)</span>
+<span class="cm">// - Cuando se llama otro microservicio (info/warn)</span>
+<span class="cm">// - En el catch de excepciones (warn/error)</span>
+<span class="cm">// - Cuando una validación de negocio falla (warn)</span></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- 9. FEIGN / WEBCLIENT -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="page-feign" class="page">
+  <div class="alert alert-red">Feign es la opción recomendada por el docente. Requiere <strong>@EnableFeignClients</strong> en la clase principal del microservicio.</div>
+
+  <div class="grid2">
+    <div class="card mb12">
+      <div class="card-head"><span class="card-title">Feign Client — configuración completa</span><span class="card-badge badge-obligatorio">OBLIGATORIO</span></div>
+      <pre><span class="cm">// 1. Habilitar en la clase principal</span>
+<span class="an">@SpringBootApplication</span>
+<span class="an">@EnableFeignClients</span>
+<span class="kw">public class</span> <span class="ty">MsReservasApplication</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="ty">String</span>[] args) {
+        <span class="ty">SpringApplication</span>.<span class="fn">run</span>(<span class="ty">MsReservasApplication</span>.class, args);
+    }
+}
+
+<span class="cm">// 2. Definir el cliente en client/EspacioClient.java</span>
+<span class="an">@FeignClient</span>(name = <span class="str">"ms-espacios"</span>) <span class="cm">// nombre en Eureka</span>
+<span class="kw">public interface</span> <span class="ty">EspacioClient</span> {
+
+    <span class="cm">// Mapea a GET /api/espacios/{id}</span>
+    <span class="an">@GetMapping</span>(<span class="str">"/api/espacios/{id}"</span>)
+    <span class="ty">EspacioResponseDTO</span> <span class="fn">getEspacio</span>(<span class="an">@PathVariable</span>(<span class="str">"id"</span>) <span class="ty">Long</span> id);
+
+    <span class="cm">// Verificar disponibilidad</span>
+    <span class="an">@GetMapping</span>(<span class="str">"/api/espacios/{id}/disponible"</span>)
+    <span class="ty">Boolean</span> <span class="fn">isDisponible</span>(<span class="an">@PathVariable</span>(<span class="str">"id"</span>) <span class="ty">Long</span> id);
+
+    <span class="cm">// POST con body</span>
+    <span class="an">@PutMapping</span>(<span class="str">"/api/espacios/{id}/ocupar"</span>)
+    <span class="ty">EspacioResponseDTO</span> <span class="fn">ocuparEspacio</span>(<span class="an">@PathVariable</span>(<span class="str">"id"</span>) <span class="ty">Long</span> id);
+}
+
+<span class="cm">// 3. Usar en el Service</span>
+<span class="an">@Service</span>
+<span class="kw">public class</span> <span class="ty">ReservaServiceImpl</span> {
+
+    <span class="kw">private final</span> <span class="ty">EspacioClient</span> espacioClient;
+    <span class="cm">// (+ repository, logs, etc.)</span>
+
+    <span class="kw">public</span> <span class="ty">ReservaResponseDTO</span> <span class="fn">crearReserva</span>(<span class="ty">ReservaRequestDTO</span> dto) {
+        log.<span class="fn">info</span>(<span class="str">"Verificando disponibilidad del espacio {}"</span>, dto.<span class="fn">getEspacioId</span>());
+
+        <span class="kw">try</span> {
+            <span class="ty">Boolean</span> disponible = espacioClient.<span class="fn">isDisponible</span>(dto.<span class="fn">getEspacioId</span>());
+            <span class="kw">if</span> (!disponible) {
+                <span class="kw">throw new</span> <span class="ty">BusinessException</span>(<span class="str">"El espacio no está disponible"</span>);
+            }
+        } <span class="kw">catch</span> (<span class="ty">FeignException</span> e) {
+            log.<span class="fn">error</span>(<span class="str">"Error al consultar ms-espacios: {}"</span>, e.<span class="fn">getMessage</span>());
+            <span class="kw">throw new</span> <span class="ty">BusinessException</span>(<span class="str">"No se pudo verificar el espacio"</span>);
+        }
+
+        <span class="cm">// continuar con la lógica...</span>
+    }
+}</pre>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card">
+        <div class="card-head"><span class="card-title">DTO espejo — para Feign</span><span class="card-badge badge-importante">IMPORTANTE</span></div>
+        <pre><span class="cm">// En ms-reservas/dto/EspacioResponseDTO.java</span>
+<span class="cm">// Copia los campos que necesitas del ms-espacios</span>
+<span class="kw">public class</span> <span class="ty">EspacioResponseDTO</span> {
+    <span class="kw">private</span> <span class="ty">Long</span> id;
+    <span class="kw">private</span> <span class="ty">String</span> numero;
+    <span class="kw">private</span> <span class="ty">String</span> zona;
+    <span class="kw">private</span> <span class="ty">Boolean</span> disponible;
+    <span class="cm">// No tienes que copiar todos los campos,</span>
+    <span class="cm">// solo los que vas a usar</span>
+    <span class="cm">// getters/setters...</span>
+}</pre>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><span class="card-title">Timeout de Feign — application.properties</span></div>
+        <pre><span class="cm"># Timeout para llamadas Feign</span>
+<span class="an">feign.client.config.default.connectTimeout</span>=<span class="num">5000</span>
+<span class="an">feign.client.config.default.readTimeout</span>=<span class="num">10000</span>
+
+<span class="cm"># Para microservicio específico:</span>
+<span class="an">feign.client.config.ms-espacios.connectTimeout</span>=<span class="num">3000</span>
+<span class="an">feign.client.config.ms-espacios.readTimeout</span>=<span class="num">5000</span></pre>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><span class="card-title">WebClient — alternativa reactiva</span><span class="card-badge badge-importante">ALTERNATIVA</span></div>
+        <pre><span class="cm">// 1. Config Bean</span>
+<span class="an">@Configuration</span>
+<span class="kw">public class</span> <span class="ty">WebClientConfig</span> {
+    <span class="an">@Bean</span>
+    <span class="kw">public</span> <span class="ty">WebClient</span> <span class="fn">webClient</span>() {
+        <span class="kw">return</span> <span class="ty">WebClient</span>.<span class="fn">builder</span>()
+            .<span class="fn">baseUrl</span>(<span class="str">"http://ms-espacios"</span>)
+            .<span class="fn">build</span>();
+    }
+}
+
+<span class="cm">// 2. Uso en Service</span>
+<span class="an">@Service</span>
+<span class="kw">public class</span> <span class="ty">ReservaService</span> {
+    <span class="kw">private final</span> <span class="ty">WebClient</span> webClient;
+
+    <span class="kw">public</span> <span class="ty">EspacioResponseDTO</span> <span class="fn">getEspacio</span>(<span class="ty">Long</span> id) {
+        <span class="kw">return</span> webClient.<span class="fn">get</span>()
+            .<span class="fn">uri</span>(<span class="str">"/api/espacios/{id}"</span>, id)
+            .<span class="fn">retrieve</span>()
+            .<span class="fn">bodyToMono</span>(<span class="ty">EspacioResponseDTO</span>.class)
+            .<span class="fn">block</span>(); <span class="cm">// block() para sincrónico</span>
+    }
+}</pre>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><span class="card-title">Diagrama de comunicación Feign</span></div>
+        <div class="p12 text2" style="font-size:11px;line-height:2">
+          <div style="display:grid;grid-template-columns:auto 20px auto 20px auto;align-items:center;gap:4px;font-family:var(--mono)">
+            <div style="padding:4px 8px;background:rgba(88,166,255,.15);border:1px solid rgba(88,166,255,.3);border-radius:4px;color:var(--accent);font-size:11px">ms-reservas<br><small>Service</small></div>
+            <div style="color:var(--text3);text-align:center">→</div>
+            <div style="padding:4px 8px;background:rgba(63,185,80,.15);border:1px solid rgba(63,185,80,.3);border-radius:4px;color:var(--green);font-size:11px">EspacioClient<br><small>@FeignClient</small></div>
+            <div style="color:var(--text3);text-align:center">→</div>
+            <div style="padding:4px 8px;background:rgba(210,153,34,.15);border:1px solid rgba(210,153,34,.3);border-radius:4px;color:var(--yellow);font-size:11px">ms-espacios<br><small>REST API</small></div>
+          </div>
+          <div style="margin-top:8px">
+            <span style="color:var(--green)">✓</span> Feign resuelve el nombre por Eureka automáticamente<br>
+            <span style="color:var(--green)">✓</span> Maneja serialización/deserialización JSON automáticamente<br>
+            <span style="color:var(--red)">✗</span> Si ms-espacios cae → FeignException (manejar con try/catch)
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- 10. EUREKA + GATEWAY -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="page-infra" class="page">
+  <div class="alert alert-yellow">Eureka primero, luego Gateway, luego microservicios. El orden de arranque importa. MySQL debe estar corriendo antes de iniciar cualquier microservicio.</div>
+
+  <div class="grid2">
+    <div class="card mb12">
+      <div class="card-head"><span class="card-title">Eureka Server — código completo</span><span class="card-badge badge-obligatorio">OBLIGATORIO</span></div>
+      <pre><span class="cm">// EurekaServerApplication.java</span>
+<span class="an">@SpringBootApplication</span>
+<span class="an">@EnableEurekaServer</span>  <span class="cm">// ← la anotación clave</span>
+<span class="kw">public class</span> <span class="ty">EurekaServerApplication</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="ty">String</span>[] args) {
+        <span class="ty">SpringApplication</span>.<span class="fn">run</span>(<span class="ty">EurekaServerApplication</span>.class, args);
+    }
+}
+
+<span class="cm">// application.properties</span>
+<span class="an">spring.application.name</span>=eureka-server
+<span class="an">server.port</span>=<span class="num">8761</span>
+
+<span class="cm"># No se registra a sí mismo</span>
+<span class="an">eureka.client.register-with-eureka</span>=false
+<span class="an">eureka.client.fetch-registry</span>=false
+<span class="an">eureka.server.wait-time-in-ms-when-sync-empty</span>=<span class="num">0</span></pre>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card">
+        <div class="card-head"><span class="card-title">API Gateway — código completo</span><span class="card-badge badge-obligatorio">OBLIGATORIO</span></div>
+        <pre><span class="cm">// ApiGatewayApplication.java</span>
+<span class="an">@SpringBootApplication</span>
+<span class="kw">public class</span> <span class="ty">ApiGatewayApplication</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="ty">String</span>[] args) {
+        <span class="ty">SpringApplication</span>.<span class="fn">run</span>(<span class="ty">ApiGatewayApplication</span>.class, args);
+    }
+}
+
+<span class="cm">// application.properties</span>
+<span class="an">spring.application.name</span>=api-gateway
+<span class="an">server.port</span>=<span class="num">8080</span>
+
+<span class="an">eureka.client.service-url.defaultZone</span>=http://localhost:<span class="num">8761</span>/eureka/
+
+<span class="cm"># lb:// = load balancer via Eureka</span>
+<span class="an">spring.cloud.gateway.routes[0].id</span>=ms-vehiculos
+<span class="an">spring.cloud.gateway.routes[0].uri</span>=lb://ms-vehiculos
+<span class="an">spring.cloud.gateway.routes[0].predicates[0]</span>=Path=/api/vehiculos/**
+
+<span class="an">spring.cloud.gateway.routes[1].id</span>=ms-reservas
+<span class="an">spring.cloud.gateway.routes[1].uri</span>=lb://ms-reservas
+<span class="an">spring.cloud.gateway.routes[1].predicates[0]</span>=Path=/api/reservas/**
+
+<span class="an">spring.cloud.gateway.routes[2].id</span>=ms-espacios
+<span class="an">spring.cloud.gateway.routes[2].uri</span>=lb://ms-espacios
+<span class="an">spring.cloud.gateway.routes[2].predicates[0]</span>=Path=/api/espacios/**
+
+<span class="cm"># IMPORTANTE: Gateway usa Netty, NO incluir spring-boot-starter-web</span></pre>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><span class="card-title">Orden de arranque</span></div>
+        <div class="p12">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div style="width:24px;height:24px;border-radius:50%;background:rgba(248,81,73,.3);color:var(--red);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">1</div>
+              <div style="font-size:12px"><strong>MySQL (XAMPP)</strong> — puerto 3307, iniciar primero</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div style="width:24px;height:24px;border-radius:50%;background:rgba(210,153,34,.3);color:var(--yellow);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">2</div>
+              <div style="font-size:12px"><strong>eureka-server</strong> — puerto 8761</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div style="width:24px;height:24px;border-radius:50%;background:rgba(88,166,255,.3);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">3</div>
+              <div style="font-size:12px"><strong>api-gateway</strong> — puerto 8080</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div style="width:24px;height:24px;border-radius:50%;background:rgba(63,185,80,.3);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">4</div>
+              <div style="font-size:12px"><strong>Todos los microservicios</strong> — puertos 8081–8090</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><span class="card-title">Verificar que funciona</span></div>
+        <pre><span class="cm"># Ver todos los servicios registrados en Eureka:</span>
+http://localhost:<span class="num">8761</span>
+
+<span class="cm"># Llamar a un ms a través del Gateway:</span>
+GET http://localhost:<span class="num">8080</span>/api/reservas
+GET http://localhost:<span class="num">8080</span>/api/espacios/<span class="num">1</span>
+
+<span class="cm"># Llamar directamente al ms (para debug):</span>
+GET http://localhost:<span class="num">8086</span>/api/reservas</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Diagrama completo de arquitectura</div>
+  <div class="card p12">
+    <div style="font-family:var(--mono);font-size:11px;color:var(--text2);line-height:2.2">
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+        <div style="padding:6px 10px;background:rgba(248,81,73,.15);border:1px solid var(--red);border-radius:6px;color:var(--red)">Cliente / Postman</div>
+        <div style="color:var(--text3)">──→</div>
+        <div style="padding:6px 10px;background:rgba(210,153,34,.15);border:1px solid var(--yellow);border-radius:6px;color:var(--yellow)">API Gateway :8080</div>
+        <div style="color:var(--text3)">──→</div>
+        <div style="padding:6px 10px;background:rgba(88,166,255,.15);border:1px solid var(--accent);border-radius:6px;color:var(--accent)">Eureka :8761<br><small>Service Discovery</small></div>
+        <div style="color:var(--text3)">──→</div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <div style="padding:3px 8px;background:rgba(63,185,80,.15);border:1px solid var(--green);border-radius:4px;color:var(--green);font-size:10px">ms-reservas :8086 → db_reservas</div>
+          <div style="padding:3px 8px;background:rgba(63,185,80,.15);border:1px solid var(--green);border-radius:4px;color:var(--green);font-size:10px">ms-espacios :8085 → db_espacios</div>
+          <div style="padding:3px 8px;background:rgba(63,185,80,.15);border:1px solid var(--green);border-radius:4px;color:var(--green);font-size:10px">ms-pagos :8089 → db_pagos</div>
+          <div style="padding:3px 8px;background:rgba(188,140,255,.15);border:1px solid var(--purple);border-radius:4px;color:var(--purple);font-size:10px">... más microservicios</div>
+        </div>
+      </div>
+      <div style="margin-top:12px;font-size:11px;color:var(--text3)">
+        Los microservicios se comunican entre sí vía Feign Client → Feign resuelve el nombre por Eureka → HTTP interno
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>
