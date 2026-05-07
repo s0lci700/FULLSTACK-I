@@ -21,3 +21,6 @@ logs/
 Thumbs.db
 
 .env
+
+# Claude Code
+.claude/
