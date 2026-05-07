@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DER Estacionamiento Inteligente</title>
+    
+    <style>
+        /* Variables CSS base para que los estilos funcionen de forma independiente */
+        :root {
+            --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            --border-radius-md: 6px;
+            
+            /* Tema Claro */
+            --color-border-tertiary: #d1d5db;
+            --color-background-secondary: #f9fafb;
+            --color-text-primary: #111827;
+            --color-text-secondary: #374151;
+            --color-text-tertiary: #6b7280;
+            
+            --color-background-info: #eff6ff;
+            --color-text-info: #1d4ed8;
+            --color-background-success: #f0fdf4;
+            --color-text-success: #15803d;
+            --color-background-warning: #fff7ed;
+            --color-text-warning: #c2410c;
+        }
+
+        /* Soporte para Tema Oscuro automático */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-border-tertiary: #374151;
+                --color-background-secondary: #1f2937;
+                --color-text-primary: #f9fafb;
+                --color-text-secondary: #d1d5db;
+                --color-text-tertiary: #9ca3af;
+
+                --color-background-info: #1e3a8a;
+                --color-text-info: #bfdbfe;
+                --color-background-success: #14532d;
+                --color-text-success: #bbf7d0;
+                --color-background-warning: #7c2d12;
+                --color-text-warning: #fed7aa;
+
+                
+            }
+            body {
+                background-color: #111827;
+                color: var(--color-text-primary);
+            }
+            #erd svg.erDiagram .row-rect-odd rect,
+            #erd svg.erDiagram .row-rect-odd path { fill: #1f2937 !important; }
+            #erd svg.erDiagram .row-rect-even rect,
+            #erd svg.erDiagram .row-rect-even path { fill: #111827 !important; }
+        
+        }
+
+        body {
+            font-family: "Anthropic Sans", system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* Estilos específicos del diagrama y componentes */
+        #erd svg.erDiagram .divider path { stroke-opacity: 0.5; }
+        #erd svg.erDiagram .row-rect-odd path,
+        #erd svg.erDiagram .row-rect-odd rect,
+        #erd svg.erDiagram .row-rect-even path,
+        #erd svg.erDiagram .row-rect-even rect { stroke: none !important; }
+        
+        #erd { overflow-x: auto; }
+        
+        .dist-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+            gap: 8px; 
+            margin-top: 16px; 
+        }
+        
+        .dist-box { 
+            border: 0.5px solid var(--color-border-tertiary); 
+            border-radius: var(--border-radius-md); 
+            padding: 9px 12px; 
+        }
+        
+        .dist-title { 
+            font-size: 11px; 
+            font-weight: 500; 
+            font-family: var(--font-mono); 
+            color: var(--color-text-primary); 
+            margin-bottom: 4px; 
+        }
+        
+        .dist-entities { 
+            font-size: 11px; 
+            color: var(--color-text-secondary); 
+            line-height: 1.75; 
+        }
+        
+        .dist-port { 
+            font-size: 10px; 
+            font-family: var(--font-mono); 
+            color: var(--color-text-tertiary); 
+            margin-top: 4px; 
+        }
+        
+        .badge { 
+            display: inline-block; 
+            padding: 1px 6px; 
+            border-radius: 4px; 
+            font-size: 10px; 
+            font-weight: 500; 
+            margin-right: 3px; 
+        }
+        
+        .b-u { background: var(--color-background-info); color: var(--color-text-info); }
+        .b-c { background: var(--color-background-success); color: var(--color-text-success); }
+        .b-i { background: var(--color-background-warning); color: var(--color-text-warning); }
+        
+        .formula-box { 
+            border: 0.5px solid var(--color-border-tertiary); 
+            background: var(--color-background-secondary); 
+            border-radius: var(--border-radius-md); 
+            padding: 10px 14px; 
+            margin: 14px 0; 
+            font-size: 12px; 
+            color: var(--color-text-secondary); 
+        }
+        
+        .formula-box b { color: var(--color-text-primary); }
+        .note { font-size: 11px; color: var(--color-text-tertiary); margin-top: 6px; }
+    </style>
+</head>
+<body>
+
+    <div style="padding: 1rem 0; max-width: 1200px; margin: 0 auto;">
+        
+        <div id="erd"></div>
+
+        <div class="formula-box">
+            <b>Fórmula de cobro:</b><br>
+            <code style="font-size:11px">monto_base = precio_base_hora × multiplicador_horario × factor_tipo_vehiculo × factor_tipo_espacio × (minutos / 60)</code><br>
+            <code style="font-size:11px">monto_final = monto_base × (1 − desc_tipo_cliente) × (1 − desc_suscripcion) × (1 − desc_banco)</code>
+            <div class="note">Todos los factores vienen de la BD. COBRO guarda cada descuento por separado para auditabilidad.</div>
+        </div>
+
+        <div style="font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 6px;">
+            Distribución en microservicios — cada uno con su propia DB en MySQL :3307
+        </div>
+        
+        <div class="dist-grid">
+            <div class="dist-box">
+                <div class="dist-title"><span class="badge b-i">infra</span>eureka-server</div>
+                <div class="dist-entities">Service discovery.<br>Sin BD propia.</div>
+                <div class="dist-port">:8761</div>
+            </div>
+            <div class="dist-box">
+                <div class="dist-title"><span class="badge b-i">infra</span>api-gateway</div>
+                <div class="dist-entities">Netty (no Tomcat).<br>Sin BD propia.</div>
+                <div class="dist-port">:8080</div>
+            </div>
+            <div class="dist-box">
+                <div class="dist-title"><span class="badge b-u">Tú</span>auth-service</div>
+                <div class="dist-entities">USER_CREDENTIAL<br>ROL</div>
+                <div class="dist-port">db_auth · :8081</div>
+            </div>
+            <div class="dist-box">
+                <div class="dist-title"><span class="badge b-c">Catalina</span>user-service</div>
+                <div class="dist-entities">TIPO_CLIENTE<br>CLIENTE<br>SUSCRIPCION<br>CLIENTE_SUSCRIPCION</div>
+                <div class="dist-port">db_usuarios · :8082</div>
+            </div>
+            <div class="dist-box">
+                <div class="dist-title"><span class="badge b-c">Catalina</span>security-service</div>
+                <div class="dist-entities">PERMISO<br>ROL_PERMISO</div>
+                <div class="dist-port">db_seguridad · :8083</div>
+            </div>
+            <div class="dist-box">
+                <div class="dist-title"><span class="badge b-u">Tú</span>ms-vehiculos</div>
+                <div class="dist-entities">TIPO_VEHICULO<br>VEHICULO</div>
+                <div class="dist-port">db_vehiculos · :8084</div>
+            </div>
+            <div class="dist-box">
+                <div class="dist-title"><span class="badge b-c">Catalina</span>ms-espacios</div>
+                <div class="dist-entities">TIPO_ESPACIO<br>ESPACIO</div>
+                <div class="dist-port">db_espacios · :8085</div>
+            </div>
+            <div class="dist-box">
+                <div class="dist-title"><span class="badge b-u">Tú</span>ms-reservas</div>
+                <div class="dist-entities">RESERVA</div>
+                <div class="dist-port">db_reservas · :8086</div>
+            </div>
+            <div class="dist-box">
+                <div class="dist-title"><span class="badge b-c">Catalina</span>ms-accesos</div>
+                <div class="dist-entities">ACCESO</div>
+                <div class="dist-port">db_accesos · :8087</div>
+            </div>
+            <div class="dist-box">
+                <div class="dist-title"><span class="badge b-c">Catalina</span>ms-tarifas</div>
+                <div class="dist-entities">TARIFA<br>HORARIO_TARIFA</div>
+                <div class="dist-port">db_tarifas · :8088</div>
+            </div>
+            <div class="dist-box">
+                <div class="dist-title"><span class="badge b-u">Tú</span>ms-pagos</div>
+                <div class="dist-entities">BANCO<br>TIPO_TARJETA<br>METODO_PAGO<br>COBRO</div>
+                <div class="dist-port">db_pagos · :8089</div>
+            </div>
+            <div class="dist-box">
+                <div class="dist-title"><span class="badge b-u">Tú</span>ms-reportes</div>
+                <div class="dist-entities">Sin tablas propias.<br>Consulta vía Feign.</div>
+                <div class="dist-port">:8090</div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import mermaid from 'https://esm.sh/mermaid@11/dist/mermaid.esm.min.mjs';
+        
+        const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+        await document.fonts.ready;
+        
+        mermaid.initialize({
+            startOnLoad: false,
+            theme: 'base',
+            fontFamily: '"Anthropic Sans", sans-serif',
+            themeVariables: {
+                darkMode: dark,
+                fontSize: '12px',
+                fontFamily: '"Anthropic Sans", sans-serif',
+                lineColor: dark ? '#9c9a92' : '#73726c',
+                /* Agrega estas líneas para controlar los fondos de la tabla */
+                primaryColor: dark ? '#374151' : '#ffffff',   /* Fondo del título (Header) */
+                secondaryColor: dark ? '#000000' : '#f9fafb', /* Fondo de filas impares */
+                tertiaryColor: dark ? '#111827' : '#ffffff',  /* Fondo de filas pares */
+                primaryBorderColor: dark ? '#4b5563' : '#d1d5db' /* Borde de la tabla */
+            },
+        });
+
+        const { svg } = await mermaid.render('erd-svg', `erDiagram
+            TIPO_CLIENTE {
+                bigint id PK
+                varchar nombre
+                decimal descuento_pct
+            }
+            CLIENTE {
+                bigint id PK
+                varchar rut
+                varchar nombre
+                varchar email
+                varchar telefono
+                bigint id_tipo_cliente FK
+                boolean activo
+            }
+            SUSCRIPCION {
+                bigint id PK
+                varchar nombre
+                decimal precio
+                decimal descuento_pct
+                int duracion_dias
+            }
+            CLIENTE_SUSCRIPCION {
+                bigint id PK
+                bigint id_cliente FK
+                bigint id_suscripcion FK
+                date fecha_inicio
+                date fecha_fin
+                boolean activo
+            }
+            TIPO_VEHICULO {
+                bigint id PK
+                varchar nombre
+                decimal factor_precio
+            }
+            VEHICULO {
+                bigint id PK
+                varchar patente
+                varchar marca
+                varchar modelo
+                varchar color
+                bigint id_tipo_vehiculo FK
+                bigint id_cliente FK
+                boolean activo
+            }
+            TIPO_ESPACIO {
+                bigint id PK
+                varchar nombre
+                decimal factor_precio
+            }
+            ESPACIO {
+                bigint id PK
+                varchar numero
+                varchar zona
+                int piso
+                bigint id_tipo_espacio FK
+                boolean disponible
+            }
+            TARIFA {
+                bigint id PK
+                varchar nombre
+                decimal precio_base_hora
+                boolean activo
+            }
+            HORARIO_TARIFA {
+                bigint id PK
+                bigint id_tarifa FK
+                varchar dia_tipo
+                time hora_inicio
+                time hora_fin
+                decimal multiplicador
+            }
+            BANCO {
+                bigint id PK
+                varchar nombre
+                varchar codigo
+                decimal descuento_pct
+                boolean activo
+            }
+            TIPO_TARJETA {
+                bigint id PK
+                varchar nombre
+                varchar red
+            }
+            METODO_PAGO {
+                bigint id PK
+                bigint id_cliente FK
+                bigint id_tipo_tarjeta FK
+                bigint id_banco FK
+                varchar ultimos_4
+                varchar nombre_titular
+                boolean predeterminado
+                boolean activo
+            }
+            RESERVA {
+                bigint id PK
+                bigint id_cliente FK
+                bigint id_vehiculo FK
+                bigint id_tipo_espacio FK
+                datetime fecha_inicio
+                datetime fecha_fin
+                varchar estado
+            }
+            ACCESO {
+                bigint id PK
+                bigint id_vehiculo FK
+                bigint id_espacio FK
+                bigint id_reserva FK
+                varchar patente_escaneada
+                datetime fecha_hora_entrada
+                datetime fecha_hora_salida
+                varchar estado
+            }
+            COBRO {
+                bigint id PK
+                bigint id_acceso FK
+                bigint id_metodo_pago FK
+                int minutos
+                decimal monto_base
+                decimal desc_tipo_cliente
+                decimal desc_suscripcion
+                decimal desc_banco
+                decimal monto_final
+                varchar estado
+            }
+            
+            TIPO_CLIENTE ||--o{ CLIENTE : "clasifica"
+            CLIENTE ||--o{ CLIENTE_SUSCRIPCION : "tiene"
+            SUSCRIPCION ||--o{ CLIENTE_SUSCRIPCION : "incluye"
+            TIPO_VEHICULO ||--o{ VEHICULO : "clasifica"
+            CLIENTE ||--o{ VEHICULO : "posee"
+            TIPO_ESPACIO ||--o{ ESPACIO : "define"
+            TARIFA ||--o{ HORARIO_TARIFA : "tiene"
+            TIPO_TARJETA ||--o{ METODO_PAGO : "define"
+            BANCO |o--o{ METODO_PAGO : "descuenta"
+            CLIENTE ||--o{ METODO_PAGO : "registra"
+            CLIENTE ||--o{ RESERVA : "hace"
+            VEHICULO ||--o{ RESERVA : "para"
+            TIPO_ESPACIO ||--o{ RESERVA : "solicita"
+            VEHICULO ||--o{ ACCESO : "genera"
+            ESPACIO ||--o{ ACCESO : "ocupa"
+            RESERVA |o--o| ACCESO : "origina"
+            ACCESO ||--|| COBRO : "genera"
+            METODO_PAGO ||--o{ COBRO : "paga"
+        `);
+        
+        document.getElementById('erd').innerHTML = svg;
+
+        // Limpieza y estilización post-render de Mermaid
+        document.querySelectorAll('#erd svg.erDiagram .node').forEach(node => {
+            const firstPath = node.querySelector('path[d]');
+            if (!firstPath) return;
+            
+            const d = firstPath.getAttribute('d');
+            const nums = d.match(/-?[\d.]+/g)?.map(Number);
+            if (!nums || nums.length < 8) return;
+            
+            const xs = [nums[0], nums[2], nums[4], nums[6]];
+            const ys = [nums[1], nums[3], nums[5], nums[7]];
+            const x = Math.min(...xs), y = Math.min(...ys);
+            const w = Math.max(...xs) - x, h = Math.max(...ys) - y;
+            
+            const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            rect.setAttribute('x', x); 
+            rect.setAttribute('y', y);
+            rect.setAttribute('width', w); 
+            rect.setAttribute('height', h);
+            rect.setAttribute('rx', '8');
+            
+            for (const a of ['fill', 'stroke', 'stroke-width', 'class', 'style']) {
+                if (firstPath.hasAttribute(a)) {
+                    rect.setAttribute(a, firstPath.getAttribute(a));
+                }
+            }
+            firstPath.replaceWith(rect);
+        });
+
+        document.querySelectorAll('#erd svg.erDiagram .row-rect-odd path, #erd svg.erDiagram .row-rect-even path').forEach(p => {
+            p.setAttribute('stroke', 'none');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diccionario de Datos y Microservicios</title>
+    
+    <style>
+        /* Variables CSS base para Tema Claro */
+        :root {
+            --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            --border-radius-md: 6px;
+            --border-radius-lg: 8px;
+            
+            --color-border-primary: #9ca3af;
+            --color-border-secondary: #d1d5db;
+            --color-border-tertiary: #e5e7eb;
+            
+            --color-background-primary: #ffffff;
+            --color-background-secondary: #f9fafb;
+            
+            --color-text-primary: #111827;
+            --color-text-secondary: #4b5563;
+            --color-text-tertiary: #6b7280;
+            
+            --color-background-info: #eff6ff;
+            --color-text-info: #1d4ed8;
+            
+            --color-background-success: #f0fdf4;
+            --color-text-success: #15803d;
+            
+            --color-background-warning: #fff7ed;
+            --color-text-warning: #c2410c;
+            
+            --color-background-danger: #fef2f2;
+            --color-text-danger: #b91c1c;
+        }
+
+        /* Variables CSS para Tema Oscuro */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-border-primary: #6b7280;
+                --color-border-secondary: #4b5563;
+                --color-border-tertiary: #374151;
+                
+                --color-background-primary: #1f2937;
+                --color-background-secondary: #111827;
+                
+                --color-text-primary: #f9fafb;
+                --color-text-secondary: #d1d5db;
+                --color-text-tertiary: #9ca3af;
+                
+                --color-background-info: #1e3a8a;
+                --color-text-info: #bfdbfe;
+                
+                --color-background-success: #14532d;
+                --color-text-success: #bbf7d0;
+                
+                --color-background-warning: #7c2d12;
+                --color-text-warning: #fed7aa;
+                
+                --color-background-danger: #7f1d1d;
+                --color-text-danger: #fecaca;
+            }
+
+            body {
+                background-color: #111827;
+                color: var(--color-text-primary);
+            }
+        }
+
+        body {
+            font-family: "Anthropic Sans", system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* --- Estilos de Navegación y Pestañas --- */
+        .tabs { 
+            display: flex; 
+            gap: 4px; 
+            flex-wrap: wrap; 
+            margin-bottom: 12px; 
+        }
+        
+        .tab-btn { 
+            padding: 5px 12px; 
+            font-size: 12px; 
+            border: 0.5px solid var(--color-border-secondary); 
+            background: transparent; 
+            border-radius: var(--border-radius-md); 
+            cursor: pointer; 
+            color: var(--color-text-secondary); 
+            transition: all .15s; 
+        }
+        
+        .tab-btn.active { 
+            background: var(--color-background-secondary); 
+            color: var(--color-text-primary); 
+            font-weight: 500; 
+            border-color: var(--color-border-primary); 
+        }
+        
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* --- Estilos de Grid y Tarjetas de Entidad --- */
+        .eg { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 10px; 
+        }
+        
+        .ec { 
+            border: 0.5px solid var(--color-border-tertiary); 
+            border-radius: var(--border-radius-lg); 
+            overflow: hidden; 
+            background: var(--color-background-primary); 
+        }
+        
+        .eh { 
+            padding: 8px 12px; 
+            background: var(--color-background-secondary); 
+            border-bottom: 0.5px solid var(--color-border-tertiary); 
+        }
+        
+        .en { 
+            font-size: 12px; 
+            font-weight: 500; 
+            color: var(--color-text-primary); 
+            font-family: var(--font-mono); 
+        }
+        
+        .es { 
+            font-size: 10px; 
+            color: var(--color-text-tertiary); 
+            margin-top: 1px; 
+        }
+        
+        .enote { 
+            font-size: 10px; 
+            color: var(--color-text-warning); 
+            margin-top: 2px; 
+            font-style: italic; 
+        }
+
+        /* --- Estilos de Atributos/Filas --- */
+        .ar { 
+            display: grid; 
+            grid-template-columns: 140px 1fr; 
+            gap: 6px; 
+            padding: 5px 12px; 
+            border-bottom: 0.5px solid var(--color-border-tertiary); 
+            align-items: start; 
+        }
+        
+        .ar:last-child { border-bottom: none; }
+        
+        /* Fondos coloreados para llaves */
+        .ar.pk { background: rgba(186, 117, 23, 0.08); }
+        .ar.fk { background: rgba(24, 95, 165, 0.07); }
+        .ar.lfk { background: rgba(163, 45, 45, 0.07); }
+        .ar.uk { background: rgba(59, 109, 17, 0.07); }
+        
+        .af { 
+            font-size: 11px; 
+            font-family: var(--font-mono); 
+            color: var(--color-text-primary); 
+            font-weight: 500; 
+        }
+        
+        .at { 
+            font-size: 10px; 
+            font-family: var(--font-mono); 
+            color: var(--color-text-secondary); 
+        }
+
+        /* --- Badges / Etiquetas --- */
+        .badge { 
+            display: inline-block; 
+            padding: 1px 5px; 
+            border-radius: 3px; 
+            font-size: 9px; 
+            font-weight: 500; 
+            margin: 0 2px 2px 0; 
+            vertical-align: middle; 
+        }
+        
+        .bpk { background: var(--color-background-warning); color: var(--color-text-warning); }
+        .bfk { background: var(--color-background-info); color: var(--color-text-info); }
+        .blfk { background: var(--color-background-danger); color: var(--color-text-danger); }
+        .buk { background: var(--color-background-success); color: var(--color-text-success); }
+        .bnull { background: var(--color-background-secondary); color: var(--color-text-tertiary); }
+        
+        .aref { 
+            font-size: 10px; 
+            color: var(--color-text-danger); 
+            font-family: var(--font-mono); 
+            display: block; 
+            margin-top: 1px; 
+        }
+        
+        .anote { 
+            font-size: 10px; 
+            color: var(--color-text-tertiary); 
+            display: block; 
+            margin-top: 1px; 
+        }
+
+        /* --- Leyenda --- */
+        .legend { 
+            display: flex; 
+            gap: 10px; 
+            flex-wrap: wrap; 
+            margin-bottom: 10px; 
+            font-size: 11px; 
+            color: var(--color-text-secondary); 
+        }
+        
+        .li { display: flex; align-items: center; gap: 4px; }
+        .ld { width: 10px; height: 10px; border-radius: 2px; }
+    </style>
+</head>
+<body>
+
+    <div style="padding: 1rem 0; max-width: 1200px; margin: 0 auto;">
+        <!-- Leyenda de colores -->
+        <div class="legend">
+            <div class="li"><div class="ld" style="background: rgba(186,117,23,0.2)"></div>Clave primaria (PK)</div>
+            <div class="li"><div class="ld" style="background: rgba(24,95,165,0.15)"></div>FK dentro del mismo microservicio</div>
+            <div class="li"><div class="ld" style="background: rgba(163,45,45,0.15)"></div>FK lógica — cruza fronteras de servicio</div>
+            <div class="li"><div class="ld" style="background: rgba(59,109,17,0.12)"></div>UNIQUE</div>
+        </div>
+
+        <!-- Contenedores dinámicos -->
+        <div class="tabs" id="tabs"></div>
+        <div id="panels"></div>
+    </div>
+
+    <script>
+        const SCHEMA = [
+            { id: 'auth', label: 'Seguridad', entities: [
+                { name: 'USER_CREDENTIAL', svc: 'auth-service · db_auth · :8081', attrs: [
+                    { f: 'id', t: 'BIGINT', k: 'pk' },
+                    { f: 'email', t: 'VARCHAR(150)', k: 'uk', note: 'Único en el sistema' },
+                    { f: 'password_hash', t: 'VARCHAR(255)', note: 'BCrypt — nunca texto plano' },
+                    { f: 'id_cliente_ref', t: 'BIGINT', k: 'lfk', ref: 'CLIENTE @ user-service' },
+                    { f: 'rol', t: 'VARCHAR(50)', note: 'ADMIN | OPERADOR | CLIENTE' },
+                    { f: 'activo', t: 'BOOLEAN', note: 'DEFAULT TRUE' },
+                ]},
+                { name: 'ROL', svc: 'auth-service · db_auth · :8081', attrs: [
+                    { f: 'id', t: 'BIGINT', k: 'pk' },
+                    { f: 'nombre', t: 'VARCHAR(50)', k: 'uk', note: 'ADMIN | OPERADOR | CLIENTE' },
+                    { f: 'descripcion', t: 'VARCHAR(200)', nullable: true },
+                ]},
+                { name: 'PERMISO', svc: 'security-service · db_seguridad · :8083', attrs: [
+                    { f: 'id', t: 'BIGINT', k: 'pk' },
+                    { f: 'nombre', t: 'VARCHAR(100)', note: 'ej: VER_ACCESOS' },
+                    { f: 'recurso', t: 'VARCHAR(100)', note: 'ej: /api/accesos' },
+                    { f: 'accion', t: 'VARCHAR(10)', note: 'GET | POST | PUT | DELETE' },
+                ]},
+                { name: 'ROL_PERMISO', svc: 'security-service · db_seguridad · :8083', note: 'Tabla de unión N:M', attrs: [
+                    { f: 'id', t: 'BIGINT', k: 'pk' },
+                    { f: 'id_rol', t: 'BIGINT', k: 'lfk', ref: 'ROL @ auth-service' },
+                    { f: 'id_permiso', t: 'BIGINT', k: 'fk', ref: 'PERMISO' },
+                ]},
+            ]},
+            { id: 'usuarios', label: 'Usuarios', entities: [
+                { name: 'TIPO_CLIENTE', svc: 'user-service · db_usuarios · :8082', attrs: [
+                    { f: 'id', t: 'BIGINT', k: 'pk' },
+                    { f: 'nombre', t: 'VARCHAR(50)', k: 'uk', note: 'ESTANDAR | PREMIUM | CORPORATIVO' },
+                    { f: 'descuento_pct', t: 'DECIMAL(5,2)', note: '0.00 = sin descuento' },
+                ]},
+                { name: 'CLIENTE', svc: 'user-service · db_usuarios · :8082', attrs: [
+                    { f: 'id', t: 'BIGINT', k: 'pk' },
+                    { f: 'rut', t: 'VARCHAR(12)', k: 'uk', note: 'ej: 12.345.678-9' },
+                    { f: 'nombre', t: 'VARCHAR(100)' },
+                    { f: 'apellido', t: 'VARCHAR(100)' },
+                    { f: 'email', t: 'VARCHAR(150)', k: 'uk' },
+                    { f: 'telefono', t: 'VARCHAR(20)', nullable: true },
+                    { f: 'id_tipo_cliente', t: 'BIGINT', k: 'fk', ref: 'TIPO_CLIENTE' },
+                    { f: 'fecha_registro', t: 'DATETIME', note: 'DEFAULT NOW()' },
+                    { f: 'activo', t: 'BOOLEAN', note: 'DEFAULT TRUE' },
+                ]},
+                { name: 'SUSCRIPCION', svc: 'user-service · db_usuarios · :8082', attrs: [
+                    { f: 'id', t: 'BIGINT', k: 'pk' },
+                    { f: 'nombre', t: 'VARCHAR(100)', k: 'uk', note: 'ej: MENSUAL_BASICO' },
+                    { f: 'descripcion', t: 'TEXT', nullable: true },
+                    { f: 'precio', t: 'DECIMAL(10,2)' },
+                    { f: 'descuento_pct', t: 'DECIMAL(5,2)' },
+                    { f: 'duracion_dias', t: 'INT' },
+                    { f: 'activo', t: 'BOOLEAN', note: 'DEFAULT TRUE' },
+                ]},
+                { name: 'CLIENTE_SUSCRIPCION', svc: 'user-service · db_usuarios · :8082', note: 'Tabla de unión N:M', attrs: [
+                    { f: 'id', t: 'BIGINT', k: 'pk' },
+                    { f: 'id_cliente', t: 'BIGINT', k: 'fk', ref: 'CLIENTE' },
+                    { f: 'id_suscripcion', t: 'BIGINT', k: 'fk', ref: 'SUSCRIPCION' },
+                    { f: 'fecha_inicio', t: 'DATE' },
+                    { f: 'fecha_fin', t: 'DATE' },
+                    { f: 'activo', t: 'BOOLEAN', note: 'DEFAULT TRUE' },
+                ]},
+            ]},
+            { id: 'vehiculos', label: 'Vehículos', entities: [
+                { name: 'TIPO_VEHICULO', svc: 'ms-vehiculos · db_vehiculos · :8084', attrs: [
+                    { f: 'id', t: 'BIGINT', k: 'pk' },
+                    { f: 'nombre', t: 'VARCHAR(50)', k: 'uk', note: 'BENCINA | HIBRIDO | ELECTRICO | DIESEL' },
+                    { f: 'descripcion', t: 'VARCHAR(200)', nullable: true },
+                    { f: 'factor_precio', t: 'DECIMAL(5,2)', note: 'ELECTRICO=0.80  HIBRIDO=0.90  BENCINA=1.00' },
+                ]},
+                { name: 'VEHICULO', svc: 'ms-vehiculos · db_vehiculos · :8084', attrs: [
+                    { f: 'id', t: 'BIGINT', k: 'pk' },
+                    { f: 'patente', t: 'VARCHAR(8)', k: 'uk', note: 'ej: ABCD12' },
+                    { f: 'marca', t: 'VARCHAR(100)' },
+                    { f: 'modelo', t: 'VARCHAR(100)' },
+                    { f: 'color', t: 'VARCHAR(50)', nullable: true },
+                    { f: 'anio', t: 'INT', nullable: true },
+                    { f: 'id_tipo_vehiculo', t: 'BIGINT', k: 'fk', ref: 'TIPO_VEHICULO' },
+                    { f: 'id_cliente', t: 'BIGINT', k: 'lfk', ref: 'CLIENTE @ user-service' },
+                    { f: 'activo', t: 'BOOLEAN', note: 'DEFAULT TRUE' },
+                ]},
+            ]},
+            { id: 'espacios', label: 'Espacios / Tarifas', entities: [
+                { name: 'TIPO_ESPACIO', svc: 'ms-espacios · db_espacios · :8085', attrs: [
+                    { f: 'id', t: 'BIGINT', k: 'pk' },
+                    { f: 'nombre', t: 'VARCHAR(50)', k: 'uk', note: 'ESTANDAR | ELECTRICO | DISCAPACITADO | MOTO' },
+                    { f: 'descripcion', t: 'VARCHAR(200)', nullable: true },
+                    { f: 'factor_precio', t: 'DECIMAL(5,2)', note: 'ELECTRICO=1.30  DISCAPACITADO=0.80  MOTO=0.60' },
+                ]},
+                { name: 'ESPACIO', svc: 'ms-espacios · db_espacios · :8085', attrs: [
+                    { f: 'id', t: 'BIGINT', k: 'pk' },
+                    { f: 'numero', t: 'VARCHAR(10)', k: 'uk', note: 'ej: A-001, B-012' },
+                    { f: 'zona', t: 'VARCHAR(50)', nullable: true, note: 'ej: NORTE, SUR' },
+                    { f: 'piso', t: 'INT', note: 'DEFAULT 1' },
+                    { f: 'id_tipo_espacio', t: 'BIGINT', k: 'fk', ref: 'TIPO_ESPACIO' },
+                    { f: 'disponible', t: 'BOOLEAN', note: 'DEFAULT TRUE — cambia en cada acceso' },
+                    { f: 'activo', t: 'BOOLEAN', note: 'DEFAULT TRUE' },
+                ]},
+                { name: 'TARIFA', svc: 'ms-tarifas · db_tarifas · :8088', attrs: [
+                    { f: 'id', t: 'BIGINT', k: 'pk' },
+                    { f: 'nombre', t: 'VARCHAR(100)', k: 'uk', note: 'ej: TARIFA_GENERAL' },
+                    { f: 'descripcion', t: 'VARCHAR(200)', nullable: true },
+                    { f: 'precio_base_hora', t: 'DECIMAL(10,2)', note: 'En CLP, sin multiplicadores' },
+                    { f: 'activo', t: 'BOOLEAN', note: 'DEFAULT TRUE' },
+                ]},
+                { name: 'HORARIO_TARIFA', svc: 'ms-tarifas · db_tarifas · :8088', attrs: [
+                    { f: 'id', t: 'BIGINT', k: 'pk' },
+                    { f: 'id_tarifa', t: 'BIGINT', k: 'fk', ref: 'TARIFA' },
+                    { f: 'dia_tipo', t: 'VARCHAR(30)', note: 'LABORAL | FIN_DE_SEMANA | FESTIVO' },
+                    { f: 'hora_inicio', t: 'TIME' },
+                    { f: 'hora_fin', t: 'TIME' },
+                    { f: 'multiplicador', t: 'DECIMAL(5,2)', note: '1.00=normal  1.50=peak  0.80=nocturno' },
+                ]},
+            ]},
+            { id: 'accesos', label: 'Reservas / Accesos', entities: [
+                { name: 'RESERVA', svc: 'ms-reservas · db_reservas · :8086', attrs: [
+                    { f: 'id', t: 'BIGINT', k: 'pk' },
+                    { f: 'id_cliente', t: 'BIGINT', k: 'lfk', ref: 'CLIENTE @ user-service' },
+                    { f: 'id_vehiculo', t: 'BIGINT', k: 'lfk', ref: 'VEHICULO @ ms-vehiculos' },
+                    { f: 'id_tipo_espacio', t: 'BIGINT', k: 'lfk', ref: 'TIPO_ESPACIO @ ms-espacios', note: 'Tipo — no espacio específico aún' },
+                    { f: 'fecha_inicio', t: 'DATETIME' },
+                    { f: 'fecha_fin', t: 'DATETIME' },
+                    { f: 'estado', t: 'VARCHAR(20)', note: 'PENDIENTE | CONFIRMADA | CANCELADA | EXPIRADA' },
+                    { f: 'fecha_creacion', t: 'DATETIME', note: 'DEFAULT NOW()' },
+                ]},
+                { name: 'ACCESO', svc: 'ms-accesos · db_accesos · :8087', note: 'Entidad central del flujo', attrs: [
+                    { f: 'id', t: 'BIGINT', k: 'pk' },
+                    { f: 'id_vehiculo', t: 'BIGINT', k: 'lfk', ref: 'VEHICULO @ ms-vehiculos' },
+                    { f: 'id_espacio', t: 'BIGINT', k: 'lfk', ref: 'ESPACIO @ ms-espacios', note: 'Asignado al entrar' },
+                    { f: 'id_reserva', t: 'BIGINT', k: 'lfk', ref: 'RESERVA @ ms-reservas', nullable: true, note: 'NULL si ingreso directo sin reserva' },
+                    { f: 'patente_escaneada', t: 'VARCHAR(10)', note: 'Texto bruto del scanner OCR' },
+                    { f: 'fecha_hora_entrada', t: 'DATETIME' },
+                    { f: 'fecha_hora_salida', t: 'DATETIME', nullable: true, note: 'NULL mientras está estacionado' },
+                    { f: 'estado', t: 'VARCHAR(20)', note: 'EN_CURSO | COMPLETADO | CANCELADO' },
+                ]},
+            ]},
+            { id: 'pagos', label: 'Pagos', entities: [
+                { name: 'BANCO', svc: 'ms-pagos · db_pagos · :8089', attrs: [
+                    { f: 'id', t: 'BIGINT', k: 'pk' },
+                    { f: 'nombre', t: 'VARCHAR(100)', note: 'ej: Banco de Chile, Santander' },
+                    { f: 'codigo', t: 'VARCHAR(20)', k: 'uk', note: 'ej: BCH, SAN, BCI' },
+                    { f: 'descuento_pct', t: 'DECIMAL(5,2)' },
+                    { f: 'activo', t: 'BOOLEAN', note: 'DEFAULT TRUE' },
+                ]},
+                { name: 'TIPO_TARJETA', svc: 'ms-pagos · db_pagos · :8089', attrs: [
+                    { f: 'id', t: 'BIGINT', k: 'pk' },
+                    { f: 'nombre', t: 'VARCHAR(20)', note: 'CREDITO | DEBITO' },
+                    { f: 'red', t: 'VARCHAR(30)', note: 'VISA | MASTERCARD | AMEX | REDCOMPRA' },
+                ]},
+                { name: 'METODO_PAGO', svc: 'ms-pagos · db_pagos · :8089', attrs: [
+                    { f: 'id', t: 'BIGINT', k: 'pk' },
+                    { f: 'id_cliente', t: 'BIGINT', k: 'lfk', ref: 'CLIENTE @ user-service' },
+                    { f: 'id_tipo_tarjeta', t: 'BIGINT', k: 'fk', ref: 'TIPO_TARJETA' },
+                    { f: 'id_banco', t: 'BIGINT', k: 'fk', ref: 'BANCO', nullable: true, note: 'NULL si no hay desc. bancario' },
+                    { f: 'ultimos_4', t: 'VARCHAR(4)', note: 'Solo últimos 4 dígitos' },
+                    { f: 'nombre_titular', t: 'VARCHAR(200)' },
+                    { f: 'mes_vencimiento', t: 'INT', note: '1 a 12' },
+                    { f: 'anio_vencimiento', t: 'INT', note: '4 dígitos' },
+                    { f: 'predeterminado', t: 'BOOLEAN', note: 'Se cobra automáticamente al salir' },
+                    { f: 'activo', t: 'BOOLEAN', note: 'DEFAULT TRUE' },
+                ]},
+                { name: 'COBRO', svc: 'ms-pagos · db_pagos · :8089', note: 'Registro de auditoría del cobro', attrs: [
+                    { f: 'id', t: 'BIGINT', k: 'pk' },
+                    { f: 'id_acceso', t: 'BIGINT', k: 'lfk', ref: 'ACCESO @ ms-accesos', note: 'UNIQUE — 1 cobro por acceso' },
+                    { f: 'id_metodo_pago', t: 'BIGINT', k: 'fk', ref: 'METODO_PAGO' },
+                    { f: 'id_tarifa_aplicada', t: 'BIGINT', k: 'lfk', ref: 'TARIFA @ ms-tarifas', note: 'Para auditoría histórica' },
+                    { f: 'minutos', t: 'INT', note: 'Duración total estacionado' },
+                    { f: 'monto_base', t: 'DECIMAL(10,2)', note: 'Sin descuentos' },
+                    { f: 'desc_tipo_cliente', t: 'DECIMAL(5,2)', note: '% aplicado por tipo de cliente' },
+                    { f: 'desc_suscripcion', t: 'DECIMAL(5,2)', note: '% aplicado por suscripción activa' },
+                    { f: 'desc_banco', t: 'DECIMAL(5,2)', note: '% aplicado por banco de la tarjeta' },
+                    { f: 'monto_final', t: 'DECIMAL(10,2)', note: 'Monto cobrado efectivamente' },
+                    { f: 'estado', t: 'VARCHAR(20)', note: 'PENDIENTE | PROCESADO | FALLIDO' },
+                    { f: 'fecha_cobro', t: 'DATETIME', note: 'DEFAULT NOW()' },
+                ]},
+            ]},
+        ];
+
+        function badge(k, nullable) {
+            let b = '';
+            if (k === 'pk') b += '<span class="badge bpk">PK</span>';
+            else if (k === 'fk') b += '<span class="badge bfk">FK</span>';
+            else if (k === 'lfk') b += '<span class="badge blfk">LFK</span>';
+            else if (k === 'uk') b += '<span class="badge buk">UK</span>';
+            
+            if (nullable) b += '<span class="badge bnull">nullable</span>';
+            return b;
+        }
+
+        function renderEntity(e) {
+            const attrs = e.attrs.map(a => {
+                const rowClass = a.k === 'pk' ? 'pk' : a.k === 'fk' ? 'fk' : a.k === 'lfk' ? 'lfk' : a.k === 'uk' ? 'uk' : '';
+                const meta = `<span class="at">${a.t}</span>`;
+                const ref = a.ref ? `<span class="aref">↳ ${a.ref}</span>` : '';
+                const note = a.note ? `<span class="anote">${a.note}</span>` : '';
+                
+                return `<div class="ar ${rowClass}">
+                    <div><span class="af">${a.f}</span></div>
+                    <div>${meta}${badge(a.k, a.nullable)}${ref}${note}</div>
+                </div>`;
+            }).join('');
+            
+            const noteHtml = e.note ? `<div class="enote">${e.note}</div>` : '';
+            
+            return `<div class="ec">
+                <div class="eh">
+                    <div class="en">${e.name}</div>
+                    <div class="es">${e.svc}</div>
+                    ${noteHtml}
+                </div>
+                ${attrs}
+            </div>`;
+        }
+
+        const tabsEl = document.getElementById('tabs');
+        const panelsEl = document.getElementById('panels');
+
+        SCHEMA.forEach((tab, i) => {
+            // Crear el botón de pestaña
+            const btn = document.createElement('button');
+            btn.className = 'tab-btn' + (i === 0 ? ' active' : '');
+            btn.textContent = tab.label;
+            
+            btn.onclick = () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById('panel-' + tab.id).classList.add('active');
+            };
+            tabsEl.appendChild(btn);
+
+            // Crear el panel de contenido
+            const panel = document.createElement('div');
+            panel.id = 'panel-' + tab.id;
+            panel.className = 'tab-panel' + (i === 0 ? ' active' : '');
+            panel.innerHTML = `<div class="eg">${tab.entities.map(renderEntity).join('')}</div>`;
+            panelsEl.appendChild(panel);
+        });
+    </script>
+</body>
+</html>
