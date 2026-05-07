@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C 'D:\\\\estacionamientos\\\\FULLSTACK-I' status)",
+      "Bash(git -C 'D:\\\\estacionamientos\\\\FULLSTACK-I' log --oneline -5)",
+      "Bash(git -C 'D:\\\\estacionamientos\\\\FULLSTACK-I' add docs/ROADMAP.md)",
+      "Bash(git -C 'D:\\\\estacionamientos\\\\FULLSTACK-I' commit -m ' *)",
+      "Bash(git -C 'D:\\\\estacionamientos\\\\FULLSTACK-I' push)"
+    ]
+  }
+}
