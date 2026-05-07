@@ -1,0 +1,141 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="D5256ECE-35D4-7240-A7CE-D0D55B57BA60" schemaObject="642099B3-CA5E-3705-3D85-2958AC32C6AA" name="cliente_suscripcion">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>RELACIONAL</ownerDesignName>
+<importedID>9E3F9961-8FD0-D2B8-E4C3-BD91640D2C96</importedID>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="id" id="2F34CADA-7179-C8B6-1EA2-EF4E4BA08686">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>RELACIONAL</ownerDesignName>
+<importedID>554706DA-25E6-D774-80BB-84C19E0F43F6</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>22681773-F100-5D34-C4FA-CEDD4CF25BC9</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementColumn>true</autoIncrementColumn>
+<identityColumn>true</identityColumn>
+<autoIncrementGenerateAlways>true</autoIncrementGenerateAlways>
+<autoIncrementCycle>false</autoIncrementCycle>
+<autoIncrementOrder>false</autoIncrementOrder>
+</Column>
+<Column name="id_cliente" id="18114622-8E25-708D-45DA-29114B9DEF6D">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>RELACIONAL</ownerDesignName>
+<importedID>66A72323-CA3E-92A8-3067-C2D297BF4F88</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>22681773-F100-5D34-C4FA-CEDD4CF25BC9</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="8C9BE405-16B8-4707-E493-4AE0F16A620C" referredColumn="818EA63B-4792-3077-6D60-22CBED22E1B2"/>
+</associations>
+</Column>
+<Column name="id_suscripcion" id="BDC19403-D2C6-DC3E-80B9-E6BF633B7404">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>RELACIONAL</ownerDesignName>
+<importedID>B3384DEA-4073-FDC4-F398-D162D8D35300</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>22681773-F100-5D34-C4FA-CEDD4CF25BC9</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="186523B5-1693-26A4-68A2-37BA491D9503" referredColumn="2390423A-1E0E-8E4C-C1BB-830611FB17D6"/>
+</associations>
+</Column>
+<Column name="fecha_inicio" id="94D2C2A5-DE9D-6024-4926-CCF42AB3B5EE">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>RELACIONAL</ownerDesignName>
+<importedID>25E2334F-7F02-4799-4DC9-2BE9444E01D8</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<domain>19597082-27FD-633C-E989-44125D61B5B3</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="fecha_fin" id="E4590C13-972A-DC99-8A31-FEADC3677E55">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>RELACIONAL</ownerDesignName>
+<importedID>9A819670-41F6-C6ED-23E3-ABCC9779487F</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<domain>19597082-27FD-633C-E989-44125D61B5B3</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="activo" id="4CE54267-9F1C-2A47-9478-C09EF39CD902">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>RELACIONAL</ownerDesignName>
+<importedID>9FBD3BE9-F87D-C9A2-600F-F5813F69D3DA</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>02AD7E32-E864-D5C4-8677-1A4842F66D5A</domain>
+<defaultValue>1</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="777C50B1-5074-77FC-527D-3DC9CCA68252" name="pk_cliente_suscripcion">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>RELACIONAL</ownerDesignName>
+<importedID>5E2D2A12-B7D7-7840-CC8A-0DDE39B61596</importedID>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="2F34CADA-7179-C8B6-1EA2-EF4E4BA08686"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="0CDE0E97-3164-9327-3147-7C47CE924BA8" name="fk_cs_cliente">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:27 UTC</createdTime>
+<ownerDesignName>RELACIONAL</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="18114622-8E25-708D-45DA-29114B9DEF6D"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="D7EA59E1-981D-BA13-78F5-037E50EA828D" name="fk_cs_suscripcion">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:27 UTC</createdTime>
+<ownerDesignName>RELACIONAL</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="BDC19403-D2C6-DC3E-80B9-E6BF633B7404"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+<tableCheckConstraints itemClass="oracle.dbtools.crest.model.design.constraint.TableLevelConstraint">
+<tableCheckConstraint name="ck_cs_activo" directorySegmentName="seg_0" id="6AA0A819-C264-CC01-C6EA-358F01A298D5">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>RELACIONAL</ownerDesignName>
+<importedID>67175CCD-2101-0E11-7EDE-ED224462B256</importedID>
+<rule><![CDATA[activo IN (0,1)]]></rule>
+</tableCheckConstraint>
+</tableCheckConstraints>
+</Table>

@@ -1,0 +1,20 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Relation class="oracle.dbtools.crest.model.design.logical.Relation" name="fk_espacio_tipo" directorySegmentName="seg_0" id="9EC83114-A190-7C0E-4EC7-F608A42D1485">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<generatorID>D8F20140-C1DB-EF11-1E3E-152728A90E50</generatorID>
+<ownerDesignName>RELACIONAL</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<sourcePk>69F60AB6-F8A3-C484-4DBF-18DAE5CF7D3F</sourcePk>
+<identifying>false</identifying>
+<optionalSource>true</optionalSource>
+<optionalTarget>false</optionalTarget>
+<sourceCardinality>1</sourceCardinality>
+<sourceEntity>1ECB8BBB-8FC7-CC38-A370-6A7AB3E2BA5E</sourceEntity>
+<targetCardinalityString>*</targetCardinalityString>
+<targetEntity>17271D87-2D3C-DD78-83A3-9ECF2233AECC</targetEntity>
+<transferable>true</transferable>
+<deleteRule>NO ACTION</deleteRule>
+</Relation>

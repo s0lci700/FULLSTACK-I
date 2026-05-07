@@ -1,0 +1,96 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="BE4FECB1-8F8B-FFA4-55E8-764B766C0B80" schemaObject="1ADD34A9-56CC-37A9-2DE1-220D4BD56C77" name="tipo_espacio">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>RELACIONAL</ownerDesignName>
+<importedID>03F236FC-7B35-96A7-0A73-F83D486D1B8B</importedID>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="id" id="C1DD7765-ADE2-094F-869D-493BC91FB802">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:27 UTC</createdTime>
+<ownerDesignName>RELACIONAL</ownerDesignName>
+<importedID>B8C53529-FD1E-EF08-2D60-454B9A91D0E0</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>22681773-F100-5D34-C4FA-CEDD4CF25BC9</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementColumn>true</autoIncrementColumn>
+<identityColumn>true</identityColumn>
+<autoIncrementGenerateAlways>true</autoIncrementGenerateAlways>
+<autoIncrementCycle>false</autoIncrementCycle>
+<autoIncrementOrder>false</autoIncrementOrder>
+</Column>
+<Column name="nombre" id="BC6539FF-7B05-A402-8E55-850D4592D336">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:27 UTC</createdTime>
+<commentInRDBMS><![CDATA[ESTANDAR | ELECTRICO | DISCAPACITADO | MOTO]]></commentInRDBMS>
+<ownerDesignName>RELACIONAL</ownerDesignName>
+<importedID>25A9DD29-9AD0-8DFA-B4D5-3B0D8CB98265</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<domain>3F67AE2F-8A33-D2CD-1A0F-E26910207C0E</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="descripcion" id="4DBFF40E-FDF9-6AFE-739F-E0A9FDE64774">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:27 UTC</createdTime>
+<ownerDesignName>RELACIONAL</ownerDesignName>
+<importedID>95C6C92A-9BA8-552E-6ECC-B8C8DCA32DF6</importedID>
+<nullsAllowed>true</nullsAllowed>
+<use>0</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<domain>E6B5E7FE-5162-D27B-4B32-9A21A8FE09C4</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="factor_precio" id="676C0EAE-A153-2073-0C44-42BFB0869613">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:27 UTC</createdTime>
+<commentInRDBMS><![CDATA[ELECTRICO=1.30 DISCAPACITADO=0.80 MOTO=0.60 ESTANDAR=1.00]]></commentInRDBMS>
+<ownerDesignName>RELACIONAL</ownerDesignName>
+<importedID>BF581AA7-7589-3130-1C6E-1ED7C3CA0F8E</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>86649311-E0D9-2640-38B6-A5ABC918C99C</domain>
+<defaultValue>1.00</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="0F0F4FB2-6E4B-F631-633F-33C0D2EEE778" name="pk_tipo_espacio">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:27 UTC</createdTime>
+<ownerDesignName>RELACIONAL</ownerDesignName>
+<importedID>7535DFB5-25FC-17B6-AE66-984795E9F1C3</importedID>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="C1DD7765-ADE2-094F-869D-493BC91FB802"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="FE679EDC-FBF8-0F30-80A2-71DBC8DEA73A" name="uq_tipo_espacio_nombre">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:27 UTC</createdTime>
+<ownerDesignName>RELACIONAL</ownerDesignName>
+<importedID>E800F7D1-EFF5-9576-B275-BF9A2D5C6BA8</importedID>
+<indexState>Unique Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="BC6539FF-7B05-A402-8E55-850D4592D336"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>
