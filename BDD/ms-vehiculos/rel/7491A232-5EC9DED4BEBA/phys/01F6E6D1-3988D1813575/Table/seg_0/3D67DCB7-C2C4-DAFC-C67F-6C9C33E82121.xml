@@ -1,0 +1,72 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<TableProxyOraclev20c class="oracle.dbtools.crest.model.design.storage.oracle.v20c.TableProxyOraclev20c" name="acceso" directorySegmentName="seg_0" id="3D67DCB7-C2C4-DAFC-C67F-6C9C33E82121">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+<schemaObject>0478C36C-F6F9-D0D9-1693-F42504E61586</schemaObject>
+<logging>YES</logging>
+<partitionedRowMovement>DISABLE</partitionedRowMovement>
+<temporaryChanged>false</temporaryChanged>
+<accessDriverType>oracle_loader</accessDriverType>
+<rejectLimit></rejectLimit>
+<columnProxies itemClass="oracle.dbtools.crest.model.design.storage.oracle.v12c.ColumnProxyOraclev12c">
+<ColumnProxy name="fecha_hora_salida" id="1A54DDBD-6429-6A66-E4D8-313FB1F3275C">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="id_reserva_ref" id="31E159EC-EAB4-C759-C9DE-224F910D3375">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="fecha_hora_entrada" id="48B0F566-95EC-0B0E-AB32-C32C6A268E2F">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="patente_escaneada" id="50A047C6-EBB2-148C-8946-CA9D3FB57EF8">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="id" id="5B686872-1902-0D78-32FA-2817B475FD87">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+<autoIncrementDDL>IDENTITY_CLAUSE</autoIncrementDDL>
+</ColumnProxy>
+<ColumnProxy name="estado" id="DAF427D9-A08F-31A9-AA9F-BC14B6A352B5">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+<defaultValue>&apos;EN_CURSO&apos;</defaultValue>
+</ColumnProxy>
+<ColumnProxy name="id_espacio_ref" id="E9AF68BB-682E-A696-125C-5D39FDD87221">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="id_vehiculo_ref" id="F033D4C2-8014-5F58-E516-030646E90CA1">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+</ColumnProxy>
+</columnProxies>
+<primaryKeys>
+<PrimaryKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.PKProxyOraclev10g" name="pk_acceso" id="A6D2D54F-8158-4063-882B-586FDDDAFB82">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+<indexSort>SORTED</indexSort>
+</PrimaryKey>
+</primaryKeys>
+<tableCheckConstraints itemClass="oracle.dbtools.crest.model.design.storage.oracle.TableCheckConstraintOracle">
+<TableCheckConstraint name="ck_acceso_estado" id="E457E728-2725-1D95-4D43-2BAA7DA919F2">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+<nameChanged>true</nameChanged>
+</TableCheckConstraint>
+</tableCheckConstraints>
+</TableProxyOraclev20c>

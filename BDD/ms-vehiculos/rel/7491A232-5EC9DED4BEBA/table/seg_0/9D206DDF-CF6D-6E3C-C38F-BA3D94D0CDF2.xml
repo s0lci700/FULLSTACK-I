@@ -1,0 +1,203 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="9D206DDF-CF6D-6E3C-C38F-BA3D94D0CDF2" schemaObject="790F1638-5688-9AA8-5F7B-93B44B7EEDE9" name="metodo_pago">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+<importedID>7301D942-2681-15FF-3DD1-E0E379735CA7</importedID>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="id" id="6165FD01-0C62-2F2F-B675-F0B4211422BC">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+<importedID>F98E9C1A-0F27-2632-1A56-E90D66C2D1B1</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>22681773-F100-5D34-C4FA-CEDD4CF25BC9</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementColumn>true</autoIncrementColumn>
+<identityColumn>true</identityColumn>
+<autoIncrementGenerateAlways>true</autoIncrementGenerateAlways>
+<autoIncrementCycle>false</autoIncrementCycle>
+<autoIncrementOrder>false</autoIncrementOrder>
+</Column>
+<Column name="id_cliente_ref" id="D3C20822-D9B0-DE38-091E-ADF20EAFD8E2">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<commentInRDBMS><![CDATA[FK logica -> CLIENTE en db_usuarios]]></commentInRDBMS>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+<importedID>E071E6B1-A0FF-D326-6EC3-9DA018F224C1</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>22681773-F100-5D34-C4FA-CEDD4CF25BC9</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="id_tipo_tarjeta" id="2FC95A98-C2A0-01C6-D073-EDAC825CB6C0">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+<importedID>A66D7CE4-B001-B05A-450D-26005C636B9E</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>22681773-F100-5D34-C4FA-CEDD4CF25BC9</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="56376E04-EA46-F5FC-E89C-AD70A0FC93E7" referredColumn="8D8BB6E2-0F6B-05BE-F5CC-C1FC7545739E"/>
+</associations>
+</Column>
+<Column name="id_banco" id="E68EF591-E409-C632-F093-B19722D3E4CB">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+<importedID>70EA8274-69D6-02A2-8A04-DE6C79EAC1C1</importedID>
+<nullsAllowed>true</nullsAllowed>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>22681773-F100-5D34-C4FA-CEDD4CF25BC9</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="574DEB94-C07F-982A-9857-C38D75C5AD4C" referredColumn="534B805B-5D18-5F3E-3B05-B4A1AE870040"/>
+</associations>
+</Column>
+<Column name="ultimos_4" id="D1B47D38-F13F-D087-04EA-5D97B5ED2694">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<commentInRDBMS><![CDATA[Solo ultimos 4 digitos de la tarjeta]]></commentInRDBMS>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+<importedID>C59771D7-D69E-6C73-6AFA-CFB910812D86</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<domain>87EE7E7D-3896-DC59-1B64-5809B26D993B</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="nombre_titular" id="A8063A97-A330-5239-3B34-0FC0DAE3254B">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+<importedID>348E8BC0-C158-E411-61B9-577E1B0ADA93</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<domain>E6B5E7FE-5162-D27B-4B32-9A21A8FE09C4</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="mes_vencimiento" id="1783FED9-D32E-59A1-9ACF-52F4E5AC9968">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<commentInRDBMS><![CDATA[1 a 12]]></commentInRDBMS>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+<importedID>96C43636-6E2D-2F4B-130F-F541D2353DA0</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>E2BD35F5-8C62-42EC-C58F-098069B38DC6</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="anio_vencimiento" id="202A075C-582A-ED06-4BC2-B819E2444CEC">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<commentInRDBMS><![CDATA[4 digitos]]></commentInRDBMS>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+<importedID>30D97157-A83B-7D1E-BCE7-56E3B25C92B4</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>6031FCAF-590B-61B7-AA5D-59668FD8E8DC</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="predeterminado" id="AB716892-21A0-AE79-442F-4FD63A31BF17">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+<importedID>71839330-2938-0C27-17CB-DAB41CF206EF</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>02AD7E32-E864-D5C4-8677-1A4842F66D5A</domain>
+<defaultValue>0</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="activo" id="678C9691-DBE8-8DD6-35D2-B2DEEAACBD44">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+<importedID>E2FDD704-DC0B-AA26-8E7D-1251F99546DB</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>02AD7E32-E864-D5C4-8677-1A4842F66D5A</domain>
+<defaultValue>1</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="65FB1FFC-939D-39E6-2371-73DE957E72D5" name="pk_metodo_pago">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+<importedID>E76FB406-4A9C-DF1D-E98B-DA6CA1DD48C0</importedID>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="6165FD01-0C62-2F2F-B675-F0B4211422BC"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="464E0361-6FD9-2A12-0984-A71C0DF2B4B4" name="fk_mp_banco">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:27 UTC</createdTime>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="E68EF591-E409-C632-F093-B19722D3E4CB"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="E1C9BD05-DB85-D0FF-92EC-C6E5D3781A3C" name="fk_mp_tipo">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:27 UTC</createdTime>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="2FC95A98-C2A0-01C6-D073-EDAC825CB6C0"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+<tableCheckConstraints itemClass="oracle.dbtools.crest.model.design.constraint.TableLevelConstraint">
+<tableCheckConstraint name="ck_mp_predeterminado" directorySegmentName="seg_0" id="0CBF81FB-44D9-0578-0A18-AD0134C89F23">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+<importedID>B85BA361-1AE1-BBE1-A715-750EA7FEFB11</importedID>
+<rule><![CDATA[predeterminado IN (0,1)]]></rule>
+</tableCheckConstraint>
+<tableCheckConstraint name="ck_mp_activo" directorySegmentName="seg_0" id="5D31E192-09EE-9167-2C1C-DA2A9F5E6C8D">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+<importedID>EC1708C6-2F38-4B13-62E0-B4F6BF64ED81</importedID>
+<rule><![CDATA[activo IN (0,1)]]></rule>
+</tableCheckConstraint>
+</tableCheckConstraints>
+</Table>

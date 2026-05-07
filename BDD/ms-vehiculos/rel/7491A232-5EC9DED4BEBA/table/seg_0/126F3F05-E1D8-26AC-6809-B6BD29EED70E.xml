@@ -1,0 +1,144 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="126F3F05-E1D8-26AC-6809-B6BD29EED70E" schemaObject="40FFAA1F-7AAD-7506-ABC0-58C74FFA4DF5" name="reserva">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+<importedID>0CAF6F8F-A111-6024-2AAB-A3BD7FFB5A30</importedID>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="id" id="D114D112-1DEA-6DDE-B408-26AF5EA1253B">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+<importedID>DEFA8ACB-EE5A-AFFA-49AE-4D76C9F00F17</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>22681773-F100-5D34-C4FA-CEDD4CF25BC9</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementColumn>true</autoIncrementColumn>
+<identityColumn>true</identityColumn>
+<autoIncrementGenerateAlways>true</autoIncrementGenerateAlways>
+<autoIncrementCycle>false</autoIncrementCycle>
+<autoIncrementOrder>false</autoIncrementOrder>
+</Column>
+<Column name="id_cliente_ref" id="3303EB57-59D7-C522-A051-EC5867BB9297">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<commentInRDBMS><![CDATA[FK logica -> CLIENTE en db_usuarios]]></commentInRDBMS>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+<importedID>FA3E2461-8EF9-3D63-3693-061217F40970</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>22681773-F100-5D34-C4FA-CEDD4CF25BC9</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="id_vehiculo_ref" id="D882F607-AD04-6A23-0FE5-0A0166F2ED0E">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<commentInRDBMS><![CDATA[FK logica -> VEHICULO en db_vehiculos]]></commentInRDBMS>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+<importedID>B49E0BCF-8095-0A89-049A-2E02F1F2B2F4</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>22681773-F100-5D34-C4FA-CEDD4CF25BC9</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="id_tipo_espacio_ref" id="48AB2AF6-5A42-379C-61AD-FD7E0F4709C9">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<commentInRDBMS><![CDATA[FK logica -> TIPO_ESPACIO en db_espacios]]></commentInRDBMS>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+<importedID>A2D5CFBE-902C-2A64-DD2A-9F8CEDF5C620</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>22681773-F100-5D34-C4FA-CEDD4CF25BC9</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="fecha_inicio" id="884FE11F-BCEE-FEDB-F2B1-E35C8B6690E9">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+<importedID>703D6D31-24A4-21FC-7DF4-1D49812A0F12</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT015</logicalDatatype>
+<domain>5599F2D2-F9BC-CE6F-D9D3-B28B82AC671B</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="fecha_fin" id="B488F93B-696D-46A8-6A1E-1E31EB80559A">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+<importedID>CC1653D8-7E83-A548-850C-48CDFFCA8349</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT015</logicalDatatype>
+<domain>5599F2D2-F9BC-CE6F-D9D3-B28B82AC671B</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="estado" id="EF072E21-4B0A-0B30-3916-D36ECEF27384">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<commentInRDBMS><![CDATA[PENDIENTE | CONFIRMADA | CANCELADA | EXPIRADA]]></commentInRDBMS>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+<importedID>F8ED9CFA-E849-F9DC-BE79-8D3CA765DDDA</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<domain>7E98A868-0F59-F7C2-9659-A8BB08CB2B29</domain>
+<defaultValue>&apos;PENDIENTE&apos;</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="fecha_creacion" id="CB00987C-6C15-E2F0-13F1-F87180948B18">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+<importedID>D35ECB79-FCE1-E930-4B6C-8CFD661C135F</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT015</logicalDatatype>
+<domain>5599F2D2-F9BC-CE6F-D9D3-B28B82AC671B</domain>
+<defaultValue>SYSTIMESTAMP</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="75FDC246-1876-3AF1-DC85-67EB39015BE7" name="pk_reserva">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+<importedID>43610AC1-58AB-2915-8DD4-97BF6F4D959D</importedID>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="D114D112-1DEA-6DDE-B408-26AF5EA1253B"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+<tableCheckConstraints itemClass="oracle.dbtools.crest.model.design.constraint.TableLevelConstraint">
+<tableCheckConstraint name="ck_reserva_estado" directorySegmentName="seg_0" id="6E1790AB-3527-E4A9-9273-7985A618B319">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+<importedID>8269B00F-9DB9-4572-FE23-96E0162E41F7</importedID>
+<rule><![CDATA[estado IN ('PENDIENTE','CONFIRMADA','CANCELADA','EXPIRADA')]]></rule>
+</tableCheckConstraint>
+</tableCheckConstraints>
+</Table>
