@@ -1,0 +1,7 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<SchemaObject class="oracle.dbtools.crest.model.design.relational.SchemaObject" name="db_auth" directorySegmentName="seg_0" id="7A433E60-3200-2D34-1640-7B1AA94D8E35">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-vehiculos</ownerDesignName>
+<importedID>7F922FD3-8341-E4F9-CD1B-A8274F7D3A3B</importedID>
+</SchemaObject>
