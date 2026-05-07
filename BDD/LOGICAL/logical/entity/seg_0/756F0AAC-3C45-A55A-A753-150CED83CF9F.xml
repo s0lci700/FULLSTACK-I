@@ -1,0 +1,88 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="756F0AAC-3C45-A55A-A753-150CED83CF9F" name="tipo cliente">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<generatorID>8887614D-59E6-9AA6-4600-9FB9044A0E9E</generatorID>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="id" id="C1CDF905-7146-2C2C-6529-DC84FA327871">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<generatorID>2FD23AB3-667C-7461-E00A-2770EC5B380E</generatorID>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>22681773-F100-5D34-C4FA-CEDD4CF25BC9</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="nombre" id="F4BA33BF-3410-DBA7-6989-B553524E796D">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<generatorID>289866AA-BCE4-DEDA-2CBD-4509A4A6F58A</generatorID>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<use>0</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<domain>3F67AE2F-8A33-D2CD-1A0F-E26910207C0E</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="descuento pct" id="62ADAA67-EEFB-11F4-84BF-AEDC3235ED40">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<commentInRDBMS><![CDATA[0.00 = sin descuento]]></commentInRDBMS>
+<generatorID>ACAD468C-EF50-A63C-8FD3-58D39E532567</generatorID>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>86649311-E0D9-2640-38B6-A5ABC918C99C</domain>
+<defaultValue>0.00</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+<identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
+<identifier id="B6B08DC9-B894-C24D-FE8A-7BA7DF1363D5" name="pk tipo cliente">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<generatorID>9D9696B4-B93A-1BE3-EF50-B180A63980DC</generatorID>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<pk>true</pk>
+<usedAttributes>
+<attributeRef>C1CDF905-7146-2C2C-6529-DC84FA327871</attributeRef>
+</usedAttributes>
+</identifier>
+<identifier id="4C17FBB5-DA9B-EEAA-5403-56311BA52101" name="uq tipo cliente nombre">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<generatorID>3272AAF0-5E7D-452C-83BE-07C66C28D20A</generatorID>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<usedAttributes>
+<attributeRef>F4BA33BF-3410-DBA7-6989-B553524E796D</attributeRef>
+</usedAttributes>
+</identifier>
+</identifiers>
+</Entity>

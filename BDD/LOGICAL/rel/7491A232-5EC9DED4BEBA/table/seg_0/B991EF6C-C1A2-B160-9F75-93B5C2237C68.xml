@@ -1,0 +1,122 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="B991EF6C-C1A2-B160-9F75-93B5C2237C68" schemaObject="5E5A582B-6A0B-DD46-F2BF-5D987D087368" name="horario_tarifa">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<importedID>DB9BF7F5-C879-7724-09DC-99544038F218</importedID>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="id" id="D0A8FCB6-FB82-5136-1CFB-1A69A374907E">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<importedID>FAE08AC7-7FFC-E421-91FA-B2DB129D37D1</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>22681773-F100-5D34-C4FA-CEDD4CF25BC9</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementColumn>true</autoIncrementColumn>
+<identityColumn>true</identityColumn>
+<autoIncrementGenerateAlways>true</autoIncrementGenerateAlways>
+<autoIncrementCycle>false</autoIncrementCycle>
+<autoIncrementOrder>false</autoIncrementOrder>
+</Column>
+<Column name="id_tarifa" id="1775E78D-F14A-D2FE-72DF-59CDCF454CFF">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<importedID>85D5267F-B94F-785C-DA05-25FCC90963ED</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>22681773-F100-5D34-C4FA-CEDD4CF25BC9</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="B9E8CC90-DF7E-9616-CA27-E1565ED01A11" referredColumn="E38B67D5-D9DA-F686-24F3-3606DDB038D0"/>
+</associations>
+</Column>
+<Column name="dia_tipo" id="92FBB1BE-41AA-708A-554D-E25E00DB976C">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<commentInRDBMS><![CDATA[LABORAL | FIN_DE_SEMANA | FESTIVO]]></commentInRDBMS>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<importedID>229C67E5-32CE-ADAC-CC3C-0263D955993B</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<domain>E34968DF-5FBE-FD7E-81E5-C2A0CFB3E58A</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="hora_inicio" id="A7F97B8C-B782-4FBD-E63C-AFE63EB3D239">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<commentInRDBMS><![CDATA[Formato HH:MI:SS — Oracle no tiene tipo TIME nativo]]></commentInRDBMS>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<importedID>FB9BA766-80A7-78A8-42D8-1760243722D0</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<domain>E1345903-0810-E796-5009-9D50EB94E948</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="hora_fin" id="1C36BABA-E765-5E45-10A3-DB3EFF77A9AB">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<commentInRDBMS><![CDATA[Formato HH:MI:SS — Oracle no tiene tipo TIME nativo]]></commentInRDBMS>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<importedID>0C09A5EC-D2E7-02AF-E963-BEDB171D116F</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<domain>E1345903-0810-E796-5009-9D50EB94E948</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="multiplicador" id="5C504ACF-897D-8390-FBC7-5F35872BF6D5">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<commentInRDBMS><![CDATA[1.00=normal 1.50=peak 0.80=nocturno]]></commentInRDBMS>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<importedID>8FDEE4B6-3B04-F33E-8BD4-516DEB2AD893</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>86649311-E0D9-2640-38B6-A5ABC918C99C</domain>
+<defaultValue>1.00</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="7E17435F-F08D-895E-4394-65B2F7172F27" name="pk_horario_tarifa">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<importedID>F8DF803D-1F73-7475-B895-7EFAB72BB546</importedID>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="D0A8FCB6-FB82-5136-1CFB-1A69A374907E"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="08AE294B-71C4-D17A-3E55-B279122938C5" name="fk_ht_tarifa">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:27 UTC</createdTime>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="1775E78D-F14A-D2FE-72DF-59CDCF454CFF"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

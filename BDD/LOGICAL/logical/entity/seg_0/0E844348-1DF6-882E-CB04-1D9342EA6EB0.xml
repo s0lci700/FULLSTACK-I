@@ -1,0 +1,217 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="0E844348-1DF6-882E-CB04-1D9342EA6EB0" name="cobro">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<generatorID>AC52B2DC-3681-AC04-02DF-E678656DCEEE</generatorID>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="id" id="2F8CFFB1-880C-A3C5-AC27-ADB44E2F5BF8">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<generatorID>5A952096-23D6-526F-F201-E1DA6DA18941</generatorID>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>22681773-F100-5D34-C4FA-CEDD4CF25BC9</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="id acceso ref" id="9295D323-21E5-5D82-5AF6-5455EF973FCF">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<commentInRDBMS><![CDATA[FK logica -> ACCESO en db_accesos (1 cobro por acceso)]]></commentInRDBMS>
+<generatorID>1B7A7C0D-D8BB-BF33-EF5B-64B8FCACD728</generatorID>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>22681773-F100-5D34-C4FA-CEDD4CF25BC9</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="id metodo pago" id="D8A112E7-D5FD-C35F-B854-644732248CCF">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<generatorID>82238831-A3CB-0B34-B76E-C48F0E3D3F5A</generatorID>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<referedAttribute>D20A9635-2187-5455-233D-950CFA5BF8BB</referedAttribute>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>22681773-F100-5D34-C4FA-CEDD4CF25BC9</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="id tarifa ref" id="983DD2C4-AC14-ABD5-A326-8D853D61131C">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<commentInRDBMS><![CDATA[FK logica -> TARIFA en db_tarifas (auditoria historica)]]></commentInRDBMS>
+<generatorID>6D96A940-70A0-CF35-1510-AE5E4D08961D</generatorID>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>22681773-F100-5D34-C4FA-CEDD4CF25BC9</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="minutos" id="DAD5189D-868D-EEC1-FEF6-AC2871749E87">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<commentInRDBMS><![CDATA[Duracion total estacionado]]></commentInRDBMS>
+<generatorID>FF7FCEC3-CC2F-A8A3-2EA6-7700490D27C6</generatorID>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>0DBFE06A-63FB-1838-C9E8-AA424E94F6C8</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="monto base" id="9C220710-9A12-ADF1-239D-66F23216BE1A">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<commentInRDBMS><![CDATA[Sin descuentos aplicados]]></commentInRDBMS>
+<generatorID>B64FA843-47EE-B72F-E09F-0A2879D960AF</generatorID>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>8B7393D7-CA68-ADB6-2160-9BB580E77209</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="desc tipo cliente" id="47AC14A7-1740-AE7B-D2A7-41E8B0D2AE90">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<commentInRDBMS><![CDATA[% aplicado por tipo de cliente]]></commentInRDBMS>
+<generatorID>D189B01E-DC06-2250-D82E-6D2A27E94408</generatorID>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>86649311-E0D9-2640-38B6-A5ABC918C99C</domain>
+<defaultValue>0.00</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="desc suscripcion" id="A5283E15-499A-AE4B-AC3A-0F9B56AF0C47">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<commentInRDBMS><![CDATA[% aplicado por suscripcion activa]]></commentInRDBMS>
+<generatorID>25854D29-90F8-6E6A-D1C4-DE9DF3587F3E</generatorID>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>86649311-E0D9-2640-38B6-A5ABC918C99C</domain>
+<defaultValue>0.00</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="desc banco" id="4779B9B6-4894-36A0-D46E-4F903B747C79">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<commentInRDBMS><![CDATA[% aplicado por banco de la tarjeta]]></commentInRDBMS>
+<generatorID>D042523B-338C-854F-F7EF-AE91CEECA0DB</generatorID>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>86649311-E0D9-2640-38B6-A5ABC918C99C</domain>
+<defaultValue>0.00</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="monto final" id="D0748BFB-C05B-5CC0-AA15-E72792258B69">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<commentInRDBMS><![CDATA[Monto efectivamente cobrado al cliente]]></commentInRDBMS>
+<generatorID>809FDD99-E31A-3A6A-166C-22DAD832D36C</generatorID>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>8B7393D7-CA68-ADB6-2160-9BB580E77209</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="estado" id="100C3B87-2CE3-11F1-9C3C-41FA14B82DD7">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<generatorID>D16DD154-A986-9C25-A1CF-4CD3C3151C2E</generatorID>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<use>0</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<domain>7E98A868-0F59-F7C2-9659-A8BB08CB2B29</domain>
+<defaultValue>&apos;PENDIENTE&apos;</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="fecha cobro" id="2EFDCB0C-30F8-E790-9EDE-0C445CD30792">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<generatorID>1695A1AE-4EE1-062D-E577-8558B88D6608</generatorID>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<use>0</use>
+<logicalDatatype>LOGDT015</logicalDatatype>
+<domain>5599F2D2-F9BC-CE6F-D9D3-B28B82AC671B</domain>
+<defaultValue>SYSTIMESTAMP</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+<identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
+<identifier id="2C19489B-F50C-1FD0-E4E1-B06C961E8C4F" name="pk cobro">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<generatorID>1180616C-02EC-79F0-0742-996D9807B87E</generatorID>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<pk>true</pk>
+<usedAttributes>
+<attributeRef>2F8CFFB1-880C-A3C5-AC27-ADB44E2F5BF8</attributeRef>
+</usedAttributes>
+</identifier>
+<identifier id="D3E93F27-391A-3BA2-14CD-D9D00F90245B" name="uq cobro acceso">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<generatorID>AA4572DB-5251-3BD6-3B8E-CD2CB144BC05</generatorID>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<usedAttributes>
+<attributeRef>9295D323-21E5-5D82-5AF6-5455EF973FCF</attributeRef>
+</usedAttributes>
+</identifier>
+</identifiers>
+</Entity>

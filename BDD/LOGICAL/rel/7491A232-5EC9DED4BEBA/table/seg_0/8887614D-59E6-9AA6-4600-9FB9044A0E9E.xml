@@ -1,0 +1,82 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="8887614D-59E6-9AA6-4600-9FB9044A0E9E" schemaObject="642099B3-CA5E-3705-3D85-2958AC32C6AA" name="tipo_cliente">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<importedID>4F55D3C9-C70B-DC1C-BDC7-EFB122F657DE</importedID>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="id" id="2FD23AB3-667C-7461-E00A-2770EC5B380E">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:27 UTC</createdTime>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<importedID>39679F73-C9A0-386F-5CA2-4130CDA4246E</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>22681773-F100-5D34-C4FA-CEDD4CF25BC9</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementColumn>true</autoIncrementColumn>
+<identityColumn>true</identityColumn>
+<autoIncrementGenerateAlways>true</autoIncrementGenerateAlways>
+<autoIncrementCycle>false</autoIncrementCycle>
+<autoIncrementOrder>false</autoIncrementOrder>
+</Column>
+<Column name="nombre" id="289866AA-BCE4-DEDA-2CBD-4509A4A6F58A">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:27 UTC</createdTime>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<importedID>E794ABEB-47DE-6E93-F9F3-536C091F2804</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<domain>3F67AE2F-8A33-D2CD-1A0F-E26910207C0E</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="descuento_pct" id="ACAD468C-EF50-A63C-8FD3-58D39E532567">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:27 UTC</createdTime>
+<commentInRDBMS><![CDATA[0.00 = sin descuento]]></commentInRDBMS>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<importedID>E55F7747-346F-314D-AF34-4042A27E73B8</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>86649311-E0D9-2640-38B6-A5ABC918C99C</domain>
+<defaultValue>0.00</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="9D9696B4-B93A-1BE3-EF50-B180A63980DC" name="pk_tipo_cliente">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:27 UTC</createdTime>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<importedID>50CDAFD7-DA4D-FC90-C72F-0E3136C1FB1D</importedID>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="2FD23AB3-667C-7461-E00A-2770EC5B380E"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="3272AAF0-5E7D-452C-83BE-07C66C28D20A" name="uq_tipo_cliente_nombre">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:27 UTC</createdTime>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<importedID>E1399AB7-F82F-103A-9AD6-AF46F1F3AABD</importedID>
+<indexState>Unique Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="289866AA-BCE4-DEDA-2CBD-4509A4A6F58A"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

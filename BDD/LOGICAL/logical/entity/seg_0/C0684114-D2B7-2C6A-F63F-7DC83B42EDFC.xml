@@ -1,0 +1,116 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="C0684114-D2B7-2C6A-F63F-7DC83B42EDFC" name="cliente suscripcion">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<generatorID>D5256ECE-35D4-7240-A7CE-D0D55B57BA60</generatorID>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="id" id="8BB55903-B3F1-34B0-0CE2-CE50C4BE7E4F">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<generatorID>2F34CADA-7179-C8B6-1EA2-EF4E4BA08686</generatorID>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>22681773-F100-5D34-C4FA-CEDD4CF25BC9</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="id cliente" id="CAABCE92-9218-2F27-FDE8-26C3CC35231F">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<generatorID>AD94708A-E75F-1797-1822-45ACC8EDB9D2</generatorID>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<referedAttribute>30E5343D-7A80-FE86-5664-80932CF2E38C</referedAttribute>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>22681773-F100-5D34-C4FA-CEDD4CF25BC9</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="id suscripcion" id="0B5DD2CB-2018-4810-9C6F-733767412572">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<generatorID>8F56236B-BAFB-184E-30BE-80AAD07161B9</generatorID>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<referedAttribute>B325738C-3D04-1EBF-557A-982F4C5720E4</referedAttribute>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>22681773-F100-5D34-C4FA-CEDD4CF25BC9</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="fecha inicio" id="3FD88D5F-35D7-E67A-7894-3E6409DA47CD">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<generatorID>94D2C2A5-DE9D-6024-4926-CCF42AB3B5EE</generatorID>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<use>0</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<domain>19597082-27FD-633C-E989-44125D61B5B3</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="fecha fin" id="D6105E71-0E9E-EA0D-21F1-BA15433C5C8E">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<generatorID>E4590C13-972A-DC99-8A31-FEADC3677E55</generatorID>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<use>0</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<domain>19597082-27FD-633C-E989-44125D61B5B3</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="activo" id="E688C994-90A3-8B56-902E-4CAEDC2CFC58">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<generatorID>4CE54267-9F1C-2A47-9478-C09EF39CD902</generatorID>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>02AD7E32-E864-D5C4-8677-1A4842F66D5A</domain>
+<defaultValue>1</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+<identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
+<identifier id="8AECD0E9-CD1B-BAC6-0221-53C37474B4AB" name="pk cliente suscripcion">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<generatorID>777C50B1-5074-77FC-527D-3DC9CCA68252</generatorID>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<pk>true</pk>
+<usedAttributes>
+<attributeRef>8BB55903-B3F1-34B0-0CE2-CE50C4BE7E4F</attributeRef>
+</usedAttributes>
+</identifier>
+</identifiers>
+</Entity>
