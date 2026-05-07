@@ -1,0 +1,7 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<SchemaObject class="oracle.dbtools.crest.model.design.relational.SchemaObject" name="db_reservas" directorySegmentName="seg_0" id="40FFAA1F-7AAD-7506-ABC0-58C74FFA4DF5">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<importedID>E0D8131D-AE44-E814-2C6C-4F05E4972E53</importedID>
+</SchemaObject>

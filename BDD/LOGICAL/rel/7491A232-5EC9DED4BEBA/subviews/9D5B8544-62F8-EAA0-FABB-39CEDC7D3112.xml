@@ -1,0 +1,22 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Diagram class="oracle.dbtools.crest.swingui.relational.DPVRelationalSubView" name="ms-accesos" id="9D5B8544-62F8-EAA0-FABB-39CEDC7D3112">
+<createdBy>AO-Alumno</createdBy>
+<modifiedBy>AO-Alumno</modifiedBy>
+<createdTime>2026-05-07 16:39:51 UTC</createdTime>
+<autoRoute>false</autoRoute>
+<boxInbox>true</boxInbox>
+<showLegend>false</showLegend>
+<showLabels>false</showLabels>
+<showRelAttributes>false</showRelAttributes>
+<gridEnabled>false</gridEnabled>
+<showGrid>false</showGrid>
+<diagramColor>-1</diagramColor>
+<display>false</display>
+<notation>1</notation>
+<objectViews>
+<OView class="oracle.dbtools.crest.swingui.relational.TVTable" oid="3D67DCB7-C2C4-DAFC-C67F-6C9C33E82121" otype="Table" vid="668FA93F-2D9A-DAD4-D026-E916007BBCDE">
+<hideElementsInCurrentOnly>false</hideElementsInCurrentOnly>
+<bounds x="385" y="1966" width="231" height="158"/>
+</OView>
+</objectViews>
+</Diagram>

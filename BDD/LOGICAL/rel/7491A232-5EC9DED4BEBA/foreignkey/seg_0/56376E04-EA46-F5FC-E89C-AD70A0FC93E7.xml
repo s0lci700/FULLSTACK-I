@@ -1,0 +1,18 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<FKIndexAssociation class="oracle.dbtools.crest.model.design.relational.FKIndexAssociation" directorySegmentName="seg_0" id="56376E04-EA46-F5FC-E89C-AD70A0FC93E7" containerWithKeyObject="9D206DDF-CF6D-6E3C-C38F-BA3D94D0CDF2" localFKIndex="E1C9BD05-DB85-D0FF-92EC-C6E5D3781A3C" name="fk_mp_tipo">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:27 UTC</createdTime>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<importedID>EA7FF0C8-66EC-B2C6-3E24-20B632A3AAAB</importedID>
+<referredTableLongName>db_pagos.tipo_tarjeta</referredTableLongName>
+<deleteRule>NO ACTION</deleteRule>
+<referredTableID>96649444-ED26-6611-CA27-E82DE64394AF</referredTableID>
+<keyObject>67518FBF-25B2-8088-C8D6-B6A79651D91E</keyObject>
+<referredKeyID>67518FBF-25B2-8088-C8D6-B6A79651D91E</referredKeyID>
+<mandatory>true</mandatory>
+<refColNames>id</refColNames>
+<transferable>true</transferable>
+<rely>false</rely>
+<columnDependencyConstraintGenerateInDDL>true</columnDependencyConstraintGenerateInDDL>
+</FKIndexAssociation>

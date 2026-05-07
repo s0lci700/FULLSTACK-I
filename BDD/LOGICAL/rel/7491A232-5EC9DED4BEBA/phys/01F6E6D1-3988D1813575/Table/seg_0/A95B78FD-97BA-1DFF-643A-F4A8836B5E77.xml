@@ -1,0 +1,77 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<TableProxyOraclev20c class="oracle.dbtools.crest.model.design.storage.oracle.v20c.TableProxyOraclev20c" name="user_credential" directorySegmentName="seg_0" id="A95B78FD-97BA-1DFF-643A-F4A8836B5E77">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<schemaObject>7A433E60-3200-2D34-1640-7B1AA94D8E35</schemaObject>
+<logging>YES</logging>
+<partitionedRowMovement>DISABLE</partitionedRowMovement>
+<temporaryChanged>false</temporaryChanged>
+<accessDriverType>oracle_loader</accessDriverType>
+<rejectLimit></rejectLimit>
+<columnProxies itemClass="oracle.dbtools.crest.model.design.storage.oracle.v12c.ColumnProxyOraclev12c">
+<ColumnProxy name="activo" id="19DD3FA3-3605-940D-3263-E5FBA6BE4709">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:27 UTC</createdTime>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<defaultValue>1</defaultValue>
+</ColumnProxy>
+<ColumnProxy name="id_cliente_ref" id="1C8D4EC1-CE87-7232-0BBB-EC08A9524593">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:27 UTC</createdTime>
+<ownerDesignName>LOGICAL</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="id_rol" id="9FD9CF88-1228-5348-D049-95D698FED390">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:27 UTC</createdTime>
+<ownerDesignName>LOGICAL</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="password_hash" id="A56A235C-2DD7-3FAB-A77F-3BEEDC9E048C">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:27 UTC</createdTime>
+<ownerDesignName>LOGICAL</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="email" id="A62884EE-6163-F160-86AF-D3F39DE03AFD">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:27 UTC</createdTime>
+<ownerDesignName>LOGICAL</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="id" id="BDA1014C-FDAF-A475-16E6-0980C4E5D1AF">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:27 UTC</createdTime>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<autoIncrementDDL>IDENTITY_CLAUSE</autoIncrementDDL>
+</ColumnProxy>
+</columnProxies>
+<foreignKeys>
+<ForeignKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.FKProxyOraclev10g" name="fk_credential_rol" id="15945AC1-CD40-CE58-2A79-CBD8946D51FC">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:27 UTC</createdTime>
+<ownerDesignName>LOGICAL</ownerDesignName>
+</ForeignKey>
+</foreignKeys>
+<primaryKeys>
+<PrimaryKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.PKProxyOraclev10g" name="pk_user_credential" id="1EF4D101-ED84-5859-BA3E-8D953B71F144">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:27 UTC</createdTime>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<indexSort>SORTED</indexSort>
+</PrimaryKey>
+</primaryKeys>
+<tableCheckConstraints itemClass="oracle.dbtools.crest.model.design.storage.oracle.TableCheckConstraintOracle">
+<TableCheckConstraint name="ck_credential_activo" id="55798390-C17D-B3D0-E822-7B500C987631">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:27 UTC</createdTime>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<nameChanged>true</nameChanged>
+</TableCheckConstraint>
+</tableCheckConstraints>
+<uniqueKeys>
+<UniqueKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.UniqueOraclev10g" name="uq_credential_email" id="586BF85D-2CEA-BE55-AA68-D96A4D093F46">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:27 UTC</createdTime>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<indexSort>SORTED</indexSort>
+</UniqueKey>
+</uniqueKeys>
+</TableProxyOraclev20c>

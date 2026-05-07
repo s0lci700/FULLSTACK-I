@@ -1,0 +1,66 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<TableProxyOraclev20c class="oracle.dbtools.crest.model.design.storage.oracle.v20c.TableProxyOraclev20c" name="banco" directorySegmentName="seg_0" id="4355C07D-5C49-F83F-FB91-5DAB6698CD8A">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<schemaObject>790F1638-5688-9AA8-5F7B-93B44B7EEDE9</schemaObject>
+<logging>YES</logging>
+<partitionedRowMovement>DISABLE</partitionedRowMovement>
+<temporaryChanged>false</temporaryChanged>
+<accessDriverType>oracle_loader</accessDriverType>
+<rejectLimit></rejectLimit>
+<columnProxies itemClass="oracle.dbtools.crest.model.design.storage.oracle.v12c.ColumnProxyOraclev12c">
+<ColumnProxy name="id" id="534B805B-5D18-5F3E-3B05-B4A1AE870040">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<autoIncrementDDL>IDENTITY_CLAUSE</autoIncrementDDL>
+</ColumnProxy>
+<ColumnProxy name="nombre" id="A851D2DD-BF34-D142-47EC-5F1D90D4167A">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>LOGICAL</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="codigo" id="E00D389B-4807-87F4-C1B2-331A36A0EB5E">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>LOGICAL</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="activo" id="E39A37AA-4C3F-8A99-25CF-0BEAAF4B9352">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<defaultValue>1</defaultValue>
+</ColumnProxy>
+<ColumnProxy name="descuento_pct" id="FB049A92-379D-C880-2D6B-0CDA390C80A6">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<defaultValue>0.00</defaultValue>
+</ColumnProxy>
+</columnProxies>
+<primaryKeys>
+<PrimaryKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.PKProxyOraclev10g" name="pk_banco" id="BCEECAA5-DA64-660C-520E-74D0A732D929">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<indexSort>SORTED</indexSort>
+</PrimaryKey>
+</primaryKeys>
+<tableCheckConstraints itemClass="oracle.dbtools.crest.model.design.storage.oracle.TableCheckConstraintOracle">
+<TableCheckConstraint name="ck_banco_activo" id="F9503E42-A51E-2789-EC1C-1DC66FF09263">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<nameChanged>true</nameChanged>
+</TableCheckConstraint>
+</tableCheckConstraints>
+<uniqueKeys>
+<UniqueKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.UniqueOraclev10g" name="uq_banco_codigo" id="025F21D0-90AD-7EDE-5081-89209EEABFD1">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>LOGICAL</ownerDesignName>
+<indexSort>SORTED</indexSort>
+</UniqueKey>
+</uniqueKeys>
+</TableProxyOraclev20c>
