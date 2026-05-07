@@ -1,0 +1,224 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="AC52B2DC-3681-AC04-02DF-E678656DCEEE" schemaObject="790F1638-5688-9AA8-5F7B-93B44B7EEDE9" name="cobro">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-pagos</ownerDesignName>
+<importedID>958ED207-405C-58E9-58F3-ED91301A6D8D</importedID>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="id" id="5A952096-23D6-526F-F201-E1DA6DA18941">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-pagos</ownerDesignName>
+<importedID>AF256078-8DFD-A293-2B88-1B577F1CCDA1</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>22681773-F100-5D34-C4FA-CEDD4CF25BC9</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementColumn>true</autoIncrementColumn>
+<identityColumn>true</identityColumn>
+<autoIncrementGenerateAlways>true</autoIncrementGenerateAlways>
+<autoIncrementCycle>false</autoIncrementCycle>
+<autoIncrementOrder>false</autoIncrementOrder>
+</Column>
+<Column name="id_acceso_ref" id="1B7A7C0D-D8BB-BF33-EF5B-64B8FCACD728">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<commentInRDBMS><![CDATA[FK logica -> ACCESO en db_accesos (1 cobro por acceso)]]></commentInRDBMS>
+<ownerDesignName>ms-pagos</ownerDesignName>
+<importedID>25150810-3D03-D31D-4803-B4264B59201E</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>22681773-F100-5D34-C4FA-CEDD4CF25BC9</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="id_metodo_pago" id="514E4C3E-3143-C56E-FA8A-C8EFA1692F98">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-pagos</ownerDesignName>
+<importedID>035171D1-E19B-6F83-7D0B-F56C9A59F99E</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>22681773-F100-5D34-C4FA-CEDD4CF25BC9</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="2F2C3A05-380C-2BCB-12CE-41BBA00C8FB9" referredColumn="6165FD01-0C62-2F2F-B675-F0B4211422BC"/>
+</associations>
+</Column>
+<Column name="id_tarifa_ref" id="6D96A940-70A0-CF35-1510-AE5E4D08961D">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<commentInRDBMS><![CDATA[FK logica -> TARIFA en db_tarifas (auditoria historica)]]></commentInRDBMS>
+<ownerDesignName>ms-pagos</ownerDesignName>
+<importedID>E9C8281B-1377-A3EE-5F12-8C5617B779C7</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>22681773-F100-5D34-C4FA-CEDD4CF25BC9</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="minutos" id="FF7FCEC3-CC2F-A8A3-2EA6-7700490D27C6">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<commentInRDBMS><![CDATA[Duracion total estacionado]]></commentInRDBMS>
+<ownerDesignName>ms-pagos</ownerDesignName>
+<importedID>CD04F27F-B8C4-1885-0B0D-26D1A027E8E5</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>0DBFE06A-63FB-1838-C9E8-AA424E94F6C8</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="monto_base" id="B64FA843-47EE-B72F-E09F-0A2879D960AF">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<commentInRDBMS><![CDATA[Sin descuentos aplicados]]></commentInRDBMS>
+<ownerDesignName>ms-pagos</ownerDesignName>
+<importedID>0C1B2C35-E204-2395-3F65-23ECF3E2805E</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>8B7393D7-CA68-ADB6-2160-9BB580E77209</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="desc_tipo_cliente" id="D189B01E-DC06-2250-D82E-6D2A27E94408">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<commentInRDBMS><![CDATA[% aplicado por tipo de cliente]]></commentInRDBMS>
+<ownerDesignName>ms-pagos</ownerDesignName>
+<importedID>73531746-93AC-E0F9-2A24-856090A7BA4A</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>86649311-E0D9-2640-38B6-A5ABC918C99C</domain>
+<defaultValue>0.00</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="desc_suscripcion" id="25854D29-90F8-6E6A-D1C4-DE9DF3587F3E">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<commentInRDBMS><![CDATA[% aplicado por suscripcion activa]]></commentInRDBMS>
+<ownerDesignName>ms-pagos</ownerDesignName>
+<importedID>E2F27691-6F75-80A7-828C-275325529A09</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>86649311-E0D9-2640-38B6-A5ABC918C99C</domain>
+<defaultValue>0.00</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="desc_banco" id="D042523B-338C-854F-F7EF-AE91CEECA0DB">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<commentInRDBMS><![CDATA[% aplicado por banco de la tarjeta]]></commentInRDBMS>
+<ownerDesignName>ms-pagos</ownerDesignName>
+<importedID>B1528DE7-5CF8-5A34-6394-ADEDE426A4BB</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>86649311-E0D9-2640-38B6-A5ABC918C99C</domain>
+<defaultValue>0.00</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="monto_final" id="809FDD99-E31A-3A6A-166C-22DAD832D36C">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<commentInRDBMS><![CDATA[Monto efectivamente cobrado al cliente]]></commentInRDBMS>
+<ownerDesignName>ms-pagos</ownerDesignName>
+<importedID>DE53E22C-6D66-4526-72AB-9D46CB7797FF</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>8B7393D7-CA68-ADB6-2160-9BB580E77209</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="estado" id="D16DD154-A986-9C25-A1CF-4CD3C3151C2E">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-pagos</ownerDesignName>
+<importedID>491496FB-DDCE-6E5A-8AE3-8FAD32E8B124</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<domain>7E98A868-0F59-F7C2-9659-A8BB08CB2B29</domain>
+<defaultValue>&apos;PENDIENTE&apos;</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="fecha_cobro" id="1695A1AE-4EE1-062D-E577-8558B88D6608">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-pagos</ownerDesignName>
+<importedID>A4AB66F6-F953-34A2-1F78-824BC5D3DFAA</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT015</logicalDatatype>
+<domain>5599F2D2-F9BC-CE6F-D9D3-B28B82AC671B</domain>
+<defaultValue>SYSTIMESTAMP</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="1180616C-02EC-79F0-0742-996D9807B87E" name="pk_cobro">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-pagos</ownerDesignName>
+<importedID>33A40376-D328-E6B9-BB19-F36B494A2E9E</importedID>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="5A952096-23D6-526F-F201-E1DA6DA18941"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="AA4572DB-5251-3BD6-3B8E-CD2CB144BC05" name="uq_cobro_acceso">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-pagos</ownerDesignName>
+<importedID>A6AF1CB1-CE97-52F1-BFDC-887546DC3450</importedID>
+<indexState>Unique Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="1B7A7C0D-D8BB-BF33-EF5B-64B8FCACD728"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="0AD1D03C-3F94-05BC-0A24-2A00F51B567F" name="fk_cobro_metodo">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:27 UTC</createdTime>
+<ownerDesignName>ms-pagos</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="514E4C3E-3143-C56E-FA8A-C8EFA1692F98"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+<tableCheckConstraints itemClass="oracle.dbtools.crest.model.design.constraint.TableLevelConstraint">
+<tableCheckConstraint name="ck_cobro_estado" directorySegmentName="seg_0" id="9B61B67D-2181-8016-C914-73A16CEFC9CC">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-pagos</ownerDesignName>
+<importedID>C59D7708-978C-4710-2CE5-81362218FCB7</importedID>
+<rule><![CDATA[estado IN ('PENDIENTE','PROCESADO','FALLIDO')]]></rule>
+</tableCheckConstraint>
+</tableCheckConstraints>
+</Table>

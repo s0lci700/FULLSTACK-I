@@ -1,0 +1,145 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="FA8E477D-7E62-1519-0627-D61FD28C75AB" name="reserva">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<generatorID>126F3F05-E1D8-26AC-6809-B6BD29EED70E</generatorID>
+<ownerDesignName>ms-pagos</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="id" id="D8602FB3-0767-3C79-DBF1-CB50B6787D61">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<generatorID>D114D112-1DEA-6DDE-B408-26AF5EA1253B</generatorID>
+<ownerDesignName>ms-pagos</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>22681773-F100-5D34-C4FA-CEDD4CF25BC9</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="id cliente ref" id="77D3E37B-7429-BFBE-9F6D-F78C920D6429">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<commentInRDBMS><![CDATA[FK logica -> CLIENTE en db_usuarios]]></commentInRDBMS>
+<generatorID>3303EB57-59D7-C522-A051-EC5867BB9297</generatorID>
+<ownerDesignName>ms-pagos</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>22681773-F100-5D34-C4FA-CEDD4CF25BC9</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="id vehiculo ref" id="6743B938-026A-EE0F-535D-F9D86007CEE0">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<commentInRDBMS><![CDATA[FK logica -> VEHICULO en db_vehiculos]]></commentInRDBMS>
+<generatorID>D882F607-AD04-6A23-0FE5-0A0166F2ED0E</generatorID>
+<ownerDesignName>ms-pagos</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>22681773-F100-5D34-C4FA-CEDD4CF25BC9</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="id tipo espacio ref" id="BA322381-03A7-2DB0-9A40-299272BE968C">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<commentInRDBMS><![CDATA[FK logica -> TIPO_ESPACIO en db_espacios]]></commentInRDBMS>
+<generatorID>48AB2AF6-5A42-379C-61AD-FD7E0F4709C9</generatorID>
+<ownerDesignName>ms-pagos</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>22681773-F100-5D34-C4FA-CEDD4CF25BC9</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="fecha inicio" id="3CF3C8C3-ACC5-631F-A572-742FDD7770D3">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<generatorID>884FE11F-BCEE-FEDB-F2B1-E35C8B6690E9</generatorID>
+<ownerDesignName>ms-pagos</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<use>0</use>
+<logicalDatatype>LOGDT015</logicalDatatype>
+<domain>5599F2D2-F9BC-CE6F-D9D3-B28B82AC671B</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="fecha fin" id="5AA9E206-1583-D594-0252-C0260F89FF72">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<generatorID>B488F93B-696D-46A8-6A1E-1E31EB80559A</generatorID>
+<ownerDesignName>ms-pagos</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<use>0</use>
+<logicalDatatype>LOGDT015</logicalDatatype>
+<domain>5599F2D2-F9BC-CE6F-D9D3-B28B82AC671B</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="estado" id="431BCAA3-79EF-7141-4D33-1031071284CD">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<commentInRDBMS><![CDATA[PENDIENTE | CONFIRMADA | CANCELADA | EXPIRADA]]></commentInRDBMS>
+<generatorID>EF072E21-4B0A-0B30-3916-D36ECEF27384</generatorID>
+<ownerDesignName>ms-pagos</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<use>0</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<domain>7E98A868-0F59-F7C2-9659-A8BB08CB2B29</domain>
+<defaultValue>&apos;PENDIENTE&apos;</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="fecha creacion" id="A9DCE649-0A23-B82D-8A1F-0EC7C364C7B3">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<generatorID>CB00987C-6C15-E2F0-13F1-F87180948B18</generatorID>
+<ownerDesignName>ms-pagos</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<use>0</use>
+<logicalDatatype>LOGDT015</logicalDatatype>
+<domain>5599F2D2-F9BC-CE6F-D9D3-B28B82AC671B</domain>
+<defaultValue>SYSTIMESTAMP</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+<identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
+<identifier id="4740C354-A63B-F992-A288-3B6EBE09B9C6" name="pk reserva">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<generatorID>75FDC246-1876-3AF1-DC85-67EB39015BE7</generatorID>
+<ownerDesignName>ms-pagos</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<pk>true</pk>
+<usedAttributes>
+<attributeRef>D8602FB3-0767-3C79-DBF1-CB50B6787D61</attributeRef>
+</usedAttributes>
+</identifier>
+</identifiers>
+</Entity>

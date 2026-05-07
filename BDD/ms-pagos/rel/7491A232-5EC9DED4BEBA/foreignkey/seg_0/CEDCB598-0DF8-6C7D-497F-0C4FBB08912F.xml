@@ -1,0 +1,18 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<FKIndexAssociation class="oracle.dbtools.crest.model.design.relational.FKIndexAssociation" directorySegmentName="seg_0" id="CEDCB598-0DF8-6C7D-497F-0C4FBB08912F" containerWithKeyObject="807F528A-DA00-40AD-10B0-3C27D1D1C001" localFKIndex="C794CE3C-92D4-5EE6-0E1D-98242868FDB4" name="fk_rp_permiso">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:27 UTC</createdTime>
+<ownerDesignName>ms-pagos</ownerDesignName>
+<importedID>3282B968-143D-C930-61D1-B46A6088A4D4</importedID>
+<referredTableLongName>db_seguridad.permiso</referredTableLongName>
+<deleteRule>NO ACTION</deleteRule>
+<referredTableID>7765D2E6-DE4D-271F-AD94-45EE4EFFF6CF</referredTableID>
+<keyObject>FD883489-60B8-76CE-FF15-314E345914EF</keyObject>
+<referredKeyID>FD883489-60B8-76CE-FF15-314E345914EF</referredKeyID>
+<mandatory>true</mandatory>
+<refColNames>id</refColNames>
+<transferable>true</transferable>
+<rely>false</rely>
+<columnDependencyConstraintGenerateInDDL>true</columnDependencyConstraintGenerateInDDL>
+</FKIndexAssociation>

@@ -1,0 +1,83 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="3BDD354B-C483-E291-8ABD-430E54226E40" schemaObject="7A433E60-3200-2D34-1640-7B1AA94D8E35" name="rol">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-pagos</ownerDesignName>
+<importedID>422C9FF6-711A-C201-B5C7-79D998EB6A50</importedID>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="id" id="A6750EF7-39F2-79EB-4DD7-9FF65F7198FE">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-pagos</ownerDesignName>
+<importedID>2AEC4A71-F12C-EF08-08D2-3099A20B52AE</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>22681773-F100-5D34-C4FA-CEDD4CF25BC9</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementColumn>true</autoIncrementColumn>
+<identityColumn>true</identityColumn>
+<autoIncrementGenerateAlways>true</autoIncrementGenerateAlways>
+<autoIncrementCycle>false</autoIncrementCycle>
+<autoIncrementOrder>false</autoIncrementOrder>
+</Column>
+<Column name="nombre" id="BF2E356A-13D0-5864-C7EE-E9713A2C90D3">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<commentInRDBMS><![CDATA[Nombre del rol del sistema]]></commentInRDBMS>
+<ownerDesignName>ms-pagos</ownerDesignName>
+<importedID>3CFD04AF-F82C-1804-CC4C-955A56CDF952</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<domain>3F67AE2F-8A33-D2CD-1A0F-E26910207C0E</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="descripcion" id="4186101B-0F09-D514-C633-DA219CBF7FB2">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<commentInRDBMS><![CDATA[Descripcion del rol]]></commentInRDBMS>
+<ownerDesignName>ms-pagos</ownerDesignName>
+<importedID>A2E27C72-ED45-A312-9A4E-CBDC92628C06</importedID>
+<nullsAllowed>true</nullsAllowed>
+<use>0</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<domain>E6B5E7FE-5162-D27B-4B32-9A21A8FE09C4</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="AA0B04E0-E96B-7E83-C5A4-83805967BED0" name="pk_rol">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>ms-pagos</ownerDesignName>
+<importedID>EA73B5B7-82CC-B147-2FA7-2A26AC0489BD</importedID>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="A6750EF7-39F2-79EB-4DD7-9FF65F7198FE"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="41784187-9B41-C992-BC0F-1E2EE99D79FA" name="uq_rol_nombre">
+<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:27 UTC</createdTime>
+<ownerDesignName>ms-pagos</ownerDesignName>
+<importedID>95EBB7EF-ADD7-A03D-DED8-FFF67AFA689A</importedID>
+<indexState>Unique Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="BF2E356A-13D0-5864-C7EE-E9713A2C90D3"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

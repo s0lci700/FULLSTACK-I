@@ -1,0 +1,20 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Relation class="oracle.dbtools.crest.model.design.logical.Relation" name="fk_mp_banco" directorySegmentName="seg_0" id="D81954C0-6579-DFA0-8F4A-71F579BE8B60">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:25:10 UTC</createdTime>
+<generatorID>574DEB94-C07F-982A-9857-C38D75C5AD4C</generatorID>
+<ownerDesignName>ms-pagos</ownerDesignName>
+<engineerTo>
+<item key="7491A232-3296-6507-98C3-5EC9DED4BEBA" value="true"/>
+</engineerTo>
+<sourcePk>69F5F714-F7AB-9063-F5A2-B9866CE28157</sourcePk>
+<identifying>false</identifying>
+<optionalSource>true</optionalSource>
+<optionalTarget>true</optionalTarget>
+<sourceCardinality>1</sourceCardinality>
+<sourceEntity>16271597-CFF6-9E09-B1BC-C3BF17B75FC3</sourceEntity>
+<targetCardinalityString>*</targetCardinalityString>
+<targetEntity>71CCF7C0-ED76-5FAA-FA6C-BE9906D0E1E9</targetEntity>
+<transferable>true</transferable>
+<deleteRule>NO ACTION</deleteRule>
+</Relation>

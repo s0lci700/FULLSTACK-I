@@ -1,0 +1,7 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<SchemaObject class="oracle.dbtools.crest.model.design.relational.SchemaObject" name="db_pagos" directorySegmentName="seg_0" id="790F1638-5688-9AA8-5F7B-93B44B7EEDE9">
+<createdBy>AO-Alumno</createdBy>
+<createdTime>2026-05-07 16:24:26 UTC</createdTime>
+<ownerDesignName>RELACIONAL</ownerDesignName>
+<importedID>5F386FA7-4C6F-5F80-385D-A532A0AAADAF</importedID>
+</SchemaObject>
