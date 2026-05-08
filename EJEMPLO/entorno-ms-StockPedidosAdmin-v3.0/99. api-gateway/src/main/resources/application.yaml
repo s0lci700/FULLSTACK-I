@@ -1,0 +1,29 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: ms-stock
+          uri: lb://ms-stock
+          predicates:
+            - Path=/api/stock/**
+        - id: ms-pedidos
+          uri: lb://ms-pedidos
+          predicates:
+            - Path=/api/pedidos/**
+        - id: ms-administrador
+          uri: lb://ms-administrador
+          predicates:
+            - Path=/api/productos/**
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/

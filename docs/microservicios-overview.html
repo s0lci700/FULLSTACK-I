@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Microservicios — Estacionamiento Inteligente</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      padding: 2rem;
+      line-height: 1.6;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 0.4rem;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #94a3b8;
+      font-size: 0.95rem;
+      margin-bottom: 2.5rem;
+    }
+
+    /* ── Flow diagram ─────────────────────────────────── */
+    .flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 3rem;
+      padding: 1.2rem;
+      background: #1e2330;
+      border-radius: 12px;
+      border: 1px solid #2d3748;
+    }
+
+    .flow-box {
+      padding: 0.4rem 0.9rem;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .flow-arrow {
+      color: #475569;
+      font-size: 1.1rem;
+    }
+
+    /* ── Phase labels ─────────────────────────────────── */
+    .phase-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #64748b;
+      margin: 2rem 0 0.8rem;
+      padding-left: 0.2rem;
+      border-left: 3px solid #334155;
+      padding-left: 0.6rem;
+    }
+
+    /* ── Grid ─────────────────────────────────────────── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1.2rem;
+      margin-bottom: 1.2rem;
+    }
+
+    /* ── Card ─────────────────────────────────────────── */
+    .card {
+      background: #1a1f2e;
+      border-radius: 12px;
+      border: 1px solid #2d3748;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-header {
+      padding: 1rem 1.2rem 0.8rem;
+      border-bottom: 1px solid #2d3748;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .card-header-left h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #f1f5f9;
+    }
+
+    .card-header-left p {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      margin-top: 0.15rem;
+    }
+
+    .badges {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.3rem;
+      flex-shrink: 0;
+    }
+
+    .badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.2rem 0.55rem;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    .badge-port  { background: #1e3a5f; color: #93c5fd; }
+    .badge-db    { background: #1a3a2a; color: #6ee7b7; }
+    .badge-nodb  { background: #2d2d2d; color: #94a3b8; }
+
+    .card-body {
+      padding: 1rem 1.2rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* ── Section inside card ─────────────────────────── */
+    .section-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #64748b;
+      margin-bottom: 0.4rem;
+    }
+
+    /* ── Entities ────────────────────────────────────── */
+    .entity-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .entity {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      font-family: 'Consolas', monospace;
+    }
+
+    /* ── Endpoints ───────────────────────────────────── */
+    .endpoint-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .endpoint {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      font-size: 0.78rem;
+    }
+
+    .method {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.1rem 0.45rem;
+      border-radius: 4px;
+      min-width: 46px;
+      text-align: center;
+      font-family: monospace;
+    }
+
+    .method-get    { background: #14532d; color: #86efac; }
+    .method-post   { background: #1e3a5f; color: #93c5fd; }
+    .method-put    { background: #3b2700; color: #fbbf24; }
+    .method-patch  { background: #2d1b4e; color: #c4b5fd; }
+    .method-delete { background: #4a1515; color: #fca5a5; }
+
+    .endpoint-path {
+      font-family: 'Consolas', monospace;
+      color: #cbd5e1;
+      font-size: 0.77rem;
+    }
+
+    .endpoint-desc {
+      color: #64748b;
+      font-size: 0.73rem;
+    }
+
+    /* ── Feign clients ───────────────────────────────── */
+    .feign-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .feign-tag {
+      font-size: 0.72rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      background: #2d1b4e;
+      color: #c4b5fd;
+      font-family: monospace;
+      border: 1px solid #4c1d95;
+    }
+
+    /* ── Business rules ──────────────────────────────── */
+    .rule-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .rule-list li {
+      font-size: 0.78rem;
+      color: #cbd5e1;
+      padding-left: 1rem;
+      position: relative;
+    }
+
+    .rule-list li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: #f59e0b;
+    }
+
+    /* ── Notes ───────────────────────────────────────── */
+    .note {
+      font-size: 0.76rem;
+      color: #94a3b8;
+      background: #0f1117;
+      border-left: 3px solid #334155;
+      padding: 0.5rem 0.7rem;
+      border-radius: 0 6px 6px 0;
+    }
+
+    /* ── Colors per phase ────────────────────────────── */
+    /* Infrastructure */
+    .phase-infra .card  { border-color: #1e3a5f; }
+    .phase-infra .entity { background: #1e3a5f; color: #93c5fd; }
+
+    /* Auth */
+    .phase-auth .card   { border-color: #4a1515; }
+    .phase-auth .entity { background: #4a1515; color: #fca5a5; }
+
+    /* Catalog */
+    .phase-catalog .card   { border-color: #1a3a2a; }
+    .phase-catalog .entity { background: #1a3a2a; color: #6ee7b7; }
+
+    /* Business */
+    .phase-business .card   { border-color: #3b2700; }
+    .phase-business .entity { background: #3b2700; color: #fbbf24; }
+
+    /* Reports */
+    .phase-reports .card   { border-color: #2d1b4e; }
+    .phase-reports .entity { background: #2d1b4e; color: #c4b5fd; }
+
+    /* Flow box colors */
+    .fb-infra    { background: #1e3a5f; color: #93c5fd; }
+    .fb-auth     { background: #4a1515; color: #fca5a5; }
+    .fb-catalog  { background: #1a3a2a; color: #6ee7b7; }
+    .fb-business { background: #3b2700; color: #fbbf24; }
+    .fb-reports  { background: #2d1b4e; color: #c4b5fd; }
+
+    /* ── Formula box ─────────────────────────────────── */
+    .formula {
+      font-family: 'Consolas', monospace;
+      font-size: 0.72rem;
+      background: #0f1117;
+      color: #e2e8f0;
+      padding: 0.7rem 0.9rem;
+      border-radius: 8px;
+      border: 1px solid #2d3748;
+      line-height: 1.8;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      font-size: 0.75rem;
+      color: #334155;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Sistema de Estacionamiento Inteligente</h1>
+  <p class="subtitle">Arquitectura de Microservicios — Spring Boot 3 · Java 21 · MySQL 8 · Spring Cloud</p>
+
+  <!-- Flow -->
+  <div class="flow">
+    <span class="flow-box fb-infra">Cliente / Postman</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-box fb-infra">api-gateway :8080</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-box fb-auth">auth-service :8081</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-box fb-catalog">user-service :8082</span>
+    <span class="flow-arrow">·</span>
+    <span class="flow-box fb-catalog">ms-vehiculos :8084</span>
+    <span class="flow-arrow">·</span>
+    <span class="flow-box fb-catalog">ms-espacios :8085</span>
+    <span class="flow-arrow">·</span>
+    <span class="flow-box fb-catalog">ms-tarifas :8088</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-box fb-business">ms-reservas :8086</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-box fb-business">ms-accesos :8087</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-box fb-business">ms-pagos :8089</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-box fb-reports">ms-reportes :8090</span>
+    <span class="flow-arrow">·</span>
+    <span class="flow-box fb-infra">eureka :8761</span>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════
+       FASE 1 — INFRAESTRUCTURA
+  ════════════════════════════════════════════════════ -->
+  <div class="phase-label">Fase 1 — Infraestructura</div>
+  <div class="grid phase-infra">
+
+    <!-- eureka-server -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left">
+          <h2>eureka-server</h2>
+          <p>Service Discovery — registro y localización dinámica de todos los microservicios</p>
+        </div>
+        <div class="badges">
+          <span class="badge badge-port">:8761</span>
+          <span class="badge badge-nodb">sin BD</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="section-title">Lo que hace</div>
+          <ul class="rule-list">
+            <li>Cada servicio se registra aquí al arrancar</li>
+            <li>El Gateway lo consulta para resolver nombres a IPs</li>
+            <li>Dashboard en <code style="color:#93c5fd">http://localhost:8761</code></li>
+          </ul>
+        </div>
+        <div>
+          <div class="section-title">Configuración clave</div>
+          <ul class="rule-list">
+            <li><code style="color:#93c5fd">@EnableEurekaServer</code> en la clase principal</li>
+            <li><code style="color:#93c5fd">eureka.client.register-with-eureka=false</code></li>
+            <li><code style="color:#93c5fd">eureka.client.fetch-registry=false</code></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- api-gateway -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left">
+          <h2>api-gateway</h2>
+          <p>Punto de entrada único — enruta, valida JWT y aplica filtros</p>
+        </div>
+        <div class="badges">
+          <span class="badge badge-port">:8080</span>
+          <span class="badge badge-nodb">sin BD</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="section-title">Lo que hace</div>
+          <ul class="rule-list">
+            <li>Recibe todas las peticiones externas</li>
+            <li>Redirige a cada servicio según el path</li>
+            <li>Valida token JWT antes de reenviar</li>
+          </ul>
+        </div>
+        <div>
+          <div class="section-title">Rutas principales</div>
+          <div class="endpoint-list">
+            <div class="endpoint"><span class="endpoint-path">/api/auth/**</span><span class="endpoint-desc">→ auth-service</span></div>
+            <div class="endpoint"><span class="endpoint-path">/api/clientes/**</span><span class="endpoint-desc">→ user-service</span></div>
+            <div class="endpoint"><span class="endpoint-path">/api/vehiculos/**</span><span class="endpoint-desc">→ ms-vehiculos</span></div>
+            <div class="endpoint"><span class="endpoint-path">/api/espacios/**</span><span class="endpoint-desc">→ ms-espacios</span></div>
+            <div class="endpoint"><span class="endpoint-path">/api/reservas/**</span><span class="endpoint-desc">→ ms-reservas</span></div>
+            <div class="endpoint"><span class="endpoint-path">/api/accesos/**</span><span class="endpoint-desc">→ ms-accesos</span></div>
+            <div class="endpoint"><span class="endpoint-path">/api/tarifas/**</span><span class="endpoint-desc">→ ms-tarifas</span></div>
+            <div class="endpoint"><span class="endpoint-path">/api/cobros/**</span><span class="endpoint-desc">→ ms-pagos</span></div>
+            <div class="endpoint"><span class="endpoint-path">/api/reportes/**</span><span class="endpoint-desc">→ ms-reportes</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /grid infra -->
+
+  <!-- ════════════════════════════════════════════════════
+       FASE 2 — AUTH
+  ════════════════════════════════════════════════════ -->
+  <div class="phase-label">Fase 2 — Autenticación (implementar primero)</div>
+  <div class="grid phase-auth">
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left">
+          <h2>auth-service</h2>
+          <p>Autenticación JWT — desbloquea la seguridad de todos los demás servicios</p>
+        </div>
+        <div class="badges">
+          <span class="badge badge-port">:8081</span>
+          <span class="badge badge-db">db_auth</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="section-title">Entidades</div>
+          <div class="entity-list">
+            <span class="entity">Rol</span>
+            <span class="entity">UserCredential</span>
+          </div>
+        </div>
+        <div>
+          <div class="section-title">Endpoints</div>
+          <div class="endpoint-list">
+            <div class="endpoint"><span class="method method-post">POST</span><span class="endpoint-path">/api/auth/login</span><span class="endpoint-desc">→ devuelve JWT</span></div>
+            <div class="endpoint"><span class="method method-post">POST</span><span class="endpoint-path">/api/auth/register</span><span class="endpoint-desc">→ crea credencial</span></div>
+          </div>
+        </div>
+        <div>
+          <div class="section-title">Clases clave</div>
+          <ul class="rule-list">
+            <li><code style="color:#fca5a5">JwtUtil</code> — genera y valida tokens (JJWT 0.11.5)</li>
+            <li><code style="color:#fca5a5">JwtAuthFilter</code> — OncePerRequestFilter</li>
+            <li><code style="color:#fca5a5">SecurityConfig</code> — rutas públicas / protegidas</li>
+            <li>BCrypt strength 12 para passwords</li>
+          </ul>
+        </div>
+        <div class="note">⚠ Agregar JJWT manualmente al pom.xml — no está en Initializr</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ════════════════════════════════════════════════════
+       FASE 3 — CATÁLOGO
+  ════════════════════════════════════════════════════ -->
+  <div class="phase-label">Fase 3 — Servicios de Catálogo (pueden desarrollarse en paralelo)</div>
+  <div class="grid phase-catalog">
+
+    <!-- user-service -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left">
+          <h2>user-service</h2>
+          <p>Gestión de clientes y suscripciones</p>
+        </div>
+        <div class="badges">
+          <span class="badge badge-port">:8082</span>
+          <span class="badge badge-db">db_usuarios</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="section-title">Entidades</div>
+          <div class="entity-list">
+            <span class="entity">TipoCliente</span>
+            <span class="entity">Cliente</span>
+            <span class="entity">Suscripcion</span>
+            <span class="entity">ClienteSuscripcion</span>
+          </div>
+        </div>
+        <div>
+          <div class="section-title">Endpoints</div>
+          <div class="endpoint-list">
+            <div class="endpoint"><span class="method method-get">GET</span><span class="endpoint-path">/api/clientes</span></div>
+            <div class="endpoint"><span class="method method-post">POST</span><span class="endpoint-path">/api/clientes</span></div>
+            <div class="endpoint"><span class="method method-put">PUT</span><span class="endpoint-path">/api/clientes/{id}</span></div>
+            <div class="endpoint"><span class="method method-delete">DELETE</span><span class="endpoint-path">/api/clientes/{id}</span></div>
+            <div class="endpoint"><span class="method method-get">GET</span><span class="endpoint-path">/api/tipo-cliente</span></div>
+            <div class="endpoint"><span class="method method-post">POST</span><span class="endpoint-path">/api/clientes/{id}/suscripciones</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- security-service -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left">
+          <h2>security-service</h2>
+          <p>Gestión de permisos y asignación a roles</p>
+        </div>
+        <div class="badges">
+          <span class="badge badge-port">:8083</span>
+          <span class="badge badge-db">db_seguridad</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="section-title">Entidades</div>
+          <div class="entity-list">
+            <span class="entity">Permiso</span>
+            <span class="entity">RolPermiso</span>
+          </div>
+        </div>
+        <div>
+          <div class="section-title">Endpoints</div>
+          <div class="endpoint-list">
+            <div class="endpoint"><span class="method method-get">GET</span><span class="endpoint-path">/api/permisos</span></div>
+            <div class="endpoint"><span class="method method-post">POST</span><span class="endpoint-path">/api/permisos</span></div>
+            <div class="endpoint"><span class="method method-put">PUT</span><span class="endpoint-path">/api/permisos/{id}</span></div>
+            <div class="endpoint"><span class="method method-delete">DELETE</span><span class="endpoint-path">/api/permisos/{id}</span></div>
+            <div class="endpoint"><span class="method method-get">GET</span><span class="endpoint-path">/api/roles-permisos</span></div>
+            <div class="endpoint"><span class="method method-post">POST</span><span class="endpoint-path">/api/roles-permisos</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ms-vehiculos -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left">
+          <h2>ms-vehiculos</h2>
+          <p>Catálogo de vehículos y tipos — consultado por ms-reservas</p>
+        </div>
+        <div class="badges">
+          <span class="badge badge-port">:8084</span>
+          <span class="badge badge-db">db_vehiculos</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="section-title">Entidades</div>
+          <div class="entity-list">
+            <span class="entity">TipoVehiculo</span>
+            <span class="entity">Vehiculo</span>
+          </div>
+        </div>
+        <div>
+          <div class="section-title">Endpoints</div>
+          <div class="endpoint-list">
+            <div class="endpoint"><span class="method method-get">GET</span><span class="endpoint-path">/api/vehiculos</span></div>
+            <div class="endpoint"><span class="method method-post">POST</span><span class="endpoint-path">/api/vehiculos</span></div>
+            <div class="endpoint"><span class="method method-put">PUT</span><span class="endpoint-path">/api/vehiculos/{id}</span></div>
+            <div class="endpoint"><span class="method method-delete">DELETE</span><span class="endpoint-path">/api/vehiculos/{id}</span></div>
+            <div class="endpoint"><span class="method method-get">GET</span><span class="endpoint-path">/api/vehiculos/cliente/{clienteId}</span><span class="endpoint-desc">FK lógica</span></div>
+            <div class="endpoint"><span class="method method-get">GET</span><span class="endpoint-path">/api/tipo-vehiculo</span></div>
+          </div>
+        </div>
+        <div>
+          <div class="section-title">Relaciones</div>
+          <ul class="rule-list">
+            <li>Vehiculo → TipoVehiculo (<code>@ManyToOne</code>, misma BD)</li>
+            <li>Vehiculo → Cliente (FK lógica, campo <code>idClienteRef</code>)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ms-espacios -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left">
+          <h2>ms-espacios</h2>
+          <p>Catálogo de espacios de estacionamiento — consultado por ms-accesos</p>
+        </div>
+        <div class="badges">
+          <span class="badge badge-port">:8085</span>
+          <span class="badge badge-db">db_espacios</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="section-title">Entidades</div>
+          <div class="entity-list">
+            <span class="entity">TipoEspacio</span>
+            <span class="entity">Espacio</span>
+          </div>
+        </div>
+        <div>
+          <div class="section-title">Endpoints</div>
+          <div class="endpoint-list">
+            <div class="endpoint"><span class="method method-get">GET</span><span class="endpoint-path">/api/espacios</span></div>
+            <div class="endpoint"><span class="method method-post">POST</span><span class="endpoint-path">/api/espacios</span></div>
+            <div class="endpoint"><span class="method method-put">PUT</span><span class="endpoint-path">/api/espacios/{id}</span></div>
+            <div class="endpoint"><span class="method method-delete">DELETE</span><span class="endpoint-path">/api/espacios/{id}</span></div>
+            <div class="endpoint"><span class="method method-get">GET</span><span class="endpoint-path">/api/espacios/disponibles</span></div>
+            <div class="endpoint"><span class="method method-patch">PATCH</span><span class="endpoint-path">/api/espacios/{id}/disponibilidad</span></div>
+          </div>
+        </div>
+        <div>
+          <div class="section-title">Reglas de negocio</div>
+          <ul class="rule-list">
+            <li>Campo <code>disponible</code> se actualiza al registrar entrada/salida</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ms-tarifas -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left">
+          <h2>ms-tarifas</h2>
+          <p>Tarifas base y horarios con multiplicadores — consultado por ms-pagos</p>
+        </div>
+        <div class="badges">
+          <span class="badge badge-port">:8088</span>
+          <span class="badge badge-db">db_tarifas</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="section-title">Entidades</div>
+          <div class="entity-list">
+            <span class="entity">Tarifa</span>
+            <span class="entity">HorarioTarifa</span>
+          </div>
+        </div>
+        <div>
+          <div class="section-title">Endpoints</div>
+          <div class="endpoint-list">
+            <div class="endpoint"><span class="method method-get">GET</span><span class="endpoint-path">/api/tarifas</span></div>
+            <div class="endpoint"><span class="method method-post">POST</span><span class="endpoint-path">/api/tarifas</span></div>
+            <div class="endpoint"><span class="method method-put">PUT</span><span class="endpoint-path">/api/tarifas/{id}</span></div>
+            <div class="endpoint"><span class="method method-delete">DELETE</span><span class="endpoint-path">/api/tarifas/{id}</span></div>
+            <div class="endpoint"><span class="method method-get">GET</span><span class="endpoint-path">/api/tarifas/vigente</span><span class="endpoint-desc">tarifa activa según hora actual</span></div>
+            <div class="endpoint"><span class="method method-get">GET</span><span class="endpoint-path">/api/horarios-tarifa</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /grid catalog -->
+
+  <!-- ════════════════════════════════════════════════════
+       FASE 4 — NEGOCIO
+  ════════════════════════════════════════════════════ -->
+  <div class="phase-label">Fase 4 — Servicios de Negocio (orden secuencial obligatorio)</div>
+  <div class="grid phase-business">
+
+    <!-- ms-reservas -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left">
+          <h2>ms-reservas</h2>
+          <p>Gestión de reservas con validación de disponibilidad en tiempo real</p>
+        </div>
+        <div class="badges">
+          <span class="badge badge-port">:8086</span>
+          <span class="badge badge-db">db_reservas</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="section-title">Entidades</div>
+          <div class="entity-list">
+            <span class="entity">Reserva</span>
+          </div>
+        </div>
+        <div>
+          <div class="section-title">Feign Clients</div>
+          <div class="feign-list">
+            <span class="feign-tag">VehiculoClient</span>
+            <span class="feign-tag">EspacioClient</span>
+            <span class="feign-tag">ClienteClient</span>
+          </div>
+        </div>
+        <div>
+          <div class="section-title">Endpoints</div>
+          <div class="endpoint-list">
+            <div class="endpoint"><span class="method method-post">POST</span><span class="endpoint-path">/api/reservas</span><span class="endpoint-desc">valida disponibilidad vía Feign</span></div>
+            <div class="endpoint"><span class="method method-get">GET</span><span class="endpoint-path">/api/reservas/{id}</span></div>
+            <div class="endpoint"><span class="method method-get">GET</span><span class="endpoint-path">/api/reservas/cliente/{id}</span></div>
+            <div class="endpoint"><span class="method method-patch">PATCH</span><span class="endpoint-path">/api/reservas/{id}/estado</span><span class="endpoint-desc">CONFIRMADA / CANCELADA / EXPIRADA</span></div>
+          </div>
+        </div>
+        <div>
+          <div class="section-title">Reglas de negocio</div>
+          <ul class="rule-list">
+            <li>No crear reserva si espacio no disponible</li>
+            <li>No crear reserva si vehículo ya tiene una activa</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ms-accesos -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left">
+          <h2>ms-accesos</h2>
+          <p>Registro de entradas y salidas — actualiza disponibilidad de espacios</p>
+        </div>
+        <div class="badges">
+          <span class="badge badge-port">:8087</span>
+          <span class="badge badge-db">db_accesos</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="section-title">Entidades</div>
+          <div class="entity-list">
+            <span class="entity">Acceso</span>
+          </div>
+        </div>
+        <div>
+          <div class="section-title">Feign Clients</div>
+          <div class="feign-list">
+            <span class="feign-tag">EspacioClient</span>
+            <span class="feign-tag">ReservaClient</span>
+          </div>
+        </div>
+        <div>
+          <div class="section-title">Endpoints</div>
+          <div class="endpoint-list">
+            <div class="endpoint"><span class="method method-post">POST</span><span class="endpoint-path">/api/accesos/entrada</span><span class="endpoint-desc">registra ingreso</span></div>
+            <div class="endpoint"><span class="method method-patch">PATCH</span><span class="endpoint-path">/api/accesos/{id}/salida</span><span class="endpoint-desc">registra salida + calcula minutos</span></div>
+            <div class="endpoint"><span class="method method-get">GET</span><span class="endpoint-path">/api/accesos/{id}</span></div>
+            <div class="endpoint"><span class="method method-get">GET</span><span class="endpoint-path">/api/accesos/activos</span><span class="endpoint-desc">vehículos estacionados ahora</span></div>
+          </div>
+        </div>
+        <div>
+          <div class="section-title">Reglas de negocio</div>
+          <ul class="rule-list">
+            <li>Entrada → marcar espacio como <code>disponible=false</code></li>
+            <li>Salida → marcar espacio como <code>disponible=true</code></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ms-pagos -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left">
+          <h2>ms-pagos</h2>
+          <p>Generación de cobros con fórmula de descuentos múltiples</p>
+        </div>
+        <div class="badges">
+          <span class="badge badge-port">:8089</span>
+          <span class="badge badge-db">db_pagos</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="section-title">Entidades</div>
+          <div class="entity-list">
+            <span class="entity">Cobro</span>
+            <span class="entity">MetodoPago</span>
+            <span class="entity">Banco</span>
+            <span class="entity">TipoTarjeta</span>
+          </div>
+        </div>
+        <div>
+          <div class="section-title">Feign Clients</div>
+          <div class="feign-list">
+            <span class="feign-tag">AccesoClient</span>
+            <span class="feign-tag">TarifaClient</span>
+            <span class="feign-tag">ClienteClient</span>
+          </div>
+        </div>
+        <div>
+          <div class="section-title">Endpoints</div>
+          <div class="endpoint-list">
+            <div class="endpoint"><span class="method method-post">POST</span><span class="endpoint-path">/api/cobros</span><span class="endpoint-desc">genera cobro al cerrar acceso</span></div>
+            <div class="endpoint"><span class="method method-get">GET</span><span class="endpoint-path">/api/cobros/{id}</span></div>
+            <div class="endpoint"><span class="method method-get">GET</span><span class="endpoint-path">/api/cobros/acceso/{accesoId}</span></div>
+            <div class="endpoint"><span class="method method-get">GET</span><span class="endpoint-path">/api/metodos-pago</span></div>
+            <div class="endpoint"><span class="method method-post">POST</span><span class="endpoint-path">/api/metodos-pago</span></div>
+            <div class="endpoint"><span class="method method-get">GET</span><span class="endpoint-path">/api/bancos</span></div>
+          </div>
+        </div>
+        <div>
+          <div class="section-title">Fórmula de cobro</div>
+          <div class="formula">
+monto_base  = precio_base_hora<br>
+            × multiplicador_horario<br>
+            × factor_tipo_vehiculo<br>
+            × factor_tipo_espacio<br>
+            × (minutos / 60)<br>
+<br>
+monto_final = monto_base<br>
+            × (1 - desc_tipo_cliente / 100)<br>
+            × (1 - desc_suscripcion  / 100)<br>
+            × (1 - desc_banco        / 100)
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /grid business -->
+
+  <!-- ════════════════════════════════════════════════════
+       FASE 5 — REPORTES
+  ════════════════════════════════════════════════════ -->
+  <div class="phase-label">Fase 5 — Reportes (última fase)</div>
+  <div class="grid phase-reports">
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left">
+          <h2>ms-reportes</h2>
+          <p>Reportes de negocio — solo lectura, sin base de datos propia</p>
+        </div>
+        <div class="badges">
+          <span class="badge badge-port">:8090</span>
+          <span class="badge badge-nodb">sin BD</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="section-title">Feign Clients</div>
+          <div class="feign-list">
+            <span class="feign-tag">AccesoClient</span>
+            <span class="feign-tag">CobroClient</span>
+            <span class="feign-tag">EspacioClient</span>
+            <span class="feign-tag">VehiculoClient</span>
+          </div>
+        </div>
+        <div>
+          <div class="section-title">Endpoints</div>
+          <div class="endpoint-list">
+            <div class="endpoint"><span class="method method-get">GET</span><span class="endpoint-path">/api/reportes/ingresos-dia</span><span class="endpoint-desc">accesos por día</span></div>
+            <div class="endpoint"><span class="method method-get">GET</span><span class="endpoint-path">/api/reportes/ocupacion</span><span class="endpoint-desc">% espacios ocupados ahora</span></div>
+            <div class="endpoint"><span class="method method-get">GET</span><span class="endpoint-path">/api/reportes/cobros?desde=&hasta=</span><span class="endpoint-desc">ingresos por rango de fecha</span></div>
+            <div class="endpoint"><span class="method method-get">GET</span><span class="endpoint-path">/api/reportes/vehiculos-frecuentes</span><span class="endpoint-desc">top vehículos con más visitas</span></div>
+          </div>
+        </div>
+        <div class="note">Sin JPA ni MySQL Driver en el pom.xml — toda la data viene de Feign</div>
+      </div>
+    </div>
+
+  </div><!-- /grid reports -->
+
+  <footer>Estacionamiento Inteligente · DUOC UC · FULLSTACK-I</footer>
+
+</body>
+</html>
