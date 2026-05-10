@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data @Entity
+@Table(name = "tipo_vehiculo")
 public class TipoVehiculo {
 
     @Id
@@ -28,6 +30,6 @@ public class TipoVehiculo {
     // (multiplicación con precios), Float pierde precisión con decimales.
     // También renombrar a factorPrecio (camelCase) para seguir la convención Java;
     // usar @Column(name = "factor_precio") para mantener el nombre de columna en la BD.
-    @Column(nullable = false, unique = false)
-    private Float factor_precio;
+    @Column(name = "factor_precio", nullable = false)
+    private Double factorPrecio;
 }

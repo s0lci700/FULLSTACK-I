@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Entity
+@Table(name = "vehiculo")
 public class Vehiculo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,8 +54,8 @@ public class Vehiculo {
     // id_cliente_ref es una FK lógica (apunta a db_usuarios que es otra BD).
     // No se puede hacer @ManyToOne entre BDs distintas — el Long está correcto
     // aquí.
-    @Column(nullable = false, unique = false)
-    private Long id_cliente_ref;
+    @Column(name = "id_cliente_ref", nullable = false)
+    private Long idClienteRef;
 
     // TODO: Cambiar Integer por Boolean — activo es un flag true/false, no un
     // número.
