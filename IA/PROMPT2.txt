@@ -1,0 +1,48 @@
+🚀 PROMPT 2 — DESARROLLO PARA EVALUACIÓN 2
+Actúa como un experto en desarrollo backend con Spring Boot y evaluación académica basada en rúbricas.
+Ya existe una arquitectura validada de microservicios.
+Tu tarea es guiar el desarrollo para cumplir con TODOS los criterios de la Evaluación 2.
+
+Objetivo
+Desarrollar microservicios completamente funcionales, evaluables y alineados con la rúbrica.
+
+Paso 1
+Lista los microservicios en orden de desarrollo.
+
+Paso 2 (CRÍTICO)
+Desarrolla SOLO el primer microservicio.
+Debe incluir:
+	Estructura completa (CSR)
+	Entidad(es)
+	Script SQL
+	Repository
+	Service (interfaz + implementación)
+	Controller (CRUD completo)
+	DTOs
+	Validaciones (Bean Validation)
+	@ControllerAdvice
+	Logs obligatorios (@Slf4j)
+	application.yml
+
+Paso 3
+Entrega:
+	Checklist de cumplimiento de rúbrica
+	Cómo probar en Postman
+
+Regla obligatoria
+DETENERSE después del primer microservicio.
+Esperar instrucción:
+👉 “continuar con el siguiente microservicio”
+
+Evaluación interna (muy importante)
+Antes de entregar, valida:
+	¿Cumple patrón CSR?
+	¿Tiene validaciones?
+	¿Tiene logs en todas las capas?
+	¿CRUD completo?
+	¿Listo para integrar con Feign?
+Si algo falta, corrígelo antes de entregar.
+
+Inicio
+Comienza con el Paso 1.
+

@@ -47,7 +47,7 @@ mvn verify
 
 ## Architecture
 
-**Stack**: Spring Boot 3.3.5 · Java 21 · MySQL 8 · Spring Cloud 2023.0.4
+**Stack**: Spring Boot 3.5.14 · Java 21 · MySQL 8 · Spring Cloud 2025.0.2
 
 - **API Gateway** (Spring Cloud Gateway): single entry point, routes all traffic, validates JWT tokens
 - **Eureka** (Spring Cloud Netflix): service discovery — all services register here
@@ -57,17 +57,22 @@ mvn verify
 
 ### Internal service package structure
 
+Actual package root is `estacionamientos.{service_name}` (not `com.parking`). Folder names are **capitalized** in this project:
+
 ```
-com.parking.{servicename}/
+estacionamientos.{service_name}/
   ├── {Name}Application.java
-  ├── exception/            ← GlobalExceptionHandler + typed exceptions
-  ├── entity/               ← JPA entities
-  ├── repository/           ← JpaRepository interfaces
-  ├── service/              ← business logic
-  ├── controller/           ← REST controllers
-  ├── dto/                  ← XxxCreateDTO, XxxUpdateDTO, XxxResponseDTO
-  └── config/               ← Security, Swagger, etc.
+  ├── Controller/           ← REST controllers (@RestController)
+  ├── Repository/           ← JpaRepository interfaces
+  ├── Service/              ← business logic (@Service @Transactional)
+  ├── model/                ← JPA entities (@Entity)
+  ├── dto/                  ← LoginRequestDTO, LoginResponseDTO, etc.
+  └── security/             ← JwtUtil, SecurityConfig, filters
 ```
+
+**Lombok** is included in all services — use `@Data @NoArgsConstructor @AllArgsConstructor` on entities and DTOs instead of writing getters/setters manually.
+
+**`user_credential` uses `email` as the login identifier** (not `username`). Repository method: `findByEmail(String email)`.
 
 ### Service dependency chain (Phase 4)
 
@@ -164,6 +169,19 @@ monto_final = monto_base
 
 ## Implementation Status
 
-Scaffolding complete (12 services, exception handling, Eureka, Gateway). Still pending: entities/repositories/services/controllers, JWT/Spring Security, Feign clients, Swagger.
+| Service | Status | Notes |
+|---------|--------|-------|
+| `eureka-server` | scaffold | — |
+| `api-gateway` | scaffold | JWT filter pending |
+| `auth-service` | in progress | entities + DTOs + JwtUtil structure done; AuthService/SecurityConfig body pending |
+| `user-service` | scaffold | — |
+| `security-service` | scaffold | — |
+| `ms-vehiculos` | in progress | entities + repositories done |
+| `ms-espacios` | in progress | entities + repositories done; ⚠️ @Table names need fix (`"espacio"` → `"espacios"`, `"tipo_espacio"` → `"tipo_espacios"`) |
+| `ms-tarifas` | in progress | Tarifas + HorarioTarifas entities + repositories done |
+| `ms-reservas` | scaffold | — |
+| `ms-accesos` | scaffold | — |
+| `ms-pagos` | scaffold | — |
+| `ms-reportes` | scaffold | — |
 
 See `docs/` for full architecture, database, security, roles, and testing documentation (all in Spanish).
