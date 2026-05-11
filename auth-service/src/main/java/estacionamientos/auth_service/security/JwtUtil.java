@@ -1,11 +1,13 @@
 package estacionamientos.auth_service.security;
 
 import java.security.Key;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
@@ -26,29 +28,34 @@ public class JwtUtil {
 
     public String generateToken(String email, String rol) {
 
-        // Generar token:
-        // Jwts.builder()
-        // .setSubject(email)
-        // .claim("rol", rol)
-        // .setIssuedAt(new Date())
-        // .setExpiration(new Date(System.currentTimeMillis() + expiration))
-        // .signWith(getKey(), SignatureAlgorithm.HS256)
-        // .compact();
-        return "token-generado";
+        return Jwts.builder()
+        .setSubject(email)
+        .claim("rol", rol)
+        .setIssuedAt(new Date())
+        .setExpiration(new Date(System.currentTimeMillis() + expiration))
+        .signWith(getKey(), SignatureAlgorithm.HS256)
+        .compact();
     }
 
     public boolean validateToken(String token) {
-        // Parse/Validar
-        // Jwts.parserBuilder()
-        // .setSigningKey(getKey())
-        // .build()
-        // .parseClaimsJws(token)
-        // .getBody();
-        return true; // Retorna true si el token es válido, false si no lo es
+        try {
+            Jwts.parserBuilder()
+            .setSigningKey(getKey())
+            .build()
+            .parseClaimsJws(token)
+            .getBody();
+            return true; // Retorna true si el token es válido, false si no lo es
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public String extractEmail(String token) {
-        // Aquí iría la lógica para extraer el email del token JWT
-        return "email"; // Retorna el email extraído del token
-    }
+        return Jwts.parserBuilder()
+        .setSigningKey(getKey())
+        .build()
+        .parseClaimsJws(token)
+        .getBody()
+        .getSubject();
+}
 }

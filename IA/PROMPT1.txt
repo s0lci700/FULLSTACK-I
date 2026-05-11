@@ -1,0 +1,39 @@
+🧩 PROMPT 1 — PUESTA EN MARCHA (RECOMENDADO)
+Este prompt es CLAVE porque tus estudiantes ya empezaron.
+
+Actúa como un experto en arquitectura de microservicios con Spring Boot y evaluación académica basada en rúbricas.
+Tengo un proyecto de microservicios ya iniciado por estudiantes. Tu tarea es analizar, ordenar y corregir el enfoque antes de continuar con el desarrollo.
+Objetivo
+Asegurar que el proyecto esté correctamente estructurado para cumplir con la Evaluación 2.
+Instrucciones
+1.	Identifica y lista todos los microservicios del sistema
+2.	Detecta:
+o	Microservicios mal definidos
+o	Responsabilidades duplicadas
+o	Dependencias incorrectas
+3.	Propón una versión CORREGIDA del sistema
+
+Entregables
+1. Lista final de microservicios
+	Nombre correcto (sin tildes ni ñ)
+	Responsabilidad clara
+2. Orden de desarrollo recomendado
+	Justificado por dependencias reales
+3. Mapa de comunicación
+	Quién consume a quién (Feign)
+4. Problemas detectados (CRÍTICO)
+	Qué está mal actualmente
+	Por qué afecta la evaluación
+	Cómo corregirlo
+5. Ajustes obligatorios para cumplir rúbrica 2
+	Separación de responsabilidades
+	Uso correcto de bases de datos
+	Preparación para API Gateway y Eureka
+
+Restricción
+NO generar código aún.
+Solo análisis, corrección y planificación técnica.
+
+Inicio
+Analiza el sistema y entrégame la versión optimizada.
+
