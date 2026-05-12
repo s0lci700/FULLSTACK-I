@@ -1,10 +1,13 @@
-package estacionamientos.service;
+package estacionamientos.ms_vehiculos.service;
+
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import estacionamientos.model.Vehiculo;
-import estacionamientos.repository.VehiculoRepository;
+import estacionamientos.ms_vehiculos.exception.NotFoundException;
+import estacionamientos.ms_vehiculos.model.Vehiculo;
+import estacionamientos.ms_vehiculos.repository.VehiculoRepository;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -21,6 +24,17 @@ public class VehiculoService {
     @Transactional
     public boolean exists(String patente) {
         return vehiculoRepository.findByPatente(patente).isPresent();
+    }
+
+    public List<Vehiculo> listarTodos() {
+        if (vehiculoRepository.findAll().isEmpty()) {
+            throw new NotFoundException("El repositorio esta vacio");
+        }
+        return vehiculoRepository.findAll();
+    }
+
+    public Vehiculo obtenerPorId(Long id) {
+        return vehiculoRepository.findById(id);
     }
 
     // TODO: Implementar los métodos CRUD del servicio:
