@@ -1,0 +1,159 @@
+Entrega de Video + Defensa Técnica Individual
+
+Estimados/as estudiantes,
+
+A continuación, se informa la modalidad oficial de revisión y defensa técnica correspondiente a la Evaluación Parcial 2 del proyecto semestral de microservicios.
+
+Esta metodología permitirá optimizar los tiempos de revisión, mejorar la evaluación individual y validar correctamente la autoría y comprensión técnica del proyecto desarrollado.
+
+🎥 1. ENTREGA DEL VIDEO DEL PROYECTO
+
+Cada grupo deberá generar un video de demostración técnica del sistema desarrollado.
+
+⏱ Duración
+
+Mínimo: 5 minutos
+Máximo recomendado: 7 minutos
+📌 El video debe mostrar:
+
+arquitectura de microservicios
+API Gateway
+Eureka Server
+CRUD funcionales
+comunicación entre servicios
+pruebas en Postman
+logs y validaciones
+explicación técnica de TODOS los integrantes
+⚠ El video debe mostrar funcionamiento REAL del sistema.
+
+📄 Guión del Video
+
+Se dejará adjunto un documento Word con el guión oficial y la estructura obligatoria del video.
+
+Ese documento incluye:
+
+secciones obligatorias
+tiempos sugeridos
+elementos técnicos a mostrar
+indicadores asociados a la rúbrica
+📅 Fecha de entrega del video
+
+Primera clase de la semana:
+
+Sección 11
+
+📅 martes 19/05/2026
+📦 Forma de entrega (OBLIGATORIA)
+
+Cada grupo deberá:
+
+✅ 1. Subir el video al repositorio GitHub del proyecto
+
+Y además:
+
+✅ 2. Cada integrante debe subir el MISMO video al AVA
+
+⚠ ESTE PASO ES MUY IMPORTANTE.
+
+La entrega en AVA:
+
+habilita formalmente la revisión
+permite asignar puntajes en plataforma
+deja evidencia individual de entrega
+❌ Si el video NO está subido en AVA:
+
+el estudiante quedará SIN revisión registrada y podrá obtener calificación mínima (1.0).
+
+🔍 2. REVISIÓN DEL DOCENTE
+
+Durante la segunda clase de la semana (cuando no corresponda feriado):
+
+❌ Los estudiantes NO deben asistir al laboratorio.
+
+Ese tiempo será utilizado por el docente para:
+
+revisar videos
+descargar proyectos
+analizar arquitectura
+revisar GitHub
+generar preguntas personalizadas de defensa técnica
+💻 3. DEFENSA TÉCNICA INDIVIDUAL (PRESENCIAL)
+
+Fechas de defensa
+
+Sección 11
+
+📅 viernes 22/05/2026
+
+🕒 En horario normal de clases
+
+🧩 Modalidad de la defensa técnica
+
+Cada estudiante deberá:
+
+✅ descargar desde AVA un documento personalizado de evaluación
+
+✅ abrir su proyecto en VSCode
+
+✅ ejecutar sus microservicios
+
+✅ tener Postman disponible y funcional
+
+📄 El documento podrá incluir:
+
+preguntas técnicas
+explicación de código
+interpretación de logs
+validaciones
+modificaciones simples
+análisis de endpoints
+evidencias mediante Postman
+El estudiante podrá:
+
+copiar fragmentos de código
+pegar evidencias
+insertar imágenes
+responder con sus propias palabras
+🌐 Restricción de Internet
+
+Durante la defensa:
+
+❌ NO habrá acceso libre a internet
+
+Solo estará habilitado:
+
+acceso a AVA
+descarga/subida del documento
+Esto tiene como objetivo:
+
+asegurar evaluación individual real
+evitar copia
+evitar uso de IA durante la defensa
+validar comprensión técnica auténtica
+⚠ Recomendaciones IMPORTANTES
+
+Antes de la defensa técnica:
+
+✅ probar el proyecto completo
+
+✅ revisar Postman
+
+✅ validar puertos y bases de datos
+
+✅ verificar funcionamiento de Gateway y Eureka
+
+✅ revisar logs y validaciones
+
+✅ practicar explicación técnica individual
+
+🎯 Objetivo de esta modalidad
+
+Evaluar:
+
+funcionamiento real del sistema
+comprensión técnica individual
+participación efectiva
+capacidad de análisis y modificación del proyecto
+
+
+🚀 Prepárense con anticipación y revisen cuidadosamente el guión del video antes de comenzar la grabación.
