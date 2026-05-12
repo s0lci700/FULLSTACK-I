@@ -1,4 +1,4 @@
-package estacionamientos.auth_service.Repository;
+package estacionamientos.auth_service.repository;
 
 import java.util.Optional;
 

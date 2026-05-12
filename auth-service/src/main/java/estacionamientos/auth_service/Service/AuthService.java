@@ -1,12 +1,12 @@
-package estacionamientos.auth_service.Service;
+package estacionamientos.auth_service.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import estacionamientos.auth_service.Repository.RolRepository;
-import estacionamientos.auth_service.Repository.UserCredentialRepository;
+import estacionamientos.auth_service.repository.RolRepository;
+import estacionamientos.auth_service.repository.UserCredentialRepository;
 import estacionamientos.auth_service.dto.LoginRequestDTO;
 import estacionamientos.auth_service.dto.RegisterRequestDTO;
 import estacionamientos.auth_service.exception.ConflictException;
