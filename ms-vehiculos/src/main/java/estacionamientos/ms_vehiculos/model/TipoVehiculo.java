@@ -1,5 +1,7 @@
 package estacionamientos.ms_vehiculos.model;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,5 +33,5 @@ public class TipoVehiculo {
     // También renombrar a factorPrecio (camelCase) para seguir la convención Java;
     // usar @Column(name = "factor_precio") para mantener el nombre de columna en la BD.
     @Column(name = "factor_precio", nullable = false)
-    private Double factorPrecio;
+    private BigDecimal factorPrecio;
 }
