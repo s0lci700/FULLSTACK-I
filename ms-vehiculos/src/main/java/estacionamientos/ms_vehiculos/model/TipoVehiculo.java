@@ -1,4 +1,4 @@
-package estacionamientos.model;
+package estacionamientos.ms_vehiculos.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
