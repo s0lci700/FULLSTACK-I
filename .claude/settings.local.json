@@ -7,7 +7,8 @@
       "Bash(git -C 'D:\\\\estacionamientos\\\\FULLSTACK-I' commit -m ' *)",
       "Bash(git -C 'D:\\\\estacionamientos\\\\FULLSTACK-I' push)",
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\Sol\\\\Desktop\\\\FULLSTACK\\\\proyecto_semestre\\\\FULLSTACK-I\" -Directory)",
-      "Bash(Select-Object Name)"
+      "Bash(Select-Object Name)",
+      "Bash(git *)"
     ]
   }
 }

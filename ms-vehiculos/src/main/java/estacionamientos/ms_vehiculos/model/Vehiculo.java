@@ -49,7 +49,7 @@ public class Vehiculo {
 
     @ManyToOne
     @JoinColumn(name = "id_tipo_vehiculo", nullable = false)
-    private TipoVehiculo tipoVehiculo;
+    private Long idTipoVehiculo;
 
     // id_cliente_ref es una FK lógica (apunta a db_usuarios que es otra BD).
     // No se puede hacer @ManyToOne entre BDs distintas — el Long está correcto
