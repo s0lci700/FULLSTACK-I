@@ -2,8 +2,8 @@ package estacionamientos.ms_espacios.service;
 
 import estacionamientos.ms_espacios.dto.TipoEspacioResponseDTO;
 import estacionamientos.ms_espacios.exception.ResourceNotFoundException;
-import estacionamientos.ms_espacios.model.TipoEspacios;
-import estacionamientos.ms_espacios.repository.TipoEspaciosRepository;
+import estacionamientos.ms_espacios.model.TipoEspacio;
+import estacionamientos.ms_espacios.repository.TipoEspacioRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -11,13 +11,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class TipoEspaciosService {
+public class TipoEspacioService {
 
-    private static final Logger log = LoggerFactory.getLogger(TipoEspaciosService.class);
+    private static final Logger log = LoggerFactory.getLogger(TipoEspacioService.class);
 
-    private final TipoEspaciosRepository tipoEspaciosRepository;
+    private final TipoEspacioRepository tipoEspaciosRepository;
 
-    public TipoEspaciosService(TipoEspaciosRepository tipoEspaciosRepository) {
+    public TipoEspacioService(TipoEspacioRepository tipoEspaciosRepository) {
         this.tipoEspaciosRepository = tipoEspaciosRepository;
     }
 
@@ -30,12 +30,12 @@ public class TipoEspaciosService {
 
     public TipoEspacioResponseDTO findById(Long id) {
         log.info("Buscando tipo de espacio con id: {}", id);
-        TipoEspacios tipo = tipoEspaciosRepository.findById(id)
+        TipoEspacio tipo = tipoEspaciosRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Tipo de espacio no encontrado con id: " + id));
         return toDTO(tipo);
     }
 
-    public TipoEspacioResponseDTO toDTO(TipoEspacios tipo) {
+    public TipoEspacioResponseDTO toDTO(TipoEspacio tipo) {
         return new TipoEspacioResponseDTO(
                 tipo.getId(),
                 tipo.getNombre(),
@@ -44,7 +44,7 @@ public class TipoEspaciosService {
         );
     }
 
-    public TipoEspacios findEntityById(Long id) {
+    public TipoEspacio findEntityById(Long id) {
         return tipoEspaciosRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Tipo de espacio no encontrado con id: " + id));
     }

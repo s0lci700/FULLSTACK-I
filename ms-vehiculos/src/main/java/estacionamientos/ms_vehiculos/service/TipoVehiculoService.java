@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import estacionamientos.ms_vehiculos.dto.TipoVehiculoCreateDTO;
 import estacionamientos.ms_vehiculos.dto.TipoVehiculoUpdateDTO;
-import estacionamientos.ms_vehiculos.exception.AlreadyFoundException;
+import estacionamientos.ms_vehiculos.exception.ConflictException;
 import estacionamientos.ms_vehiculos.exception.NotFoundException;
 import estacionamientos.ms_vehiculos.model.TipoVehiculo;
 import estacionamientos.ms_vehiculos.repository.TipoVehiculoRepository;
@@ -38,7 +38,7 @@ public class TipoVehiculoService {
     @Transactional
     public TipoVehiculo crear(TipoVehiculoCreateDTO tipoVehiculo) {
         if (tipoVehiculoRepository.findByNombre(tipoVehiculo.getNombre()) != null) {
-            throw new AlreadyFoundException("El tipo de vehiculo ya existe");
+            throw new ConflictException("El tipo de vehiculo ya existe");
         }
         TipoVehiculo nuevoTipo = new TipoVehiculo();
         nuevoTipo.setNombre(tipoVehiculo.getNombre());
@@ -62,7 +62,7 @@ public class TipoVehiculoService {
     public void eliminar(Long id) {
         tipoVehiculoRepository.findById(id).orElseThrow(() -> new NotFoundException("Tipo de vehiculo no encontrado"));
         if (!vehiculoRepository.findByIdTipoVehiculoId(id).isEmpty()) {
-            throw new AlreadyFoundException("No se puede eliminar el tipo de vehiculo porque hay vehiculos asociados");
+            throw new ConflictException("No se puede eliminar el tipo de vehiculo porque hay vehiculos asociados");
         }
         tipoVehiculoRepository.deleteById(id);
     }

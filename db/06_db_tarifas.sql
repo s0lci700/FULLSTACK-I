@@ -27,12 +27,14 @@ CREATE TABLE tarifa (
     activo           TINYINT(1)    NOT NULL DEFAULT 1
 ) ENGINE=InnoDB;
 
+-- hora_inicio y hora_fin son LocalDateTime en la entidad HorarioTarifas.java
+-- Hibernate mapea LocalDateTime → DATETIME (no TIME).
 CREATE TABLE horario_tarifa (
     id            BIGINT       AUTO_INCREMENT PRIMARY KEY,
     id_tarifa     BIGINT       NOT NULL,
     dia_tipo      VARCHAR(20)  NOT NULL,
-    hora_inicio   TIME         NOT NULL,
-    hora_fin      TIME         NOT NULL,
+    hora_inicio   DATETIME     NOT NULL,
+    hora_fin      DATETIME     NOT NULL,
     multiplicador DECIMAL(4,2) NOT NULL DEFAULT 1.00,
     CONSTRAINT fk_ht_tarifa FOREIGN KEY (id_tarifa) REFERENCES tarifa(id)
 ) ENGINE=InnoDB;
@@ -47,15 +49,16 @@ INSERT INTO tarifa (nombre, descripcion, precio_base_hora, activo) VALUES
     ('TARIFA_NOCTURNA', 'Tarifa reducida horario nocturno',  800.00, 1);
 
 -- Horarios con multiplicadores por bloque horario y tipo de día
+-- Fecha de referencia 2000-01-01 — solo importa la parte horaria para evaluación
 INSERT INTO horario_tarifa (id_tarifa, dia_tipo, hora_inicio, hora_fin, multiplicador) VALUES
     -- TARIFA_BASE
-    (1, 'LABORAL',       '08:00:00', '18:00:00', 1.00),  -- hora pico normal
-    (1, 'LABORAL',       '18:00:00', '23:59:59', 1.30),  -- tarde (+30%)
-    (1, 'FIN_DE_SEMANA', '00:00:00', '23:59:59', 1.50),  -- fin de semana (+50%)
-    (1, 'FESTIVO',       '00:00:00', '23:59:59', 1.75),  -- festivo (+75%)
+    (1, 'LABORAL',       '2000-01-01 08:00:00', '2000-01-01 18:00:00', 1.00),  -- hora pico normal
+    (1, 'LABORAL',       '2000-01-01 18:00:00', '2000-01-01 23:59:59', 1.30),  -- tarde (+30%)
+    (1, 'FIN_DE_SEMANA', '2000-01-01 00:00:00', '2000-01-01 23:59:59', 1.50),  -- fin de semana (+50%)
+    (1, 'FESTIVO',       '2000-01-01 00:00:00', '2000-01-01 23:59:59', 1.75),  -- festivo (+75%)
     -- TARIFA_NOCTURNA
-    (2, 'LABORAL',       '00:00:00', '08:00:00', 1.00),
-    (2, 'FIN_DE_SEMANA', '00:00:00', '08:00:00', 1.00);
+    (2, 'LABORAL',       '2000-01-01 00:00:00', '2000-01-01 08:00:00', 1.00),
+    (2, 'FIN_DE_SEMANA', '2000-01-01 00:00:00', '2000-01-01 08:00:00', 1.00);
 
 -- ---- Verificación ------------------------------------------
 -- SELECT 'tarifa' AS tabla, COUNT(*) AS filas FROM tarifa

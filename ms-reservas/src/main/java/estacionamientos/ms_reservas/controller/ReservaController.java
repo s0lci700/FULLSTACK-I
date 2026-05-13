@@ -15,15 +15,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import estacionamientos.ms_reservas.dto.ReservaCreateDTO;
 import estacionamientos.ms_reservas.dto.ReservaResponseDTO;
-import estacionamientos.ms_reservas.service.ReservasService;
+import estacionamientos.ms_reservas.service.ReservaService;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/reservas")
-public class ReservasController {
+public class ReservaController {
 
     @Autowired
-    private ReservasService reservasService;
+    private ReservaService reservasService;
     
     @GetMapping
     public ResponseEntity<List<ReservaResponseDTO>> findAll() {

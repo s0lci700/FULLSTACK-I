@@ -5,9 +5,9 @@ import estacionamientos.ms_espacios.dto.EspacioResponseDTO;
 import estacionamientos.ms_espacios.dto.EspacioUpdateDTO;
 import estacionamientos.ms_espacios.dto.TipoEspacioResponseDTO;
 import estacionamientos.ms_espacios.exception.ResourceNotFoundException;
-import estacionamientos.ms_espacios.model.Espacios;
-import estacionamientos.ms_espacios.model.TipoEspacios;
-import estacionamientos.ms_espacios.repository.EspaciosRepository;
+import estacionamientos.ms_espacios.model.Espacio;
+import estacionamientos.ms_espacios.model.TipoEspacio;
+import estacionamientos.ms_espacios.repository.EspacioRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -15,15 +15,15 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class EspaciosService {
+public class EspacioService {
 
-    private static final Logger log = LoggerFactory.getLogger(EspaciosService.class);
+    private static final Logger log = LoggerFactory.getLogger(EspacioService.class);
 
-    private final EspaciosRepository espaciosRepository;
-    private final TipoEspaciosService tipoEspaciosService;
+    private final EspacioRepository espaciosRepository;
+    private final TipoEspacioService tipoEspaciosService;
 
-    public EspaciosService(EspaciosRepository espaciosRepository,
-                           TipoEspaciosService tipoEspaciosService) {
+    public EspacioService(EspacioRepository espaciosRepository,
+                           TipoEspacioService tipoEspaciosService) {
         this.espaciosRepository = espaciosRepository;
         this.tipoEspaciosService = tipoEspaciosService;
     }
@@ -37,7 +37,7 @@ public class EspaciosService {
 
     public EspacioResponseDTO findById(Long id) {
         log.info("Buscando espacio con id: {}", id);
-        Espacios espacio = espaciosRepository.findById(id)
+        Espacio espacio = espaciosRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Espacio no encontrado con id: " + id));
         return toDTO(espacio);
     }
@@ -54,42 +54,42 @@ public class EspaciosService {
         if (espaciosRepository.existsByNumero(dto.getNumero())) {
             throw new IllegalArgumentException("Ya existe un espacio con el numero: " + dto.getNumero());
         }
-        TipoEspacios tipo = tipoEspaciosService.findEntityById(dto.getIdTipoEspacio());
-        Espacios espacio = new Espacios();
+        TipoEspacio tipo = tipoEspaciosService.findEntityById(dto.getIdTipoEspacio());
+        Espacio espacio = new Espacio();
         espacio.setNumero(dto.getNumero());
         espacio.setZona(dto.getZona());
         espacio.setPiso(dto.getPiso());
         espacio.setTipoEspacio(tipo);
         espacio.setDisponible(dto.getDisponible());
         espacio.setActivo(dto.getActivo());
-        Espacios guardado = espaciosRepository.save(espacio);
+        Espacio guardado = espaciosRepository.save(espacio);
         log.info("Espacio creado con id: {}", guardado.getId());
         return toDTO(guardado);
     }
 
     public EspacioResponseDTO update(Long id, EspacioUpdateDTO dto) {
         log.info("Actualizando espacio con id: {}", id);
-        Espacios espacio = espaciosRepository.findById(id)
+        Espacio espacio = espaciosRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Espacio no encontrado con id: " + id));
         // Validar numero unico solo si cambio
         if (!espacio.getNumero().equals(dto.getNumero())
                 && espaciosRepository.existsByNumero(dto.getNumero())) {
             throw new IllegalArgumentException("Ya existe un espacio con el numero: " + dto.getNumero());
         }
-        TipoEspacios tipo = tipoEspaciosService.findEntityById(dto.getIdTipoEspacio());
+        TipoEspacio tipo = tipoEspaciosService.findEntityById(dto.getIdTipoEspacio());
         espacio.setNumero(dto.getNumero());
         espacio.setZona(dto.getZona());
         espacio.setPiso(dto.getPiso());
         espacio.setTipoEspacio(tipo);
         espacio.setActivo(dto.getActivo());
-        Espacios actualizado = espaciosRepository.save(espacio);
+        Espacio actualizado = espaciosRepository.save(espacio);
         log.info("Espacio actualizado con id: {}", actualizado.getId());
         return toDTO(actualizado);
     }
 
     public void updateDisponibilidad(Long id, Boolean disponible) {
         log.info("Actualizando disponibilidad del espacio id: {} a: {}", id, disponible);
-        Espacios espacio = espaciosRepository.findById(id)
+        Espacio espacio = espaciosRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Espacio no encontrado con id: " + id));
         espacio.setDisponible(disponible);
         espaciosRepository.save(espacio);
@@ -105,7 +105,7 @@ public class EspaciosService {
         log.info("Espacio eliminado con id: {}", id);
     }
 
-    private EspacioResponseDTO toDTO(Espacios espacio) {
+    private EspacioResponseDTO toDTO(Espacio espacio) {
         TipoEspacioResponseDTO tipoDTO = tipoEspaciosService.toDTO(espacio.getTipoEspacio());
         return new EspacioResponseDTO(
                 espacio.getId(),

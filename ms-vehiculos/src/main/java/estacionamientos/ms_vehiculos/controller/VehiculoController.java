@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import estacionamientos.ms_vehiculos.dto.VehiculoCreateDTO;
+import estacionamientos.ms_vehiculos.dto.VehiculoResponseDTO;
 import estacionamientos.ms_vehiculos.dto.VehiculoUpdateDTO;
-import estacionamientos.ms_vehiculos.model.Vehiculo;
 import estacionamientos.ms_vehiculos.service.VehiculoService;
 
 @RestController
@@ -33,12 +33,12 @@ public class VehiculoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Vehiculo>> listar() {
+    public ResponseEntity<List<VehiculoResponseDTO>> listar() {
         return ResponseEntity.ok(vehiculoService.listarTodos());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Vehiculo> obtenerPorId(@PathVariable Long id) {
+    public ResponseEntity<VehiculoResponseDTO> obtenerPorId(@PathVariable Long id) {
         return ResponseEntity.ok(vehiculoService.obtenerPorId(id));
     }
 
@@ -62,7 +62,7 @@ public class VehiculoController {
     }
 
     @GetMapping("/cliente/{idClienteRef}")
-    public ResponseEntity<List<Vehiculo>> listarPorCliente(@PathVariable Long idClienteRef) {
+    public ResponseEntity<List<VehiculoResponseDTO>> listarPorCliente(@PathVariable Long idClienteRef) {
         return ResponseEntity.ok(vehiculoService.listarPorCliente(idClienteRef));
     }
 

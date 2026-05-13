@@ -1,5 +1,7 @@
 package estacionamientos.ms_tarifas.dto;
 
+import java.time.LocalDateTime;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -17,11 +19,11 @@ public class HorarioTarifaCreateDTO {
     @NotBlank(message = "El dia tipo es obligatorio")
     private String diaTipo;
 
-    @NotBlank(message = "La hora inicio es obligatoria")
-    private String horaInicio;
+    @NotNull(message = "La hora inicio es obligatoria")
+    private LocalDateTime horaInicio;
 
-    @NotBlank(message = "La hora fin es obligatoria")
-    private String horaFin;
+    @NotNull(message = "La hora fin es obligatoria")
+    private LocalDateTime horaFin;
 
     @NotNull(message = "El multiplicador es obligatorio")
     private Double multiplicador;

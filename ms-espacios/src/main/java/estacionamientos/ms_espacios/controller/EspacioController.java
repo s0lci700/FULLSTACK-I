@@ -21,18 +21,18 @@ import org.springframework.web.bind.annotation.RestController;
 import estacionamientos.ms_espacios.dto.EspacioCreateDTO;
 import estacionamientos.ms_espacios.dto.EspacioResponseDTO;
 import estacionamientos.ms_espacios.dto.EspacioUpdateDTO;
-import estacionamientos.ms_espacios.service.EspaciosService;
+import estacionamientos.ms_espacios.service.EspacioService;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/espacios")
-public class EspaciosController {
+public class EspacioController {
 
-    private static final Logger log = LoggerFactory.getLogger(EspaciosController.class);
+    private static final Logger log = LoggerFactory.getLogger(EspacioController.class);
 
-    private final EspaciosService espaciosService;
+    private final EspacioService espaciosService;
 
-    public EspaciosController(EspaciosService espaciosService) {
+    public EspacioController(EspacioService espaciosService) {
         this.espaciosService = espaciosService;
     }
     // Retorna la lista completa de todos los espacios registrados

@@ -5,9 +5,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import estacionamientos.ms_vehiculos.dto.TipoVehiculoResponseDTO;
 import estacionamientos.ms_vehiculos.dto.VehiculoCreateDTO;
+import estacionamientos.ms_vehiculos.dto.VehiculoResponseDTO;
 import estacionamientos.ms_vehiculos.dto.VehiculoUpdateDTO;
-import estacionamientos.ms_vehiculos.exception.AlreadyFoundException;
+import estacionamientos.ms_vehiculos.exception.ConflictException;
 import estacionamientos.ms_vehiculos.exception.NotFoundException;
 import estacionamientos.ms_vehiculos.model.TipoVehiculo;
 import estacionamientos.ms_vehiculos.model.Vehiculo;
@@ -37,22 +39,25 @@ public class VehiculoService {
         return vehiculoRepository.findByPatente(patente).isPresent();
     }
 
-    public List<Vehiculo> listarTodos() {
+    public List<VehiculoResponseDTO> listarTodos() {
         List<Vehiculo> vehiculos = vehiculoRepository.findAll();
         if (vehiculos.isEmpty()) {
             throw new NotFoundException("El repositorio esta vacio");
         }
-        return vehiculos;
+        return vehiculos.stream().map(this::toVehiculoDTO).toList();
     }
 
-    public Vehiculo obtenerPorId(Long id) {
-        return vehiculoRepository.findById(id).orElseThrow(() -> new NotFoundException("Vehiculo no encontrado"));
+    public VehiculoResponseDTO obtenerPorId(Long id) {
+        Vehiculo vehiculo = vehiculoRepository
+        .findById(id)
+        .orElseThrow(() -> new NotFoundException("Vehiculo no encontrado"));
+        return toVehiculoDTO(vehiculo);
     }
 
     @Transactional
     public void crear(VehiculoCreateDTO dto) {
         if (vehiculoRepository.findByPatente(dto.patente).isPresent()) {
-            throw new AlreadyFoundException("Ya se encuentra la patente");
+            throw new ConflictException("Ya se encuentra la patente");
         }
         Vehiculo vehiculo = new Vehiculo();
         TipoVehiculo tipoVehiculo = tipoVehiculoRepository
@@ -94,41 +99,47 @@ public class VehiculoService {
         vehiculoRepository.save(vehiculo);
     }
 
-    public List<Vehiculo> listarPorCliente(Long idClienteRef) {
+    public List<VehiculoResponseDTO> listarPorCliente(Long idClienteRef) {
         List<Vehiculo> vehiculos = vehiculoRepository.findByIdClienteRef(idClienteRef);
         if (vehiculos.isEmpty()) {
             throw new NotFoundException("No se encontraron vehiculos para el cliente");
         }
-        return vehiculos;
+        return vehiculos.stream().map(this::toVehiculoDTO).toList();
     }
 
-    public List<Vehiculo> listarPorTipoVehiculo(Long idTipoVehiculo) {
+    public List<VehiculoResponseDTO> listarPorTipoVehiculo(Long idTipoVehiculo) {
         List<Vehiculo> vehiculos = vehiculoRepository.findByIdTipoVehiculoId(idTipoVehiculo);
         if (vehiculos.isEmpty()) {
             throw new NotFoundException("No se encontraron vehiculos para el tipo de vehiculo");
         }
-        return vehiculos;
+        return vehiculos.stream().map(this::toVehiculoDTO).toList();
     }
 
-    public List<TipoVehiculo> listarTiposVehiculo() {
+    public List<TipoVehiculoResponseDTO> listarTiposVehiculo() {
         List<TipoVehiculo> tiposVehiculo = tipoVehiculoRepository.findAll();
         if (tiposVehiculo.isEmpty()) {
             throw new NotFoundException("No se encontraron tipos de vehiculo");
         }
-        return tiposVehiculo;
+        return tiposVehiculo.stream().map(this::toTipoVehiculoDTO).toList();
     }
 
+    public VehiculoResponseDTO toVehiculoDTO(Vehiculo vehiculo) {
+        return new VehiculoResponseDTO(
+            vehiculo.getId(),
+            vehiculo.getMarca(),
+            vehiculo.getModelo(),
+            vehiculo.getColor(),
+            vehiculo.getPatente()
+        );
+    }
 
-    // TODO: Implementar los métodos CRUD del servicio:
-    // - listarTodos()              → vehiculoRepository.findAll()
-    // - obtenerPorId(Long id)      → buscar o lanzar NotFoundException
-    // - crear(VehiculoCreateDTO)   → validar que la patente no exista, guardar
-    // - actualizar(Long, VehiculoUpdateDTO) → buscar, aplicar cambios, guardar
-    // - eliminar(Long id)          → buscar o lanzar NotFoundException, setActivo(false)
-
-    // TODO: Agregar VehiculoRepository y métodos para TipoVehiculo,
-    // o crear un TipoVehiculoService separado que maneje su propio CRUD.
-
+    public TipoVehiculoResponseDTO toTipoVehiculoDTO(TipoVehiculo tipoVehiculo) {
+        return new TipoVehiculoResponseDTO(
+            tipoVehiculo.getNombre(),
+            tipoVehiculo.getDescripcion(),
+            tipoVehiculo.getFactorPrecio()
+        );
+    }
     // TODO: Crear las clases de excepción en el paquete exception/:
     // NotFoundException, ConflictException, BadRequestException, BusinessException
     // y el GlobalExceptionHandler con @RestControllerAdvice.

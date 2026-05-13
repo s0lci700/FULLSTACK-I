@@ -7,6 +7,10 @@ import lombok.NoArgsConstructor;
 @Data @NoArgsConstructor @AllArgsConstructor
 public class EspacioResponseDTO {
     private Long id;
+    private String numero;
+    private String zona;
+    private Integer piso;
+    private Long idTipoEspacio;
     private Boolean disponible;
     private Boolean activo;
 }
