@@ -4,26 +4,27 @@ import estacionamientos.user_service.dto.ClienteCreateDTO;
 import estacionamientos.user_service.dto.ClienteResponseDTO;
 import estacionamientos.user_service.dto.ClienteUpdateDTO;
 import estacionamientos.user_service.dto.TipoClienteResponseDTO;
+import estacionamientos.user_service.exception.ConflictException;
 import estacionamientos.user_service.exception.ResourceNotFoundException;
 import estacionamientos.user_service.model.Cliente;
 import estacionamientos.user_service.model.TipoCliente;
 import estacionamientos.user_service.repository.ClienteRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class ClienteService {
 
-    private static final Logger log = LoggerFactory.getLogger(ClienteService.class);
 
     private final ClienteRepository clienteRepository;
     private final TipoClienteService tipoClienteService;
 
     public ClienteService(ClienteRepository clienteRepository,
-                          TipoClienteService tipoClienteService) {
+            TipoClienteService tipoClienteService) {
         this.clienteRepository = clienteRepository;
         this.tipoClienteService = tipoClienteService;
     }
@@ -48,7 +49,7 @@ public class ClienteService {
     public ClienteResponseDTO create(ClienteCreateDTO dto) {
         log.info("Creando cliente con email: {}", dto.getEmail());
         if (clienteRepository.existsByEmail(dto.getEmail())) {
-            throw new IllegalArgumentException("Ya existe un cliente con el email: " + dto.getEmail());
+            throw new ConflictException("Ya existe un cliente con el email: " + dto.getEmail());
         }
         TipoCliente tipo = tipoClienteService.findEntityById(dto.getIdTipoCliente());
         Cliente cliente = new Cliente();
@@ -97,8 +98,7 @@ public class ClienteService {
                 cliente.getEmail(),
                 cliente.getTelefono(),
                 tipoDTO,
-                cliente.getActivo()
-        );
+                cliente.getActivo());
     }
 
     // Retorna entidad directamente — usado por ClienteSuscripcionService
@@ -106,4 +106,5 @@ public class ClienteService {
         return clienteRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado con id: " + id));
     }
+    
 }

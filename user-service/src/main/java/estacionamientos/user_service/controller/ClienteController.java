@@ -26,7 +26,7 @@ public class ClienteController {
     private final ClienteSuscripcionService clienteSuscripcionService;
 
     public ClienteController(ClienteService clienteService,
-                             ClienteSuscripcionService clienteSuscripcionService) {
+            ClienteSuscripcionService clienteSuscripcionService) {
         this.clienteService = clienteService;
         this.clienteSuscripcionService = clienteSuscripcionService;
     }
@@ -56,7 +56,7 @@ public class ClienteController {
     // Actualiza nombre, apellido, telefono y tipo de cliente
     @PutMapping("/{id}")
     public ResponseEntity<ClienteResponseDTO> update(@PathVariable Long id,
-                                                      @Valid @RequestBody ClienteUpdateDTO dto) {
+            @Valid @RequestBody ClienteUpdateDTO dto) {
         log.info("PUT /api/clientes/{}", id);
         return ResponseEntity.ok(clienteService.update(id, dto));
     }
