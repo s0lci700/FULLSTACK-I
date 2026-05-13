@@ -174,15 +174,25 @@ monto_final = monto_base
 | `eureka-server` | scaffold | — |
 | `api-gateway` | **complete** | Routing via `application.yaml` — all 9 services routed. No JWT filter (not required yet). Uses YAML config, not .properties. |
 | `auth-service` | **complete** | Full CSR + JWT + BCrypt + GlobalExceptionHandler + SLF4J logs. ⚠️ `jwt.secret` in application.properties is still a placeholder — replace with `openssl rand -base64 32` before running |
-| `user-service` | **complete** | Done by Catalina — Cliente, TipoCliente, Suscripcion, ClienteSuscripcion entities; full CRUD services + controllers + DTOs + GlobalExceptionHandler |
+| `user-service` | **complete** | Done by Catalina — Cliente, TipoCliente, Suscripcion, ClienteSuscripcion entities; full CRUD + DTOs + GlobalExceptionHandler. ⚠️ DB connects to port 3306, all other services use 3307 — verify before integration. `GlobalExceptionHandler` uses `@ControllerAdvice` (should be `@RestControllerAdvice`). Duplicate subscription check added to `ClienteSuscripcionService`. |
 | `security-service` | scaffold | — |
-| `ms-vehiculos` | **complete** | Full CRUD for Vehiculo + TipoVehiculo. Entities, repos, DTOs, services, controllers, GlobalExceptionHandler all done. `@ManyToOne` relation between Vehiculo→TipoVehiculo. Soft delete on Vehiculo (activo=false). TipoVehiculo hard delete guarded by vehicle check. |
-| `ms-espacios` | in progress | entities + repositories done; EspaciosService + EspaciosController are empty stubs |
-| `ms-tarifas` | in progress | Tarifas + HorarioTarifas entities + repositories done; no Service/Controller/DTOs yet |
-| `ms-reservas` | scaffold | — |
-| `ms-accesos` | scaffold | — |
-| `ms-pagos` | scaffold | — |
-| `ms-reportes` | scaffold | — |
+| `ms-vehiculos` | **complete** | Full CRUD for Vehiculo + TipoVehiculo. Entities, repos, DTOs, services, controllers, GlobalExceptionHandler all done. `@ManyToOne` relation between Vehiculo→TipoVehiculo. Soft delete on Vehiculo (activo=false). TipoVehiculo hard delete guarded by vehicle check. Controller returns entity directly (no DTO) — `VehiculoResponseDTO` is empty. |
+| `ms-espacios` | **complete** | Full CRUD for Espacios + TipoEspacios. PATCH `/api/espacios/{id}/disponibilidad` used by ms-accesos to toggle space availability. |
+| `ms-tarifas` | **complete** | Full CRUD for Tarifas + HorarioTarifas. GET `/api/tarifas/vigente` used by ms-pagos to retrieve the active rate. |
+| `ms-reservas` | **complete** | Full CRUD + cancelar. Feign clients: EspacioClient, VehiculoClient, ClienteClient. Estado managed via `EstadoEnums` (separate class: PENDIENTE, CONFIRMADA, CANCELADA, FINALIZADA). Space availability NOT changed on create — ms-accesos handles that on physical entry. |
+| `ms-accesos` | scaffold | Empty Feign clients (EspacioClient, ReservaClient). Next to implement. |
+| `ms-pagos` | scaffold | Empty Feign clients (AccesoClient, ClienteClient, TarifaClient). |
+| `ms-reportes` | scaffold | No own DB — Feign-only reads from all other services. |
+
+## ms-reservas Notes
+
+- `EstadoEnums` is a standalone class in `model/` (not an inner enum) — values: `PENDIENTE`, `CONFIRMADA`, `CANCELADA`, `FINALIZADA`
+- Cross-service IDs (`idCliente`, `idVehiculo`, `idEspacio`) stored as plain `Long` with `@Column(name="id_X_ref")` — no `@ManyToOne`
+- Feign client name must match `spring.application.name` of the target: `"ms-espacios"`, `"ms-vehiculos"`, `"user-service"`
+- Local response DTOs mirror only the fields ms-reservas needs (not full copies of target DTOs)
+- `create()` validates cliente activo, vehiculo activo, espacio activo+disponible via Feign before saving
+- `cancelar()` only changes estado — does NOT call ms-espacios (space was never locked on create)
+- Feign returns 404 as `FeignException`, not null — null checks in service won't trigger in practice
 
 ## api-gateway Notes
 

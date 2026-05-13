@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Documentación — Estacionamiento Inteligente</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0f1117;
+      --bg2:     #1a1f2e;
+      --bg3:     #1e2330;
+      --border:  #2d3748;
+      --text:    #e2e8f0;
+      --text2:   #94a3b8;
+      --text3:   #64748b;
+      --blue:    #93c5fd;
+      --blue-bg: #1e3a5f;
+      --green:   #22c55e;
+      --green-bg:#14532d;
+      --purple:  #c4b5fd;
+      --purple-bg:#2d1b4e;
+      --yellow:  #f59e0b;
+      --yellow-bg:#3b2700;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 2rem;
+      line-height: 1.6;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--blue);
+      background: var(--blue-bg);
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      margin-bottom: 0.75rem;
+    }
+
+    h1 {
+      font-size: 1.9rem;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 0.4rem;
+    }
+
+    .subtitle { color: var(--text2); font-size: 0.9rem; }
+
+    /* ── Section ──────────────────────────────────────── */
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text3);
+      margin: 2rem 0 0.75rem;
+      padding-left: 0.6rem;
+      border-left: 3px solid #334155;
+    }
+
+    /* ── Card grid ────────────────────────────────────── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 0.8rem;
+    }
+
+    .card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.2rem;
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.9rem;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .card:hover {
+      border-color: #4a5568;
+      background: var(--bg3);
+    }
+
+    .card-icon {
+      font-size: 1.4rem;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+
+    .card-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin-bottom: 0.2rem;
+    }
+
+    .card-desc {
+      font-size: 0.76rem;
+      color: var(--text2);
+      line-height: 1.4;
+    }
+
+    /* ── Featured card (estado) ───────────────────────── */
+    .card-featured {
+      border-color: var(--green-bg);
+      background: #0d1f0d;
+    }
+
+    .card-featured:hover {
+      border-color: #166534;
+      background: #0f1f0f;
+    }
+
+    .card-featured .card-title { color: var(--green); }
+
+    /* ── Status pill ──────────────────────────────────── */
+    .pill {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: 20px;
+      margin-top: 0.4rem;
+    }
+
+    .pill-green  { background: var(--green-bg);  color: var(--green); }
+    .pill-blue   { background: var(--blue-bg);   color: var(--blue); }
+    .pill-purple { background: var(--purple-bg); color: var(--purple); }
+    .pill-yellow { background: var(--yellow-bg); color: var(--yellow); }
+
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      font-size: 0.75rem;
+      color: #334155;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="header-badge">DUOC UC · FULLSTACK-I</div>
+    <h1>Estacionamiento Inteligente</h1>
+    <p class="subtitle">Índice de documentación del proyecto · 12 microservicios · Spring Boot 3 · Java 21 · MySQL 8</p>
+  </div>
+
+  <!-- Estado del proyecto (destacado) -->
+  <div class="section-label">Estado del proyecto</div>
+  <div class="grid">
+    <a class="card card-featured" href="estado.html">
+      <div class="card-icon">📊</div>
+      <div>
+        <div class="card-title">Estado de implementación</div>
+        <div class="card-desc">Seguimiento servicio por servicio — qué está completo, en progreso y pendiente. Advertencias activas.</div>
+        <div class="pill pill-green">Actualizado 2026-05-13</div>
+      </div>
+    </a>
+
+    <a class="card" href="ROADMAP.md">
+      <div class="card-icon">🗺️</div>
+      <div>
+        <div class="card-title">Roadmap</div>
+        <div class="card-desc">Fases de desarrollo, división de trabajo, patrón de application.properties y puertos de referencia.</div>
+        <div class="pill pill-blue">Markdown</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- Arquitectura -->
+  <div class="section-label">Arquitectura y diseño</div>
+  <div class="grid">
+    <a class="card" href="microservicios-overview.html">
+      <div class="card-icon">🏗️</div>
+      <div>
+        <div class="card-title">Microservicios Overview</div>
+        <div class="card-desc">Vista completa de todos los servicios — entidades, endpoints, Feign clients, reglas de negocio y fórmula de cobro.</div>
+        <div class="pill pill-blue">HTML</div>
+      </div>
+    </a>
+
+    <a class="card" href="ARQUITECTURA.md">
+      <div class="card-icon">📐</div>
+      <div>
+        <div class="card-title">Arquitectura</div>
+        <div class="card-desc">Decisiones de diseño, patrones aplicados y flujo general del sistema.</div>
+        <div class="pill pill-blue">Markdown</div>
+      </div>
+    </a>
+
+    <a class="card" href="FUNCIONALIDADES.md">
+      <div class="card-icon">⚙️</div>
+      <div>
+        <div class="card-title">Funcionalidades</div>
+        <div class="card-desc">Descripción de las funcionalidades del sistema desde la perspectiva de negocio.</div>
+        <div class="pill pill-blue">Markdown</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- Base de datos -->
+  <div class="section-label">Base de datos</div>
+  <div class="grid">
+    <a class="card" href="bases_de_datos.html">
+      <div class="card-icon">🗄️</div>
+      <div>
+        <div class="card-title">Bases de Datos</div>
+        <div class="card-desc">Esquemas de las 10 bases de datos, tablas y relaciones por servicio.</div>
+        <div class="pill pill-purple">HTML</div>
+      </div>
+    </a>
+
+    <a class="card" href="DER_estacionamiento_inteligente2.html">
+      <div class="card-icon">🔗</div>
+      <div>
+        <div class="card-title">DER — Diagrama Entidad-Relación</div>
+        <div class="card-desc">Modelo entidad-relación completo del sistema de estacionamiento.</div>
+        <div class="pill pill-purple">HTML</div>
+      </div>
+    </a>
+
+    <a class="card" href="DEGLOSE_MER.html">
+      <div class="card-icon">📋</div>
+      <div>
+        <div class="card-title">Desglose MER</div>
+        <div class="card-desc">Desglose detallado del modelo entidad-relación con atributos y restricciones.</div>
+        <div class="pill pill-purple">HTML</div>
+      </div>
+    </a>
+
+    <a class="card" href="ERD_estacionamiento.md">
+      <div class="card-icon">📄</div>
+      <div>
+        <div class="card-title">ERD (Markdown)</div>
+        <div class="card-desc">Versión en texto plano del diagrama entidad-relación.</div>
+        <div class="pill pill-blue">Markdown</div>
+      </div>
+    </a>
+
+    <a class="card" href="BASE_DE_DATOS.md">
+      <div class="card-icon">📝</div>
+      <div>
+        <div class="card-title">Base de Datos (Markdown)</div>
+        <div class="card-desc">Documentación de DDL y decisiones de modelado de datos.</div>
+        <div class="pill pill-blue">Markdown</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- Seguridad y roles -->
+  <div class="section-label">Seguridad y roles</div>
+  <div class="grid">
+    <a class="card" href="SEGURIDAD.md">
+      <div class="card-icon">🔐</div>
+      <div>
+        <div class="card-title">Seguridad</div>
+        <div class="card-desc">JWT, BCrypt, Spring Security, rutas públicas y protegidas, filtros.</div>
+        <div class="pill pill-blue">Markdown</div>
+      </div>
+    </a>
+
+    <a class="card" href="ROLES_USUARIO.md">
+      <div class="card-icon">👤</div>
+      <div>
+        <div class="card-title">Roles de Usuario</div>
+        <div class="card-desc">Definición de roles, permisos y accesos por tipo de usuario en el sistema.</div>
+        <div class="pill pill-blue">Markdown</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- Referencia técnica -->
+  <div class="section-label">Referencia técnica</div>
+  <div class="grid">
+    <a class="card" href="springboot-cheatsheet.html">
+      <div class="card-icon">📚</div>
+      <div>
+        <div class="card-title">Spring Boot Cheatsheet</div>
+        <div class="card-desc">Referencia rápida de anotaciones, patrones y configuraciones usadas en el proyecto.</div>
+        <div class="pill pill-yellow">HTML</div>
+      </div>
+    </a>
+
+    <a class="card" href="contenido-clases-map.html">
+      <div class="card-icon">🗂️</div>
+      <div>
+        <div class="card-title">Mapa de Contenido de Clases</div>
+        <div class="card-desc">Mapeo de contenidos vistos en clases aplicados al proyecto.</div>
+        <div class="pill pill-yellow">HTML</div>
+      </div>
+    </a>
+
+    <a class="card" href="HERRAMIENTAS.md">
+      <div class="card-icon">🛠️</div>
+      <div>
+        <div class="card-title">Herramientas</div>
+        <div class="card-desc">Stack tecnológico, IDEs, extensiones y herramientas usadas en el desarrollo.</div>
+        <div class="pill pill-blue">Markdown</div>
+      </div>
+    </a>
+
+    <a class="card" href="SPRING_INITIALIZR.md">
+      <div class="card-icon">🚀</div>
+      <div>
+        <div class="card-title">Spring Initializr</div>
+        <div class="card-desc">Configuración base usada para scaffoldear cada microservicio.</div>
+        <div class="pill pill-blue">Markdown</div>
+      </div>
+    </a>
+
+    <a class="card" href="DESPLIEGUE.md">
+      <div class="card-icon">📦</div>
+      <div>
+        <div class="card-title">Despliegue</div>
+        <div class="card-desc">Instrucciones de despliegue, orden de arranque y configuración de entorno.</div>
+        <div class="pill pill-blue">Markdown</div>
+      </div>
+    </a>
+
+    <a class="card" href="PRUEBAS.md">
+      <div class="card-icon">🧪</div>
+      <div>
+        <div class="card-title">Pruebas</div>
+        <div class="card-desc">Estrategia de testing, configuración H2 en tests y patrones de pruebas unitarias e integración.</div>
+        <div class="pill pill-blue">Markdown</div>
+      </div>
+    </a>
+  </div>
+
+  <footer>Estacionamiento Inteligente · DUOC UC · FULLSTACK-I</footer>
+
+</body>
+</html>
