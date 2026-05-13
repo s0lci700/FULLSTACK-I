@@ -2,33 +2,30 @@ package estacionamientos.user_service.service;
 
 import estacionamientos.user_service.dto.ClienteSuscripcionCreateDTO;
 import estacionamientos.user_service.dto.ClienteSuscripcionResponseDTO;
-import estacionamientos.user_service.exception.ResourceNotFoundException;
 import estacionamientos.user_service.model.Cliente;
 import estacionamientos.user_service.model.ClienteSuscripcion;
 import estacionamientos.user_service.model.Suscripcion;
 import estacionamientos.user_service.repository.ClienteSuscripcionRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class ClienteSuscripcionService {
 
-    private static final Logger log = LoggerFactory.getLogger(ClienteSuscripcionService.class);
+    @Autowired
+    ClienteSuscripcionRepository clienteSuscripcionRepository;
 
-    private final ClienteSuscripcionRepository clienteSuscripcionRepository;
-    private final ClienteService clienteService;
-    private final SuscripcionService suscripcionService;
+    @Autowired
+    ClienteService clienteService;
 
-    public ClienteSuscripcionService(ClienteSuscripcionRepository clienteSuscripcionRepository,
-                                     ClienteService clienteService,
-                                     SuscripcionService suscripcionService) {
-        this.clienteSuscripcionRepository = clienteSuscripcionRepository;
-        this.clienteService = clienteService;
-        this.suscripcionService = suscripcionService;
-    }
+    @Autowired
+    SuscripcionService suscripcionService;
+
 
     // Retorna todas las suscripciones de un cliente especifico
     public List<ClienteSuscripcionResponseDTO> findByClienteId(Long clienteId) {
@@ -41,6 +38,11 @@ public class ClienteSuscripcionService {
     // Asigna una suscripcion a un cliente
     public ClienteSuscripcionResponseDTO create(Long clienteId, ClienteSuscripcionCreateDTO dto) {
         log.info("Asignando suscripcion al cliente id: {}", clienteId);
+        if (clienteSuscripcionRepository.existsByClienteIdAndSuscripcionIdAndActivoTrue(
+                clienteId, dto.getIdSuscripcion())) {
+            throw new IllegalArgumentException(
+                    "El cliente ya tiene esta suscripción activa");
+        }
         Cliente cliente = clienteService.findEntityById(clienteId);
         Suscripcion suscripcion = suscripcionService.findEntityById(dto.getIdSuscripcion());
         ClienteSuscripcion cs = new ClienteSuscripcion();
@@ -61,7 +63,6 @@ public class ClienteSuscripcionService {
                 suscripcionService.toDTO(cs.getSuscripcion()),
                 cs.getFechaInicio(),
                 cs.getFechaFin(),
-                cs.getActivo()
-        );
+                cs.getActivo());
     }
 }

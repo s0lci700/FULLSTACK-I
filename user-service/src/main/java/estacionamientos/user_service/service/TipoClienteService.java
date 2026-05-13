@@ -4,18 +4,20 @@ import estacionamientos.user_service.dto.TipoClienteResponseDTO;
 import estacionamientos.user_service.exception.ResourceNotFoundException;
 import estacionamientos.user_service.model.TipoCliente;
 import estacionamientos.user_service.repository.TipoClienteRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class TipoClienteService {
-
-    private static final Logger log = LoggerFactory.getLogger(TipoClienteService.class);
-
-    private final TipoClienteRepository tipoClienteRepository;
+    @Autowired
+    TipoClienteRepository tipoClienteRepository;
 
     public TipoClienteService(TipoClienteRepository tipoClienteRepository) {
         this.tipoClienteRepository = tipoClienteRepository;
