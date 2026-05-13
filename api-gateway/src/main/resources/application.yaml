@@ -9,11 +9,44 @@ spring:
       discovery:
         locator:
           enabled: true
-#      routes:
-#        - id: ms-<id>
-#          uri: lb://ms-<id>
-#          predicates:
-#            - Path=/api/<id>/**
+      routes:
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/api/auth/**
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/api/clientes/**
+        - id: ms-vehiculos
+          uri: lb://ms-vehiculos
+          predicates:
+            - Path=/api/vehiculos/**,/api/tipos-vehiculo/**
+        - id: ms-espacios
+          uri: lb://ms-espacios
+          predicates:
+            - Path=/api/espacios/**
+        - id: ms-reservas
+          uri: lb://ms-reservas
+          predicates:
+            - Path=/api/reservas/**
+        - id: ms-accesos
+          uri: lb://ms-accesos
+          predicates:
+            - Path=/api/accesos/**
+        - id: ms-tarifas
+          uri: lb://ms-tarifas
+          predicates:
+            - Path=/api/tarifas/**
+        - id: ms-pagos
+          uri: lb://ms-pagos
+          predicates:
+            - Path=/api/pagos/**
+        - id: ms-reportes
+          uri: lb://ms-reportes
+          predicates:
+            - Path=/api/reportes/**
+
 eureka:
   client:
     service-url:
