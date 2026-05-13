@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Estado del Proyecto — Estacionamiento Inteligente</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0f1117;
+      --bg2:       #1a1f2e;
+      --bg3:       #1e2330;
+      --border:    #2d3748;
+      --text:      #e2e8f0;
+      --text2:     #94a3b8;
+      --text3:     #64748b;
+      --green:     #22c55e;
+      --green-bg:  #14532d;
+      --green-dim: #166534;
+      --yellow:    #f59e0b;
+      --yellow-bg: #3b2700;
+      --red:       #ef4444;
+      --red-bg:    #4a1515;
+      --blue:      #93c5fd;
+      --blue-bg:   #1e3a5f;
+      --purple:    #c4b5fd;
+      --purple-bg: #2d1b4e;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 2rem;
+      line-height: 1.6;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.8rem;
+      color: var(--text3);
+      text-decoration: none;
+      margin-bottom: 1.5rem;
+      transition: color 0.15s;
+    }
+    .back-link:hover { color: var(--blue); }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--green);
+      background: var(--green-bg);
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      margin-bottom: 0.75rem;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 0.4rem;
+    }
+
+    .subtitle { color: var(--text2); font-size: 0.9rem; }
+
+    /* ── Overall progress ─────────────────────────────── */
+    .progress-section {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.75rem;
+    }
+
+    .progress-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text2);
+    }
+
+    .progress-pct {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--green);
+    }
+
+    .progress-bar-bg {
+      background: var(--bg3);
+      border-radius: 999px;
+      height: 10px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #16a34a, #22c55e);
+      transition: width 0.6s ease;
+    }
+
+    .progress-legend {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.78rem;
+      color: var(--text2);
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ── Phase label ──────────────────────────────────── */
+    .phase-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text3);
+      margin: 2rem 0 0.8rem;
+      padding-left: 0.6rem;
+      border-left: 3px solid #334155;
+    }
+
+    /* ── Service rows ─────────────────────────────────── */
+    .service-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .service-row {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.9rem 1.2rem;
+      display: grid;
+      grid-template-columns: 160px 1fr auto;
+      align-items: start;
+      gap: 1rem;
+    }
+
+    .service-name {
+      font-family: 'Consolas', monospace;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #f1f5f9;
+    }
+
+    .service-port {
+      font-size: 0.72rem;
+      color: var(--text3);
+      margin-top: 0.1rem;
+    }
+
+    .checklist {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .checklist li {
+      font-size: 0.78rem;
+      color: var(--text2);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .check-done   { color: var(--green); font-size: 0.85rem; }
+    .check-pending { color: var(--text3); font-size: 0.85rem; }
+    .check-warn   { color: var(--yellow); font-size: 0.85rem; }
+
+    /* ── Status badge ─────────────────────────────────── */
+    .status {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.25rem 0.7rem;
+      border-radius: 20px;
+      white-space: nowrap;
+      text-align: center;
+    }
+
+    .status-complete  { background: var(--green-bg);  color: var(--green);  border: 1px solid var(--green-dim); }
+    .status-progress  { background: var(--yellow-bg); color: var(--yellow); border: 1px solid #78350f; }
+    .status-scaffold  { background: #1c1c1c;          color: var(--text3);  border: 1px solid #333; }
+    .status-ready     { background: var(--blue-bg);   color: var(--blue);   border: 1px solid #1d4ed8; }
+
+    /* ── Notes ───────────────────────────────────────── */
+    .warn-note {
+      font-size: 0.74rem;
+      color: var(--yellow);
+      background: #2a1d00;
+      border: 1px solid #78350f;
+      border-radius: 6px;
+      padding: 0.35rem 0.7rem;
+      margin-top: 0.4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    /* ── Updated timestamp ───────────────────────────── */
+    .updated {
+      text-align: right;
+      font-size: 0.72rem;
+      color: var(--text3);
+      margin-bottom: 1rem;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      font-size: 0.75rem;
+      color: #334155;
+    }
+  </style>
+</head>
+<body>
+
+  <a class="back-link" href="index.html">← Volver al índice</a>
+
+  <div class="header">
+    <div class="header-badge">Estado del Proyecto</div>
+    <h1>Estacionamiento Inteligente</h1>
+    <p class="subtitle">Seguimiento de implementación · 12 microservicios · Spring Boot 3 · Java 21</p>
+  </div>
+
+  <p class="updated">Última actualización: 2026-05-13</p>
+
+  <!-- Overall progress -->
+  <div class="progress-section">
+    <div class="progress-header">
+      <span class="progress-title">Progreso general</span>
+      <span class="progress-pct">50%</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" style="width: 50%"></div>
+    </div>
+    <div class="progress-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div>Completo (6)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div>En progreso (1)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#475569"></div>Scaffold (5)</div>
+    </div>
+  </div>
+
+  <!-- ── FASE 1 — INFRAESTRUCTURA ──────────────────────── -->
+  <div class="phase-label">Fase 1 — Infraestructura</div>
+  <div class="service-list">
+
+    <div class="service-row">
+      <div>
+        <div class="service-name">eureka-server</div>
+        <div class="service-port">:8761 · sin BD</div>
+      </div>
+      <ul class="checklist">
+        <li><span class="check-done">✔</span> Configurado y funcional</li>
+        <li><span class="check-done">✔</span> Todos los servicios se registran aquí</li>
+      </ul>
+      <span class="status status-ready">Listo</span>
+    </div>
+
+    <div class="service-row">
+      <div>
+        <div class="service-name">api-gateway</div>
+        <div class="service-port">:8080 · sin BD</div>
+      </div>
+      <ul class="checklist">
+        <li><span class="check-done">✔</span> application.yaml con rutas para los 9 servicios</li>
+        <li><span class="check-done">✔</span> JJWT deps en pom.xml (para filtro JWT futuro)</li>
+        <li><span class="check-done">✔</span> Registrado en Eureka</li>
+      </ul>
+      <span class="status status-complete">Completo</span>
+    </div>
+
+  </div>
+
+  <!-- ── FASE 2 — AUTH ──────────────────────────────────── -->
+  <div class="phase-label">Fase 2 — Autenticación</div>
+  <div class="service-list">
+
+    <div class="service-row">
+      <div>
+        <div class="service-name">auth-service</div>
+        <div class="service-port">:8081 · db_auth</div>
+      </div>
+      <ul class="checklist">
+        <li><span class="check-done">✔</span> JWT (JJWT 0.11.5) · BCrypt strength 12</li>
+        <li><span class="check-done">✔</span> POST /api/auth/login · /api/auth/register</li>
+        <li><span class="check-done">✔</span> GlobalExceptionHandler · SLF4J logs</li>
+        <li><span class="check-warn">⚠</span> jwt.secret es placeholder — reemplazar con openssl rand -base64 32</li>
+      </ul>
+      <span class="status status-complete">Completo</span>
+    </div>
+
+  </div>
+
+  <!-- ── FASE 3 — CATÁLOGO ──────────────────────────────── -->
+  <div class="phase-label">Fase 3 — Servicios de Catálogo</div>
+  <div class="service-list">
+
+    <div class="service-row">
+      <div>
+        <div class="service-name">user-service</div>
+        <div class="service-port">:8082 · db_usuarios</div>
+      </div>
+      <ul class="checklist">
+        <li><span class="check-done">✔</span> CRUD Cliente · TipoCliente · Suscripcion · ClienteSuscripcion</li>
+        <li><span class="check-done">✔</span> Validación de suscripción duplicada activa</li>
+        <li><span class="check-done">✔</span> Constructor injection · SLF4J</li>
+        <li><span class="check-warn">⚠</span> DB conecta a puerto 3306 (resto usa 3307) — verificar</li>
+        <li><span class="check-warn">⚠</span> GlobalExceptionHandler usa @ControllerAdvice (debe ser @RestControllerAdvice)</li>
+      </ul>
+      <span class="status status-complete">Completo</span>
+    </div>
+
+    <div class="service-row">
+      <div>
+        <div class="service-name">security-service</div>
+        <div class="service-port">:8083 · db_seguridad</div>
+      </div>
+      <ul class="checklist">
+        <li><span class="check-pending">○</span> Entidades Permiso · RolPermiso</li>
+        <li><span class="check-pending">○</span> CRUD permisos y roles-permisos</li>
+      </ul>
+      <span class="status status-scaffold">Scaffold</span>
+    </div>
+
+    <div class="service-row">
+      <div>
+        <div class="service-name">ms-vehiculos</div>
+        <div class="service-port">:8084 · db_vehiculos</div>
+      </div>
+      <ul class="checklist">
+        <li><span class="check-done">✔</span> CRUD Vehiculo · TipoVehiculo</li>
+        <li><span class="check-done">✔</span> Soft delete (activo=false) · GlobalExceptionHandler</li>
+        <li><span class="check-done">✔</span> GET /api/vehiculos/cliente/{idClienteRef}</li>
+        <li><span class="check-warn">⚠</span> VehiculoResponseDTO vacío — controller devuelve entidad directa</li>
+      </ul>
+      <span class="status status-complete">Completo</span>
+    </div>
+
+    <div class="service-row">
+      <div>
+        <div class="service-name">ms-espacios</div>
+        <div class="service-port">:8085 · db_espacios</div>
+      </div>
+      <ul class="checklist">
+        <li><span class="check-done">✔</span> CRUD Espacios · TipoEspacios</li>
+        <li><span class="check-done">✔</span> GET /api/espacios/disponibles</li>
+        <li><span class="check-done">✔</span> PATCH /api/espacios/{id}/disponibilidad (usado por ms-accesos)</li>
+      </ul>
+      <span class="status status-complete">Completo</span>
+    </div>
+
+    <div class="service-row">
+      <div>
+        <div class="service-name">ms-tarifas</div>
+        <div class="service-port">:8088 · db_tarifas</div>
+      </div>
+      <ul class="checklist">
+        <li><span class="check-done">✔</span> CRUD Tarifas · HorarioTarifas</li>
+        <li><span class="check-done">✔</span> GET /api/tarifas/vigente (usado por ms-pagos)</li>
+        <li><span class="check-done">✔</span> Soft delete en Tarifas (activo=false)</li>
+      </ul>
+      <span class="status status-complete">Completo</span>
+    </div>
+
+  </div>
+
+  <!-- ── FASE 4 — NEGOCIO ───────────────────────────────── -->
+  <div class="phase-label">Fase 4 — Servicios de Negocio</div>
+  <div class="service-list">
+
+    <div class="service-row">
+      <div>
+        <div class="service-name">ms-reservas</div>
+        <div class="service-port">:8086 · db_reservas</div>
+      </div>
+      <ul class="checklist">
+        <li><span class="check-done">✔</span> Entidad Reservas · EstadoEnums (PENDIENTE/CONFIRMADA/CANCELADA/FINALIZADA)</li>
+        <li><span class="check-done">✔</span> Feign: EspacioClient · VehiculoClient · ClienteClient</li>
+        <li><span class="check-done">✔</span> Validación cliente activo · vehículo activo · espacio disponible</li>
+        <li><span class="check-done">✔</span> POST /api/reservas · GET /api/reservas/cliente/{id} · PATCH cancelar</li>
+        <li><span class="check-done">✔</span> GlobalExceptionHandler · NotFoundException</li>
+      </ul>
+      <span class="status status-complete">Completo</span>
+    </div>
+
+    <div class="service-row">
+      <div>
+        <div class="service-name">ms-accesos</div>
+        <div class="service-port">:8087 · db_accesos</div>
+      </div>
+      <ul class="checklist">
+        <li><span class="check-pending">○</span> application.properties · @EnableFeignClients</li>
+        <li><span class="check-pending">○</span> Entidad Acceso (horaEntrada, horaSalida, minutos, idReserva, idEspacio)</li>
+        <li><span class="check-pending">○</span> POST /api/accesos/entrada → marcar espacio disponible=false</li>
+        <li><span class="check-pending">○</span> PATCH /api/accesos/{id}/salida → marcar espacio disponible=true</li>
+        <li><span class="check-pending">○</span> Feign: EspacioClient · ReservaClient</li>
+      </ul>
+      <span class="status status-progress">En progreso</span>
+    </div>
+
+    <div class="service-row">
+      <div>
+        <div class="service-name">ms-pagos</div>
+        <div class="service-port">:8089 · db_pagos</div>
+      </div>
+      <ul class="checklist">
+        <li><span class="check-pending">○</span> Entidades Cobro · MetodoPago · Banco · TipoTarjeta</li>
+        <li><span class="check-pending">○</span> Feign: AccesoClient · TarifaClient · ClienteClient</li>
+        <li><span class="check-pending">○</span> Fórmula de cobro con descuentos múltiples</li>
+        <li><span class="check-pending">○</span> POST /api/cobros · GET /api/cobros/acceso/{id}</li>
+      </ul>
+      <span class="status status-scaffold">Scaffold</span>
+    </div>
+
+  </div>
+
+  <!-- ── FASE 5 — REPORTES ──────────────────────────────── -->
+  <div class="phase-label">Fase 5 — Reportes</div>
+  <div class="service-list">
+
+    <div class="service-row">
+      <div>
+        <div class="service-name">ms-reportes</div>
+        <div class="service-port">:8090 · sin BD</div>
+      </div>
+      <ul class="checklist">
+        <li><span class="check-pending">○</span> Feign clients a todos los servicios (solo lectura)</li>
+        <li><span class="check-pending">○</span> GET /api/reportes/ingresos-dia</li>
+        <li><span class="check-pending">○</span> GET /api/reportes/ocupacion</li>
+        <li><span class="check-pending">○</span> GET /api/reportes/cobros?desde=&hasta=</li>
+        <li><span class="check-pending">○</span> GET /api/reportes/vehiculos-frecuentes</li>
+      </ul>
+      <span class="status status-scaffold">Scaffold</span>
+    </div>
+
+  </div>
+
+  <footer>Estacionamiento Inteligente · DUOC UC · FULLSTACK-I</footer>
+
+</body>
+</html>

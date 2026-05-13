@@ -6,7 +6,7 @@
 
 ---
 
-## Estado Actual
+## Estado Actual (actualizado 2026-05-13)
 
 | Capa | Estado |
 |------|--------|
@@ -15,10 +15,17 @@
 | 12 servicios scaffoldeados (Spring Boot) | ✅ Listo |
 | Eureka Server configurado `:8761` | ✅ Listo |
 | API Gateway con todas las rutas `:8080` | ✅ Listo |
-| Excepciones globales en todos los servicios | ✅ Listo |
-| Entidades, repositorios, servicios, controllers | ❌ Por hacer |
-| JWT / Spring Security | ❌ Por hacer |
-| Comunicación inter-servicio (Feign) | ❌ Por hacer |
+| auth-service (JWT + BCrypt) | ✅ Listo |
+| user-service (CRUD completo) | ✅ Listo |
+| ms-vehiculos (CRUD completo) | ✅ Listo |
+| ms-espacios (CRUD completo) | ✅ Listo |
+| ms-tarifas (CRUD completo) | ✅ Listo |
+| ms-reservas (CRUD + Feign) | ✅ Listo |
+| ms-accesos | ⏳ En progreso |
+| ms-pagos | ❌ Por hacer |
+| ms-reportes | ❌ Por hacer |
+| security-service | ❌ Por hacer |
+| Comunicación inter-servicio (Feign) | ⏳ Parcial (ms-reservas listo) |
 | Swagger / OpenAPI | ❌ Por hacer |
 
 ---
