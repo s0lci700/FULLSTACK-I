@@ -66,4 +66,16 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<Map<String, Object>> manejarNoEncontrado(NotFoundException ex) {
+        return new ResponseEntity<>(
+                construirRespuesta(HttpStatus.NOT_FOUND, ex.getMessage()),
+                HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler(AlreadyFoundException.class)
+    public ResponseEntity<Map<String, Object>> manejarYaEncontrado(AlreadyFoundException ex) {
+        return new ResponseEntity<>(
+                construirRespuesta(HttpStatus.CONFLICT, ex.getMessage()),
+                HttpStatus.CONFLICT);
+    }
 }
