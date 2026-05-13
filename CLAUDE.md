@@ -173,12 +173,12 @@ monto_final = monto_base
 |---------|--------|-------|
 | `eureka-server` | scaffold | — |
 | `api-gateway` | scaffold | JWT filter pending |
-| `auth-service` | in progress | entities + DTOs + JwtUtil structure done; AuthService/SecurityConfig body pending |
+| `auth-service` | **complete** | Full CSR + JWT + BCrypt + GlobalExceptionHandler + SLF4J logs. ⚠️ `jwt.secret` in application.properties is still a placeholder — replace with `openssl rand -base64 32` before running |
 | `user-service` | scaffold | — |
 | `security-service` | scaffold | — |
-| `ms-vehiculos` | in progress | entities + repositories done |
-| `ms-espacios` | in progress | entities + repositories done; ⚠️ @Table names need fix (`"espacio"` → `"espacios"`, `"tipo_espacio"` → `"tipo_espacios"`) |
-| `ms-tarifas` | in progress | Tarifas + HorarioTarifas entities + repositories done |
+| `ms-vehiculos` | in progress | entities + repositories done; VehiculoService/Controller partial (only `validar` endpoint — CRUD incomplete); no DTOs, no GlobalExceptionHandler |
+| `ms-espacios` | in progress | entities + repositories done; @Table names fixed by Catalina; EspaciosService + EspaciosController are empty stubs |
+| `ms-tarifas` | in progress | Tarifas + HorarioTarifas entities + repositories done; no Service/Controller/DTOs yet |
 | `ms-reservas` | scaffold | — |
 | `ms-accesos` | scaffold | — |
 | `ms-pagos` | scaffold | — |

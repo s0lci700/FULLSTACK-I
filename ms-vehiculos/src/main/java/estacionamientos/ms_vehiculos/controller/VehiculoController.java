@@ -1,16 +1,24 @@
 package estacionamientos.ms_vehiculos.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import estacionamientos.ms_vehiculos.dto.VehiculoCreateDTO;
+import estacionamientos.ms_vehiculos.dto.VehiculoUpdateDTO;
+import estacionamientos.ms_vehiculos.model.Vehiculo;
 import estacionamientos.ms_vehiculos.service.VehiculoService;
 
 @RestController
-// TODO: Cambiar a "/api/vehiculos" (plural) — convención REST para colecciones.
 @RequestMapping("/api/vehiculos")
 public class VehiculoController {
 
@@ -24,6 +32,40 @@ public class VehiculoController {
         return ResponseEntity.ok(vehiculoService.exists(patente));
     }
 
+    @GetMapping
+    public ResponseEntity<List<Vehiculo>> listar() {
+        return ResponseEntity.ok(vehiculoService.listarTodos());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Vehiculo> obtenerPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(vehiculoService.obtenerPorId(id));
+    }
+
+    @PostMapping
+    public ResponseEntity<Boolean> crear(@RequestBody VehiculoCreateDTO dto) {
+            vehiculoService.crear(dto);
+            return ResponseEntity.ok(true);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Boolean> actualizar(@PathVariable Long id, @RequestBody VehiculoUpdateDTO dto) {
+
+            vehiculoService.actualizar(id, dto);
+            return ResponseEntity.ok(true);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Boolean> eliminar(@PathVariable Long id) {
+            vehiculoService.eliminar(id);
+            return ResponseEntity.ok(true);
+    }
+
+    @GetMapping("/cliente/{idClienteRef}")
+    public ResponseEntity<List<Vehiculo>> listarPorCliente(@PathVariable Long idClienteRef) {
+        return ResponseEntity.ok(vehiculoService.listarPorCliente(idClienteRef));
+    }
+
     // TODO: Agregar los endpoints CRUD completos:
     // GET    /api/vehiculos              → listar todos
     // GET    /api/vehiculos/{id}         → obtener por id
@@ -34,4 +76,3 @@ public class VehiculoController {
     // GET    /api/tipo-vehiculo          → listar todos los tipos (controlador separado)
 
 }
-
