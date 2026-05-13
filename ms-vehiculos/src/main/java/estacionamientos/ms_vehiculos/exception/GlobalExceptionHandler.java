@@ -72,8 +72,8 @@ public class GlobalExceptionHandler {
                 construirRespuesta(HttpStatus.NOT_FOUND, ex.getMessage()),
                 HttpStatus.NOT_FOUND);
     }
-    @ExceptionHandler(AlreadyFoundException.class)
-    public ResponseEntity<Map<String, Object>> manejarYaEncontrado(AlreadyFoundException ex) {
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<Map<String, Object>> manejarYaEncontrado(ConflictException ex) {
         return new ResponseEntity<>(
                 construirRespuesta(HttpStatus.CONFLICT, ex.getMessage()),
                 HttpStatus.CONFLICT);

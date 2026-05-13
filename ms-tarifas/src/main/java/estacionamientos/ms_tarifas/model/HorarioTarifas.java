@@ -1,5 +1,7 @@
 package estacionamientos.ms_tarifas.model;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,10 +33,10 @@ public class HorarioTarifas {
     private String diaTipo;
 
     @Column(name = "hora_inicio", nullable = false)
-    private String horaInicio;
+    private LocalDateTime horaInicio;
 
     @Column(name = "hora_fin", nullable = false)
-    private String horaFin;
+    private LocalDateTime horaFin;
 
     @Column(nullable = false)
     private Double multiplicador;

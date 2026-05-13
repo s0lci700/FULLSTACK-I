@@ -19,10 +19,10 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(name = "reservas")
+@Table(name = "reserva")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Reservas {
+public class Reserva {
 
 
     @Id

@@ -15,14 +15,14 @@ import estacionamientos.ms_reservas.dto.ReservaResponseDTO;
 import estacionamientos.ms_reservas.dto.VehiculoResponseDTO;
 import estacionamientos.ms_reservas.exception.NotFoundException;
 import estacionamientos.ms_reservas.model.EstadoEnums;
-import estacionamientos.ms_reservas.model.Reservas;
-import estacionamientos.ms_reservas.repository.ReservasRepository;
+import estacionamientos.ms_reservas.model.Reserva;
+import estacionamientos.ms_reservas.repository.ReservaRepository;
 
 @Service
-public class ReservasService {
+public class ReservaService {
 
     @Autowired
-    private ReservasRepository reservasRepository;
+    private ReservaRepository reservasRepository;
 
     @Autowired
     private ClienteClient clienteClient;
@@ -40,7 +40,7 @@ public class ReservasService {
     }
 
     public ReservaResponseDTO findById(Long id) {
-        Reservas reserva = reservasRepository
+        Reserva reserva = reservasRepository
             .findById(id)
             .orElseThrow(() -> new NotFoundException("Reserva no encontrada"));
         return toDTO(reserva);
@@ -65,7 +65,7 @@ public class ReservasService {
         if (espacio == null || !espacio.getActivo() || !espacio.getDisponible()) {
             throw new NotFoundException("Espacio no encontrado o inactivo");
         }
-        Reservas nReserva = new Reservas();
+        Reserva nReserva = new Reserva();
         nReserva.setIdCliente(reserva.getIdCliente());
         nReserva.setIdVehiculo(reserva.getIdVehiculo());
         nReserva.setIdEspacio(reserva.getIdEspacio());
@@ -76,14 +76,14 @@ public class ReservasService {
     }
 
     public ReservaResponseDTO cancelar(Long id) {
-        Reservas reserva = reservasRepository
+        Reserva reserva = reservasRepository
             .findById(id)
             .orElseThrow(() -> new NotFoundException("Reserva no encontrada"));
         reserva.setEstado(EstadoEnums.CANCELADA);
         return toDTO(reservasRepository.save(reserva));
     }
 
-    private ReservaResponseDTO toDTO(Reservas reserva) {
+    private ReservaResponseDTO toDTO(Reserva reserva) {
         return new ReservaResponseDTO(
             reserva.getId(),
             reserva.getIdCliente(),

@@ -11,17 +11,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import estacionamientos.ms_espacios.dto.TipoEspacioResponseDTO;
-import estacionamientos.ms_espacios.service.TipoEspaciosService;
+import estacionamientos.ms_espacios.service.TipoEspacioService;
 
 @RestController
 @RequestMapping("/api/tipo-espacio")
-public class TipoEspaciosController {
+public class TipoEspacioController {
 
-    private static final Logger log = LoggerFactory.getLogger(TipoEspaciosController.class);
+    private static final Logger log = LoggerFactory.getLogger(TipoEspacioController.class);
 
-    private final TipoEspaciosService tipoEspaciosService;
+    private final TipoEspacioService tipoEspaciosService;
 
-    public TipoEspaciosController(TipoEspaciosService tipoEspaciosService) {
+    public TipoEspacioController(TipoEspacioService tipoEspaciosService) {
         this.tipoEspaciosService = tipoEspaciosService;
     }
 

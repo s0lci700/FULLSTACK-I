@@ -16,8 +16,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data @Entity
-@Table(name = "espacios")
-public class Espacios {
+@Table(name = "espacio")
+public class Espacio {
 
 @Id
 @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,7 +34,7 @@ private Integer piso;
 
 @ManyToOne
 @JoinColumn(name= "id_tipo_espacio", nullable=false)
-private TipoEspacios tipoEspacio;
+private TipoEspacio tipoEspacio;
 
 @Column(nullable = false)
 private Boolean disponible;
