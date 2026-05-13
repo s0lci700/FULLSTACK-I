@@ -172,16 +172,31 @@ monto_final = monto_base
 | Service | Status | Notes |
 |---------|--------|-------|
 | `eureka-server` | scaffold | — |
-| `api-gateway` | scaffold | JWT filter pending |
+| `api-gateway` | **complete** | Routing via `application.yaml` — all 9 services routed. No JWT filter (not required yet). Uses YAML config, not .properties. |
 | `auth-service` | **complete** | Full CSR + JWT + BCrypt + GlobalExceptionHandler + SLF4J logs. ⚠️ `jwt.secret` in application.properties is still a placeholder — replace with `openssl rand -base64 32` before running |
-| `user-service` | scaffold | — |
+| `user-service` | **complete** | Done by Catalina — Cliente, TipoCliente, Suscripcion, ClienteSuscripcion entities; full CRUD services + controllers + DTOs + GlobalExceptionHandler |
 | `security-service` | scaffold | — |
-| `ms-vehiculos` | in progress | entities + repositories done; VehiculoService/Controller partial (only `validar` endpoint — CRUD incomplete); no DTOs, no GlobalExceptionHandler |
-| `ms-espacios` | in progress | entities + repositories done; @Table names fixed by Catalina; EspaciosService + EspaciosController are empty stubs |
+| `ms-vehiculos` | **complete** | Full CRUD for Vehiculo + TipoVehiculo. Entities, repos, DTOs, services, controllers, GlobalExceptionHandler all done. `@ManyToOne` relation between Vehiculo→TipoVehiculo. Soft delete on Vehiculo (activo=false). TipoVehiculo hard delete guarded by vehicle check. |
+| `ms-espacios` | in progress | entities + repositories done; EspaciosService + EspaciosController are empty stubs |
 | `ms-tarifas` | in progress | Tarifas + HorarioTarifas entities + repositories done; no Service/Controller/DTOs yet |
 | `ms-reservas` | scaffold | — |
 | `ms-accesos` | scaffold | — |
 | `ms-pagos` | scaffold | — |
 | `ms-reportes` | scaffold | — |
+
+## api-gateway Notes
+
+- Uses `application.yaml` (not `.properties`) — follow teacher's example format
+- Routes use `spring.cloud.gateway.routes` (teacher's format — VS Code may warn deprecated, ignore it)
+- Path prefixes for scaffold services are guesses — verify against each controller's `@RequestMapping` when implemented
+- JJWT 0.11.5 deps added to pom.xml (for future JWT filter if needed)
+
+## ms-vehiculos Notes
+
+- `Vehiculo.idTipoVehiculo` is a `TipoVehiculo` entity field (not Long) — `@ManyToOne @JoinColumn(name="id_tipo_vehiculo")`
+- Repository uses `findByIdTipoVehiculoId(Long id)` for nested property traversal
+- `AlreadyFoundException` → 409 CONFLICT, `NotFoundException` → 404 in GlobalExceptionHandler
+- Controllers return `ResponseEntity` — no try/catch blocks, exceptions bubble to GlobalExceptionHandler
+- `VehiculoUpdateDTO` does not include `patente` (patente is immutable after creation)
 
 See `docs/` for full architecture, database, security, roles, and testing documentation (all in Spanish).
