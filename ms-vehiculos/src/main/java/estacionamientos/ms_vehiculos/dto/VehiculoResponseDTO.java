@@ -15,6 +15,4 @@ public class VehiculoResponseDTO {
     private Long idTipoVehiculo;
     private Long idClienteRef;
     private Boolean activo;
-    
-
 }

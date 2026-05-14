@@ -18,12 +18,13 @@ import estacionamientos.ms_pagos.dto.TipoTarjetaDTO;
 import estacionamientos.ms_pagos.dto.TipoTarjetaResponseDTO;
 import estacionamientos.ms_pagos.service.TipoTarjetaService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/tipo-tarjetas")
 public class TipoTarjetaController {
 
-    private static final Logger log = LoggerFactory.getLogger(TipoTarjetaController.class);
 
     private final TipoTarjetaService tipoTarjetaService;
 

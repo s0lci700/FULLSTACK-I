@@ -19,12 +19,14 @@ import estacionamientos.security_service.dto.PermisoCreateDTO;
 import estacionamientos.security_service.dto.PermisoResponseDTO;
 import estacionamientos.security_service.service.PermisoService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/permisos")
 public class PermisoController {
 
-    private static final Logger log = LoggerFactory.getLogger(PermisoController.class);
+
 
     private final PermisoService permisoService;
 

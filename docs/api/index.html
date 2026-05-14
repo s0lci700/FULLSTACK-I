@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>API Docs — Estacionamiento Inteligente</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0f1117; --bg2: #1a1f2e; --bg3: #1e2330; --border: #2d3748;
+      --text: #e2e8f0; --text2: #94a3b8; --text3: #64748b;
+      --green: #3fb950; --blue: #58a6ff; --yellow: #d29922;
+      --red: #f85149; --purple: #bc8cff; --cyan: #76e3ea;
+    }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 2rem; max-width: 1100px; margin: 0 auto; }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .back { font-size: 0.8rem; color: var(--text3); display: inline-block; margin-bottom: 1.5rem; }
+    .back:hover { color: var(--blue); text-decoration: none; }
+    .header { text-align: center; margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+    .badge { display: inline-block; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--purple); background: #2a1a4a; padding: 0.25rem 0.75rem; border-radius: 20px; margin-bottom: 0.75rem; }
+    h1 { font-size: 1.8rem; font-weight: 700; color: #f8fafc; margin-bottom: 0.4rem; }
+    .subtitle { color: var(--text2); font-size: 0.9rem; }
+    .section-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text3); margin: 2rem 0 1rem; padding-left: 0.6rem; border-left: 3px solid var(--border); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1.4rem; transition: border-color 0.15s; display: block; color: inherit; }
+    .card:hover { border-color: #3d4f6d; text-decoration: none; }
+    .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
+    .card-name { font-size: 1rem; font-weight: 700; color: #f1f5f9; }
+    .port { font-family: monospace; font-size: 0.72rem; color: var(--text3); background: var(--bg3); border: 1px solid var(--border); padding: 0.15rem 0.5rem; border-radius: 5px; }
+    .card-desc { font-size: 0.82rem; color: var(--text2); margin-bottom: 0.75rem; }
+    .card-footer { display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center; }
+    .chip { font-size: 0.65rem; background: var(--bg3); border: 1px solid var(--border); padding: 0.1rem 0.45rem; border-radius: 20px; color: var(--text3); font-family: monospace; }
+    .chip.feign { border-color: #4a3a10; color: var(--yellow); background: #2a1f05; }
+    .chip.nodb { border-color: #1a3a5a; color: var(--cyan); background: #0a1f30; }
+    .note { background: #1a1f2e; border: 1px solid var(--border); border-radius: 8px; padding: 0.9rem 1.1rem; font-size: 0.82rem; color: var(--text2); margin-bottom: 2rem; }
+    .note strong { color: var(--text); }
+    .flow { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; margin-top: 0.5rem; }
+    .flow-step { font-size: 0.75rem; font-family: monospace; background: var(--bg3); border: 1px solid var(--border); padding: 0.2rem 0.6rem; border-radius: 6px; color: var(--text2); }
+    .flow-arrow { color: var(--text3); font-size: 0.75rem; }
+    .footer { text-align: center; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border); color: var(--text3); font-size: 0.78rem; }
+  </style>
+</head>
+<body>
+  <a class="back" href="../index.html">← Volver al índice principal</a>
+
+  <div class="header">
+    <div class="badge">API Reference</div>
+    <h1>Estacionamiento Inteligente</h1>
+    <p class="subtitle">Documentación de endpoints · 12 microservicios · Spring Boot 3.5 · Java 21</p>
+  </div>
+
+  <div class="note">
+    <strong>Base URL (API Gateway):</strong> <code style="font-family:monospace;color:var(--cyan)">http://localhost:8080</code> — todas las rutas pasan por el gateway excepto las llamadas Feign internas.<br>
+    <strong>Auth:</strong> la mayoría de endpoints requieren <code style="font-family:monospace">Authorization: Bearer &lt;JWT&gt;</code> obtenido en <code style="font-family:monospace">/api/auth/login</code>.
+  </div>
+
+  <div class="section-label">Orden de arranque</div>
+  <div class="flow" style="margin-bottom:2rem">
+    <span class="flow-step">eureka-server :8761</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-step">api-gateway :8080</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-step">auth-service :8081</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-step">user-service :8082</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-step">ms-vehiculos :8084</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-step">ms-espacios :8085</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-step">ms-tarifas :8088</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-step">ms-reservas :8086</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-step">ms-accesos :8087</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-step">ms-pagos :8089</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-step">ms-reportes :8090</span>
+  </div>
+
+  <div class="section-label">Servicios</div>
+  <div class="grid">
+
+    <a class="card" href="auth-service.html">
+      <div class="card-top">
+        <span class="card-name">auth-service</span>
+        <span class="port">:8081</span>
+      </div>
+      <p class="card-desc">Autenticación con JWT. Login y registro de usuarios. BCrypt para contraseñas.</p>
+      <div class="card-footer">
+        <span class="chip">2 endpoints</span>
+        <span class="chip">db_auth</span>
+        <span class="chip">/api/auth</span>
+      </div>
+    </a>
+
+    <a class="card" href="user-service.html">
+      <div class="card-top">
+        <span class="card-name">user-service</span>
+        <span class="port">:8082</span>
+      </div>
+      <p class="card-desc">Gestión de clientes, tipos de cliente y suscripciones. CRUD completo.</p>
+      <div class="card-footer">
+        <span class="chip">8 endpoints</span>
+        <span class="chip">db_usuarios</span>
+        <span class="chip">/api/clientes</span>
+      </div>
+    </a>
+
+    <a class="card" href="security-service.html">
+      <div class="card-top">
+        <span class="card-name">security-service</span>
+        <span class="port">:8083</span>
+      </div>
+      <p class="card-desc">Permisos del sistema y asignación de permisos a roles.</p>
+      <div class="card-footer">
+        <span class="chip">9 endpoints</span>
+        <span class="chip">db_seguridad</span>
+        <span class="chip">/api/permisos</span>
+      </div>
+    </a>
+
+    <a class="card" href="ms-vehiculos.html">
+      <div class="card-top">
+        <span class="card-name">ms-vehiculos</span>
+        <span class="port">:8084</span>
+      </div>
+      <p class="card-desc">Gestión de vehículos y tipos de vehículo. CRUD con soft delete.</p>
+      <div class="card-footer">
+        <span class="chip">12 endpoints</span>
+        <span class="chip">db_vehiculos</span>
+        <span class="chip">/api/vehiculos</span>
+      </div>
+    </a>
+
+    <a class="card" href="ms-espacios.html">
+      <div class="card-top">
+        <span class="card-name">ms-espacios</span>
+        <span class="port">:8085</span>
+      </div>
+      <p class="card-desc">Gestión de espacios de estacionamiento y tipos. Disponibilidad actualizada por ms-accesos.</p>
+      <div class="card-footer">
+        <span class="chip">8 endpoints</span>
+        <span class="chip">db_espacios</span>
+        <span class="chip">/api/espacios</span>
+      </div>
+    </a>
+
+    <a class="card" href="ms-reservas.html">
+      <div class="card-top">
+        <span class="card-name">ms-reservas</span>
+        <span class="port">:8086</span>
+      </div>
+      <p class="card-desc">Reservas de espacios. Valida cliente, vehículo y espacio vía Feign antes de crear.</p>
+      <div class="card-footer">
+        <span class="chip">7 endpoints</span>
+        <span class="chip">db_reservas</span>
+        <span class="chip feign">Feign</span>
+      </div>
+    </a>
+
+    <a class="card" href="ms-accesos.html">
+      <div class="card-top">
+        <span class="card-name">ms-accesos</span>
+        <span class="port">:8087</span>
+      </div>
+      <p class="card-desc">Control de entrada y salida de vehículos. Calcula minutos y actualiza disponibilidad.</p>
+      <div class="card-footer">
+        <span class="chip">3 endpoints</span>
+        <span class="chip">db_accesos</span>
+        <span class="chip feign">Feign</span>
+      </div>
+    </a>
+
+    <a class="card" href="ms-tarifas.html">
+      <div class="card-top">
+        <span class="card-name">ms-tarifas</span>
+        <span class="port">:8088</span>
+      </div>
+      <p class="card-desc">Tarifas de cobro y horarios con multiplicadores. Provee tarifa vigente a ms-pagos.</p>
+      <div class="card-footer">
+        <span class="chip">10 endpoints</span>
+        <span class="chip">db_tarifas</span>
+        <span class="chip">/api/tarifas</span>
+      </div>
+    </a>
+
+    <a class="card" href="ms-pagos.html">
+      <div class="card-top">
+        <span class="card-name">ms-pagos</span>
+        <span class="port">:8089</span>
+      </div>
+      <p class="card-desc">Cobros, bancos, métodos de pago y tipos de tarjeta. Aplica fórmula de descuentos.</p>
+      <div class="card-footer">
+        <span class="chip">16 endpoints</span>
+        <span class="chip">db_pagos</span>
+        <span class="chip feign">Feign</span>
+      </div>
+    </a>
+
+    <a class="card" href="ms-reportes.html">
+      <div class="card-top">
+        <span class="card-name">ms-reportes</span>
+        <span class="port">:8090</span>
+      </div>
+      <p class="card-desc">Reportes agregados. Sin BD propia — consulta otros servicios vía Feign.</p>
+      <div class="card-footer">
+        <span class="chip">3 endpoints</span>
+        <span class="chip nodb">Sin BD</span>
+        <span class="chip feign">Feign</span>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="section-label">Errores comunes</div>
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:2rem">
+    <table style="width:100%;border-collapse:collapse;font-size:0.82rem">
+      <thead>
+        <tr style="background:var(--bg3)">
+          <th style="padding:0.6rem 1rem;text-align:left;color:var(--text3);font-size:0.68rem;text-transform:uppercase;letter-spacing:0.08em;border-bottom:1px solid var(--border)">Código</th>
+          <th style="padding:0.6rem 1rem;text-align:left;color:var(--text3);font-size:0.68rem;text-transform:uppercase;letter-spacing:0.08em;border-bottom:1px solid var(--border)">Error</th>
+          <th style="padding:0.6rem 1rem;text-align:left;color:var(--text3);font-size:0.68rem;text-transform:uppercase;letter-spacing:0.08em;border-bottom:1px solid var(--border)">Cuándo ocurre</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #1a1f2e"><td style="padding:0.6rem 1rem;font-family:monospace;color:#3fb950">200</td><td style="padding:0.6rem 1rem;color:var(--text2)">OK</td><td style="padding:0.6rem 1rem;color:var(--text3)">Lectura o actualización exitosa</td></tr>
+        <tr style="border-bottom:1px solid #1a1f2e"><td style="padding:0.6rem 1rem;font-family:monospace;color:#58a6ff">201</td><td style="padding:0.6rem 1rem;color:var(--text2)">Created</td><td style="padding:0.6rem 1rem;color:var(--text3)">Recurso creado exitosamente</td></tr>
+        <tr style="border-bottom:1px solid #1a1f2e"><td style="padding:0.6rem 1rem;font-family:monospace;color:var(--text3)">204</td><td style="padding:0.6rem 1rem;color:var(--text2)">No Content</td><td style="padding:0.6rem 1rem;color:var(--text3)">Eliminación exitosa</td></tr>
+        <tr style="border-bottom:1px solid #1a1f2e"><td style="padding:0.6rem 1rem;font-family:monospace;color:var(--yellow)">400</td><td style="padding:0.6rem 1rem;color:var(--text2)">Bad Request</td><td style="padding:0.6rem 1rem;color:var(--text3)">Validación fallida (@Valid), body vacío o JSON inválido</td></tr>
+        <tr style="border-bottom:1px solid #1a1f2e"><td style="padding:0.6rem 1rem;font-family:monospace;color:var(--yellow)">404</td><td style="padding:0.6rem 1rem;color:var(--text2)">Not Found</td><td style="padding:0.6rem 1rem;color:var(--text3)">Recurso no encontrado por ID</td></tr>
+        <tr style="border-bottom:1px solid #1a1f2e"><td style="padding:0.6rem 1rem;font-family:monospace;color:var(--red)">409</td><td style="padding:0.6rem 1rem;color:var(--text2)">Conflict</td><td style="padding:0.6rem 1rem;color:var(--text3)">Duplicado (email, patente, nombre único)</td></tr>
+        <tr><td style="padding:0.6rem 1rem;font-family:monospace;color:var(--red)">500</td><td style="padding:0.6rem 1rem;color:var(--text2)">Internal Server Error</td><td style="padding:0.6rem 1rem;color:var(--text3)">Error inesperado del servidor</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer">Estacionamiento Inteligente · DUOC UC · Spring Boot 3.5 · Java 21</div>
+</body>
+</html>

@@ -18,12 +18,13 @@ import estacionamientos.ms_pagos.dto.MetodoPagoCreateDTO;
 import estacionamientos.ms_pagos.dto.MetodoPagoResponseDTO;
 import estacionamientos.ms_pagos.service.MetodoPagoService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/metodos-pago")
+@Slf4j
 public class MetodoPagoController {
 
-    private static final Logger log = LoggerFactory.getLogger(MetodoPagoController.class);
 
     private final MetodoPagoService metodoPagoService;
 

@@ -17,7 +17,10 @@ import estacionamientos.ms_reservas.exception.NotFoundException;
 import estacionamientos.ms_reservas.model.EstadoEnums;
 import estacionamientos.ms_reservas.model.Reserva;
 import estacionamientos.ms_reservas.repository.ReservaRepository;
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class ReservaService {
 
@@ -52,6 +55,7 @@ public class ReservaService {
             .toList();
     }
 
+    @Transactional
     public ReservaResponseDTO create(ReservaCreateDTO reserva) {
         ClienteResponseDTO cliente = clienteClient.findById(reserva.getIdCliente());
         VehiculoResponseDTO vehiculo = vehiculoClient.findById(reserva.getIdVehiculo());
@@ -74,7 +78,8 @@ public class ReservaService {
         nReserva.setEstado(EstadoEnums.PENDIENTE);
         return toDTO(reservasRepository.save(nReserva));
     }
-
+    
+    @Transactional
     public ReservaResponseDTO cancelar(Long id) {
         Reserva reserva = reservasRepository
             .findById(id)
@@ -83,7 +88,7 @@ public class ReservaService {
         return toDTO(reservasRepository.save(reserva));
     }
 
-    
+    @Transactional
     public ReservaResponseDTO confirmar(Long id) {
         Reserva reserva = reservasRepository
         .findById(id)
@@ -94,6 +99,7 @@ public class ReservaService {
         return toDTO(reservasRepository.save(reserva));
     }
 
+    @Transactional
     public ReservaResponseDTO finalizar(Long id) {
         Reserva reserva = reservasRepository
         .findById(id)

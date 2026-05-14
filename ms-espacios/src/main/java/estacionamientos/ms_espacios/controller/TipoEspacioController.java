@@ -12,12 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import estacionamientos.ms_espacios.dto.TipoEspacioResponseDTO;
 import estacionamientos.ms_espacios.service.TipoEspacioService;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/tipo-espacio")
+@Slf4j
 public class TipoEspacioController {
 
-    private static final Logger log = LoggerFactory.getLogger(TipoEspacioController.class);
 
     private final TipoEspacioService tipoEspaciosService;
 

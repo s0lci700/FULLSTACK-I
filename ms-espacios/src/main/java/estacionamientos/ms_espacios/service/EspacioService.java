@@ -8,17 +8,20 @@ import estacionamientos.ms_espacios.exception.ResourceNotFoundException;
 import estacionamientos.ms_espacios.model.Espacio;
 import estacionamientos.ms_espacios.model.TipoEspacio;
 import estacionamientos.ms_espacios.repository.EspacioRepository;
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class EspacioService {
 
-    private static final Logger log = LoggerFactory.getLogger(EspacioService.class);
-
+    
     private final EspacioRepository espaciosRepository;
     private final TipoEspacioService tipoEspaciosService;
 
@@ -49,6 +52,7 @@ public class EspacioService {
                 .toList();
     }
 
+    @Transactional
     public EspacioResponseDTO create(EspacioCreateDTO dto) {
         log.info("Creando espacio con numero: {}", dto.getNumero());
         if (espaciosRepository.existsByNumero(dto.getNumero())) {
@@ -67,6 +71,7 @@ public class EspacioService {
         return toDTO(guardado);
     }
 
+    @Transactional
     public EspacioResponseDTO update(Long id, EspacioUpdateDTO dto) {
         log.info("Actualizando espacio con id: {}", id);
         Espacio espacio = espaciosRepository.findById(id)
@@ -87,6 +92,7 @@ public class EspacioService {
         return toDTO(actualizado);
     }
 
+    @Transactional
     public void updateDisponibilidad(Long id, Boolean disponible) {
         log.info("Actualizando disponibilidad del espacio id: {} a: {}", id, disponible);
         Espacio espacio = espaciosRepository.findById(id)
@@ -96,6 +102,7 @@ public class EspacioService {
         log.info("Disponibilidad actualizada correctamente");
     }
 
+    @Transactional
     public void delete(Long id) {
         log.info("Eliminando espacio con id: {}", id);
         if (!espaciosRepository.existsById(id)) {

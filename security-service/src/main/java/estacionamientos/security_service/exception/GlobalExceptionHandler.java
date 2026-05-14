@@ -8,15 +8,17 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.HashMap;
 import java.util.Map;
 
 // Intercepta todas las excepciones lanzadas en los controllers
 // y las convierte en respuestas HTTP estructuradas
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     // Captura ResourceNotFoundException y retorna 404
     @ExceptionHandler(ResourceNotFoundException.class)

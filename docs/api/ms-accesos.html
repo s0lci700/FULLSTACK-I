@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ms-accesos — API Docs</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg:#0f1117;--bg2:#1a1f2e;--bg3:#1e2330;--border:#2d3748;--text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;--green:#3fb950;--blue:#58a6ff;--yellow:#d29922;--red:#f85149;--purple:#bc8cff;--cyan:#76e3ea; }
+    body { font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6; }
+    a { color:var(--blue);text-decoration:none; } a:hover { text-decoration:underline; }
+    .topnav { background:var(--bg2);border-bottom:1px solid var(--border);padding:0.65rem 1.5rem;display:flex;align-items:center;justify-content:space-between;font-size:0.82rem;position:sticky;top:0;z-index:100; }
+    .topnav a { color:var(--text2);font-size:0.8rem; } .topnav a:hover { color:var(--blue);text-decoration:none; }
+    .service-tag { font-family:monospace;color:var(--text3);background:var(--bg3);padding:0.15rem 0.55rem;border-radius:5px;font-size:0.72rem;border:1px solid var(--border); }
+    .swagger-link { font-size:0.72rem;color:var(--green);border:1px solid #1a4a2a;background:#0a2010;padding:0.15rem 0.55rem;border-radius:5px; }
+    .layout { display:flex; }
+    .sidebar { width:220px;min-width:220px;background:var(--bg2);border-right:1px solid var(--border);padding:1.25rem 0;position:sticky;top:42px;height:calc(100vh - 42px);overflow-y:auto;flex-shrink:0; }
+    .sidebar-group-title { font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);padding:0 1rem 0.35rem; }
+    .sidebar a { display:flex;align-items:center;gap:0.5rem;padding:0.3rem 1rem;font-size:0.76rem;color:var(--text2);transition:background 0.1s; }
+    .sidebar a:hover { background:var(--bg3);color:var(--text);text-decoration:none; }
+    .dot { width:6px;height:6px;border-radius:50%;flex-shrink:0; }
+    .dot-GET { background:var(--green); } .dot-POST { background:var(--blue); } .dot-PATCH { background:var(--cyan); }
+    .content { flex:1;padding:2rem 2.5rem;max-width:860px; }
+    .service-header { margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border); }
+    .service-header h1 { font-size:1.5rem;font-weight:700;color:#f8fafc;margin-bottom:0.5rem; }
+    .service-meta { display:flex;gap:0.6rem;flex-wrap:wrap;align-items:center; }
+    .meta-chip { font-size:0.72rem;background:var(--bg3);border:1px solid var(--border);padding:0.18rem 0.55rem;border-radius:6px;color:var(--text2);font-family:monospace; }
+    .service-desc { font-size:0.85rem;color:var(--text2);margin-top:0.75rem; }
+    .group-title { font-size:0.67rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin:2rem 0 0.75rem;padding-left:0.5rem;border-left:3px solid var(--border); }
+    .endpoint { background:var(--bg2);border:1px solid var(--border);border-radius:10px;margin-bottom:0.75rem;overflow:hidden;scroll-margin-top:60px; }
+    .endpoint-header { display:flex;align-items:center;gap:0.75rem;padding:0.8rem 1rem; }
+    .endpoint-path { font-family:'Consolas',monospace;font-size:0.85rem;color:var(--text); }
+    .endpoint-summary { font-size:0.78rem;color:var(--text2);padding:0 1rem 0.75rem; }
+    .endpoint-body { border-top:1px solid var(--border);padding:1rem;display:grid;gap:1rem; }
+    .endpoint-body.cols2 { grid-template-columns:1fr 1fr; }
+    .section-title { font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:0.5rem; }
+    .field-table { width:100%;border-collapse:collapse;font-size:0.78rem; }
+    .field-table th { text-align:left;color:var(--text3);font-size:0.63rem;font-weight:600;text-transform:uppercase;padding:0.25rem 0.5rem;border-bottom:1px solid var(--border); }
+    .field-table td { padding:0.28rem 0.5rem;color:var(--text2);vertical-align:top; }
+    .field-table td.fname { font-family:monospace;font-size:0.76rem;color:var(--cyan);white-space:nowrap; }
+    .field-table td.ftype { color:var(--purple);font-family:monospace;font-size:0.73rem; }
+    .req-tag { color:var(--red);font-size:0.62rem;font-weight:700; }
+    .method { font-size:0.63rem;font-weight:700;font-family:monospace;padding:0.22rem 0.5rem;border-radius:5px;text-transform:uppercase;min-width:52px;text-align:center;flex-shrink:0; }
+    .GET { background:#091f10;color:var(--green);border:1px solid #1a4020; }
+    .POST { background:#091630;color:var(--blue);border:1px solid #1a2a50; }
+    .PATCH { background:#09201f;color:var(--cyan);border:1px solid #1a3838; }
+    .statuses { display:flex;gap:0.4rem;flex-wrap:wrap; }
+    .status { font-size:0.68rem;font-family:monospace;padding:0.12rem 0.4rem;border-radius:4px; }
+    .s2xx { background:#091f10;color:var(--green); } .s4xx { background:#241a00;color:var(--yellow); }
+    .feign-note { background:#1a1a10;border:1px solid #3a3a10;border-radius:8px;padding:0.7rem 0.9rem;font-size:0.78rem;color:var(--yellow);margin-top:0.75rem; }
+    .footer { text-align:center;padding:2rem 0;color:var(--text3);font-size:0.75rem;border-top:1px solid var(--border);margin-top:3rem; }
+  </style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html">← API Docs</a>
+  <div style="display:flex;gap:0.75rem;align-items:center">
+    <span class="service-tag">:8087</span>
+    <span class="service-tag">db_accesos</span>
+    <a class="swagger-link" href="http://localhost:8087/swagger-ui/index.html" target="_blank">Swagger ↗</a>
+  </div>
+</nav>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-group-title">AccesoController</div>
+    <a href="#entrada"><span class="dot dot-POST"></span>POST /entrada</a>
+    <a href="#salida"><span class="dot dot-PATCH"></span>PATCH /{id}/salida</a>
+    <a href="#by-reserva"><span class="dot dot-GET"></span>GET /reserva/{id}</a>
+  </aside>
+  <main class="content">
+    <div class="service-header">
+      <h1>ms-accesos</h1>
+      <div class="service-meta">
+        <span class="meta-chip">localhost:8087</span>
+        <span class="meta-chip">db_accesos</span>
+        <span class="meta-chip">/api/accesos/**</span>
+      </div>
+      <p class="service-desc">Control de entrada y salida de vehículos. Al registrar entrada marca el espacio como no disponible y valida la reserva vía Feign. Al registrar salida calcula los minutos, libera el espacio y finaliza la reserva.</p>
+      <div class="feign-note">⚡ Feign: llama a <strong>ms-espacios</strong> (actualizar disponibilidad) y <strong>ms-reservas</strong> (validar y finalizar).</div>
+    </div>
+
+    <div class="group-title">AccesoController — /api/accesos</div>
+
+    <div class="endpoint" id="entrada">
+      <div class="endpoint-header">
+        <span class="method POST">POST</span>
+        <span class="endpoint-path">/api/accesos/entrada</span>
+      </div>
+      <p class="endpoint-summary">Registra la entrada de un vehículo. Valida que la reserva esté CONFIRMADA y que no exista otro acceso activo para esa reserva. Marca el espacio como no disponible.</p>
+      <div class="endpoint-body cols2">
+        <div>
+          <div class="section-title">Request Body</div>
+          <table class="field-table">
+            <thead><tr><th>Campo</th><th>Tipo</th><th></th><th>Descripción</th></tr></thead>
+            <tbody>
+              <tr><td class="fname">idReserva</td><td class="ftype">Long</td><td><span class="req-tag">REQ</span></td><td>ID de la reserva CONFIRMADA</td></tr>
+              <tr><td class="fname">idVehiculo</td><td class="ftype">Long</td><td><span class="req-tag">REQ</span></td><td>ID del vehículo que entra</td></tr>
+              <tr><td class="fname">patenteEscaneada</td><td class="ftype">String</td><td><span class="req-tag">REQ</span></td><td>Patente leída por el escáner</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <div class="section-title">Response — 200 OK</div>
+          <table class="field-table">
+            <thead><tr><th>Campo</th><th>Tipo</th><th>Descripción</th></tr></thead>
+            <tbody>
+              <tr><td class="fname">id</td><td class="ftype">Long</td><td>ID del acceso creado</td></tr>
+              <tr><td class="fname">idVehiculo</td><td class="ftype">Long</td><td></td></tr>
+              <tr><td class="fname">idEspacio</td><td class="ftype">Long</td><td>Tomado de la reserva</td></tr>
+              <tr><td class="fname">idReserva</td><td class="ftype">Long</td><td></td></tr>
+              <tr><td class="fname">patenteEscaneada</td><td class="ftype">String</td><td></td></tr>
+              <tr><td class="fname">fechaHoraEntrada</td><td class="ftype">LocalDateTime</td><td>Timestamp del servidor</td></tr>
+              <tr><td class="fname">fechaHoraSalida</td><td class="ftype">LocalDateTime</td><td>null hasta la salida</td></tr>
+              <tr><td class="fname">minutos</td><td class="ftype">Long</td><td>null hasta la salida</td></tr>
+              <tr><td class="fname">estado</td><td class="ftype">String</td><td>ACTIVO</td></tr>
+            </tbody>
+          </table>
+          <div style="margin-top:0.75rem"><div class="section-title">Status</div>
+          <div class="statuses"><span class="status s2xx">200 OK</span><span class="status s4xx">409 Conflict</span><span class="status s4xx">404 Not Found</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="endpoint" id="salida">
+      <div class="endpoint-header">
+        <span class="method PATCH">PATCH</span>
+        <span class="endpoint-path">/api/accesos/{id}/salida</span>
+      </div>
+      <p class="endpoint-summary">Registra la salida del vehículo. Calcula minutos transcurridos, libera el espacio (disponible=true) y finaliza la reserva. Solo se puede llamar una vez por acceso.</p>
+      <div class="endpoint-body cols2">
+        <div>
+          <div class="section-title">Path Params</div>
+          <table class="field-table">
+            <thead><tr><th>Param</th><th>Tipo</th><th>Descripción</th></tr></thead>
+            <tbody>
+              <tr><td class="fname">id</td><td class="ftype">Long</td><td>ID del acceso</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <div class="section-title">Response — 200 OK</div>
+          <p style="font-size:0.78rem;color:var(--text2)">AccesoResponseDTO con fechaHoraSalida y minutos calculados. Estado: COMPLETADO.</p>
+          <div style="margin-top:0.75rem"><div class="section-title">Status</div>
+          <div class="statuses"><span class="status s2xx">200 OK</span><span class="status s4xx">404 Not Found</span><span class="status s4xx">409 Conflict</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="endpoint" id="by-reserva">
+      <div class="endpoint-header">
+        <span class="method GET">GET</span>
+        <span class="endpoint-path">/api/accesos/reserva/{idReserva}</span>
+      </div>
+      <p class="endpoint-summary">Obtiene el registro de acceso asociado a una reserva. Usado por ms-reportes y ms-pagos.</p>
+      <div class="endpoint-body cols2">
+        <div>
+          <div class="section-title">Path Params</div>
+          <table class="field-table">
+            <thead><tr><th>Param</th><th>Tipo</th><th>Descripción</th></tr></thead>
+            <tbody>
+              <tr><td class="fname">idReserva</td><td class="ftype">Long</td><td>ID de la reserva</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <div class="section-title">Response — 200 OK</div>
+          <p style="font-size:0.78rem;color:var(--text2)">AccesoResponseDTO completo.</p>
+          <div style="margin-top:0.75rem"><div class="section-title">Status</div>
+          <div class="statuses"><span class="status s2xx">200 OK</span><span class="status s4xx">404 Not Found</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">ms-accesos · Estacionamiento Inteligente · DUOC UC</div>
+  </main>
+</div>
+</body>
+</html>

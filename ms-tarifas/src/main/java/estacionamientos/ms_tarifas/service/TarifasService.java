@@ -6,16 +6,20 @@ import estacionamientos.ms_tarifas.dto.TarifaUpdateDTO;
 import estacionamientos.ms_tarifas.exception.ResourceNotFoundException;
 import estacionamientos.ms_tarifas.model.Tarifas;
 import estacionamientos.ms_tarifas.repository.TarifasRepository;
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class TarifasService {
 
-    private static final Logger log = LoggerFactory.getLogger(TarifasService.class);
+
 
     private final TarifasRepository tarifasRepository;
 
@@ -48,6 +52,7 @@ public class TarifasService {
     }
 
     // Crea una nueva tarifa, valida que el nombre no este duplicado
+    @Transactional
     public TarifaResponseDTO create(TarifaCreateDTO dto) {
         log.info("Creando tarifa: {}", dto.getNombre());
         if (tarifasRepository.existsByNombre(dto.getNombre())) {
@@ -64,6 +69,7 @@ public class TarifasService {
     }
 
     // Actualiza los datos de una tarifa existente
+    @Transactional
     public TarifaResponseDTO update(Long id, TarifaUpdateDTO dto) {
         log.info("Actualizando tarifa con id: {}", id);
         Tarifas tarifa = tarifasRepository.findById(id)
@@ -82,6 +88,7 @@ public class TarifasService {
     }
 
     // Eliminacion logica — marca activo=false
+    @Transactional
     public void delete(Long id) {
         log.info("Desactivando tarifa con id: {}", id);
         Tarifas tarifa = tarifasRepository.findById(id)

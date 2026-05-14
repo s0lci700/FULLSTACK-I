@@ -4,6 +4,8 @@ import estacionamientos.ms_tarifas.dto.HorarioTarifaCreateDTO;
 import estacionamientos.ms_tarifas.dto.HorarioTarifaResponseDTO;
 import estacionamientos.ms_tarifas.service.HorarioTarifasService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -12,11 +14,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/horarios-tarifa")
 public class HorarioTarifasController {
 
-    private static final Logger log = LoggerFactory.getLogger(HorarioTarifasController.class);
+
 
     private final HorarioTarifasService horarioTarifasService;
 

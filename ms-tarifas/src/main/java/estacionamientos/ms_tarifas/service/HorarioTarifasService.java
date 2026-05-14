@@ -6,22 +6,26 @@ import estacionamientos.ms_tarifas.exception.ResourceNotFoundException;
 import estacionamientos.ms_tarifas.model.HorarioTarifas;
 import estacionamientos.ms_tarifas.model.Tarifas;
 import estacionamientos.ms_tarifas.repository.HorarioTarifasRepository;
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class HorarioTarifasService {
 
-    private static final Logger log = LoggerFactory.getLogger(HorarioTarifasService.class);
+
 
     private final HorarioTarifasRepository horarioTarifasRepository;
     private final TarifasService tarifasService;
 
     public HorarioTarifasService(HorarioTarifasRepository horarioTarifasRepository,
-                                  TarifasService tarifasService) {
+            TarifasService tarifasService) {
         this.horarioTarifasRepository = horarioTarifasRepository;
         this.tarifasService = tarifasService;
     }
@@ -43,6 +47,7 @@ public class HorarioTarifasService {
     }
 
     // Crea un nuevo horario asociado a una tarifa existente
+    @Transactional
     public HorarioTarifaResponseDTO create(HorarioTarifaCreateDTO dto) {
         log.info("Creando horario de tarifa para tarifa id: {}", dto.getIdTarifa());
         Tarifas tarifa = tarifasService.findEntityById(dto.getIdTarifa());
@@ -58,6 +63,7 @@ public class HorarioTarifasService {
     }
 
     // Elimina un horario de tarifa por id
+    @Transactional
     public void delete(Long id) {
         log.info("Eliminando horario de tarifa con id: {}", id);
         if (!horarioTarifasRepository.existsById(id)) {
@@ -74,7 +80,6 @@ public class HorarioTarifasService {
                 horario.getDiaTipo(),
                 horario.getHoraInicio(),
                 horario.getHoraFin(),
-                horario.getMultiplicador()
-        );
+                horario.getMultiplicador());
     }
 }

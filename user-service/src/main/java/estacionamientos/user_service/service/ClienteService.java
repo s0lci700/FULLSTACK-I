@@ -9,6 +9,7 @@ import estacionamientos.user_service.exception.ResourceNotFoundException;
 import estacionamientos.user_service.model.Cliente;
 import estacionamientos.user_service.model.TipoCliente;
 import estacionamientos.user_service.repository.ClienteRepository;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
@@ -46,6 +47,7 @@ public class ClienteService {
     }
 
     // Crea un nuevo cliente, valida que el email no este duplicado
+    @Transactional
     public ClienteResponseDTO create(ClienteCreateDTO dto) {
         log.info("Creando cliente con email: {}", dto.getEmail());
         if (clienteRepository.existsByEmail(dto.getEmail())) {
@@ -65,6 +67,7 @@ public class ClienteService {
     }
 
     // Actualiza nombre, apellido, telefono y tipo de cliente
+    @Transactional
     public ClienteResponseDTO update(Long id, ClienteUpdateDTO dto) {
         log.info("Actualizando cliente con id: {}", id);
         Cliente cliente = clienteRepository.findById(id)
@@ -80,6 +83,7 @@ public class ClienteService {
     }
 
     // Eliminacion logica — marca activo=false
+    @Transactional
     public void delete(Long id) {
         log.info("Desactivando cliente con id: {}", id);
         Cliente cliente = clienteRepository.findById(id)

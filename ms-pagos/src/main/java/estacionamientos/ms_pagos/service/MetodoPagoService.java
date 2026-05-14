@@ -16,11 +16,14 @@ import estacionamientos.ms_pagos.model.TipoTarjeta;
 import estacionamientos.ms_pagos.repository.BancoRepository;
 import estacionamientos.ms_pagos.repository.MetodoPagoRepository;
 import estacionamientos.ms_pagos.repository.TipoTarjetaRepository;
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class MetodoPagoService {
 
-    private static final Logger log = LoggerFactory.getLogger(MetodoPagoService.class);
+
 
     private final MetodoPagoRepository metodoPagoRepository;
     private final BancoRepository bancoRepository;
@@ -49,6 +52,7 @@ public class MetodoPagoService {
         return toResponse(metodo);
     }
 
+    @Transactional
     public MetodoPagoResponseDTO create(MetodoPagoCreateDTO dto) {
         log.info("Creando metodo de pago nombre={}", dto.getNombre());
         MetodoPago metodo = new MetodoPago();
@@ -69,6 +73,7 @@ public class MetodoPagoService {
         return toResponse(metodoPagoRepository.save(metodo));
     }
 
+    @Transactional
     public void delete(Long id) {
         log.info("Eliminando metodo de pago id={}", id);
         if (!metodoPagoRepository.existsById(id)) {
