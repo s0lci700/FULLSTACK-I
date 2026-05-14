@@ -16,6 +16,7 @@ import estacionamientos.ms_accesos.exception.NotFoundException;
 import estacionamientos.ms_accesos.model.Acceso;
 import estacionamientos.ms_accesos.model.EstadoEnum;
 import estacionamientos.ms_accesos.repository.AccesoRepository;
+import feign.FeignException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,30 +32,46 @@ public class AccesoService {
     @Autowired
     ReservaClient reservaClient;
 
-    @Transactional
-    public AccesoResponseDTO registrarEntrada(AccesoCreateDTO dto) {
-        ReservaResponseDTO reserva = reservaClient.findById(dto.getIdReserva());
-        if (reserva == null || !reserva.getEstado().equals("CONFIRMADA")) {
-            throw new ConflictException("Reserva no válida para registrar entrada");
-        }
-        accesoRepository.findByIdReserva(dto.getIdReserva()).ifPresent(
-                acceso -> {
-                    throw new ConflictException("Ya existe un acceso registrado para esta reserva");
-                });
+@Transactional
+public AccesoResponseDTO registrarEntrada(AccesoCreateDTO dto) {
 
-        Acceso acceso = new Acceso();
-        acceso.setIdReserva(dto.getIdReserva());
-        acceso.setIdEspacio(reserva.getIdEspacio());
-        acceso.setIdVehiculo(dto.getIdVehiculo());
-        acceso.setPatenteEscaneada(dto.getPatenteEscaneada());
-        acceso.setFechaHoraEntrada(LocalDateTime.now());
-        acceso.setEstado(EstadoEnum.ACTIVO);
-
-        espacioClient.updateDisponibilidad(reserva.getIdEspacio(), false);
-
-        return toDTO(accesoRepository.save(acceso));
-
+    //Feign nunca retorna null — capturar excepción correctamente
+    ReservaResponseDTO reserva;
+    try {
+        reserva = reservaClient.findById(dto.getIdReserva());
+    } catch (FeignException.NotFound e) {
+        throw new ConflictException("Reserva no encontrada con id: " + dto.getIdReserva());
+    } catch (FeignException e) {
+        throw new ConflictException("Error al consultar la reserva: " + e.getMessage());
     }
+
+    //Ahora esta validación sí tiene sentido (reserva nunca es null aquí)
+    if (!reserva.getEstado().equals("CONFIRMADA")) {
+        throw new ConflictException("Reserva no válida para registrar entrada");
+    }
+
+    accesoRepository.findByIdReserva(dto.getIdReserva()).ifPresent(
+            acceso -> {
+                throw new ConflictException("Ya existe un acceso registrado para esta reserva");
+            });
+
+    Acceso acceso = new Acceso();
+    acceso.setIdReserva(dto.getIdReserva());
+    acceso.setIdEspacio(reserva.getIdEspacio());
+    acceso.setIdVehiculo(dto.getIdVehiculo());
+    acceso.setPatenteEscaneada(dto.getPatenteEscaneada());
+    acceso.setFechaHoraEntrada(LocalDateTime.now());
+    acceso.setEstado(EstadoEnum.ACTIVO);
+
+    //También proteger la llamada a espacioClient
+    try {
+        espacioClient.updateDisponibilidad(reserva.getIdEspacio(), false);
+    } catch (FeignException e) {
+        throw new ConflictException("Error al actualizar disponibilidad del espacio: " + e.getMessage());
+    }
+
+    return toDTO(accesoRepository.save(acceso));
+}
 
     @Transactional
     public AccesoResponseDTO registrarSalida(Long id) {

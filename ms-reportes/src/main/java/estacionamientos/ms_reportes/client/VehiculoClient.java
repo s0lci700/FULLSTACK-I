@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import estacionamientos.ms_reportes.dto.VehiculoResponseDTO;
-
+//no se ocupa , 
 @FeignClient(name = "ms-vehiculos")
 public interface VehiculoClient {
 

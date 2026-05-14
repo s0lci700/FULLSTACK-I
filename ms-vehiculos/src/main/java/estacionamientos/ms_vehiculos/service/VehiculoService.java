@@ -3,6 +3,7 @@ package estacionamientos.ms_vehiculos.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import estacionamientos.ms_vehiculos.dto.TipoVehiculoResponseDTO;
@@ -41,9 +42,6 @@ public class VehiculoService {
 
     public List<VehiculoResponseDTO> listarTodos() {
         List<Vehiculo> vehiculos = vehiculoRepository.findAll();
-        if (vehiculos.isEmpty()) {
-            throw new NotFoundException("El repositorio esta vacio");
-        }
         return vehiculos.stream().map(this::toVehiculoDTO).toList();
     }
 
@@ -101,25 +99,16 @@ public class VehiculoService {
 
     public List<VehiculoResponseDTO> listarPorCliente(Long idClienteRef) {
         List<Vehiculo> vehiculos = vehiculoRepository.findByIdClienteRef(idClienteRef);
-        if (vehiculos.isEmpty()) {
-            throw new NotFoundException("No se encontraron vehiculos para el cliente");
-        }
         return vehiculos.stream().map(this::toVehiculoDTO).toList();
     }
 
     public List<VehiculoResponseDTO> listarPorTipoVehiculo(Long idTipoVehiculo) {
         List<Vehiculo> vehiculos = vehiculoRepository.findByIdTipoVehiculoId(idTipoVehiculo);
-        if (vehiculos.isEmpty()) {
-            throw new NotFoundException("No se encontraron vehiculos para el tipo de vehiculo");
-        }
         return vehiculos.stream().map(this::toVehiculoDTO).toList();
     }
 
     public List<TipoVehiculoResponseDTO> listarTiposVehiculo() {
         List<TipoVehiculo> tiposVehiculo = tipoVehiculoRepository.findAll();
-        if (tiposVehiculo.isEmpty()) {
-            throw new NotFoundException("No se encontraron tipos de vehiculo");
-        }
         return tiposVehiculo.stream().map(this::toTipoVehiculoDTO).toList();
     }
 

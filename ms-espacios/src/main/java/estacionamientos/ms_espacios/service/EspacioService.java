@@ -21,12 +21,11 @@ import java.util.List;
 @Service
 public class EspacioService {
 
-    
     private final EspacioRepository espaciosRepository;
     private final TipoEspacioService tipoEspaciosService;
 
     public EspacioService(EspacioRepository espaciosRepository,
-                           TipoEspacioService tipoEspaciosService) {
+            TipoEspacioService tipoEspaciosService) {
         this.espaciosRepository = espaciosRepository;
         this.tipoEspaciosService = tipoEspaciosService;
     }
@@ -108,7 +107,8 @@ public class EspacioService {
         if (!espaciosRepository.existsById(id)) {
             throw new ResourceNotFoundException("Espacio no encontrado con id: " + id);
         }
-        espaciosRepository.deleteById(id);
+        EspacioUpdateDTO espacio = espaciosRepository.encontrarPorId(id);
+        espacio.setActivo(false);
         log.info("Espacio eliminado con id: {}", id);
     }
 
@@ -121,7 +121,6 @@ public class EspacioService {
                 espacio.getPiso(),
                 tipoDTO,
                 espacio.getDisponible(),
-                espacio.getActivo()
-        );
+                espacio.getActivo());
     }
 }
