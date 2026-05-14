@@ -12,12 +12,7 @@ import lombok.NoArgsConstructor;
 @Data @NoArgsConstructor @AllArgsConstructor
 public class AccesoCreateDTO {
 
-    @NotNull
-    private Long idVehiculo;
-
-    @NotNull
-    private Long idEspacio;
-
+    @NotNull(message = "El id de la reserva es obligatorio")
     private Long idReserva;
 
     @NotBlank

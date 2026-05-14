@@ -40,6 +40,9 @@ public class Acceso {
     @Column(nullable = true)
     private LocalDateTime fechaHoraSalida;
 
+    @Column(nullable = true)
+    private Integer minutos;
+
     @Column(nullable = false)
     private EstadoEnum estado = EstadoEnum.ACTIVO;
 }
