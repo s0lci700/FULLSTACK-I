@@ -11,12 +11,19 @@ import org.springframework.stereotype.Service;
 
 import estacionamientos.ms_pagos.client.AccesoClient;
 import estacionamientos.ms_pagos.client.ClienteClient;
+import estacionamientos.ms_pagos.client.EspacioClient;
+import estacionamientos.ms_pagos.client.HorarioTarifaClient;
 import estacionamientos.ms_pagos.client.TarifaClient;
+import estacionamientos.ms_pagos.client.TipoVehiculoClient;
+import estacionamientos.ms_pagos.client.VehiculoClient;
 import estacionamientos.ms_pagos.dto.AccesoResponseDTO;
 import estacionamientos.ms_pagos.dto.ClienteResponseDTO;
 import estacionamientos.ms_pagos.dto.CobroCreateDTO;
 import estacionamientos.ms_pagos.dto.CobroResponseDTO;
+import estacionamientos.ms_pagos.dto.EspacioResponseDTO;
+import estacionamientos.ms_pagos.dto.HorarioTarifaResponseDTO;
 import estacionamientos.ms_pagos.dto.TarifaResponseDTO;
+import estacionamientos.ms_pagos.dto.VehiculoResponseDTO;
 import estacionamientos.ms_pagos.exception.BusinessException;
 import estacionamientos.ms_pagos.exception.ResourceNotFoundException;
 import estacionamientos.ms_pagos.model.Cobro;
@@ -38,10 +45,22 @@ public class PagoService {
 
     @Autowired
     AccesoClient accesoClient;
-    
+
+    @Autowired
+    VehiculoClient vehiculoClient;
+
+    @Autowired
+    TipoVehiculoClient tipoVehiculoClient;
+
+    @Autowired
+    EspacioClient espacioClient;
+
+    @Autowired
+    HorarioTarifaClient horarioTarifaClient;
+
     @Autowired
     TarifaClient tarifaClient;
-    
+
     @Autowired
     ClienteClient clienteClient;
 
@@ -69,10 +88,38 @@ public class PagoService {
 
         // Obtener datos remotos via Feign
         AccesoResponseDTO acceso = accesoClient.getById(dto.getIdAcceso());
-        log.info("Acceso obtenido: idVehiculo={}, minutos={}", acceso.getIdVehiculo(), acceso.getMinutos());
+        log.info("Acceso obtenido: idVehiculo={}, idEspacio={}, minutos={}", acceso.getIdVehiculo(), acceso.getIdEspacio(), acceso.getMinutos());
 
         TarifaResponseDTO tarifa = tarifaClient.getTarifaVigente();
         log.info("Tarifa vigente: precioBaseHora={}", tarifa.getPrecioBaseHora());
+
+        // Obtener factor tipo vehiculo (2 hops: vehiculo -> tipoVehiculo)
+        VehiculoResponseDTO vehiculo = vehiculoClient.getById(acceso.getIdVehiculo());
+        double factorTipoVehiculo = 1.0;
+        if (vehiculo.getIdTipoVehiculo() != null) {
+            factorTipoVehiculo = tipoVehiculoClient.getById(vehiculo.getIdTipoVehiculo()).getFactorPrecio();
+            log.info("Factor tipo vehiculo: {}", factorTipoVehiculo);
+        }
+
+        // Obtener factor tipo espacio (espacio ya incluye tipoEspacio anidado)
+        EspacioResponseDTO espacio = espacioClient.getById(acceso.getIdEspacio());
+        double factorTipoEspacio = 1.0;
+        if (espacio.getTipoEspacio() != null) {
+            factorTipoEspacio = espacio.getTipoEspacio().getFactorPrecio();
+            log.info("Factor tipo espacio: {}", factorTipoEspacio);
+        }
+
+        // Obtener multiplicador horario (1.0 si no hay horario vigente configurado)
+        double multiplicadorHorario = 1.0;
+        try {
+            HorarioTarifaResponseDTO horario = horarioTarifaClient.getVigente();
+            if (horario.getMultiplicador() != null) {
+                multiplicadorHorario = horario.getMultiplicador();
+                log.info("Multiplicador horario: {}", multiplicadorHorario);
+            }
+        } catch (Exception e) {
+            log.warn("No se encontro horario vigente, usando multiplicador 1.0: {}", e.getMessage());
+        }
 
         ClienteResponseDTO cliente = clienteClient.getById(dto.getIdCliente());
         log.info("Cliente obtenido: id={}", cliente.getId());
@@ -96,14 +143,23 @@ public class PagoService {
             log.info("Descuento tipo cliente aplicado: {}%", descuentoCliente);
         }
 
-        // Fórmula de cobro
+        // desc_suscripcion pendiente — requiere endpoint en user-service para ClienteSuscripcion
+        double descuentoSuscripcion = 0.0;
+
+        // Fórmula completa: monto_base = precio_base_hora × multiplicador_horario × factor_tipo_vehiculo × factor_tipo_espacio × (minutos/60)
         long minutos = acceso.getMinutos() != null ? acceso.getMinutos() : 0L;
-        double montoBase = tarifa.getPrecioBaseHora() * (minutos / 60.0);
+        double montoBase = tarifa.getPrecioBaseHora()
+                * multiplicadorHorario
+                * factorTipoVehiculo
+                * factorTipoEspacio
+                * (minutos / 60.0);
         double montoFinal = montoBase
                 * (1 - descuentoCliente / 100)
+                * (1 - descuentoSuscripcion / 100)
                 * (1 - descuentoBanco / 100);
 
-        log.info("Calculo: minutos={}, montoBase={}, montoFinal={}", minutos, montoBase, montoFinal);
+        log.info("Calculo: minutos={}, factorVehiculo={}, factorEspacio={}, multiplicadorHorario={}, montoBase={}, montoFinal={}",
+                minutos, factorTipoVehiculo, factorTipoEspacio, multiplicadorHorario, montoBase, montoFinal);
 
         // Guardar cobro
         Cobro cobro = new Cobro();

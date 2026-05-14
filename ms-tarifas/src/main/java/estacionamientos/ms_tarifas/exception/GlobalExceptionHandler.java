@@ -1,15 +1,14 @@
 package estacionamientos.ms_tarifas.exception;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,37 +16,40 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private Map<String, Object> buildResponse(HttpStatus status, String mensaje) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("timestamp", LocalDateTime.now().toString());
+        body.put("error", status.name());
+        body.put("mensaje", mensaje);
+        return body;
+    }
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleNotFound(ResourceNotFoundException ex) {
+    public ResponseEntity<Map<String, Object>> handleNotFound(ResourceNotFoundException ex) {
         log.error("Recurso no encontrado: {}", ex.getMessage());
-        Map<String, String> error = new HashMap<>();
-        error.put("error", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(buildResponse(HttpStatus.NOT_FOUND, ex.getMessage()));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Map<String, String>> handleIllegalArgument(IllegalArgumentException ex) {
+    public ResponseEntity<Map<String, Object>> handleIllegalArgument(IllegalArgumentException ex) {
         log.error("Argumento invalido: {}", ex.getMessage());
-        Map<String, String> error = new HashMap<>();
-        error.put("error", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidation(MethodArgumentNotValidException ex) {
+    public ResponseEntity<Map<String, Object>> handleValidation(MethodArgumentNotValidException ex) {
         log.error("Error de validacion en request");
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors()
-                .forEach(e -> errors.put(e.getField(), e.getDefaultMessage()));
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+        Map<String, Object> body = buildResponse(HttpStatus.BAD_REQUEST, "Error de validacion");
+        Map<String, String> campos = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(e -> campos.put(e.getField(), e.getDefaultMessage()));
+        body.put("campos", campos);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, String>> handleGeneral(Exception ex) {
+    public ResponseEntity<Map<String, Object>> handleGeneral(Exception ex) {
         log.error("Error inesperado: {}", ex.getMessage());
-        Map<String, String> error = new HashMap<>();
-        error.put("error", "Error interno del servidor");
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error interno del servidor"));
     }
 }

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import estacionamientos.ms_reportes.dto.CobroResponseDTO;
 
-@FeignClient(name = "ms-cobros")
+@FeignClient(name = "ms-pagos")
 public interface CobroClient {
     @GetMapping("/api/cobros/cliente/{idCliente}")
     List<CobroResponseDTO> findByCliente(@PathVariable Long idCliente);

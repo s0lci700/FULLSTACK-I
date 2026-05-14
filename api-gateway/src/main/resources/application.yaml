@@ -25,7 +25,7 @@ spring:
         - id: ms-espacios
           uri: lb://ms-espacios
           predicates:
-            - Path=/api/espacios/**
+            - Path=/api/espacios/**,/api/tipo-espacio/**
         - id: ms-reservas
           uri: lb://ms-reservas
           predicates:
@@ -37,7 +37,7 @@ spring:
         - id: ms-tarifas
           uri: lb://ms-tarifas
           predicates:
-            - Path=/api/tarifas/**
+            - Path=/api/tarifas/**,/api/horarios-tarifa/**
         - id: ms-pagos
           uri: lb://ms-pagos
           predicates:
@@ -46,6 +46,10 @@ spring:
           uri: lb://ms-reportes
           predicates:
             - Path=/api/reportes/**
+        - id: security-service
+          uri: lb://security-service
+          predicates:
+            - Path=/api/permisos/**,/api/rol-permisos/**
 
 eureka:
   client:

@@ -78,6 +78,12 @@ public class AccesoService {
         return toDTO(accesoRepository.save(acceso));
     }
 
+    public AccesoResponseDTO findById(Long id) {
+        Acceso acceso = accesoRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Acceso no encontrado id=" + id));
+        return toDTO(acceso);
+    }
+
     public AccesoResponseDTO findByReserva(Long idReserva) {
         Acceso acceso = accesoRepository.findByIdReserva(idReserva)
                 .orElseThrow(() -> new NotFoundException("Acceso no encontrado para la reserva: " + idReserva));
