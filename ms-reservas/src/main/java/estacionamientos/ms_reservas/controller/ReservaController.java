@@ -47,4 +47,14 @@ public class ReservaController {
     public ResponseEntity<ReservaResponseDTO> cancelar(@PathVariable Long id) {
         return ResponseEntity.ok(reservasService.cancelar(id));
     }
+
+    @PatchMapping("/{id}/confirmar")
+    public ResponseEntity<ReservaResponseDTO> confirmar(@PathVariable Long id) {
+        return ResponseEntity.ok(reservasService.confirmar(id));
+    }
+
+    @PatchMapping("/{id}/finalizar")
+    public ResponseEntity<ReservaResponseDTO> finalizar(@PathVariable Long id) {
+        return ResponseEntity.ok(reservasService.finalizar(id));
+    }
 }
