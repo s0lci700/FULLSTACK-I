@@ -144,7 +144,10 @@ Test patterns: `@ExtendWith(MockitoExtension.class)` for unit tests, `@SpringBoo
 
 ## Swagger / OpenAPI
 
-Add to each service's `pom.xml` to expose `http://localhost:{port}/swagger-ui.html`:
+Already added to: `auth-service`, `user-service`, `ms-vehiculos`, `ms-espacios`, `ms-tarifas`, `ms-reservas`.
+Access at `http://localhost:{port}/swagger-ui/index.html` once the service is running.
+
+Add to any remaining service's `pom.xml`:
 
 ```xml
 <dependency>
@@ -173,13 +176,13 @@ monto_final = monto_base
 |---------|--------|-------|
 | `eureka-server` | scaffold | — |
 | `api-gateway` | **complete** | Routing via `application.yaml` — all 9 services routed. No JWT filter (not required yet). Uses YAML config, not .properties. |
-| `auth-service` | **complete** | Full CSR + JWT + BCrypt + GlobalExceptionHandler + SLF4J logs. ⚠️ `jwt.secret` in application.properties is still a placeholder — replace with `openssl rand -base64 32` before running |
-| `user-service` | **complete** | Done by Catalina — Cliente, TipoCliente, Suscripcion, ClienteSuscripcion entities; full CRUD + DTOs + GlobalExceptionHandler. ⚠️ DB connects to port 3306, all other services use 3307 — verify before integration. `GlobalExceptionHandler` uses `@ControllerAdvice` (should be `@RestControllerAdvice`). Duplicate subscription check added to `ClienteSuscripcionService`. |
+| `auth-service` | **complete** | Full CSR + JWT + BCrypt + GlobalExceptionHandler + SLF4J logs. `jwt.secret` is a valid 256-bit Base64 key. Swagger enabled; `/swagger-ui/**` and `/v3/api-docs/**` are public in SecurityConfig. |
+| `user-service` | **complete** | Done by Catalina — Cliente, TipoCliente, Suscripcion, ClienteSuscripcion entities; full CRUD + DTOs + GlobalExceptionHandler (`@RestControllerAdvice`). DB on port 3307. Duplicate subscription check in `ClienteSuscripcionService`. Swagger enabled. |
 | `security-service` | scaffold | — |
-| `ms-vehiculos` | **complete** | Full CRUD for Vehiculo + TipoVehiculo. Entities, repos, DTOs, services, controllers, GlobalExceptionHandler all done. `@ManyToOne` relation between Vehiculo→TipoVehiculo. Soft delete on Vehiculo (activo=false). TipoVehiculo hard delete guarded by vehicle check. Controller returns entity directly (no DTO) — `VehiculoResponseDTO` is empty. |
-| `ms-espacios` | **complete** | Full CRUD for Espacios + TipoEspacios. PATCH `/api/espacios/{id}/disponibilidad` used by ms-accesos to toggle space availability. |
-| `ms-tarifas` | **complete** | Full CRUD for Tarifas + HorarioTarifas. GET `/api/tarifas/vigente` used by ms-pagos to retrieve the active rate. |
-| `ms-reservas` | **complete** | Full CRUD + cancelar. Feign clients: EspacioClient, VehiculoClient, ClienteClient. Estado managed via `EstadoEnums` (separate class: PENDIENTE, CONFIRMADA, CANCELADA, FINALIZADA). Space availability NOT changed on create — ms-accesos handles that on physical entry. |
+| `ms-vehiculos` | **complete** | Full CRUD for Vehiculo + TipoVehiculo. `VehiculoResponseDTO` complete (all entity fields). Controller returns DTO, not entity. Soft delete on Vehiculo (activo=false). `ConflictException` used (AlreadyFoundException removed). Swagger enabled. |
+| `ms-espacios` | **complete** | Full CRUD for Espacio + TipoEspacio (singular). PATCH `/api/espacios/{id}/disponibilidad` used by ms-accesos to toggle space availability. Swagger enabled. |
+| `ms-tarifas` | **complete** | Full CRUD for Tarifas + HorarioTarifas. GET `/api/tarifas/vigente` used by ms-pagos to retrieve the active rate. Swagger enabled. |
+| `ms-reservas` | **complete** | Full CRUD + cancelar. Feign clients: EspacioClient, VehiculoClient, ClienteClient. Estado managed via `EstadoEnums` (separate class: PENDIENTE, CONFIRMADA, CANCELADA, FINALIZADA). Space availability NOT changed on create — ms-accesos handles that on physical entry. Swagger enabled. |
 | `ms-accesos` | scaffold | Empty Feign clients (EspacioClient, ReservaClient). Next to implement. |
 | `ms-pagos` | scaffold | Empty Feign clients (AccesoClient, ClienteClient, TarifaClient). |
 | `ms-reportes` | scaffold | No own DB — Feign-only reads from all other services. |
@@ -205,8 +208,9 @@ monto_final = monto_base
 
 - `Vehiculo.idTipoVehiculo` is a `TipoVehiculo` entity field (not Long) — `@ManyToOne @JoinColumn(name="id_tipo_vehiculo")`
 - Repository uses `findByIdTipoVehiculoId(Long id)` for nested property traversal
-- `AlreadyFoundException` → 409 CONFLICT, `NotFoundException` → 404 in GlobalExceptionHandler
+- `ConflictException` → 409 CONFLICT, `NotFoundException` → 404 in GlobalExceptionHandler (`AlreadyFoundException` was removed)
 - Controllers return `ResponseEntity` — no try/catch blocks, exceptions bubble to GlobalExceptionHandler
 - `VehiculoUpdateDTO` does not include `patente` (patente is immutable after creation)
+- `VehiculoResponseDTO` fields: id, marca, modelo, color, patente, anio, idTipoVehiculo, idClienteRef, activo
 
 See `docs/` for full architecture, database, security, roles, and testing documentation (all in Spanish).

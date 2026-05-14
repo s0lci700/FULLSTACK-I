@@ -269,15 +269,15 @@
   <div class="progress-section">
     <div class="progress-header">
       <span class="progress-title">Progreso general</span>
-      <span class="progress-pct">50%</span>
+      <span class="progress-pct">58%</span>
     </div>
     <div class="progress-bar-bg">
-      <div class="progress-bar-fill" style="width: 50%"></div>
+      <div class="progress-bar-fill" style="width: 58%"></div>
     </div>
     <div class="progress-legend">
-      <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div>Completo (6)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div>Completo (7)</div>
       <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div>En progreso (1)</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#475569"></div>Scaffold (5)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#475569"></div>Scaffold (3)</div>
     </div>
   </div>
 
@@ -325,7 +325,8 @@
         <li><span class="check-done">✔</span> JWT (JJWT 0.11.5) · BCrypt strength 12</li>
         <li><span class="check-done">✔</span> POST /api/auth/login · /api/auth/register</li>
         <li><span class="check-done">✔</span> GlobalExceptionHandler · SLF4J logs</li>
-        <li><span class="check-warn">⚠</span> jwt.secret es placeholder — reemplazar con openssl rand -base64 32</li>
+        <li><span class="check-done">✔</span> jwt.secret válido (256-bit Base64) · puerto 3307</li>
+        <li><span class="check-done">✔</span> Swagger habilitado · /swagger-ui/** público en SecurityConfig</li>
       </ul>
       <span class="status status-complete">Completo</span>
     </div>
@@ -345,8 +346,8 @@
         <li><span class="check-done">✔</span> CRUD Cliente · TipoCliente · Suscripcion · ClienteSuscripcion</li>
         <li><span class="check-done">✔</span> Validación de suscripción duplicada activa</li>
         <li><span class="check-done">✔</span> Constructor injection · SLF4J</li>
-        <li><span class="check-warn">⚠</span> DB conecta a puerto 3306 (resto usa 3307) — verificar</li>
-        <li><span class="check-warn">⚠</span> GlobalExceptionHandler usa @ControllerAdvice (debe ser @RestControllerAdvice)</li>
+        <li><span class="check-done">✔</span> GlobalExceptionHandler con @RestControllerAdvice · puerto 3307</li>
+        <li><span class="check-done">✔</span> Swagger habilitado</li>
       </ul>
       <span class="status status-complete">Completo</span>
     </div>
@@ -372,7 +373,8 @@
         <li><span class="check-done">✔</span> CRUD Vehiculo · TipoVehiculo</li>
         <li><span class="check-done">✔</span> Soft delete (activo=false) · GlobalExceptionHandler</li>
         <li><span class="check-done">✔</span> GET /api/vehiculos/cliente/{idClienteRef}</li>
-        <li><span class="check-warn">⚠</span> VehiculoResponseDTO vacío — controller devuelve entidad directa</li>
+        <li><span class="check-done">✔</span> VehiculoResponseDTO completo · controller usa DTO (no entidad directa)</li>
+        <li><span class="check-done">✔</span> Swagger habilitado</li>
       </ul>
       <span class="status status-complete">Completo</span>
     </div>
@@ -383,9 +385,10 @@
         <div class="service-port">:8085 · db_espacios</div>
       </div>
       <ul class="checklist">
-        <li><span class="check-done">✔</span> CRUD Espacios · TipoEspacios</li>
-        <li><span class="check-done">✔</span> GET /api/espacios/disponibles</li>
+        <li><span class="check-done">✔</span> CRUD Espacio · TipoEspacio</li>
+        <li><span class="check-done">✔</span> GET /api/espacios/disponibles · puerto 3307</li>
         <li><span class="check-done">✔</span> PATCH /api/espacios/{id}/disponibilidad (usado por ms-accesos)</li>
+        <li><span class="check-done">✔</span> Swagger habilitado</li>
       </ul>
       <span class="status status-complete">Completo</span>
     </div>
@@ -397,8 +400,9 @@
       </div>
       <ul class="checklist">
         <li><span class="check-done">✔</span> CRUD Tarifas · HorarioTarifas</li>
-        <li><span class="check-done">✔</span> GET /api/tarifas/vigente (usado por ms-pagos)</li>
+        <li><span class="check-done">✔</span> GET /api/tarifas/vigente (usado por ms-pagos) · puerto 3307</li>
         <li><span class="check-done">✔</span> Soft delete en Tarifas (activo=false)</li>
+        <li><span class="check-done">✔</span> Swagger habilitado</li>
       </ul>
       <span class="status status-complete">Completo</span>
     </div>
@@ -415,11 +419,11 @@
         <div class="service-port">:8086 · db_reservas</div>
       </div>
       <ul class="checklist">
-        <li><span class="check-done">✔</span> Entidad Reservas · EstadoEnums (PENDIENTE/CONFIRMADA/CANCELADA/FINALIZADA)</li>
+        <li><span class="check-done">✔</span> Entidad Reserva · EstadoEnums (PENDIENTE/CONFIRMADA/CANCELADA/FINALIZADA)</li>
         <li><span class="check-done">✔</span> Feign: EspacioClient · VehiculoClient · ClienteClient</li>
         <li><span class="check-done">✔</span> Validación cliente activo · vehículo activo · espacio disponible</li>
         <li><span class="check-done">✔</span> POST /api/reservas · GET /api/reservas/cliente/{id} · PATCH cancelar</li>
-        <li><span class="check-done">✔</span> GlobalExceptionHandler · NotFoundException</li>
+        <li><span class="check-done">✔</span> GlobalExceptionHandler · NotFoundException · Swagger habilitado</li>
       </ul>
       <span class="status status-complete">Completo</span>
     </div>
