@@ -9,5 +9,6 @@ public class ReservaResponseDTO {
 // ReservaResponseDTO de ReservaCliente
     private Long id;
     private Long idEspacio;
+    private Long idVehiculo;
     private String estado;
 }

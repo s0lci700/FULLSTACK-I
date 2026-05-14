@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import estacionamientos.ms_accesos.client.EspacioClient;
 import estacionamientos.ms_accesos.client.ReservaClient;
@@ -16,6 +17,7 @@ import estacionamientos.ms_accesos.model.Acceso;
 import estacionamientos.ms_accesos.model.EstadoEnum;
 import estacionamientos.ms_accesos.repository.AccesoRepository;
 
+@Service
 public class AccesoService {
     @Autowired
     AccesoRepository accesoRepository;
@@ -39,6 +41,8 @@ public class AccesoService {
         Acceso acceso = new Acceso();
         acceso.setIdReserva(dto.getIdReserva());
         acceso.setIdEspacio(reserva.getIdEspacio());
+        acceso.setIdVehiculo(dto.getIdVehiculo());
+        acceso.setPatenteEscaneada(dto.getPatenteEscaneada());
         acceso.setFechaHoraEntrada(LocalDateTime.now());
         acceso.setEstado(EstadoEnum.ACTIVO);
 
@@ -66,9 +70,6 @@ public class AccesoService {
         espacioClient.updateDisponibilidad(acceso.getIdEspacio(), true);
         reservaClient.finalizarReserva(acceso.getIdReserva());
 
-        espacioClient.updateDisponibilidad(acceso.getIdEspacio(), true);
-        reservaClient.finalizarReserva(acceso.getIdReserva());
-
         return toDTO(accesoRepository.save(acceso));
     }
 
@@ -88,6 +89,8 @@ public class AccesoService {
         dto.setFechaHoraEntrada(acceso.getFechaHoraEntrada());
         dto.setFechaHoraSalida(acceso.getFechaHoraSalida());
         dto.setEstado(acceso.getEstado().name());
+
+        dto.setMinutos(acceso.getMinutos() != null ? acceso.getMinutos().longValue() : null);
 
         // Mapear campos de Acceso a AccesoResponseDTO
         return dto;

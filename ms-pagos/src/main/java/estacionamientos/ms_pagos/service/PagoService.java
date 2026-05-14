@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import estacionamientos.ms_pagos.client.AccesoClient;
@@ -22,29 +23,38 @@ import estacionamientos.ms_pagos.model.Cobro;
 import estacionamientos.ms_pagos.model.MetodoPago;
 import estacionamientos.ms_pagos.repository.CobroRepository;
 import estacionamientos.ms_pagos.repository.MetodoPagoRepository;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class PagoService {
 
-    private static final Logger log = LoggerFactory.getLogger(PagoService.class);
+    @Autowired
+    CobroRepository cobroRepository;
+    
+    @Autowired
+    MetodoPagoRepository metodoPagoRepository;
 
-    private final CobroRepository cobroRepository;
-    private final MetodoPagoRepository metodoPagoRepository;
-    private final AccesoClient accesoClient;
-    private final TarifaClient tarifaClient;
-    private final ClienteClient clienteClient;
+    @Autowired
+    AccesoClient accesoClient;
+    
+    @Autowired
+    TarifaClient tarifaClient;
+    
+    @Autowired
+    ClienteClient clienteClient;
 
-    public PagoService(CobroRepository cobroRepository,
-                       MetodoPagoRepository metodoPagoRepository,
-                       AccesoClient accesoClient,
-                       TarifaClient tarifaClient,
-                       ClienteClient clienteClient) {
-        this.cobroRepository = cobroRepository;
-        this.metodoPagoRepository = metodoPagoRepository;
-        this.accesoClient = accesoClient;
-        this.tarifaClient = tarifaClient;
-        this.clienteClient = clienteClient;
-    }
+    // public PagoService(CobroRepository cobroRepository,
+    //         MetodoPagoRepository metodoPagoRepository,
+    //         AccesoClient accesoClient,
+    //         TarifaClient tarifaClient,
+    //         ClienteClient clienteClient) {
+    //     this.cobroRepository = cobroRepository;
+    //     this.metodoPagoRepository = metodoPagoRepository;
+    //     this.accesoClient = accesoClient;
+    //     this.tarifaClient = tarifaClient;
+    //     this.clienteClient = clienteClient;
+    // }
 
     // Genera un cobro consultando acceso, tarifa y cliente via Feign
     public CobroResponseDTO crear(CobroCreateDTO dto) {
@@ -62,12 +72,13 @@ public class PagoService {
         TarifaResponseDTO tarifa = tarifaClient.getTarifaVigente();
         log.info("Tarifa vigente: precioBaseHora={}", tarifa.getPrecioBaseHora());
 
-        ClienteResponseDTO cliente = clienteClient.getById(acceso.getIdVehiculo());
+        ClienteResponseDTO cliente = clienteClient.getById(dto.getIdCliente());
         log.info("Cliente obtenido: id={}", cliente.getId());
 
         // Validar metodo de pago
         MetodoPago metodoPago = metodoPagoRepository.findById(dto.getIdMetodoPago())
-                .orElseThrow(() -> new ResourceNotFoundException("MetodoPago no encontrado id=" + dto.getIdMetodoPago()));
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("MetodoPago no encontrado id=" + dto.getIdMetodoPago()));
 
         // Calcular descuento del banco si aplica
         double descuentoBanco = 0.0;

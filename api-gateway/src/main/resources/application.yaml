@@ -41,7 +41,7 @@ spring:
         - id: ms-pagos
           uri: lb://ms-pagos
           predicates:
-            - Path=/api/pagos/**
+            - Path=/api/cobros/**,/api/bancos/**,/api/metodos-pago/**,/api/tipo-tarjetas/**
         - id: ms-reportes
           uri: lb://ms-reportes
           predicates:

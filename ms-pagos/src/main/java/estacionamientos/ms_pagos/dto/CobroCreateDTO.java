@@ -15,4 +15,8 @@ public class CobroCreateDTO {
 
     @NotNull
     private Long idMetodoPago;
+
+    @NotNull
+    private Long idCliente;
+
 }
