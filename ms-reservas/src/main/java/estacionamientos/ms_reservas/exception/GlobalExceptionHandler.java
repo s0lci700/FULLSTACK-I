@@ -78,4 +78,15 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<Map<String, Object>> manejarConflict(ConflictException ex) {
+
+        Map<String, Object> response = construirRespuesta(
+                HttpStatus.CONFLICT,
+                ex.getMessage()
+        );
+
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
 }

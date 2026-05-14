@@ -83,6 +83,27 @@ public class ReservaService {
         return toDTO(reservasRepository.save(reserva));
     }
 
+    
+    public ReservaResponseDTO confirmar(Long id) {
+        Reserva reserva = reservasRepository
+        .findById(id)
+        .orElseThrow(() -> new NotFoundException("Reserva no encontrada"));
+        if (reserva.getEstado() != EstadoEnums.CONFIRMADA) {
+            reserva.setEstado(EstadoEnums.CONFIRMADA);
+        }
+        return toDTO(reservasRepository.save(reserva));
+    }
+
+    public ReservaResponseDTO finalizar(Long id) {
+        Reserva reserva = reservasRepository
+        .findById(id)
+        .orElseThrow(() -> new NotFoundException("Reserva no encontrada"));
+        if (reserva.getEstado() != EstadoEnums.FINALIZADA) {
+            reserva.setEstado(EstadoEnums.FINALIZADA);
+        }
+        return toDTO(reservasRepository.save(reserva));
+    }
+
     private ReservaResponseDTO toDTO(Reserva reserva) {
         return new ReservaResponseDTO(
             reserva.getId(),
