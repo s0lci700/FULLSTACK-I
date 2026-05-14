@@ -1,0 +1,95 @@
+package estacionamientos.ms_accesos.service;
+
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import estacionamientos.ms_accesos.client.EspacioClient;
+import estacionamientos.ms_accesos.client.ReservaClient;
+import estacionamientos.ms_accesos.dto.AccesoCreateDTO;
+import estacionamientos.ms_accesos.dto.AccesoResponseDTO;
+import estacionamientos.ms_accesos.dto.ReservaResponseDTO;
+import estacionamientos.ms_accesos.exception.ConflictException;
+import estacionamientos.ms_accesos.exception.NotFoundException;
+import estacionamientos.ms_accesos.model.Acceso;
+import estacionamientos.ms_accesos.model.EstadoEnum;
+import estacionamientos.ms_accesos.repository.AccesoRepository;
+
+public class AccesoService {
+    @Autowired
+    AccesoRepository accesoRepository;
+
+    @Autowired
+    EspacioClient espacioClient;
+
+    @Autowired
+    ReservaClient reservaClient;
+
+    public AccesoResponseDTO registrarEntrada(AccesoCreateDTO dto) {
+        ReservaResponseDTO reserva = reservaClient.findById(dto.getIdReserva());
+        if (reserva == null || !reserva.getEstado().equals("CONFIRMADA")) {
+            throw new ConflictException("Reserva no válida para registrar entrada");
+        }
+        accesoRepository.findByIdReserva(dto.getIdReserva()).ifPresent(
+                acceso -> {
+                    throw new ConflictException("Ya existe un acceso registrado para esta reserva");
+                });
+
+        Acceso acceso = new Acceso();
+        acceso.setIdReserva(dto.getIdReserva());
+        acceso.setIdEspacio(reserva.getIdEspacio());
+        acceso.setFechaHoraEntrada(LocalDateTime.now());
+        acceso.setEstado(EstadoEnum.ACTIVO);
+
+        espacioClient.updateDisponibilidad(reserva.getIdEspacio(), false);
+
+        return toDTO(accesoRepository.save(acceso));
+
+    }
+
+    public AccesoResponseDTO registrarSalida(Long id) {
+        Acceso acceso = accesoRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Acceso no encontrado"));
+
+        if (acceso.getFechaHoraSalida() != null) {
+            throw new ConflictException("Salida ya registrada para este acceso");
+        }
+
+        LocalDateTime ahora = LocalDateTime.now();
+        long minutos = ChronoUnit.MINUTES.between(acceso.getFechaHoraEntrada(), ahora);
+
+        acceso.setFechaHoraSalida(ahora);
+        acceso.setMinutos((int) minutos);
+        acceso.setEstado(EstadoEnum.COMPLETADO);
+
+        espacioClient.updateDisponibilidad(acceso.getIdEspacio(), true);
+        reservaClient.finalizarReserva(acceso.getIdReserva());
+
+        espacioClient.updateDisponibilidad(acceso.getIdEspacio(), true);
+        reservaClient.finalizarReserva(acceso.getIdReserva());
+
+        return toDTO(accesoRepository.save(acceso));
+    }
+
+    public AccesoResponseDTO findByReserva(Long idReserva) {
+        Acceso acceso = accesoRepository.findByIdReserva(idReserva)
+                .orElseThrow(() -> new NotFoundException("Acceso no encontrado para la reserva: " + idReserva));
+        return toDTO(acceso);
+    }
+
+    public AccesoResponseDTO toDTO(Acceso acceso) {
+        AccesoResponseDTO dto = new AccesoResponseDTO();
+        dto.setId(acceso.getId());
+        dto.setIdVehiculo(acceso.getIdVehiculo());
+        dto.setIdReserva(acceso.getIdReserva());
+        dto.setIdEspacio(acceso.getIdEspacio());
+        dto.setPatenteEscaneada(acceso.getPatenteEscaneada());
+        dto.setFechaHoraEntrada(acceso.getFechaHoraEntrada());
+        dto.setFechaHoraSalida(acceso.getFechaHoraSalida());
+        dto.setEstado(acceso.getEstado().name());
+
+        // Mapear campos de Acceso a AccesoResponseDTO
+        return dto;
+    }
+}
