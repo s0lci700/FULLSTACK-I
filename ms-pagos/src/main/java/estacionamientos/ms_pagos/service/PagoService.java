@@ -225,7 +225,7 @@ public class PagoService {
         dto.setMinutos(cobro.getMinutos());
         dto.setMontoBase(cobro.getMontoBase());
         dto.setMontoFinal(cobro.getMontoFinal());
-        dto.setFechaCobro(cobro.getFechaCobro().toString());
+        dto.setFechaCobro(cobro.getFechaCobro());
         dto.setMetodoPago(cobro.getMetodoPago().getNombre());
         return dto;
     }
