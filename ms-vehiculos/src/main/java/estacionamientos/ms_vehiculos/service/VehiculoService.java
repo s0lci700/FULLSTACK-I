@@ -41,8 +41,7 @@ public class VehiculoService {
     }
 
     public List<VehiculoResponseDTO> listarTodos() {
-        List<Vehiculo> vehiculos = vehiculoRepository.findAll();
-        return vehiculos.stream().map(this::toVehiculoDTO).toList();
+        return vehiculoRepository.findAll().stream().map(this::toVehiculoDTO).toList();
     }
 
     public VehiculoResponseDTO obtenerPorId(Long id) {
