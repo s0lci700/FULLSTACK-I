@@ -45,7 +45,7 @@ public class SuscripcionService {
                 suscripcion.getId(),
                 suscripcion.getNombre(),
                 suscripcion.getDescripcion(),
-                suscripcion.getDescuentoPorcentaje(),
+                suscripcion.getDescuentoPct(),
                 suscripcion.getActivo()
         );
     }

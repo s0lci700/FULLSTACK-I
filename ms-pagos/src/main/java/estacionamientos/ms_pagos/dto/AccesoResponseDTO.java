@@ -1,5 +1,7 @@
 package estacionamientos.ms_pagos.dto;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
@@ -27,5 +29,5 @@ public class AccesoResponseDTO {
 
     private String estado;
     
-    private Long minutos; // confirmar con Sol
+    private Integer minutos; // confirmar con Sol
 }

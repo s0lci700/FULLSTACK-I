@@ -16,5 +16,5 @@ public class PermisoResponseDTO {
     private String nombre;
 
     // Descripcion legible del permiso
-    private String descripcion;
+    //private String descripcion;
 }

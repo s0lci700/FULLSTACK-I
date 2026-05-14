@@ -1,5 +1,7 @@
 package estacionamientos.ms_pagos.model;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -7,7 +9,7 @@ import lombok.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "bancos")
+@Table(name = "banco")
 public class Banco {
 
     @Id
@@ -20,8 +22,8 @@ public class Banco {
     @Column(nullable = false, unique = true)
     private String codigo;
 
-    @Column(name = "descuento_pct", nullable = false)
-    private Double descuento;
+    @Column(name = "descuento_pct", precision = 10, scale = 2)
+    private BigDecimal descuentoPct;
 
     @Column(nullable = false)
     private Boolean activo;

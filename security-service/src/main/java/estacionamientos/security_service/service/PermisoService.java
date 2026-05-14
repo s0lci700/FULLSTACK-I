@@ -58,7 +58,7 @@ public class PermisoService {
         }
         Permiso permiso = new Permiso();
         permiso.setNombre(dto.getNombre());
-        permiso.setDescripcion(dto.getDescripcion());
+        //permiso.setDescripcion(dto.getDescripcion());
         return toResponse(permisoRepository.save(permiso));
     }
 
@@ -70,7 +70,7 @@ public class PermisoService {
         Permiso permiso = permisoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Permiso no encontrado id=" + id));
         permiso.setNombre(dto.getNombre());
-        permiso.setDescripcion(dto.getDescripcion());
+        //permiso.setDescripcion(dto.getDescripcion());
         return toResponse(permisoRepository.save(permiso));
     }
 
@@ -90,7 +90,7 @@ public class PermisoService {
     private PermisoResponseDTO toResponse(Permiso permiso) {
         return new PermisoResponseDTO(
                 permiso.getId(),
-                permiso.getNombre(),
-                permiso.getDescripcion());
+                permiso.getNombre());
+                //permiso.getDescripcion());
     }
 }

@@ -10,9 +10,7 @@ import estacionamientos.ms_espacios.model.TipoEspacio;
 import estacionamientos.ms_espacios.repository.EspacioRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,14 +19,17 @@ import java.util.List;
 @Service
 public class EspacioService {
 
-    private final EspacioRepository espaciosRepository;
-    private final TipoEspacioService tipoEspaciosService;
+    @Autowired
+    EspacioRepository espaciosRepository;
+    
+    @Autowired
+    TipoEspacioService tipoEspaciosService;
 
-    public EspacioService(EspacioRepository espaciosRepository,
-            TipoEspacioService tipoEspaciosService) {
-        this.espaciosRepository = espaciosRepository;
-        this.tipoEspaciosService = tipoEspaciosService;
-    }
+    //public EspacioService(EspacioRepository espaciosRepository,
+     //       TipoEspacioService tipoEspaciosService) {
+     //   this.espaciosRepository = espaciosRepository;
+     //   this.tipoEspaciosService = tipoEspaciosService;
+    //}
 
     public List<EspacioResponseDTO> findAll() {
         log.info("Obteniendo todos los espacios");
@@ -107,7 +108,7 @@ public class EspacioService {
         if (!espaciosRepository.existsById(id)) {
             throw new ResourceNotFoundException("Espacio no encontrado con id: " + id);
         }
-        EspacioUpdateDTO espacio = espaciosRepository.encontrarPorId(id);
+        EspacioResponseDTO espacio = toDTO(espaciosRepository.findById(id).get());
         espacio.setActivo(false);
         log.info("Espacio eliminado con id: {}", id);
     }

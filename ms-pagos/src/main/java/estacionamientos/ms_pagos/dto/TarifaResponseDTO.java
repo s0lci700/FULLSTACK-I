@@ -12,6 +12,6 @@ public class TarifaResponseDTO {
     private Long id;
     private String nombre;
     private String descripcion;
-    private Double precioBaseHora;
+    private Float precioBaseHora;
     private Boolean activo;
 }

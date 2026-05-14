@@ -7,7 +7,7 @@ import lombok.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "roles_permisos")
+@Table(name = "rol_permiso")
 public class RolPermiso {
 
     @Id

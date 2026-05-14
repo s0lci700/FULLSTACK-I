@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class HorarioTarifaResponseDTO {
     private Long id;
-    private Double multiplicador;
+    private Float multiplicador;
 }
