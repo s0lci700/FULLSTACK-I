@@ -23,15 +23,13 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class MetodoPagoService {
 
-
-
     private final MetodoPagoRepository metodoPagoRepository;
     private final BancoRepository bancoRepository;
     private final TipoTarjetaRepository tipoTarjetaRepository;
 
     public MetodoPagoService(MetodoPagoRepository metodoPagoRepository,
-                              BancoRepository bancoRepository,
-                              TipoTarjetaRepository tipoTarjetaRepository) {
+            BancoRepository bancoRepository,
+            TipoTarjetaRepository tipoTarjetaRepository) {
         this.metodoPagoRepository = metodoPagoRepository;
         this.bancoRepository = bancoRepository;
         this.tipoTarjetaRepository = tipoTarjetaRepository;
@@ -56,7 +54,7 @@ public class MetodoPagoService {
     public MetodoPagoResponseDTO create(MetodoPagoCreateDTO dto) {
         log.info("Creando metodo de pago nombre={}", dto.getNombre());
         MetodoPago metodo = new MetodoPago();
-        metodo.setNombre(dto.getNombre());
+        metodo.setNombreTitular(dto.getNombre());
 
         if (dto.getIdBanco() != null) {
             Banco banco = bancoRepository.findById(dto.getIdBanco())
@@ -66,7 +64,8 @@ public class MetodoPagoService {
 
         if (dto.getIdTipoTarjeta() != null) {
             TipoTarjeta tipo = tipoTarjetaRepository.findById(dto.getIdTipoTarjeta())
-                    .orElseThrow(() -> new ResourceNotFoundException("TipoTarjeta no encontrado id=" + dto.getIdTipoTarjeta()));
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "TipoTarjeta no encontrado id=" + dto.getIdTipoTarjeta()));
             metodo.setTipoTarjeta(tipo);
         }
 
@@ -85,6 +84,6 @@ public class MetodoPagoService {
     private MetodoPagoResponseDTO toResponse(MetodoPago metodo) {
         String banco = metodo.getBanco() != null ? metodo.getBanco().getNombre() : null;
         String tipoTarjeta = metodo.getTipoTarjeta() != null ? metodo.getTipoTarjeta().getNombre() : null;
-        return new MetodoPagoResponseDTO(metodo.getId(), metodo.getNombre(), banco, tipoTarjeta);
+        return new MetodoPagoResponseDTO(metodo.getId(), metodo.getNombreTitular(), banco, tipoTarjeta);
     }
 }

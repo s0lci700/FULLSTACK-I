@@ -1,5 +1,6 @@
 package estacionamientos.security_service.dto;
 
+import estacionamientos.security_service.model.Permiso;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,8 +17,6 @@ public class RolPermisoResponseDTO {
     private Long idRol;
 
     // Nombre del permiso asignado
-    private String permiso;
+    private Permiso permiso;
 
-    // Descripcion del permiso asignado
-    private String descripcionPermiso;
 }

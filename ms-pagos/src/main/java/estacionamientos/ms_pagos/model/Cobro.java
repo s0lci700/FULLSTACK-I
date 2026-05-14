@@ -1,5 +1,7 @@
 package estacionamientos.ms_pagos.model;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
@@ -9,7 +11,7 @@ import lombok.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "cobros")
+@Table(name = "cobro")
 public class Cobro {
 
     @Id
@@ -27,19 +29,19 @@ public class Cobro {
     private Long idTarifaRef;
 
     @Column(nullable = false)
-    private Long minutos;
+    private Integer minutos;
 
     @Column(nullable = false)
-    private Double montoBase;
+    private Float montoBase;
 
-    @Column(name = "desc_tipo_cliente", nullable = false)
-    private Double descTipoCliente;
+    @Column(name = "desc_tipo_cliente", nullable = false,precision = 10, scale = 2)
+    private BigDecimal descTipoCliente;
 
-    @Column(name = "desc_suscripcion", nullable = false)
-    private Double descSuscripcion;
+    @Column(name = "desc_suscripcion", nullable = false, precision = 10, scale = 2)
+    private BigDecimal descSuscripcion;
 
-    @Column(name = "desc_banco", nullable = false)
-    private Double descBanco;
+    @Column(name = "desc_banco", nullable = false,precision = 10, scale = 2)
+    private BigDecimal descBanco;
 
     @Column(nullable = false)
     private Double montoFinal;

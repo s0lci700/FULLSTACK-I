@@ -1,5 +1,7 @@
 package estacionamientos.ms_pagos.service;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -97,7 +99,7 @@ public class PagoService {
 
         // Obtener factor tipo vehiculo (2 hops: vehiculo -> tipoVehiculo)
         VehiculoResponseDTO vehiculo = vehiculoClient.getById(acceso.getIdVehiculo());
-        double factorTipoVehiculo = 1.0;
+        Float factorTipoVehiculo = Float.valueOf(1);
         if (vehiculo.getIdTipoVehiculo() != null) {
             factorTipoVehiculo = tipoVehiculoClient.getById(vehiculo.getIdTipoVehiculo()).getFactorPrecio();
             log.info("Factor tipo vehiculo: {}", factorTipoVehiculo);
@@ -105,7 +107,7 @@ public class PagoService {
 
         // Obtener factor tipo espacio (espacio ya incluye tipoEspacio anidado)
         EspacioResponseDTO espacio = espacioClient.getById(acceso.getIdEspacio());
-        double factorTipoEspacio = 1.0;
+        Float factorTipoEspacio = Float.valueOf(1);
         if (espacio.getTipoEspacio() != null) {
             factorTipoEspacio = espacio.getTipoEspacio().getFactorPrecio();
             log.info("Factor tipo espacio: {}", factorTipoEspacio);
@@ -113,7 +115,7 @@ public class PagoService {
 
         // Obtener multiplicador horario (1.0 si no hay horario vigente configurado)
         // Obtener multiplicador horario (1.0 si no hay horario vigente configurado)
-        double multiplicadorHorario = 1.0;
+        Float multiplicadorHorario = Float.valueOf(1);
         try {
             HorarioTarifaResponseDTO horario = horarioTarifaClient.getVigente();
             if (horario != null && horario.getMultiplicador() != null) {
@@ -141,35 +143,35 @@ public class PagoService {
                         () -> new ResourceNotFoundException("MetodoPago no encontrado id=" + dto.getIdMetodoPago()));
 
         // Calcular descuento del banco si aplica
-        double descuentoBanco = 0.0;
+        BigDecimal descuentoBanco = BigDecimal.valueOf(0.0);
         if (metodoPago.getBanco() != null) {
-            descuentoBanco = metodoPago.getBanco().getDescuento();
+            descuentoBanco = metodoPago.getBanco().getDescuentoPct();
             log.info("Descuento banco aplicado: {}%", descuentoBanco);
         }
 
         // Obtener descuento por tipo de cliente
-        double descuentoCliente = 0.0;
+        BigDecimal descuentoCliente = BigDecimal.valueOf(0.0);
         if (cliente.getTipoCliente() != null) {
-            descuentoCliente = cliente.getTipoCliente().getDescuentoPorcentaje();
+            descuentoCliente = BigDecimal.valueOf(cliente.getTipoCliente().getDescuentoPorcentaje());
             log.info("Descuento tipo cliente aplicado: {}%", descuentoCliente);
         }
 
         // desc_suscripcion pendiente — requiere endpoint en user-service para
         // ClienteSuscripcion
-        double descuentoSuscripcion = 0.0;
+        BigDecimal descuentoSuscripcion = BigDecimal.valueOf(0.0);
 
         // Fórmula completa: monto_base = precio_base_hora × multiplicador_horario ×
         // factor_tipo_vehiculo × factor_tipo_espacio × (minutos/60)
-        long minutos = acceso.getMinutos() != null ? acceso.getMinutos() : 0L;
-        double montoBase = tarifa.getPrecioBaseHora()
+        Integer minutos = acceso.getMinutos() != null ? acceso.getMinutos() : 0;
+        Float montoBase = (tarifa.getPrecioBaseHora()
                 * multiplicadorHorario
                 * factorTipoVehiculo
                 * factorTipoEspacio
-                * (minutos / 60.0);
+                * ((minutos / 60)));
         double montoFinal = montoBase
-                * (1 - descuentoCliente / 100)
-                * (1 - descuentoSuscripcion / 100)
-                * (1 - descuentoBanco / 100);
+                * (1 - descuentoCliente.doubleValue() / 100)
+                * (1 - descuentoSuscripcion.doubleValue() / 100)
+                * (1 - (descuentoBanco).doubleValue() / 100);
 
         log.info(
                 "Calculo: minutos={}, factorVehiculo={}, factorEspacio={}, multiplicadorHorario={}, montoBase={}, montoFinal={}",

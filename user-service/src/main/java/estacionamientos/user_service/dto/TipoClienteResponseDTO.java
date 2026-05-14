@@ -1,5 +1,7 @@
 package estacionamientos.user_service.dto;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,6 +12,6 @@ import lombok.NoArgsConstructor;
 public class TipoClienteResponseDTO {
     private Long id;
     private String nombre;
-    private String descripcion;
-    private Double descuentoPorcentaje;
+// private String descripcion;
+    private BigDecimal DescuentoPct;
 }

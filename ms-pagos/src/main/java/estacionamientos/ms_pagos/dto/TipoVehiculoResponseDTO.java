@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TipoVehiculoResponseDTO {
     private Long id;
-    private Double factorPrecio;
+    private Float factorPrecio;
 }

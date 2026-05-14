@@ -44,8 +44,8 @@ public class TipoClienteService {
         return new TipoClienteResponseDTO(
                 tipo.getId(),
                 tipo.getNombre(),
-                tipo.getDescripcion(),
-                tipo.getDescuentoPorcentaje()
+                //tipo.getDescripcion(),
+                tipo.getDescuentoPct()
         );
     }
 

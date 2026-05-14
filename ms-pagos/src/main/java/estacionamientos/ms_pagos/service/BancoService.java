@@ -49,7 +49,7 @@ public class BancoService {
         }
         Banco banco = new Banco();
         banco.setNombre(dto.getNombre());
-        banco.setDescuento(dto.getDescuento());
+        banco.setDescuentoPct(dto.getDescuento());
         return toResponse(bancoRepository.save(banco));
     }
     
@@ -59,7 +59,7 @@ public class BancoService {
         Banco banco = bancoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Banco no encontrado id=" + id));
         banco.setNombre(dto.getNombre());
-        banco.setDescuento(dto.getDescuento());
+        banco.setDescuentoPct(dto.getDescuento());
         return toResponse(bancoRepository.save(banco));
     }
 
@@ -73,6 +73,6 @@ public class BancoService {
     }
 
     private BancoResponseDTO toResponse(Banco banco) {
-        return new BancoResponseDTO(banco.getId(), banco.getNombre(), banco.getDescuento());
+        return new BancoResponseDTO(banco.getId(), banco.getNombre(), banco.getDescuentoPct());
     }
 }

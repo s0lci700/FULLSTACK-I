@@ -1,5 +1,7 @@
 package estacionamientos.ms_pagos.dto;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,5 +13,5 @@ public class BancoResponseDTO {
 
     private Long id;
     private String nombre;
-    private Double descuento;
+    private BigDecimal descuento;
 }

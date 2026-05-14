@@ -23,13 +23,11 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class RolPermisoService {
 
-
-
     private final RolPermisoRepository rolPermisoRepository;
     private final PermisoRepository permisoRepository;
 
     public RolPermisoService(RolPermisoRepository rolPermisoRepository,
-                              PermisoRepository permisoRepository) {
+            PermisoRepository permisoRepository) {
         this.rolPermisoRepository = rolPermisoRepository;
         this.permisoRepository = permisoRepository;
     }
@@ -92,7 +90,7 @@ public class RolPermisoService {
         return new RolPermisoResponseDTO(
                 rp.getId(),
                 rp.getIdRol(),
-                rp.getPermiso().getNombre(),
-                rp.getPermiso().getDescripcion());
+                rp.getPermiso());
+            //rp.getPermiso().getDescripcion());
     }
 }
