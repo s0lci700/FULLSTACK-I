@@ -8,7 +8,7 @@ import estacionamientos.ms_reportes.dto.AccesoResponseDTO;
 
 @FeignClient(name = "ms-accesos")
 public interface AccesoClient {
-    @GetMapping("api/accesos/reserva/{idReserva}")
+    @GetMapping("/api/accesos/reserva/{idReserva}")
     AccesoResponseDTO findByReserva(@PathVariable Long idReserva);
 
 }

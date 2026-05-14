@@ -1,5 +1,7 @@
 package estacionamientos.ms_pagos.dto;
 
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,9 +21,9 @@ public class AccesoResponseDTO {
 
     private String patenteEscaneada;
 
-    private String fechaHoraEntrada;
+    private LocalDateTime fechaHoraEntrada;
 
-    private String fechaHoraSalida;
+    private LocalDateTime fechaHoraSalida;
 
     private String estado;
     
