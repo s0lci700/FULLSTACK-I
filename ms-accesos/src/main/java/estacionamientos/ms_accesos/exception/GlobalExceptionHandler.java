@@ -11,6 +11,9 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -55,26 +58,25 @@ public class GlobalExceptionHandler {
     // 🔹 Manejo genérico de cualquier otra excepción
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> manejarErrorGeneral(Exception ex) {
-
+        log.error("Error inesperado: {}", ex.getMessage(), ex);
         Map<String, Object> response = construirRespuesta(
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 "Ocurrió un error inesperado"
         );
-
-        // Opcional (solo en desarrollo)
         response.put("detalle", ex.getMessage());
-
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<Map<String, Object>> manejarNotFound(NotFoundException ex) {
+        log.warn("NotFoundException: {}", ex.getMessage());
         Map<String, Object> response = construirRespuesta(HttpStatus.NOT_FOUND, ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<Map<String, Object>> manejarConflict(ConflictException ex) {
+        log.warn("ConflictException: {}", ex.getMessage());
         Map<String, Object> response = construirRespuesta(HttpStatus.CONFLICT, ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }

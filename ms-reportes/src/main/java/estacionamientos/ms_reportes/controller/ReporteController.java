@@ -13,7 +13,9 @@ import estacionamientos.ms_reportes.dto.AccesoResponseDTO;
 import estacionamientos.ms_reportes.dto.CobroResponseDTO;
 import estacionamientos.ms_reportes.dto.OcupacionReporteDTO;
 import estacionamientos.ms_reportes.service.ReporteService;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/reportes")
 public class ReporteController {
@@ -23,18 +25,21 @@ public class ReporteController {
 
     @GetMapping("/ocupacion")
     public ResponseEntity<OcupacionReporteDTO> getOcupacion() {
+        log.info("GET /api/reportes/ocupacion");
         return ResponseEntity.ok(reporteService.getOcupacion());
     }
 
     @GetMapping("/accesos/reserva/{idReserva}")
     public ResponseEntity<AccesoResponseDTO> getAccesosPorReserva(
         @PathVariable Long idReserva) {
+        log.info("GET /api/reportes/accesos/reserva/{}", idReserva);
         return ResponseEntity.ok(reporteService.getAccesoByReserva(idReserva));
     }
 
     @GetMapping("/cobros/cliente/{idCliente}")
     public ResponseEntity<List<CobroResponseDTO>> getCobrosPorCliente(
         @PathVariable Long idCliente) {
+        log.info("GET /api/reportes/cobros/cliente/{}", idCliente);
         return ResponseEntity.ok(reporteService.getCobrosByCliente(idCliente));
     }
 
