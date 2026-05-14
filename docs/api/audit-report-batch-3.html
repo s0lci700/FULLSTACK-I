@@ -25,20 +25,22 @@
     .page-meta { display:flex;gap:0.6rem;flex-wrap:wrap;align-items:center;margin-top:0.5rem; }
     .meta-chip { font-size:0.72rem;background:var(--bg3);border:1px solid var(--border);padding:0.18rem 0.55rem;border-radius:6px;color:var(--text2);font-family:monospace; }
     .page-desc { font-size:0.85rem;color:var(--text2);margin-top:0.75rem; }
-    .summary-grid { display:grid;grid-template-columns:repeat(4,1fr);gap:0.75rem;margin:1.5rem 0; }
+    .summary-grid { display:grid;grid-template-columns:repeat(5,1fr);gap:0.75rem;margin:1.5rem 0; }
     .summary-card { background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1rem;text-align:center; }
     .summary-count { font-size:2rem;font-weight:700;line-height:1; }
     .summary-label { font-size:0.72rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-top:0.3rem; }
-    .count-HIGH { color:var(--red); } .count-MED { color:var(--yellow); } .count-LOW { color:var(--blue); } .count-FIXED { color:var(--green); }
+    .count-HIGH { color:var(--red); } .count-MED { color:var(--yellow); } .count-LOW { color:var(--blue); } .count-FIXED { color:var(--green); } .count-DONE { color:var(--purple); }
     .track-title { font-size:0.67rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin:2.5rem 0 0.75rem;padding-left:0.5rem;border-left:3px solid var(--border);scroll-margin-top:60px; }
     .finding-table { width:100%;border-collapse:collapse;font-size:0.8rem;margin-bottom:1rem; }
     .finding-table th { text-align:left;color:var(--text3);font-size:0.63rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;padding:0.5rem 0.75rem;border-bottom:2px solid var(--border);background:var(--bg3); }
+    .finding-table th.th-check { width:36px;text-align:center; }
     .finding-table td { padding:0.6rem 0.75rem;vertical-align:top;border-bottom:1px solid var(--border);color:var(--text2); }
     .finding-table tr:last-child td { border-bottom:none; }
     .finding-table tr:hover td { background:#171d2a; }
     .finding-table td.fservice { font-family:monospace;font-size:0.75rem;color:var(--cyan);white-space:nowrap; }
     .finding-table td.ffile { font-family:monospace;font-size:0.73rem;color:var(--text3);white-space:nowrap; }
     .finding-table td.fissue { color:var(--text); }
+    .finding-table td.td-check { text-align:center;vertical-align:middle; }
     .badge { display:inline-block;font-size:0.62rem;font-weight:700;font-family:monospace;padding:0.15rem 0.45rem;border-radius:4px;text-transform:uppercase;white-space:nowrap; }
     .badge-HIGH { background:#3a0a0a;color:var(--red);border:1px solid #5a1010; }
     .badge-MED { background:#2a1a00;color:var(--yellow);border:1px solid #4a3000; }
@@ -49,6 +51,55 @@
     .warn-box { background:#1a1a10;border:1px solid #3a3a10;border-radius:8px;padding:0.7rem 1rem;font-size:0.78rem;color:var(--yellow);margin-top:1rem; }
     code { font-family:monospace;font-size:0.85em;background:var(--bg3);padding:0.05rem 0.3rem;border-radius:3px;color:var(--cyan); }
     .footer { text-align:center;padding:2rem 0;color:var(--text3);font-size:0.75rem;border-top:1px solid var(--border);margin-top:3rem; }
+
+    /* Checkbox styles */
+    .finding-check {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--bg3);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, border-color 0.15s;
+      vertical-align: middle;
+      flex-shrink: 0;
+    }
+    .finding-check:hover { border-color: var(--purple); }
+    .finding-check:checked {
+      background: #2d1f4a;
+      border-color: var(--purple);
+    }
+    .finding-check:checked::after {
+      content: '✓';
+      color: var(--purple);
+      font-size: 11px;
+      line-height: 1;
+    }
+
+    /* Resolved row styles */
+    tr.row-resolved td {
+      opacity: 0.4;
+    }
+    tr.row-resolved td.fissue,
+    tr.row-resolved td.fservice,
+    tr.row-resolved td.ffile {
+      text-decoration: line-through;
+    }
+    tr.row-resolved td.td-check {
+      opacity: 1;
+      text-decoration: none;
+    }
+
+    /* Progress bar */
+    .progress-wrap { margin: 0.75rem 0 0; }
+    .progress-label { font-size: 0.72rem; color: var(--text3); margin-bottom: 0.3rem; display:flex; justify-content:space-between; }
+    .progress-bar-bg { background: var(--bg3); border-radius: 99px; height: 6px; border: 1px solid var(--border); overflow:hidden; }
+    .progress-bar-fill { height: 100%; background: var(--purple); border-radius: 99px; transition: width 0.3s; }
   </style>
 </head>
 <body>
@@ -106,6 +157,19 @@
           <div class="summary-count count-FIXED">7</div>
           <div class="summary-label">FIXED (Batch 1–2)</div>
         </div>
+        <div class="summary-card">
+          <div class="summary-count count-DONE" id="resolved-count">0</div>
+          <div class="summary-label">Resueltos</div>
+        </div>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>Progreso batch 4</span>
+          <span id="progress-text">0 / 22</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
+        </div>
       </div>
     </div>
 
@@ -114,11 +178,12 @@
     <table class="finding-table">
       <thead>
         <tr>
-          <th>Severidad</th><th>Servicio</th><th>Archivo</th><th>Hallazgo</th>
+          <th class="th-check">✓</th><th>Severidad</th><th>Servicio</th><th>Archivo</th><th>Hallazgo</th>
         </tr>
       </thead>
       <tbody>
         <tr>
+          <td class="td-check"><input type="checkbox" class="finding-check" data-id="a-auth-login"></td>
           <td><span class="badge badge-LOW">LOW</span></td>
           <td class="fservice">auth-service</td>
           <td class="ffile">AuthController.java</td>
@@ -132,11 +197,12 @@
     <table class="finding-table">
       <thead>
         <tr>
-          <th>Severidad</th><th>Servicio</th><th>Archivo</th><th>Hallazgo</th>
+          <th class="th-check">✓</th><th>Severidad</th><th>Servicio</th><th>Archivo</th><th>Hallazgo</th>
         </tr>
       </thead>
       <tbody>
         <tr>
+          <td class="td-check"><input type="checkbox" class="finding-check" data-id="b-gateway-route"></td>
           <td><span class="badge badge-HIGH">HIGH</span></td>
           <td class="fservice">api-gateway</td>
           <td class="ffile">application.yaml</td>
@@ -150,17 +216,19 @@
     <table class="finding-table">
       <thead>
         <tr>
-          <th>Severidad</th><th>Servicio</th><th>Archivo</th><th>Hallazgo</th>
+          <th class="th-check">✓</th><th>Severidad</th><th>Servicio</th><th>Archivo</th><th>Hallazgo</th>
         </tr>
       </thead>
       <tbody>
         <tr>
+          <td class="td-check"><input type="checkbox" class="finding-check" data-id="c-reportes-dto"></td>
           <td><span class="badge badge-HIGH">HIGH</span></td>
           <td class="fservice">ms-reportes</td>
           <td class="ffile">dto/CobroResponseDTO.java</td>
           <td class="fissue">El campo local se llama <code>fechaHoraCobro</code> (tipo <code>LocalDateTime</code>), pero ms-pagos serializa el campo como <code>fechaCobro</code> (tipo <code>String</code>). La deserialización Feign fallará en runtime al llamar a <code>GET /api/cobros/cliente/{id}</code> — Jackson no podrá mapear el campo por nombre ni por tipo.</td>
         </tr>
         <tr>
+          <td class="td-check"><input type="checkbox" class="finding-check" data-id="c-pagos-dto"></td>
           <td><span class="badge badge-MED">MED</span></td>
           <td class="fservice">ms-pagos</td>
           <td class="ffile">dto/CobroResponseDTO.java</td>
@@ -174,23 +242,26 @@
     <table class="finding-table">
       <thead>
         <tr>
-          <th>Severidad</th><th>Servicio</th><th>Archivo</th><th>Hallazgo</th>
+          <th class="th-check">✓</th><th>Severidad</th><th>Servicio</th><th>Archivo</th><th>Hallazgo</th>
         </tr>
       </thead>
       <tbody>
         <tr>
+          <td class="td-check"><input type="checkbox" class="finding-check" data-id="d-pagos-handler"></td>
           <td><span class="badge badge-HIGH">HIGH</span></td>
           <td class="fservice">ms-pagos</td>
           <td class="ffile">exception/GlobalExceptionHandler.java</td>
           <td class="fissue">El cuerpo de respuesta es inconsistente con el patrón del proyecto: <code>ResourceNotFoundException</code> retorna solo <code>{error}</code>, <code>BusinessException</code> retorna solo <code>{error}</code>, <code>MethodArgumentNotValidException</code> retorna solo el mapa de campos. Ninguno incluye <code>timestamp</code> ni <code>mensaje</code>. El patrón estándar del proyecto (definido en CLAUDE.md) requiere <code>error + mensaje + timestamp</code> en todas las respuestas.</td>
         </tr>
         <tr>
+          <td class="td-check"><input type="checkbox" class="finding-check" data-id="d-user-handler"></td>
           <td><span class="badge badge-MED">MED</span></td>
           <td class="fservice">user-service</td>
           <td class="ffile">exception/GlobalExceptionHandler.java</td>
           <td class="fissue">El campo <code>timestamp</code> está ausente en la mayoría de respuestas de error. El handler retorna <code>Map&lt;String,String&gt;</code> en vez de <code>Map&lt;String,Object&gt;</code> (timestamp requiere Object para guardar el valor de <code>LocalDateTime</code>).</td>
         </tr>
         <tr>
+          <td class="td-check"><input type="checkbox" class="finding-check" data-id="d-security-handler"></td>
           <td><span class="badge badge-MED">MED</span></td>
           <td class="fservice">security-service</td>
           <td class="ffile">exception/GlobalExceptionHandler.java</td>
@@ -204,41 +275,47 @@
     <table class="finding-table">
       <thead>
         <tr>
-          <th>Severidad</th><th>Servicio</th><th>Archivo</th><th>Hallazgo</th>
+          <th class="th-check">✓</th><th>Severidad</th><th>Servicio</th><th>Archivo</th><th>Hallazgo</th>
         </tr>
       </thead>
       <tbody>
         <tr>
+          <td class="td-check"><input type="checkbox" class="finding-check" data-id="e-tarifas-props"></td>
           <td><span class="badge badge-MED">MED</span></td>
           <td class="fservice">ms-tarifas</td>
           <td class="ffile">application.properties</td>
           <td class="fissue"><code>ddl-auto=update</code> — debería ser <code>validate</code> para producción. Además, la URL del datasource no incluye <code>?useSSL=false&amp;serverTimezone=UTC</code>.</td>
         </tr>
         <tr>
+          <td class="td-check"><input type="checkbox" class="finding-check" data-id="e-user-props"></td>
           <td><span class="badge badge-MED">MED</span></td>
           <td class="fservice">user-service</td>
           <td class="ffile">application.properties</td>
           <td class="fissue"><code>ddl-auto=update</code> — debería ser <code>validate</code>.</td>
         </tr>
         <tr>
+          <td class="td-check"><input type="checkbox" class="finding-check" data-id="e-vehiculos-props"></td>
           <td><span class="badge badge-MED">MED</span></td>
           <td class="fservice">ms-vehiculos</td>
           <td class="ffile">application.properties</td>
           <td class="fissue"><code>ddl-auto=update</code> — debería ser <code>validate</code>.</td>
         </tr>
         <tr>
+          <td class="td-check"><input type="checkbox" class="finding-check" data-id="e-espacios-props"></td>
           <td><span class="badge badge-MED">MED</span></td>
           <td class="fservice">ms-espacios</td>
           <td class="ffile">application.properties</td>
           <td class="fissue"><code>ddl-auto=update</code> — debería ser <code>validate</code>.</td>
         </tr>
         <tr>
+          <td class="td-check"><input type="checkbox" class="finding-check" data-id="e-reservas-props"></td>
           <td><span class="badge badge-MED">MED</span></td>
           <td class="fservice">ms-reservas</td>
           <td class="ffile">application.properties</td>
           <td class="fissue"><code>ddl-auto=update</code> — debería ser <code>validate</code>.</td>
         </tr>
         <tr>
+          <td class="td-check"><input type="checkbox" class="finding-check" data-id="e-security-eureka"></td>
           <td><span class="badge badge-LOW">LOW</span></td>
           <td class="fservice">security-service</td>
           <td class="ffile">application.properties</td>
@@ -252,11 +329,12 @@
     <table class="finding-table">
       <thead>
         <tr>
-          <th>Severidad</th><th>Servicio</th><th>Archivo</th><th>Hallazgo</th>
+          <th class="th-check">✓</th><th>Severidad</th><th>Servicio</th><th>Archivo</th><th>Hallazgo</th>
         </tr>
       </thead>
       <tbody>
         <tr>
+          <td class="td-check"><input type="checkbox" class="finding-check" data-id="g-espacios-delete"></td>
           <td><span class="badge badge-MED">MED</span></td>
           <td class="fservice">ms-espacios</td>
           <td class="ffile">service/EspacioService.java</td>
@@ -271,41 +349,47 @@
     <table class="finding-table" style="margin-top:0.75rem">
       <thead>
         <tr>
-          <th>Severidad</th><th>Servicio</th><th>Archivo</th><th>Hallazgo</th>
+          <th class="th-check">✓</th><th>Severidad</th><th>Servicio</th><th>Archivo</th><th>Hallazgo</th>
         </tr>
       </thead>
       <tbody>
         <tr>
+          <td class="td-check"><input type="checkbox" class="finding-check" data-id="h-gateway-jwt"></td>
           <td><span class="badge badge-HIGH">HIGH</span></td>
           <td class="fservice">api-gateway</td>
           <td class="ffile">security/JwtAuthFilter.java</td>
           <td class="fissue"><code>JwtAuthFilter</code> es un <strong>stub vacío</strong> — no extrae, valida ni reenvía tokens JWT. No hay autenticación aplicada a nivel de gateway. Cualquier petición sin token pasa al servicio destino.</td>
         </tr>
         <tr>
+          <td class="td-check"><input type="checkbox" class="finding-check" data-id="h-user-security"></td>
           <td><span class="badge badge-HIGH">HIGH</span></td>
           <td class="fservice">user-service</td>
           <td class="ffile">SecurityConfig.java</td>
           <td class="fissue">Archivo <code>SecurityConfig.java</code> ausente — todos los endpoints del servicio son públicamente accesibles sin JWT.</td>
         </tr>
         <tr>
+          <td class="td-check"><input type="checkbox" class="finding-check" data-id="h-vehiculos-security"></td>
           <td><span class="badge badge-HIGH">HIGH</span></td>
           <td class="fservice">ms-vehiculos</td>
           <td class="ffile">SecurityConfig.java</td>
           <td class="fissue">Archivo <code>SecurityConfig.java</code> ausente — endpoints sin protección JWT.</td>
         </tr>
         <tr>
+          <td class="td-check"><input type="checkbox" class="finding-check" data-id="h-espacios-security"></td>
           <td><span class="badge badge-HIGH">HIGH</span></td>
           <td class="fservice">ms-espacios</td>
           <td class="ffile">SecurityConfig.java</td>
           <td class="fissue">Archivo <code>SecurityConfig.java</code> ausente — endpoints sin protección JWT.</td>
         </tr>
         <tr>
+          <td class="td-check"><input type="checkbox" class="finding-check" data-id="h-reservas-security"></td>
           <td><span class="badge badge-HIGH">HIGH</span></td>
           <td class="fservice">ms-reservas</td>
           <td class="ffile">SecurityConfig.java</td>
           <td class="fissue">Archivo <code>SecurityConfig.java</code> ausente — endpoints sin protección JWT.</td>
         </tr>
         <tr>
+          <td class="td-check"><input type="checkbox" class="finding-check" data-id="h-security-security"></td>
           <td><span class="badge badge-HIGH">HIGH</span></td>
           <td class="fservice">security-service</td>
           <td class="ffile">SecurityConfig.java</td>
@@ -320,41 +404,47 @@
     <table class="finding-table">
       <thead>
         <tr>
-          <th>Severidad</th><th>Servicio</th><th>Archivo</th><th>Hallazgo</th>
+          <th class="th-check">✓</th><th>Severidad</th><th>Servicio</th><th>Archivo</th><th>Hallazgo</th>
         </tr>
       </thead>
       <tbody>
         <tr>
+          <td class="td-check"><input type="checkbox" class="finding-check" data-id="i-accesos-null"></td>
           <td><span class="badge badge-MED">MED</span></td>
           <td class="fservice">ms-accesos</td>
           <td class="ffile">service/AccesoService.java</td>
           <td class="fissue">Línea ~37: <code>if (reserva == null)</code> es dead code — Feign lanza <code>FeignException</code> ante un 404, nunca retorna null. La verificación de null nunca se ejecuta en producción y da falsa sensación de seguridad.</td>
         </tr>
         <tr>
+          <td class="td-check"><input type="checkbox" class="finding-check" data-id="i-reservas-null"></td>
           <td><span class="badge badge-MED">MED</span></td>
           <td class="fservice">ms-reservas</td>
           <td class="ffile">service/ReservaService.java</td>
           <td class="fissue">Líneas 63–71 aprox.: null checks en las tres respuestas Feign (<code>espacio == null</code>, <code>vehiculo == null</code>, <code>cliente == null</code>) son dead code por la misma razón.</td>
         </tr>
         <tr>
+          <td class="td-check"><input type="checkbox" class="finding-check" data-id="i-vehiculos-list"></td>
           <td><span class="badge badge-LOW">LOW</span></td>
           <td class="fservice">ms-vehiculos</td>
           <td class="ffile">service/VehiculoService.java</td>
           <td class="fissue"><code>listarTodos()</code> lanza <code>NotFoundException</code> cuando la lista está vacía. El comportamiento correcto para una colección vacía es retornar <code>[]</code> (HTTP 200), no 404.</td>
         </tr>
         <tr>
+          <td class="td-check"><input type="checkbox" class="finding-check" data-id="i-espacios-list"></td>
           <td><span class="badge badge-LOW">LOW</span></td>
           <td class="fservice">ms-espacios</td>
           <td class="ffile">service/EspacioService.java</td>
           <td class="fissue"><code>findAll()</code> y <code>findDisponibles()</code> lanzan <code>NotFoundException</code> cuando la lista está vacía. Mismo problema que ms-vehiculos.</td>
         </tr>
         <tr>
+          <td class="td-check"><input type="checkbox" class="finding-check" data-id="i-reportes-client"></td>
           <td><span class="badge badge-LOW">LOW</span></td>
           <td class="fservice">ms-reportes</td>
           <td class="ffile">client/VehiculoClient.java</td>
           <td class="fissue"><code>VehiculoClient</code> está definido pero nunca es inyectado ni llamado en <code>ReporteService</code>. Dead code — el cliente puede eliminarse o implementarse.</td>
         </tr>
         <tr>
+          <td class="td-check"><input type="checkbox" class="finding-check" data-id="i-pagos-fallback"></td>
           <td><span class="badge badge-LOW">LOW</span></td>
           <td class="fservice">ms-pagos</td>
           <td class="ffile">service/PagoService.java</td>
@@ -421,5 +511,45 @@
     <div class="footer">Audit Report Batch 3 · Estacionamiento Inteligente · DUOC UC · 2026-05-14</div>
   </main>
 </div>
+
+<script>
+  const STORAGE_KEY = 'audit-batch3-checks';
+  const TOTAL = 22;
+
+  function loadChecks() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+    catch { return {}; }
+  }
+
+  function saveChecks(checks) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(checks));
+  }
+
+  function updateProgress() {
+    const checks = loadChecks();
+    const count = Object.values(checks).filter(Boolean).length;
+    document.getElementById('resolved-count').textContent = count;
+    document.getElementById('progress-text').textContent = count + ' / ' + TOTAL;
+    document.getElementById('progress-bar').style.width = Math.round(count / TOTAL * 100) + '%';
+  }
+
+  function initCheckboxes() {
+    const checks = loadChecks();
+    document.querySelectorAll('.finding-check').forEach(cb => {
+      cb.checked = !!checks[cb.dataset.id];
+      if (cb.checked) cb.closest('tr').classList.add('row-resolved');
+      cb.addEventListener('change', () => {
+        const c = loadChecks();
+        c[cb.dataset.id] = cb.checked;
+        saveChecks(c);
+        cb.closest('tr').classList.toggle('row-resolved', cb.checked);
+        updateProgress();
+      });
+    });
+    updateProgress();
+  }
+
+  document.addEventListener('DOMContentLoaded', initCheckboxes);
+</script>
 </body>
 </html>
