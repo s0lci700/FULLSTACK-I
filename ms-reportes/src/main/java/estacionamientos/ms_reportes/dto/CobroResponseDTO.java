@@ -14,7 +14,7 @@ public class CobroResponseDTO {
     private Long minutos;
     private Double montoBase;
     private Double montoFinal;
-    private LocalDateTime fechaHoraCobro;
+    private LocalDateTime fechaCobro;
     private String metodoPago;
 
 }

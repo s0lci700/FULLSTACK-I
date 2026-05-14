@@ -66,6 +66,7 @@
     <a href="#entrada"><span class="dot dot-POST"></span>POST /entrada</a>
     <a href="#salida"><span class="dot dot-PATCH"></span>PATCH /{id}/salida</a>
     <a href="#by-reserva"><span class="dot dot-GET"></span>GET /reserva/{id}</a>
+    <a href="#by-id"><span class="dot dot-GET"></span>GET /{id}</a>
   </aside>
   <main class="content">
     <div class="service-header">
@@ -100,7 +101,7 @@
           </table>
         </div>
         <div>
-          <div class="section-title">Response — 200 OK</div>
+          <div class="section-title">Response — 201 Created</div>
           <table class="field-table">
             <thead><tr><th>Campo</th><th>Tipo</th><th>Descripción</th></tr></thead>
             <tbody>
@@ -116,7 +117,7 @@
             </tbody>
           </table>
           <div style="margin-top:0.75rem"><div class="section-title">Status</div>
-          <div class="statuses"><span class="status s2xx">200 OK</span><span class="status s4xx">409 Conflict</span><span class="status s4xx">404 Not Found</span></div></div>
+          <div class="statuses"><span class="status s2xx">201 Created</span><span class="status s4xx">409 Conflict</span><span class="status s4xx">404 Not Found</span></div></div>
         </div>
       </div>
     </div>
@@ -165,6 +166,31 @@
         <div>
           <div class="section-title">Response — 200 OK</div>
           <p style="font-size:0.78rem;color:var(--text2)">AccesoResponseDTO completo.</p>
+          <div style="margin-top:0.75rem"><div class="section-title">Status</div>
+          <div class="statuses"><span class="status s2xx">200 OK</span><span class="status s4xx">404 Not Found</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="endpoint" id="by-id">
+      <div class="endpoint-header">
+        <span class="method GET">GET</span>
+        <span class="endpoint-path">/api/accesos/{id}</span>
+      </div>
+      <p class="endpoint-summary">Obtiene un acceso por su ID. Consumido por ms-pagos vía Feign para calcular el cobro.</p>
+      <div class="endpoint-body cols2">
+        <div>
+          <div class="section-title">Path Params</div>
+          <table class="field-table">
+            <thead><tr><th>Param</th><th>Tipo</th><th>Descripción</th></tr></thead>
+            <tbody>
+              <tr><td class="fname">id</td><td class="ftype">Long</td><td>ID del acceso</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <div class="section-title">Response — 200 OK</div>
+          <p style="font-size:0.78rem;color:var(--text2)">AccesoResponseDTO completo (mismos campos que POST /entrada).</p>
           <div style="margin-top:0.75rem"><div class="section-title">Status</div>
           <div class="statuses"><span class="status s2xx">200 OK</span><span class="status s4xx">404 Not Found</span></div></div>
         </div>
