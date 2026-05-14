@@ -36,7 +36,7 @@ public class ClienteSuscripcion {
     @Column(name = "fecha_inicio", nullable = false)
     private LocalDate fechaInicio;
 
-    @Column(name = "fecha_fin", nullable = true)
+    @Column(name = "fecha_fin", nullable = false)
     private LocalDate fechaFin;
 
     @Column(nullable = false)

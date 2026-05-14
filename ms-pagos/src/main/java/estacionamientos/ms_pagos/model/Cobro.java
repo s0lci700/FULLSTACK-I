@@ -19,22 +19,34 @@ public class Cobro {
     @Column(nullable = false, name = "id_acceso_ref")
     private Long idAcceso;
 
-    @Column(nullable = false, name = "id_cliente_ref")
-    private Long idCliente;
+    @ManyToOne
+    @JoinColumn(name = "id_metodo_pago", nullable = false)
+    private MetodoPago metodoPago;
+
+    @Column(nullable = false, name = "id_tarifa_ref")
+    private Long idTarifaRef;
 
     @Column(nullable = false)
-    private Long minutos; //falta que sol agregue los minutos en ms-accesos
+    private Long minutos;
 
     @Column(nullable = false)
     private Double montoBase;
+
+    @Column(name = "desc_tipo_cliente", nullable = false)
+    private Double descTipoCliente;
+
+    @Column(name = "desc_suscripcion", nullable = false)
+    private Double descSuscripcion;
+
+    @Column(name = "desc_banco", nullable = false)
+    private Double descBanco;
 
     @Column(nullable = false)
     private Double montoFinal;
 
     @Column(nullable = false)
-    private LocalDateTime fechaCobro;
+    private String estado;
 
-    @ManyToOne
-    @JoinColumn(name = "id_metodo_pago", nullable = false)
-    private MetodoPago metodoPago;
+    @Column(nullable = false)
+    private LocalDateTime fechaCobro;
 }

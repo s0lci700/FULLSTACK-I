@@ -178,12 +178,16 @@ public class PagoService {
         // Guardar cobro
         Cobro cobro = new Cobro();
         cobro.setIdAcceso(dto.getIdAcceso());
-        cobro.setIdCliente(dto.getIdCliente());
+        cobro.setMetodoPago(metodoPago);
+        cobro.setIdTarifaRef(tarifa.getId());
         cobro.setMinutos(minutos);
         cobro.setMontoBase(montoBase);
+        cobro.setDescTipoCliente(descuentoCliente);
+        cobro.setDescSuscripcion(descuentoSuscripcion);
+        cobro.setDescBanco(descuentoBanco);
         cobro.setMontoFinal(montoFinal);
+        cobro.setEstado("PENDIENTE");
         cobro.setFechaCobro(LocalDateTime.now());
-        cobro.setMetodoPago(metodoPago);
 
         Cobro guardado = cobroRepository.save(cobro);
         log.info("Cobro guardado id={}", guardado.getId());
@@ -210,7 +214,7 @@ public class PagoService {
     // Retorna todos los cobros de un cliente
     public List<CobroResponseDTO> findByIdCliente(Long idCliente) {
         log.info("Buscando cobros del cliente id={}", idCliente);
-        return cobroRepository.findAllByIdCliente(idCliente)
+        return cobroRepository.findAllByMetodoPagoIdClienteRef(idCliente)
                 .stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
@@ -221,12 +225,14 @@ public class PagoService {
         CobroResponseDTO dto = new CobroResponseDTO();
         dto.setId(cobro.getId());
         dto.setIdAcceso(cobro.getIdAcceso());
-        dto.setIdCliente(cobro.getIdCliente());
+        dto.setIdCliente(cobro.getMetodoPago().getIdClienteRef());
         dto.setMinutos(cobro.getMinutos());
         dto.setMontoBase(cobro.getMontoBase());
         dto.setMontoFinal(cobro.getMontoFinal());
         dto.setFechaCobro(cobro.getFechaCobro());
-        dto.setMetodoPago(cobro.getMetodoPago().getNombre());
+        dto.setMetodoPago(cobro.getMetodoPago().getTipoTarjeta() != null
+                ? cobro.getMetodoPago().getTipoTarjeta().getNombre()
+                : "N/A");
         return dto;
     }
 }

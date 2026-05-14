@@ -1,5 +1,7 @@
 package estacionamientos.user_service.model;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,8 +29,14 @@ public class Suscripcion {
     @Column(nullable = true)
     private String descripcion;
 
-    @Column(name = "descuento_porcentaje", nullable = false)
+    @Column(nullable = false)
+    private BigDecimal precio;
+
+    @Column(name = "descuento_pct", nullable = false)
     private Double descuentoPorcentaje;
+
+    @Column(name = "duracion_dias", nullable = false)
+    private Integer duracionDias;
 
     @Column(nullable = false)
     private Boolean activo;
