@@ -15,12 +15,15 @@ import estacionamientos.security_service.model.Permiso;
 import estacionamientos.security_service.model.RolPermiso;
 import estacionamientos.security_service.repository.PermisoRepository;
 import estacionamientos.security_service.repository.RolPermisoRepository;
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
 // Contiene la logica de negocio para asignar permisos a roles
+@Slf4j
 @Service
 public class RolPermisoService {
 
-    private static final Logger log = LoggerFactory.getLogger(RolPermisoService.class);
+
 
     private final RolPermisoRepository rolPermisoRepository;
     private final PermisoRepository permisoRepository;
@@ -52,6 +55,7 @@ public class RolPermisoService {
 
     // Asigna un permiso a un rol
     // Valida que el permiso exista y que no este ya asignado a ese rol
+    @Transactional
     public RolPermisoResponseDTO create(RolPermisoCreateDTO dto) {
         log.info("Asignando permiso id={} al rol id={}", dto.getIdPermiso(), dto.getIdRol());
 
@@ -74,6 +78,7 @@ public class RolPermisoService {
 
     // Elimina una asignacion rol-permiso por ID
     // Lanza 404 si la asignacion no existe
+    @Transactional
     public void delete(Long id) {
         log.info("Eliminando rol-permiso id={}", id);
         if (!rolPermisoRepository.existsById(id)) {

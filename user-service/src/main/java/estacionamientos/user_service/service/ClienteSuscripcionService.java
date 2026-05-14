@@ -6,6 +6,7 @@ import estacionamientos.user_service.model.Cliente;
 import estacionamientos.user_service.model.ClienteSuscripcion;
 import estacionamientos.user_service.model.Suscripcion;
 import estacionamientos.user_service.repository.ClienteSuscripcionRepository;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,7 @@ public class ClienteSuscripcionService {
     }
 
     // Asigna una suscripcion a un cliente
+    @Transactional
     public ClienteSuscripcionResponseDTO create(Long clienteId, ClienteSuscripcionCreateDTO dto) {
         log.info("Asignando suscripcion al cliente id: {}", clienteId);
         if (clienteSuscripcionRepository.existsByClienteIdAndSuscripcionIdAndActivoTrue(

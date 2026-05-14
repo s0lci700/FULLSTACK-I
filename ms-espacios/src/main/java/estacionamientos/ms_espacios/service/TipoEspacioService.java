@@ -4,16 +4,18 @@ import estacionamientos.ms_espacios.dto.TipoEspacioResponseDTO;
 import estacionamientos.ms_espacios.exception.ResourceNotFoundException;
 import estacionamientos.ms_espacios.model.TipoEspacio;
 import estacionamientos.ms_espacios.repository.TipoEspacioRepository;
+import lombok.extern.slf4j.Slf4j;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class TipoEspacioService {
 
-    private static final Logger log = LoggerFactory.getLogger(TipoEspacioService.class);
 
     private final TipoEspacioRepository tipoEspaciosRepository;
 

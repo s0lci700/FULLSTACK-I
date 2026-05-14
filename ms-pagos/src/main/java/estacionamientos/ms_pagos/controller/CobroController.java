@@ -17,12 +17,13 @@ import estacionamientos.ms_pagos.dto.CobroCreateDTO;
 import estacionamientos.ms_pagos.dto.CobroResponseDTO;
 import estacionamientos.ms_pagos.service.PagoService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/cobros")
 public class CobroController {
 
-    private static final Logger log = LoggerFactory.getLogger(CobroController.class);
 
     private final PagoService pagoService;
 

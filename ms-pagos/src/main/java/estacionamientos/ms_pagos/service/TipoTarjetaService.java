@@ -13,11 +13,14 @@ import estacionamientos.ms_pagos.exception.BusinessException;
 import estacionamientos.ms_pagos.exception.ResourceNotFoundException;
 import estacionamientos.ms_pagos.model.TipoTarjeta;
 import estacionamientos.ms_pagos.repository.TipoTarjetaRepository;
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class TipoTarjetaService {
 
-    private static final Logger log = LoggerFactory.getLogger(TipoTarjetaService.class);
+    
 
     private final TipoTarjetaRepository tipoTarjetaRepository;
 
@@ -40,6 +43,7 @@ public class TipoTarjetaService {
         return toResponse(tipo);
     }
 
+    @Transactional
     public TipoTarjetaResponseDTO create(TipoTarjetaDTO dto) {
         log.info("Creando tipo tarjeta nombre={}", dto.getNombre());
         if (tipoTarjetaRepository.existsByNombre(dto.getNombre())) {
@@ -50,6 +54,7 @@ public class TipoTarjetaService {
         return toResponse(tipoTarjetaRepository.save(tipo));
     }
 
+    @Transactional
     public void delete(Long id) {
         log.info("Eliminando tipo tarjeta id={}", id);
         if (!tipoTarjetaRepository.existsById(id)) {

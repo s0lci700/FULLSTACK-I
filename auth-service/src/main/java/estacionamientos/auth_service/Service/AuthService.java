@@ -20,7 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-@Transactional
 public class AuthService {
     @Autowired
     UserCredentialRepository userCredentialRepository;
@@ -49,7 +48,7 @@ public class AuthService {
         log.info("Login exitoso para email: {}", dto.getEmail());
         return jwtUtil.generateToken(credencial.getEmail(), credencial.getRol().getNombre());
     }
-
+    @Transactional
     public void register(RegisterRequestDTO dto) {
         log.info("Intentando registrar nuevo usuario con email: {}", dto.getEmail());
         if (userCredentialRepository.findByEmail(dto.getEmail()).isPresent()) {

@@ -23,12 +23,12 @@ import estacionamientos.ms_espacios.dto.EspacioResponseDTO;
 import estacionamientos.ms_espacios.dto.EspacioUpdateDTO;
 import estacionamientos.ms_espacios.service.EspacioService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/espacios")
 public class EspacioController {
-
-    private static final Logger log = LoggerFactory.getLogger(EspacioController.class);
 
     private final EspacioService espaciosService;
 

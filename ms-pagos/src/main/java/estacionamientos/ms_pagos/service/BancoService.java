@@ -13,11 +13,12 @@ import estacionamientos.ms_pagos.exception.BusinessException;
 import estacionamientos.ms_pagos.exception.ResourceNotFoundException;
 import estacionamientos.ms_pagos.model.Banco;
 import estacionamientos.ms_pagos.repository.BancoRepository;
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class BancoService {
-
-    private static final Logger log = LoggerFactory.getLogger(BancoService.class);
 
     private final BancoRepository bancoRepository;
 
@@ -40,6 +41,7 @@ public class BancoService {
         return toResponse(banco);
     }
 
+    @Transactional    
     public BancoResponseDTO create(BancoDTO dto) {
         log.info("Creando banco nombre={}", dto.getNombre());
         if (bancoRepository.existsByNombre(dto.getNombre())) {
@@ -50,7 +52,8 @@ public class BancoService {
         banco.setDescuento(dto.getDescuento());
         return toResponse(bancoRepository.save(banco));
     }
-
+    
+    @Transactional
     public BancoResponseDTO update(Long id, BancoDTO dto) {
         log.info("Actualizando banco id={}", id);
         Banco banco = bancoRepository.findById(id)
@@ -60,6 +63,7 @@ public class BancoService {
         return toResponse(bancoRepository.save(banco));
     }
 
+    @Transactional
     public void delete(Long id) {
         log.info("Eliminando banco id={}", id);
         if (!bancoRepository.existsById(id)) {

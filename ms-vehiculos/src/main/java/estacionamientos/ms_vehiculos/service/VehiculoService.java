@@ -129,7 +129,11 @@ public class VehiculoService {
             vehiculo.getMarca(),
             vehiculo.getModelo(),
             vehiculo.getColor(),
-            vehiculo.getPatente()
+            vehiculo.getPatente(),
+            vehiculo.getAnio(),
+            vehiculo.getIdTipoVehiculo().getId(),
+            vehiculo.getIdClienteRef(),
+            vehiculo.getActivo()
         );
     }
 

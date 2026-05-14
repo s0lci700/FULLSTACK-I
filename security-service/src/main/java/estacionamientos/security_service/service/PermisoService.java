@@ -13,13 +13,16 @@ import estacionamientos.security_service.exception.BusinessException;
 import estacionamientos.security_service.exception.ResourceNotFoundException;
 import estacionamientos.security_service.model.Permiso;
 import estacionamientos.security_service.repository.PermisoRepository;
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
 // Contiene toda la logica de negocio relacionada a permisos
 // El Controller solo llama metodos de aqui, nunca accede al repositorio directamente
+@Slf4j
 @Service
 public class PermisoService {
 
-    private static final Logger log = LoggerFactory.getLogger(PermisoService.class);
+
 
     // Inyeccion por constructor, mas segura que @Autowired
     private final PermisoRepository permisoRepository;
@@ -47,6 +50,7 @@ public class PermisoService {
 
     // Crea un nuevo permiso validando que el nombre no este duplicado
     // Si ya existe un permiso con ese nombre lanza BusinessException (400)
+    @Transactional
     public PermisoResponseDTO create(PermisoCreateDTO dto) {
         log.info("Creando permiso nombre={}", dto.getNombre());
         if (permisoRepository.existsByNombre(dto.getNombre())) {
@@ -60,6 +64,7 @@ public class PermisoService {
 
     // Actualiza nombre y descripcion de un permiso existente
     // Lanza 404 si el permiso no existe
+    @Transactional
     public PermisoResponseDTO update(Long id, PermisoCreateDTO dto) {
         log.info("Actualizando permiso id={}", id);
         Permiso permiso = permisoRepository.findById(id)
@@ -71,6 +76,7 @@ public class PermisoService {
 
     // Elimina un permiso por ID
     // Lanza 404 si el permiso no existe
+    @Transactional
     public void delete(Long id) {
         log.info("Eliminando permiso id={}", id);
         if (!permisoRepository.existsById(id)) {

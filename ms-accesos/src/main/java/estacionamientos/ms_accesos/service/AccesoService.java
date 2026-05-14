@@ -16,7 +16,10 @@ import estacionamientos.ms_accesos.exception.NotFoundException;
 import estacionamientos.ms_accesos.model.Acceso;
 import estacionamientos.ms_accesos.model.EstadoEnum;
 import estacionamientos.ms_accesos.repository.AccesoRepository;
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class AccesoService {
     @Autowired
@@ -28,6 +31,7 @@ public class AccesoService {
     @Autowired
     ReservaClient reservaClient;
 
+    @Transactional
     public AccesoResponseDTO registrarEntrada(AccesoCreateDTO dto) {
         ReservaResponseDTO reserva = reservaClient.findById(dto.getIdReserva());
         if (reserva == null || !reserva.getEstado().equals("CONFIRMADA")) {
@@ -52,6 +56,7 @@ public class AccesoService {
 
     }
 
+    @Transactional
     public AccesoResponseDTO registrarSalida(Long id) {
         Acceso acceso = accesoRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Acceso no encontrado"));

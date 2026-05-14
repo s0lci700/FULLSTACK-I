@@ -23,6 +23,7 @@ import estacionamientos.ms_pagos.model.Cobro;
 import estacionamientos.ms_pagos.model.MetodoPago;
 import estacionamientos.ms_pagos.repository.CobroRepository;
 import estacionamientos.ms_pagos.repository.MetodoPagoRepository;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -57,6 +58,7 @@ public class PagoService {
     // }
 
     // Genera un cobro consultando acceso, tarifa y cliente via Feign
+    @Transactional
     public CobroResponseDTO crear(CobroCreateDTO dto) {
         log.info("Creando cobro para acceso id={}", dto.getIdAcceso());
 
@@ -106,7 +108,7 @@ public class PagoService {
         // Guardar cobro
         Cobro cobro = new Cobro();
         cobro.setIdAcceso(dto.getIdAcceso());
-        cobro.setIdCliente(cliente.getId());
+        cobro.setIdCliente(dto.getIdCliente());
         cobro.setMinutos(minutos);
         cobro.setMontoBase(montoBase);
         cobro.setMontoFinal(montoFinal);

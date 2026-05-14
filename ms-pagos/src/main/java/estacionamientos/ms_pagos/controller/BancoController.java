@@ -19,12 +19,13 @@ import estacionamientos.ms_pagos.dto.BancoDTO;
 import estacionamientos.ms_pagos.dto.BancoResponseDTO;
 import estacionamientos.ms_pagos.service.BancoService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/bancos")
 public class BancoController {
 
-    private static final Logger log = LoggerFactory.getLogger(BancoController.class);
 
     private final BancoService bancoService;
 
