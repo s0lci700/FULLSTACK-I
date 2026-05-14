@@ -1,8 +1,5 @@
 package estacionamientos.ms_accesos.dto;
 
-import java.time.LocalDateTime;
-
-import estacionamientos.ms_accesos.model.EstadoEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -15,15 +12,10 @@ public class AccesoCreateDTO {
     @NotNull(message = "El id de la reserva es obligatorio")
     private Long idReserva;
 
-    @NotBlank
+    @NotNull(message = "El id del vehículo es obligatorio")
+    private Long idVehiculo;
+
+    @NotBlank(message = "La patente escaneada es obligatoria")
     private String patenteEscaneada;
-
-    @NotNull
-    private LocalDateTime fechaHoraEntrada;
-
-    private LocalDateTime fechaHoraSalida;
-
-    @NotNull
-    private EstadoEnum estado = EstadoEnum.ACTIVO;
-
+    
 }

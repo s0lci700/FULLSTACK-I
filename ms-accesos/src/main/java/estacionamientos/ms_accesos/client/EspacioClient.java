@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name = "ms-espacios")
 public interface EspacioClient {
-    @PatchMapping("/api/espacios/{id}/available")
+    @PatchMapping("/api/espacios/{id}/disponibilidad")
     void updateDisponibilidad(@PathVariable Long id, @RequestParam boolean disponible);
 }
