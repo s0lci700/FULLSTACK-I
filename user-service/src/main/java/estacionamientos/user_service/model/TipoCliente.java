@@ -24,9 +24,6 @@ public class TipoCliente {
     @Column(nullable = false, unique = true)
     private String nombre;
 
-    @Column(nullable = true)
-    private String descripcion;
-
-    @Column(name = "descuento_porcentaje", nullable = false)
+    @Column(name = "descuento_pct", nullable = false)
     private Double descuentoPorcentaje;
 }

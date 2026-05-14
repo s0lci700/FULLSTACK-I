@@ -17,6 +17,12 @@ public class Banco {
     @Column(nullable = false, unique = true)
     private String nombre;
 
+    @Column(nullable = false, unique = true)
+    private String codigo;
+
+    @Column(name = "descuento_pct", nullable = false)
+    private Double descuento;
+
     @Column(nullable = false)
-    private Double descuento; // porcentaje de descuento ej: 10.0 = 10%
+    private Boolean activo;
 }

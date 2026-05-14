@@ -27,6 +27,7 @@ CREATE TABLE acceso (
     patente_escaneada  VARCHAR(10) NOT NULL,
     fecha_hora_entrada DATETIME    NOT NULL,
     fecha_hora_salida  DATETIME,                      -- NULL = vehículo aún adentro
+    minutos            INT         NULL,               -- null mientras activo; se rellena al registrar salida
     estado             VARCHAR(20) NOT NULL DEFAULT 'ACTIVO'
 ) ENGINE=InnoDB;
 

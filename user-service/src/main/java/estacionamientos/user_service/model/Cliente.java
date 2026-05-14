@@ -1,5 +1,9 @@
 package estacionamientos.user_service.model;
 
+import java.time.LocalDateTime;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,6 +27,9 @@ public class Cliente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
+    private String rut;
+
     @Column(nullable = false)
     private String nombre;
 
@@ -38,6 +45,10 @@ public class Cliente {
     @ManyToOne
     @JoinColumn(name = "id_tipo_cliente", nullable = false)
     private TipoCliente tipoCliente;
+
+    @CreationTimestamp
+    @Column(name = "fecha_registro", nullable = false, updatable = false)
+    private LocalDateTime fechaRegistro;
 
     @Column(nullable = false)
     private Boolean activo;

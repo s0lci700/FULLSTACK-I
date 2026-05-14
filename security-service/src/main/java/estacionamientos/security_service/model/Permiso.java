@@ -14,9 +14,12 @@ public class Permiso {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String nombre; // ej: CREATE_RESERVA, DELETE_ESPACIO
+    @Column(nullable = false)
+    private String nombre;
 
     @Column(nullable = false)
-    private String descripcion;
+    private String recurso;
+
+    @Column(nullable = false)
+    private String accion;
 }

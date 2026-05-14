@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface CobroRepository extends JpaRepository<Cobro, Long> {
     Optional<Cobro> findByIdAcceso(Long idAcceso);
-    List<Cobro> findAllByIdCliente(Long idCliente);
+    List<Cobro> findAllByMetodoPagoIdClienteRef(Long idClienteRef);
 }

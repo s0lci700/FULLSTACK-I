@@ -15,5 +15,8 @@ public class TipoTarjeta {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String nombre; // ej: DEBITO, CREDITO
+    private String nombre;
+
+    @Column(nullable = false)
+    private String red;
 }
