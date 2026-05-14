@@ -27,6 +27,13 @@ public class HorarioTarifasController {
         this.horarioTarifasService = horarioTarifasService;
     }
 
+    // Retorna el horario vigente para el momento actual (usado por ms-pagos via Feign)
+    @GetMapping("/vigente")
+    public ResponseEntity<HorarioTarifaResponseDTO> getVigente() {
+        log.info("GET /api/horarios-tarifa/vigente");
+        return ResponseEntity.ok(horarioTarifasService.findVigente());
+    }
+
     // Retorna todos los horarios de tarifa registrados
     @GetMapping
     public ResponseEntity<List<HorarioTarifaResponseDTO>> getAll() {

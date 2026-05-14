@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -28,6 +29,16 @@ public class HorarioTarifasService {
             TarifasService tarifasService) {
         this.horarioTarifasRepository = horarioTarifasRepository;
         this.tarifasService = tarifasService;
+    }
+
+    // Retorna el horario cuya ventana de tiempo contiene el instante actual
+    public HorarioTarifaResponseDTO findVigente() {
+        LocalDateTime ahora = LocalDateTime.now();
+        return horarioTarifasRepository.findAll().stream()
+                .filter(h -> !ahora.isBefore(h.getHoraInicio()) && !ahora.isAfter(h.getHoraFin()))
+                .findFirst()
+                .map(this::toDTO)
+                .orElseThrow(() -> new ResourceNotFoundException("No hay horario de tarifa vigente para el momento actual"));
     }
 
     // Retorna todos los horarios de tarifa registrados

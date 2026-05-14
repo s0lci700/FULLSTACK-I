@@ -39,6 +39,12 @@ public class AccesoController {
         return ResponseEntity.ok(accesoService.registrarSalida(id));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<AccesoResponseDTO> getById(@PathVariable Long id) {
+        log.info("GET /api/accesos/{}", id);
+        return ResponseEntity.ok(accesoService.findById(id));
+    }
+
     @GetMapping("/reserva/{idReserva}")
     public ResponseEntity<AccesoResponseDTO> getByReserva(
         @PathVariable Long idReserva) {

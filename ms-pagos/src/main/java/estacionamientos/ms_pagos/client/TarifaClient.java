@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import estacionamientos.ms_pagos.dto.TarifaResponseDTO;
 
-@FeignClient(name = "ms-tarifas")
+@FeignClient(name = "ms-tarifas", contextId = "tarifaClient")
 public interface TarifaClient {
 
     @GetMapping("/api/tarifas/vigente")
