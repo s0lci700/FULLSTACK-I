@@ -79,6 +79,7 @@
       <div class="sidebar-group-title">HorarioTarifasController</div>
       <a href="#h-list"><span class="dot dot-GET"></span>GET /horarios-tarifa</a>
       <a href="#h-get"><span class="dot dot-GET"></span>GET /horarios-tarifa/{id}</a>
+      <a href="#h-vigente"><span class="dot dot-GET"></span>GET /horarios-tarifa/vigente</a>
       <a href="#h-post"><span class="dot dot-POST"></span>POST /horarios-tarifa</a>
       <a href="#h-delete"><span class="dot dot-DELETE"></span>DELETE /horarios-tarifa/{id}</a>
     </div>
@@ -229,6 +230,35 @@
       <p class="endpoint-summary">Busca un horario por ID.</p>
       <div class="endpoint-body">
         <div><div class="section-title">Status</div><div class="statuses"><span class="status s2xx">200 OK</span><span class="status s4xx">404 Not Found</span></div></div>
+      </div>
+    </div>
+
+    <div class="endpoint" id="h-vigente">
+      <div class="endpoint-header">
+        <span class="method GET">GET</span>
+        <span class="endpoint-path">/api/horarios-tarifa/vigente</span>
+      </div>
+      <p class="endpoint-summary">Retorna el horario vigente según la hora actual del servidor. Consumido por ms-pagos vía Feign para obtener el multiplicador horario aplicado al cobro.</p>
+      <div class="endpoint-body cols2">
+        <div>
+          <div class="section-title">Response — 200 OK</div>
+          <table class="field-table">
+            <thead><tr><th>Campo</th><th>Tipo</th><th>Descripción</th></tr></thead>
+            <tbody>
+              <tr><td class="fname">id</td><td class="ftype">Long</td><td></td></tr>
+              <tr><td class="fname">tarifa</td><td class="ftype">TarifaResponseDTO</td><td>Objeto anidado</td></tr>
+              <tr><td class="fname">diaTipo</td><td class="ftype">String</td><td>SEMANA / FINDE</td></tr>
+              <tr><td class="fname">horaInicio</td><td class="ftype">LocalDateTime</td><td></td></tr>
+              <tr><td class="fname">horaFin</td><td class="ftype">LocalDateTime</td><td></td></tr>
+              <tr><td class="fname">multiplicador</td><td class="ftype">Double</td><td>Factor sobre el precio base (ej: 1.5)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <div class="section-title">Status</div>
+          <div class="statuses"><span class="status s2xx">200 OK</span><span class="status s4xx">404 Not Found</span></div>
+          <div class="feign-note" style="margin-top:0.75rem">⚡ ms-pagos llama este endpoint vía <code>HorarioTarifaClient</code> para obtener <strong>multiplicador_horario</strong>. Si no existe horario vigente, ms-pagos usa fallback 1.0.</div>
+        </div>
       </div>
     </div>
 

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Audit Report — Batch 3</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg:#0f1117;--bg2:#1a1f2e;--bg3:#1e2330;--border:#2d3748;--text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;--green:#3fb950;--blue:#58a6ff;--yellow:#d29922;--red:#f85149;--purple:#bc8cff;--cyan:#76e3ea; }
+    body { font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6; }
+    a { color:var(--blue);text-decoration:none; } a:hover { text-decoration:underline; }
+    .topnav { background:var(--bg2);border-bottom:1px solid var(--border);padding:0.65rem 1.5rem;display:flex;align-items:center;justify-content:space-between;font-size:0.82rem;position:sticky;top:0;z-index:100; }
+    .topnav a { color:var(--text2);font-size:0.8rem; } .topnav a:hover { color:var(--blue);text-decoration:none; }
+    .service-tag { font-family:monospace;color:var(--text3);background:var(--bg3);padding:0.15rem 0.55rem;border-radius:5px;font-size:0.72rem;border:1px solid var(--border); }
+    .layout { display:flex; }
+    .sidebar { width:220px;min-width:220px;background:var(--bg2);border-right:1px solid var(--border);padding:1.25rem 0;position:sticky;top:42px;height:calc(100vh - 42px);overflow-y:auto;flex-shrink:0; }
+    .sidebar-group-title { font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);padding:0 1rem 0.35rem;margin-top:1rem; }
+    .sidebar a { display:flex;align-items:center;gap:0.5rem;padding:0.3rem 1rem;font-size:0.75rem;color:var(--text2);transition:background 0.1s; }
+    .sidebar a:hover { background:var(--bg3);color:var(--text);text-decoration:none; }
+    .sev-dot { width:7px;height:7px;border-radius:50%;flex-shrink:0; }
+    .sev-dot-HIGH { background:var(--red); } .sev-dot-MED { background:var(--yellow); } .sev-dot-LOW { background:var(--blue); } .sev-dot-FIXED { background:var(--green); }
+    .content { flex:1;padding:2rem 2.5rem;max-width:1000px; }
+    .page-header { margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border); }
+    .page-header h1 { font-size:1.5rem;font-weight:700;color:#f8fafc;margin-bottom:0.4rem; }
+    .page-meta { display:flex;gap:0.6rem;flex-wrap:wrap;align-items:center;margin-top:0.5rem; }
+    .meta-chip { font-size:0.72rem;background:var(--bg3);border:1px solid var(--border);padding:0.18rem 0.55rem;border-radius:6px;color:var(--text2);font-family:monospace; }
+    .page-desc { font-size:0.85rem;color:var(--text2);margin-top:0.75rem; }
+    .summary-grid { display:grid;grid-template-columns:repeat(4,1fr);gap:0.75rem;margin:1.5rem 0; }
+    .summary-card { background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1rem;text-align:center; }
+    .summary-count { font-size:2rem;font-weight:700;line-height:1; }
+    .summary-label { font-size:0.72rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-top:0.3rem; }
+    .count-HIGH { color:var(--red); } .count-MED { color:var(--yellow); } .count-LOW { color:var(--blue); } .count-FIXED { color:var(--green); }
+    .track-title { font-size:0.67rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin:2.5rem 0 0.75rem;padding-left:0.5rem;border-left:3px solid var(--border);scroll-margin-top:60px; }
+    .finding-table { width:100%;border-collapse:collapse;font-size:0.8rem;margin-bottom:1rem; }
+    .finding-table th { text-align:left;color:var(--text3);font-size:0.63rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;padding:0.5rem 0.75rem;border-bottom:2px solid var(--border);background:var(--bg3); }
+    .finding-table td { padding:0.6rem 0.75rem;vertical-align:top;border-bottom:1px solid var(--border);color:var(--text2); }
+    .finding-table tr:last-child td { border-bottom:none; }
+    .finding-table tr:hover td { background:#171d2a; }
+    .finding-table td.fservice { font-family:monospace;font-size:0.75rem;color:var(--cyan);white-space:nowrap; }
+    .finding-table td.ffile { font-family:monospace;font-size:0.73rem;color:var(--text3);white-space:nowrap; }
+    .finding-table td.fissue { color:var(--text); }
+    .badge { display:inline-block;font-size:0.62rem;font-weight:700;font-family:monospace;padding:0.15rem 0.45rem;border-radius:4px;text-transform:uppercase;white-space:nowrap; }
+    .badge-HIGH { background:#3a0a0a;color:var(--red);border:1px solid #5a1010; }
+    .badge-MED { background:#2a1a00;color:var(--yellow);border:1px solid #4a3000; }
+    .badge-LOW { background:#091630;color:var(--blue);border:1px solid #1a2a50; }
+    .badge-FIXED { background:#091f10;color:var(--green);border:1px solid #1a4020; }
+    .note-box { background:#141b2a;border:1px solid var(--border);border-radius:8px;padding:0.7rem 1rem;font-size:0.8rem;color:var(--text2);margin-top:1rem; }
+    .note-box strong { color:var(--text); }
+    .warn-box { background:#1a1a10;border:1px solid #3a3a10;border-radius:8px;padding:0.7rem 1rem;font-size:0.78rem;color:var(--yellow);margin-top:1rem; }
+    code { font-family:monospace;font-size:0.85em;background:var(--bg3);padding:0.05rem 0.3rem;border-radius:3px;color:var(--cyan); }
+    .footer { text-align:center;padding:2rem 0;color:var(--text3);font-size:0.75rem;border-top:1px solid var(--border);margin-top:3rem; }
+  </style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html">← API Docs</a>
+  <div style="display:flex;gap:0.75rem;align-items:center">
+    <span class="service-tag">Batch 3</span>
+    <span class="service-tag">2026-05-14</span>
+  </div>
+</nav>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-group-title">Resumen</div>
+    <a href="#summary">Conteo por severidad</a>
+    <div class="sidebar-group-title">Tracks — Abiertos</div>
+    <a href="#track-a"><span class="sev-dot sev-dot-LOW"></span>A — HTTP Status</a>
+    <a href="#track-b"><span class="sev-dot sev-dot-HIGH"></span>B — Gateway Route</a>
+    <a href="#track-c"><span class="sev-dot sev-dot-HIGH"></span>C — DTO Symmetry</a>
+    <a href="#track-d"><span class="sev-dot sev-dot-HIGH"></span>D — ExceptionHandler</a>
+    <a href="#track-e"><span class="sev-dot sev-dot-MED"></span>E — app.properties</a>
+    <a href="#track-g"><span class="sev-dot sev-dot-MED"></span>G — Soft Delete</a>
+    <a href="#track-h"><span class="sev-dot sev-dot-HIGH"></span>H — Security</a>
+    <a href="#track-i"><span class="sev-dot sev-dot-MED"></span>I — Business Logic</a>
+    <div class="sidebar-group-title">Tracks — Cerrados</div>
+    <a href="#track-j"><span class="sev-dot sev-dot-FIXED"></span>J — Fixed (Batch 1–2)</a>
+  </aside>
+  <main class="content">
+    <div class="page-header">
+      <h1>Audit Report — Batch 3</h1>
+      <div class="page-meta">
+        <span class="meta-chip">Estacionamiento Inteligente</span>
+        <span class="meta-chip">12 microservicios</span>
+        <span class="meta-chip">Spring Boot 3.5 · Java 21</span>
+        <span class="meta-chip">2026-05-14</span>
+      </div>
+      <p class="page-desc">Auditoría post Batch-2. Cubre todos los servicios. Las correcciones de Batch 1 y 2 están marcadas como FIXED. Los hallazgos abiertos corresponden a trabajo pendiente para el próximo batch de fixes. <strong>Este reporte es solo de auditoría — no se implementaron correcciones.</strong></p>
+    </div>
+
+    <!-- Summary -->
+    <div id="summary" style="scroll-margin-top:60px">
+      <div class="summary-grid">
+        <div class="summary-card">
+          <div class="summary-count count-HIGH">8</div>
+          <div class="summary-label">HIGH</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-count count-MED">9</div>
+          <div class="summary-label">MED</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-count count-LOW">5</div>
+          <div class="summary-label">LOW</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-count count-FIXED">7</div>
+          <div class="summary-label">FIXED (Batch 1–2)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Track A -->
+    <div class="track-title" id="track-a">Track A — HTTP Status Codes</div>
+    <table class="finding-table">
+      <thead>
+        <tr>
+          <th>Severidad</th><th>Servicio</th><th>Archivo</th><th>Hallazgo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge badge-LOW">LOW</span></td>
+          <td class="fservice">auth-service</td>
+          <td class="ffile">AuthController.java</td>
+          <td class="fissue">POST <code>/api/auth/login</code> retorna 200. Semánticamente aceptable para auth, pero el resto del proyecto usa 201 para creación. Inconsistencia menor de convención.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Track B -->
+    <div class="track-title" id="track-b">Track B — Feign / Route Mismatches</div>
+    <table class="finding-table">
+      <thead>
+        <tr>
+          <th>Severidad</th><th>Servicio</th><th>Archivo</th><th>Hallazgo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge badge-HIGH">HIGH</span></td>
+          <td class="fservice">api-gateway</td>
+          <td class="ffile">application.yaml</td>
+          <td class="fissue">La ruta <code>id: security-service</code> define <code>Path=/api/permisos/**,/api/rol-permisos/**</code>, pero <code>RolPermisoController</code> está mapeado a <code>/api/roles-permisos</code> (con 's'). Las peticiones a <code>/api/roles-permisos/**</code> pasadas por el gateway retornarán 404. La ruta correcta en la gateway debería ser <code>/api/roles-permisos/**</code>.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Track C -->
+    <div class="track-title" id="track-c">Track C — DTO Symmetry (productor / consumidor)</div>
+    <table class="finding-table">
+      <thead>
+        <tr>
+          <th>Severidad</th><th>Servicio</th><th>Archivo</th><th>Hallazgo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge badge-HIGH">HIGH</span></td>
+          <td class="fservice">ms-reportes</td>
+          <td class="ffile">dto/CobroResponseDTO.java</td>
+          <td class="fissue">El campo local se llama <code>fechaHoraCobro</code> (tipo <code>LocalDateTime</code>), pero ms-pagos serializa el campo como <code>fechaCobro</code> (tipo <code>String</code>). La deserialización Feign fallará en runtime al llamar a <code>GET /api/cobros/cliente/{id}</code> — Jackson no podrá mapear el campo por nombre ni por tipo.</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-MED">MED</span></td>
+          <td class="fservice">ms-pagos</td>
+          <td class="ffile">dto/CobroResponseDTO.java</td>
+          <td class="fissue">El campo <code>fechaCobro</code> está tipado como <code>String</code> y asignado con <code>.toString()</code> en el mapper. Pierde información de tipo; debería ser <code>LocalDateTime</code> con serialización via <code>@JsonFormat</code>. Este cambio en conjunto con el fix del DTO de ms-reportes.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Track D -->
+    <div class="track-title" id="track-d">Track D — GlobalExceptionHandler</div>
+    <table class="finding-table">
+      <thead>
+        <tr>
+          <th>Severidad</th><th>Servicio</th><th>Archivo</th><th>Hallazgo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge badge-HIGH">HIGH</span></td>
+          <td class="fservice">ms-pagos</td>
+          <td class="ffile">exception/GlobalExceptionHandler.java</td>
+          <td class="fissue">El cuerpo de respuesta es inconsistente con el patrón del proyecto: <code>ResourceNotFoundException</code> retorna solo <code>{error}</code>, <code>BusinessException</code> retorna solo <code>{error}</code>, <code>MethodArgumentNotValidException</code> retorna solo el mapa de campos. Ninguno incluye <code>timestamp</code> ni <code>mensaje</code>. El patrón estándar del proyecto (definido en CLAUDE.md) requiere <code>error + mensaje + timestamp</code> en todas las respuestas.</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-MED">MED</span></td>
+          <td class="fservice">user-service</td>
+          <td class="ffile">exception/GlobalExceptionHandler.java</td>
+          <td class="fissue">El campo <code>timestamp</code> está ausente en la mayoría de respuestas de error. El handler retorna <code>Map&lt;String,String&gt;</code> en vez de <code>Map&lt;String,Object&gt;</code> (timestamp requiere Object para guardar el valor de <code>LocalDateTime</code>).</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-MED">MED</span></td>
+          <td class="fservice">security-service</td>
+          <td class="ffile">exception/GlobalExceptionHandler.java</td>
+          <td class="fissue">El campo <code>timestamp</code> está ausente en todas las respuestas de error. Mismo problema que user-service: retorna <code>Map&lt;String,String&gt;</code>.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Track E -->
+    <div class="track-title" id="track-e">Track E — application.properties</div>
+    <table class="finding-table">
+      <thead>
+        <tr>
+          <th>Severidad</th><th>Servicio</th><th>Archivo</th><th>Hallazgo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge badge-MED">MED</span></td>
+          <td class="fservice">ms-tarifas</td>
+          <td class="ffile">application.properties</td>
+          <td class="fissue"><code>ddl-auto=update</code> — debería ser <code>validate</code> para producción. Además, la URL del datasource no incluye <code>?useSSL=false&amp;serverTimezone=UTC</code>.</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-MED">MED</span></td>
+          <td class="fservice">user-service</td>
+          <td class="ffile">application.properties</td>
+          <td class="fissue"><code>ddl-auto=update</code> — debería ser <code>validate</code>.</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-MED">MED</span></td>
+          <td class="fservice">ms-vehiculos</td>
+          <td class="ffile">application.properties</td>
+          <td class="fissue"><code>ddl-auto=update</code> — debería ser <code>validate</code>.</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-MED">MED</span></td>
+          <td class="fservice">ms-espacios</td>
+          <td class="ffile">application.properties</td>
+          <td class="fissue"><code>ddl-auto=update</code> — debería ser <code>validate</code>.</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-MED">MED</span></td>
+          <td class="fservice">ms-reservas</td>
+          <td class="ffile">application.properties</td>
+          <td class="fissue"><code>ddl-auto=update</code> — debería ser <code>validate</code>.</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-LOW">LOW</span></td>
+          <td class="fservice">security-service</td>
+          <td class="ffile">application.properties</td>
+          <td class="fissue">La URL de Eureka no tiene trailing slash: <code>http://localhost:8761/eureka</code>. La plantilla canónica del proyecto usa <code>.../eureka/</code>. Puede causar problemas de registro según la versión de Spring Cloud.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Track G -->
+    <div class="track-title" id="track-g">Track G — Soft Delete</div>
+    <table class="finding-table">
+      <thead>
+        <tr>
+          <th>Severidad</th><th>Servicio</th><th>Archivo</th><th>Hallazgo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge badge-MED">MED</span></td>
+          <td class="fservice">ms-espacios</td>
+          <td class="ffile">service/EspacioService.java</td>
+          <td class="fissue">El método <code>delete()</code> llama a <code>repository.deleteById(id)</code> — hard delete. El patrón de soft delete del proyecto (usado en ms-vehiculos y user-service) requiere marcar <code>activo=false</code> en lugar de eliminar la fila. Un espacio eliminado hard podría romper referencias en ms-reservas y ms-accesos.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Track H -->
+    <div class="track-title" id="track-h">Track H — Security</div>
+    <div class="warn-box">⚠ Todos los hallazgos de este track son HIGH. La ausencia de validación JWT en la gateway y en los servicios expone todos los endpoints sin autenticación.</div>
+    <table class="finding-table" style="margin-top:0.75rem">
+      <thead>
+        <tr>
+          <th>Severidad</th><th>Servicio</th><th>Archivo</th><th>Hallazgo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge badge-HIGH">HIGH</span></td>
+          <td class="fservice">api-gateway</td>
+          <td class="ffile">security/JwtAuthFilter.java</td>
+          <td class="fissue"><code>JwtAuthFilter</code> es un <strong>stub vacío</strong> — no extrae, valida ni reenvía tokens JWT. No hay autenticación aplicada a nivel de gateway. Cualquier petición sin token pasa al servicio destino.</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-HIGH">HIGH</span></td>
+          <td class="fservice">user-service</td>
+          <td class="ffile">SecurityConfig.java</td>
+          <td class="fissue">Archivo <code>SecurityConfig.java</code> ausente — todos los endpoints del servicio son públicamente accesibles sin JWT.</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-HIGH">HIGH</span></td>
+          <td class="fservice">ms-vehiculos</td>
+          <td class="ffile">SecurityConfig.java</td>
+          <td class="fissue">Archivo <code>SecurityConfig.java</code> ausente — endpoints sin protección JWT.</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-HIGH">HIGH</span></td>
+          <td class="fservice">ms-espacios</td>
+          <td class="ffile">SecurityConfig.java</td>
+          <td class="fissue">Archivo <code>SecurityConfig.java</code> ausente — endpoints sin protección JWT.</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-HIGH">HIGH</span></td>
+          <td class="fservice">ms-reservas</td>
+          <td class="ffile">SecurityConfig.java</td>
+          <td class="fissue">Archivo <code>SecurityConfig.java</code> ausente — endpoints sin protección JWT.</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-HIGH">HIGH</span></td>
+          <td class="fservice">security-service</td>
+          <td class="ffile">SecurityConfig.java</td>
+          <td class="fissue">Archivo <code>SecurityConfig.java</code> ausente — endpoints sin protección JWT.</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="note-box"><strong>Nota:</strong> auth-service sí tiene <code>SecurityConfig.java</code> completo con BCrypt + JWT. Los otros servicios deben validar el token generado por auth-service usando <code>JwtUtil</code> compartido y un <code>JwtAuthFilter</code> equivalente.</div>
+
+    <!-- Track I -->
+    <div class="track-title" id="track-i">Track I — Business Logic / Code Quality</div>
+    <table class="finding-table">
+      <thead>
+        <tr>
+          <th>Severidad</th><th>Servicio</th><th>Archivo</th><th>Hallazgo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge badge-MED">MED</span></td>
+          <td class="fservice">ms-accesos</td>
+          <td class="ffile">service/AccesoService.java</td>
+          <td class="fissue">Línea ~37: <code>if (reserva == null)</code> es dead code — Feign lanza <code>FeignException</code> ante un 404, nunca retorna null. La verificación de null nunca se ejecuta en producción y da falsa sensación de seguridad.</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-MED">MED</span></td>
+          <td class="fservice">ms-reservas</td>
+          <td class="ffile">service/ReservaService.java</td>
+          <td class="fissue">Líneas 63–71 aprox.: null checks en las tres respuestas Feign (<code>espacio == null</code>, <code>vehiculo == null</code>, <code>cliente == null</code>) son dead code por la misma razón.</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-LOW">LOW</span></td>
+          <td class="fservice">ms-vehiculos</td>
+          <td class="ffile">service/VehiculoService.java</td>
+          <td class="fissue"><code>listarTodos()</code> lanza <code>NotFoundException</code> cuando la lista está vacía. El comportamiento correcto para una colección vacía es retornar <code>[]</code> (HTTP 200), no 404.</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-LOW">LOW</span></td>
+          <td class="fservice">ms-espacios</td>
+          <td class="ffile">service/EspacioService.java</td>
+          <td class="fissue"><code>findAll()</code> y <code>findDisponibles()</code> lanzan <code>NotFoundException</code> cuando la lista está vacía. Mismo problema que ms-vehiculos.</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-LOW">LOW</span></td>
+          <td class="fservice">ms-reportes</td>
+          <td class="ffile">client/VehiculoClient.java</td>
+          <td class="fissue"><code>VehiculoClient</code> está definido pero nunca es inyectado ni llamado en <code>ReporteService</code>. Dead code — el cliente puede eliminarse o implementarse.</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-LOW">LOW</span></td>
+          <td class="fservice">ms-pagos</td>
+          <td class="ffile">service/PagoService.java</td>
+          <td class="fissue">La falla de <code>horarioTarifaClient.getVigente()</code> es capturada silenciosamente con fallback a 1.0 (el servicio sí loguea WARN). El comportamiento es aceptable pero podría ocultar errores de configuración de horarios.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Track J -->
+    <div class="track-title" id="track-j">Track J — Hallazgos Cerrados (Batch 1 y 2)</div>
+    <div class="note-box" style="margin-bottom:0.75rem"><strong>Estado:</strong> Los siguientes hallazgos fueron detectados en iteraciones anteriores y corregidos en el commit <code>88bd840</code>.</div>
+    <table class="finding-table">
+      <thead>
+        <tr>
+          <th>Estado</th><th>Track Original</th><th>Servicio(s)</th><th>Corrección aplicada</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge badge-FIXED">FIXED</span></td>
+          <td class="ffile">Track B — Feign path</td>
+          <td class="fservice">ms-pagos</td>
+          <td class="fissue"><code>AccesoClient</code> tenía path incorrecto <code>/api/reserva/{idReserva}</code> → corregido a <code>/api/accesos/{id}</code>.</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-FIXED">FIXED</span></td>
+          <td class="ffile">Track B — Feign name</td>
+          <td class="fservice">ms-reportes</td>
+          <td class="fissue"><code>CobroClient</code> usaba <code>name="ms-cobros"</code> (inexistente) → corregido a <code>"ms-pagos"</code>.</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-FIXED">FIXED</span></td>
+          <td class="ffile">Track D — @RestControllerAdvice</td>
+          <td class="fservice">ms-tarifas, ms-espacios</td>
+          <td class="fissue">Import incorrecto (<code>ControllerAdvice</code> en vez de <code>RestControllerAdvice</code>) causaba error de compilación → corregido. Respuestas estandarizadas con <code>error + mensaje + timestamp</code>.</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-FIXED">FIXED</span></td>
+          <td class="ffile">Track F — HTTP status</td>
+          <td class="fservice">ms-vehiculos, ms-accesos</td>
+          <td class="fissue">Controllers de creación retornaban 200 en vez de 201 → corregidos a <code>ResponseEntity.status(201).body(...)</code>.</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-FIXED">FIXED</span></td>
+          <td class="ffile">Track G — ddl-auto</td>
+          <td class="fservice">ms-pagos, security-service</td>
+          <td class="fissue"><code>ddl-auto=update</code> → cambiado a <code>validate</code>.</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-FIXED">FIXED</span></td>
+          <td class="ffile">Track G — gateway route</td>
+          <td class="fservice">api-gateway</td>
+          <td class="fissue">Rutas faltantes para ms-espacios (<code>/api/tipo-espacio/**</code>) y ms-tarifas (<code>/api/horarios-tarifa/**</code>) → añadidas.</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-FIXED">FIXED</span></td>
+          <td class="ffile">Track K — Billing formula</td>
+          <td class="fservice">ms-pagos</td>
+          <td class="fissue">Fórmula de cobro incompleta (solo usaba precioBaseHora × minutos). Añadidos <code>factorTipoVehiculo</code>, <code>factorTipoEspacio</code> y <code>multiplicadorHorario</code> junto con 4 nuevos clientes Feign y 5 DTOs nuevos.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="footer">Audit Report Batch 3 · Estacionamiento Inteligente · DUOC UC · 2026-05-14</div>
+  </main>
+</div>
+</body>
+</html>

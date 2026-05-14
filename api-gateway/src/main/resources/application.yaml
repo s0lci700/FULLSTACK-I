@@ -49,7 +49,7 @@ spring:
         - id: security-service
           uri: lb://security-service
           predicates:
-            - Path=/api/permisos/**,/api/rol-permisos/**
+            - Path=/api/permisos/**,/api/roles-permisos/**
 
 eureka:
   client:
