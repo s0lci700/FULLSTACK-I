@@ -17,6 +17,7 @@ import estacionamientos.ms_reservas.exception.NotFoundException;
 import estacionamientos.ms_reservas.model.EstadoEnums;
 import estacionamientos.ms_reservas.model.Reserva;
 import estacionamientos.ms_reservas.repository.ReservaRepository;
+import feign.FeignException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,37 +39,68 @@ public class ReservaService {
 
     public List<ReservaResponseDTO> findAll() {
         return reservasRepository.findAll().stream()
-            .map(this::toDTO)
-            .toList();
+                .map(this::toDTO)
+                .toList();
     }
 
     public ReservaResponseDTO findById(Long id) {
         Reserva reserva = reservasRepository
-            .findById(id)
-            .orElseThrow(() -> new NotFoundException("Reserva no encontrada"));
+                .findById(id)
+                .orElseThrow(() -> new NotFoundException("Reserva no encontrada"));
         return toDTO(reserva);
     }
 
     public List<ReservaResponseDTO> findByIdCliente(Long idCliente) {
         return reservasRepository.findByIdCliente(idCliente).stream()
-            .map(this::toDTO)
-            .toList();
+                .map(this::toDTO)
+                .toList();
     }
 
     @Transactional
     public ReservaResponseDTO create(ReservaCreateDTO reserva) {
-        ClienteResponseDTO cliente = clienteClient.findById(reserva.getIdCliente());
-        VehiculoResponseDTO vehiculo = vehiculoClient.findById(reserva.getIdVehiculo());
-        EspacioResponseDTO espacio = espacioClient.findById(reserva.getIdEspacio());
-        if (cliente == null || !cliente.getActivo()) {
+
+        // clienteClient
+        ClienteResponseDTO cliente;
+        try {
+            cliente = clienteClient.findById(reserva.getIdCliente());
+        } catch (FeignException.NotFound e) {
+            throw new NotFoundException("Cliente no encontrado con id: " + reserva.getIdCliente());
+        } catch (FeignException e) {
+            throw new NotFoundException("Error al consultar el cliente: " + e.getMessage());
+        }
+
+        if (!cliente.getActivo()) {
             throw new NotFoundException("Cliente no encontrado o inactivo");
         }
-        if (vehiculo == null || !vehiculo.getActivo()) {
+
+        // vehiculoClient
+        VehiculoResponseDTO vehiculo;
+        try {
+            vehiculo = vehiculoClient.findById(reserva.getIdVehiculo());
+        } catch (FeignException.NotFound e) {
+            throw new NotFoundException("Vehículo no encontrado con id: " + reserva.getIdVehiculo());
+        } catch (FeignException e) {
+            throw new NotFoundException("Error al consultar el vehículo: " + e.getMessage());
+        }
+
+        if (!vehiculo.getActivo()) {
             throw new NotFoundException("Vehículo no encontrado o inactivo");
         }
-        if (espacio == null || !espacio.getActivo() || !espacio.getDisponible()) {
-            throw new NotFoundException("Espacio no encontrado o inactivo");
+
+        // espacioClient
+        EspacioResponseDTO espacio;
+        try {
+            espacio = espacioClient.findById(reserva.getIdEspacio());
+        } catch (FeignException.NotFound e) {
+            throw new NotFoundException("Espacio no encontrado con id: " + reserva.getIdEspacio());
+        } catch (FeignException e) {
+            throw new NotFoundException("Error al consultar el espacio: " + e.getMessage());
         }
+
+        if (!espacio.getActivo() || !espacio.getDisponible()) {
+            throw new NotFoundException("Espacio no encontrado, inactivo o no disponible");
+        }
+
         Reserva nReserva = new Reserva();
         nReserva.setIdCliente(reserva.getIdCliente());
         nReserva.setIdVehiculo(reserva.getIdVehiculo());
@@ -76,14 +108,15 @@ public class ReservaService {
         nReserva.setFechaInicio(reserva.getFechaInicio());
         nReserva.setFechaFin(reserva.getFechaFin());
         nReserva.setEstado(EstadoEnums.PENDIENTE);
+
         return toDTO(reservasRepository.save(nReserva));
     }
-    
+
     @Transactional
     public ReservaResponseDTO cancelar(Long id) {
         Reserva reserva = reservasRepository
-            .findById(id)
-            .orElseThrow(() -> new NotFoundException("Reserva no encontrada"));
+                .findById(id)
+                .orElseThrow(() -> new NotFoundException("Reserva no encontrada"));
         reserva.setEstado(EstadoEnums.CANCELADA);
         return toDTO(reservasRepository.save(reserva));
     }
@@ -91,8 +124,8 @@ public class ReservaService {
     @Transactional
     public ReservaResponseDTO confirmar(Long id) {
         Reserva reserva = reservasRepository
-        .findById(id)
-        .orElseThrow(() -> new NotFoundException("Reserva no encontrada"));
+                .findById(id)
+                .orElseThrow(() -> new NotFoundException("Reserva no encontrada"));
         if (reserva.getEstado() != EstadoEnums.CONFIRMADA) {
             reserva.setEstado(EstadoEnums.CONFIRMADA);
         }
@@ -102,8 +135,8 @@ public class ReservaService {
     @Transactional
     public ReservaResponseDTO finalizar(Long id) {
         Reserva reserva = reservasRepository
-        .findById(id)
-        .orElseThrow(() -> new NotFoundException("Reserva no encontrada"));
+                .findById(id)
+                .orElseThrow(() -> new NotFoundException("Reserva no encontrada"));
         if (reserva.getEstado() != EstadoEnums.FINALIZADA) {
             reserva.setEstado(EstadoEnums.FINALIZADA);
         }
@@ -112,14 +145,13 @@ public class ReservaService {
 
     private ReservaResponseDTO toDTO(Reserva reserva) {
         return new ReservaResponseDTO(
-            reserva.getId(),
-            reserva.getIdCliente(),
-            reserva.getIdVehiculo(),
-            reserva.getIdEspacio(),
-            reserva.getFechaInicio(),
-            reserva.getFechaFin(),
-            reserva.getEstado(),
-            reserva.getFechaCreacion()
-        );
+                reserva.getId(),
+                reserva.getIdCliente(),
+                reserva.getIdVehiculo(),
+                reserva.getIdEspacio(),
+                reserva.getFechaInicio(),
+                reserva.getFechaFin(),
+                reserva.getEstado(),
+                reserva.getFechaCreacion());
     }
 }

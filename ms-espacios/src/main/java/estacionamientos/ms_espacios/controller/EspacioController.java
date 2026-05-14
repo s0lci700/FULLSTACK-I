@@ -65,7 +65,7 @@ public class EspacioController {
     // No cambia la disponibilidad, eso se hace con el PATCH
     @PutMapping("/{id}")
     public ResponseEntity<EspacioResponseDTO> update(@PathVariable Long id,
-                                                      @Valid @RequestBody EspacioUpdateDTO dto) {
+    @Valid @RequestBody EspacioUpdateDTO dto) {
         log.info("PUT /api/espacios/{}", id);
         return ResponseEntity.ok(espaciosService.update(id, dto));
     }

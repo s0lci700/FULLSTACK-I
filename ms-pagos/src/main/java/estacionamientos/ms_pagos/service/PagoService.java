@@ -30,6 +30,7 @@ import estacionamientos.ms_pagos.model.Cobro;
 import estacionamientos.ms_pagos.model.MetodoPago;
 import estacionamientos.ms_pagos.repository.CobroRepository;
 import estacionamientos.ms_pagos.repository.MetodoPagoRepository;
+import feign.FeignException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,7 +40,7 @@ public class PagoService {
 
     @Autowired
     CobroRepository cobroRepository;
-    
+
     @Autowired
     MetodoPagoRepository metodoPagoRepository;
 
@@ -65,15 +66,15 @@ public class PagoService {
     ClienteClient clienteClient;
 
     // public PagoService(CobroRepository cobroRepository,
-    //         MetodoPagoRepository metodoPagoRepository,
-    //         AccesoClient accesoClient,
-    //         TarifaClient tarifaClient,
-    //         ClienteClient clienteClient) {
-    //     this.cobroRepository = cobroRepository;
-    //     this.metodoPagoRepository = metodoPagoRepository;
-    //     this.accesoClient = accesoClient;
-    //     this.tarifaClient = tarifaClient;
-    //     this.clienteClient = clienteClient;
+    // MetodoPagoRepository metodoPagoRepository,
+    // AccesoClient accesoClient,
+    // TarifaClient tarifaClient,
+    // ClienteClient clienteClient) {
+    // this.cobroRepository = cobroRepository;
+    // this.metodoPagoRepository = metodoPagoRepository;
+    // this.accesoClient = accesoClient;
+    // this.tarifaClient = tarifaClient;
+    // this.clienteClient = clienteClient;
     // }
 
     // Genera un cobro consultando acceso, tarifa y cliente via Feign
@@ -88,7 +89,8 @@ public class PagoService {
 
         // Obtener datos remotos via Feign
         AccesoResponseDTO acceso = accesoClient.getById(dto.getIdAcceso());
-        log.info("Acceso obtenido: idVehiculo={}, idEspacio={}, minutos={}", acceso.getIdVehiculo(), acceso.getIdEspacio(), acceso.getMinutos());
+        log.info("Acceso obtenido: idVehiculo={}, idEspacio={}, minutos={}", acceso.getIdVehiculo(),
+                acceso.getIdEspacio(), acceso.getMinutos());
 
         TarifaResponseDTO tarifa = tarifaClient.getTarifaVigente();
         log.info("Tarifa vigente: precioBaseHora={}", tarifa.getPrecioBaseHora());
@@ -110,17 +112,26 @@ public class PagoService {
         }
 
         // Obtener multiplicador horario (1.0 si no hay horario vigente configurado)
+        // Obtener multiplicador horario (1.0 si no hay horario vigente configurado)
         double multiplicadorHorario = 1.0;
         try {
             HorarioTarifaResponseDTO horario = horarioTarifaClient.getVigente();
-            if (horario.getMultiplicador() != null) {
+            if (horario != null && horario.getMultiplicador() != null) {
                 multiplicadorHorario = horario.getMultiplicador();
-                log.info("Multiplicador horario: {}", multiplicadorHorario);
+                log.info("Multiplicador horario aplicado: {}", multiplicadorHorario);
+            } else {
+                log.warn("Horario vigente sin multiplicador definido, usando 1.0");
             }
-        } catch (Exception e) {
-            log.warn("No se encontro horario vigente, usando multiplicador 1.0: {}", e.getMessage());
+        } catch (FeignException.NotFound e) {
+            // ✅ Esperado — no hay horario configurado para esta hora
+            log.warn("No hay horario vigente configurado, usando multiplicador 1.0");
+        } catch (FeignException e) {
+            // ✅ Error real de comunicación — loguear con más detalle
+            log.error("Error de comunicacion con ms-tarifas (status {}): {}",
+                    e.status(), e.getMessage());
+            // Fallback a 1.0 pero visible en logs como ERROR, no WARN
         }
-
+        
         ClienteResponseDTO cliente = clienteClient.getById(dto.getIdCliente());
         log.info("Cliente obtenido: id={}", cliente.getId());
 
@@ -143,10 +154,12 @@ public class PagoService {
             log.info("Descuento tipo cliente aplicado: {}%", descuentoCliente);
         }
 
-        // desc_suscripcion pendiente — requiere endpoint en user-service para ClienteSuscripcion
+        // desc_suscripcion pendiente — requiere endpoint en user-service para
+        // ClienteSuscripcion
         double descuentoSuscripcion = 0.0;
 
-        // Fórmula completa: monto_base = precio_base_hora × multiplicador_horario × factor_tipo_vehiculo × factor_tipo_espacio × (minutos/60)
+        // Fórmula completa: monto_base = precio_base_hora × multiplicador_horario ×
+        // factor_tipo_vehiculo × factor_tipo_espacio × (minutos/60)
         long minutos = acceso.getMinutos() != null ? acceso.getMinutos() : 0L;
         double montoBase = tarifa.getPrecioBaseHora()
                 * multiplicadorHorario
@@ -158,7 +171,8 @@ public class PagoService {
                 * (1 - descuentoSuscripcion / 100)
                 * (1 - descuentoBanco / 100);
 
-        log.info("Calculo: minutos={}, factorVehiculo={}, factorEspacio={}, multiplicadorHorario={}, montoBase={}, montoFinal={}",
+        log.info(
+                "Calculo: minutos={}, factorVehiculo={}, factorEspacio={}, multiplicadorHorario={}, montoBase={}, montoFinal={}",
                 minutos, factorTipoVehiculo, factorTipoEspacio, multiplicadorHorario, montoBase, montoFinal);
 
         // Guardar cobro
