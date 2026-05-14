@@ -55,7 +55,7 @@ public class VehiculoService {
     }
 
     @Transactional
-    public void crear(VehiculoCreateDTO dto) {
+    public VehiculoResponseDTO crear(VehiculoCreateDTO dto) {
         if (vehiculoRepository.findByPatente(dto.patente).isPresent()) {
             throw new ConflictException("Ya se encuentra la patente");
         }
@@ -70,12 +70,11 @@ public class VehiculoService {
         vehiculo.setAnio(dto.getAnio());
         vehiculo.setIdTipoVehiculo(tipoVehiculo);
         vehiculo.setIdClienteRef(dto.getIdClienteRef());
-        vehiculoRepository.save(vehiculo);
-        
+        return toVehiculoDTO(vehiculoRepository.save(vehiculo));
     }
 
     @Transactional
-    public void actualizar(Long id, VehiculoUpdateDTO dto) {
+    public VehiculoResponseDTO actualizar(Long id, VehiculoUpdateDTO dto) {
         Vehiculo vehiculo = vehiculoRepository
             .findById(id)
             .orElseThrow(() -> new NotFoundException("Vehiculo no encontrado"));
@@ -88,6 +87,7 @@ public class VehiculoService {
             .orElseThrow(() -> new NotFoundException("Tipo de vehiculo no encontrado"));
         vehiculo.setIdTipoVehiculo(tipoVehiculo);
         vehiculoRepository.save(vehiculo);
+        return toVehiculoDTO(vehiculo);
     }
 
     @Transactional

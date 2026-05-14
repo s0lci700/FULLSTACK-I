@@ -28,11 +28,19 @@ All services statically appear to compile without missing dependencies, missing 
 - **Status:** Clean. The `@Transactional` annotations appear well-placed for writes, and `readOnly=true` annotations are present on read-only services like `TipoClienteService` and `SuscripcionService`.
 
 ## Track F — Controller HTTP status codes
-| SERVICE | FILE | ISSUE | SEVERITY |
-|---------|------|-------|----------|
-| ms-vehiculos | TipoVehiculoController.java | POST returns 200 instead of 201 | MED |
-| ms-vehiculos | VehiculoController.java | POST returns 200 instead of 201; DELETE returns 200 instead of 204 | MED |
-| ms-accesos | AccesoController.java | POST `/entrada` returns 200 instead of 201 | MED |
+**Status: CLOSED** ✓ All items resolved.
+
+| SERVICE | FILE | ISSUE | SEVERITY | STATUS |
+|---------|------|-------|----------|--------|
+| ms-vehiculos | TipoVehiculoController.java | POST returns 200 instead of 201 | MED | FIXED |
+| ms-vehiculos | VehiculoController.java | POST returns 200 instead of 201; DELETE returns 200 instead of 204 | MED | FIXED |
+| ms-accesos | AccesoController.java | POST `/entrada` returns 200 instead of 201 | MED | FIXED |
+
+Additional fixes applied to ms-vehiculos:
+- `VehiculoService.crear` now returns `VehiculoResponseDTO` (was `void`) — POST response body includes generated ID
+- `VehiculoService.actualizar` now returns `VehiculoResponseDTO` — PUT response body includes updated resource
+- Removed unused `HttpStatusCode` import from `VehiculoController`
+- Removed stale TODO comment from `VehiculoController` (all endpoints were already implemented)
 
 ## Track G — application.properties correctness
 | SERVICE | FILE | ISSUE | SEVERITY |

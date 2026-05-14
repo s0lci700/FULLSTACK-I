@@ -10,6 +10,6 @@ import estacionamientos.ms_pagos.dto.AccesoResponseDTO;
 @FeignClient(name = "ms-accesos")
 public interface AccesoClient {
 
-    @GetMapping("/api/accesos/{id}")
+    @GetMapping("/api/reserva/{idReserva}")
     AccesoResponseDTO getById(@PathVariable Long id);
 }

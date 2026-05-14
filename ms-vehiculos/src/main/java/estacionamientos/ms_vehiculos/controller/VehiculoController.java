@@ -3,6 +3,7 @@ package estacionamientos.ms_vehiculos.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,24 +47,22 @@ public class VehiculoController {
     }
 
     @PostMapping
-    public ResponseEntity<Boolean> crear(@RequestBody VehiculoCreateDTO dto) {
+    public ResponseEntity<VehiculoResponseDTO> crear(@RequestBody VehiculoCreateDTO dto) {
         log.info("POST /api/vehiculos");
-        vehiculoService.crear(dto);
-        return ResponseEntity.ok(true);
+        return ResponseEntity.status(HttpStatus.CREATED).body(vehiculoService.crear(dto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Boolean> actualizar(@PathVariable Long id, @RequestBody VehiculoUpdateDTO dto) {
+    public ResponseEntity<VehiculoResponseDTO> actualizar(@PathVariable Long id, @RequestBody VehiculoUpdateDTO dto) {
         log.info("PUT /api/vehiculos/{}", id);
-        vehiculoService.actualizar(id, dto);
-        return ResponseEntity.ok(true);
+        return ResponseEntity.ok(vehiculoService.actualizar(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> eliminar(@PathVariable Long id) {
+    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         log.info("DELETE /api/vehiculos/{}", id);
         vehiculoService.eliminar(id);
-        return ResponseEntity.ok(true);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/cliente/{idClienteRef}")
@@ -72,13 +71,5 @@ public class VehiculoController {
         return ResponseEntity.ok(vehiculoService.listarPorCliente(idClienteRef));
     }
 
-    // TODO: Agregar los endpoints CRUD completos:
-    // GET    /api/vehiculos              → listar todos
-    // GET    /api/vehiculos/{id}         → obtener por id
-    // POST   /api/vehiculos              → crear (recibe VehiculoCreateDTO)
-    // PUT    /api/vehiculos/{id}         → actualizar (recibe VehiculoUpdateDTO)
-    // DELETE /api/vehiculos/{id}         → eliminar o desactivar
-    // GET    /api/vehiculos/cliente/{id} → listar por idClienteRef
-    // GET    /api/tipo-vehiculo          → listar todos los tipos (controlador separado)
 
 }

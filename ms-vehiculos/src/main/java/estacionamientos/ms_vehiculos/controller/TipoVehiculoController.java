@@ -3,6 +3,7 @@ package estacionamientos.ms_vehiculos.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,7 +44,7 @@ public class TipoVehiculoController {
     @PostMapping
     public ResponseEntity<TipoVehiculo> crear(@Valid @RequestBody TipoVehiculoCreateDTO dto) {
         log.info("POST /api/tipos-vehiculo");
-        return ResponseEntity.ok(tipoVehiculoService.crear(dto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(tipoVehiculoService.crear(dto));
     }
 
     @PutMapping("/{id}")
