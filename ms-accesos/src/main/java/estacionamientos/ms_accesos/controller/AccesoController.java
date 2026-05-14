@@ -14,29 +14,34 @@ import estacionamientos.ms_accesos.dto.AccesoCreateDTO;
 import estacionamientos.ms_accesos.dto.AccesoResponseDTO;
 import estacionamientos.ms_accesos.service.AccesoService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/accesos")
 public class AccesoController {
 
     @Autowired
     private AccesoService accesoService;
-    
+
     @PostMapping("/entrada")
     public ResponseEntity<AccesoResponseDTO> registrarEntrada(
         @Valid @RequestBody AccesoCreateDTO dto) {
+            log.info("POST /api/accesos/entrada - idReserva={}", dto.getIdReserva());
             return ResponseEntity.ok(accesoService.registrarEntrada(dto));
     }
 
     @PatchMapping("/{id}/salida")
     public ResponseEntity<AccesoResponseDTO> registrarSalida(
         @PathVariable Long id) {
+        log.info("PATCH /api/accesos/{}/salida", id);
         return ResponseEntity.ok(accesoService.registrarSalida(id));
     }
 
     @GetMapping("/reserva/{idReserva}")
     public ResponseEntity<AccesoResponseDTO> getByReserva(
         @PathVariable Long idReserva) {
+        log.info("GET /api/accesos/reserva/{}", idReserva);
         return ResponseEntity.ok(accesoService.findByReserva(idReserva));
     }
 

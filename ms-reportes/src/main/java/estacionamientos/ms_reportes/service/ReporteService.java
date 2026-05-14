@@ -12,7 +12,9 @@ import estacionamientos.ms_reportes.dto.AccesoResponseDTO;
 import estacionamientos.ms_reportes.dto.CobroResponseDTO;
 import estacionamientos.ms_reportes.dto.EspacioResponseDTO;
 import estacionamientos.ms_reportes.dto.OcupacionReporteDTO;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class ReporteService {
 
@@ -26,6 +28,7 @@ public class ReporteService {
     private CobroClient cobroClient;
 
     public OcupacionReporteDTO getOcupacion() {
+        log.info("Consultando ocupación de espacios");
         List<EspacioResponseDTO> espacios = espacioClient.findAll();
         int totalEspacios = espacios.size();
         int disponibles = (int) espacios.stream()
@@ -37,10 +40,12 @@ public class ReporteService {
     }
 
     public AccesoResponseDTO getAccesoByReserva(Long idReserva) {
+        log.info("Consultando acceso para reserva id={}", idReserva);
         return accesoClient.findByReserva(idReserva);
     }
 
     public List<CobroResponseDTO> getCobrosByCliente(Long idCliente) {
+        log.info("Consultando cobros para cliente id={}", idCliente);
         return cobroClient.findByCliente(idCliente);
     }
 }

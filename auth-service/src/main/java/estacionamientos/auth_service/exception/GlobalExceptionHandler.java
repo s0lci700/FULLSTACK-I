@@ -11,6 +11,9 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -54,36 +57,28 @@ public class GlobalExceptionHandler {
     // 🔹 Manejo genérico de cualquier otra excepción
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> manejarErrorGeneral(Exception ex) {
-
-        Map<String, Object> response = construirRespuesta(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                "Ocurrió un error inesperado");
-
-        // Opcional (solo en desarrollo)
+        log.error("Error inesperado: {}", ex.getMessage(), ex);
+        Map<String, Object> response = construirRespuesta(HttpStatus.INTERNAL_SERVER_ERROR, "Ocurrió un error inesperado");
         response.put("detalle", ex.getMessage());
-
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(InvalidCredentialsException.class)
     public ResponseEntity<Map<String, Object>> manejarCredenciales(InvalidCredentialsException ex) {
-        return new ResponseEntity<>(
-                construirRespuesta(HttpStatus.UNAUTHORIZED, ex.getMessage()),
-                HttpStatus.UNAUTHORIZED);
+        log.warn("InvalidCredentialsException: {}", ex.getMessage());
+        return new ResponseEntity<>(construirRespuesta(HttpStatus.UNAUTHORIZED, ex.getMessage()), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<Map<String, Object>> manejarConflicto(ConflictException ex) {
-        return new ResponseEntity<>(
-                construirRespuesta(HttpStatus.CONFLICT, ex.getMessage()),
-                HttpStatus.CONFLICT);
+        log.warn("ConflictException: {}", ex.getMessage());
+        return new ResponseEntity<>(construirRespuesta(HttpStatus.CONFLICT, ex.getMessage()), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<Map<String, Object>> manejarNoEncontrado(NotFoundException ex) {
-        return new ResponseEntity<>(
-                construirRespuesta(HttpStatus.NOT_FOUND, ex.getMessage()),
-                HttpStatus.NOT_FOUND);
+        log.warn("NotFoundException: {}", ex.getMessage());
+        return new ResponseEntity<>(construirRespuesta(HttpStatus.NOT_FOUND, ex.getMessage()), HttpStatus.NOT_FOUND);
     }
 
 }

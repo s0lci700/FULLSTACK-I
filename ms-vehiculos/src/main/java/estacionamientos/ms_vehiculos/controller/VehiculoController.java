@@ -17,7 +17,9 @@ import estacionamientos.ms_vehiculos.dto.VehiculoCreateDTO;
 import estacionamientos.ms_vehiculos.dto.VehiculoResponseDTO;
 import estacionamientos.ms_vehiculos.dto.VehiculoUpdateDTO;
 import estacionamientos.ms_vehiculos.service.VehiculoService;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/vehiculos")
 public class VehiculoController {
@@ -26,43 +28,47 @@ public class VehiculoController {
     private VehiculoService vehiculoService;
 
     @GetMapping("/validar/{patente}")
-    public ResponseEntity<Boolean> validar(
-            @PathVariable String patente) {
-
+    public ResponseEntity<Boolean> validar(@PathVariable String patente) {
+        log.info("GET /api/vehiculos/validar/{}", patente);
         return ResponseEntity.ok(vehiculoService.exists(patente));
     }
 
     @GetMapping
     public ResponseEntity<List<VehiculoResponseDTO>> listar() {
+        log.info("GET /api/vehiculos");
         return ResponseEntity.ok(vehiculoService.listarTodos());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<VehiculoResponseDTO> obtenerPorId(@PathVariable Long id) {
+        log.info("GET /api/vehiculos/{}", id);
         return ResponseEntity.ok(vehiculoService.obtenerPorId(id));
     }
 
     @PostMapping
     public ResponseEntity<Boolean> crear(@RequestBody VehiculoCreateDTO dto) {
-            vehiculoService.crear(dto);
-            return ResponseEntity.ok(true);
+        log.info("POST /api/vehiculos");
+        vehiculoService.crear(dto);
+        return ResponseEntity.ok(true);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Boolean> actualizar(@PathVariable Long id, @RequestBody VehiculoUpdateDTO dto) {
-
-            vehiculoService.actualizar(id, dto);
-            return ResponseEntity.ok(true);
+        log.info("PUT /api/vehiculos/{}", id);
+        vehiculoService.actualizar(id, dto);
+        return ResponseEntity.ok(true);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> eliminar(@PathVariable Long id) {
-            vehiculoService.eliminar(id);
-            return ResponseEntity.ok(true);
+        log.info("DELETE /api/vehiculos/{}", id);
+        vehiculoService.eliminar(id);
+        return ResponseEntity.ok(true);
     }
 
     @GetMapping("/cliente/{idClienteRef}")
     public ResponseEntity<List<VehiculoResponseDTO>> listarPorCliente(@PathVariable Long idClienteRef) {
+        log.info("GET /api/vehiculos/cliente/{}", idClienteRef);
         return ResponseEntity.ok(vehiculoService.listarPorCliente(idClienteRef));
     }
 

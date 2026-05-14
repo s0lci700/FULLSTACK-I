@@ -17,44 +17,56 @@ import estacionamientos.ms_reservas.dto.ReservaCreateDTO;
 import estacionamientos.ms_reservas.dto.ReservaResponseDTO;
 import estacionamientos.ms_reservas.service.ReservaService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/reservas")
 public class ReservaController {
 
     @Autowired
     private ReservaService reservasService;
-    
+
     @GetMapping
     public ResponseEntity<List<ReservaResponseDTO>> findAll() {
+        log.info("GET /api/reservas");
         return ResponseEntity.ok(reservasService.findAll());
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<ReservaResponseDTO> findById(@PathVariable Long id) {
+        log.info("GET /api/reservas/{}", id);
         return ResponseEntity.ok(reservasService.findById(id));
     }
+
     @GetMapping("/cliente/{id}")
     public ResponseEntity<List<ReservaResponseDTO>> findByIdCliente(@PathVariable Long id) {
+        log.info("GET /api/reservas/cliente/{}", id);
         return ResponseEntity.ok(reservasService.findByIdCliente(id));
     }
+
     @PostMapping
     public ResponseEntity<ReservaResponseDTO> create(
         @Valid @RequestBody ReservaCreateDTO reserva) {
+        log.info("POST /api/reservas");
         return ResponseEntity.status(HttpStatus.CREATED).body(reservasService.create(reserva));
     }
 
     @PatchMapping("/{id}/cancelar")
     public ResponseEntity<ReservaResponseDTO> cancelar(@PathVariable Long id) {
+        log.info("PATCH /api/reservas/{}/cancelar", id);
         return ResponseEntity.ok(reservasService.cancelar(id));
     }
 
     @PatchMapping("/{id}/confirmar")
     public ResponseEntity<ReservaResponseDTO> confirmar(@PathVariable Long id) {
+        log.info("PATCH /api/reservas/{}/confirmar", id);
         return ResponseEntity.ok(reservasService.confirmar(id));
     }
 
     @PatchMapping("/{id}/finalizar")
     public ResponseEntity<ReservaResponseDTO> finalizar(@PathVariable Long id) {
+        log.info("PATCH /api/reservas/{}/finalizar", id);
         return ResponseEntity.ok(reservasService.finalizar(id));
     }
 }
