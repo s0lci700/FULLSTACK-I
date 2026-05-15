@@ -9,10 +9,9 @@ import estacionamientos.ms_tarifas.repository.TarifasRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Slf4j
@@ -61,7 +60,7 @@ public class TarifasService {
         Tarifas tarifa = new Tarifas();
         tarifa.setNombre(dto.getNombre());
         tarifa.setDescripcion(dto.getDescripcion());
-        tarifa.setPrecioBaseHora(dto.getPrecioBaseHora());
+        tarifa.setPrecioBaseHora(BigDecimal.valueOf(dto.getPrecioBaseHora()));
         tarifa.setActivo(dto.getActivo());
         Tarifas guardada = tarifasRepository.save(tarifa);
         log.info("Tarifa creada con id: {}", guardada.getId());
@@ -80,7 +79,7 @@ public class TarifasService {
         }
         tarifa.setNombre(dto.getNombre());
         tarifa.setDescripcion(dto.getDescripcion());
-        tarifa.setPrecioBaseHora(dto.getPrecioBaseHora());
+        tarifa.setPrecioBaseHora(BigDecimal.valueOf(dto.getPrecioBaseHora()));
         tarifa.setActivo(dto.getActivo());
         Tarifas actualizada = tarifasRepository.save(tarifa);
         log.info("Tarifa actualizada con id: {}", actualizada.getId());
@@ -104,7 +103,7 @@ public class TarifasService {
                 tarifa.getId(),
                 tarifa.getNombre(),
                 tarifa.getDescripcion(),
-                tarifa.getPrecioBaseHora(),
+                tarifa.getPrecioBaseHora().doubleValue(),
                 tarifa.getActivo()
         );
     }

@@ -1,5 +1,7 @@
 package estacionamientos.ms_tarifas.model;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,8 +28,8 @@ public class Tarifas {
     @Column(nullable=true)
     private String descripcion;
 
-    @Column(name= "precio_base_hora", nullable = false)
-    private Double precioBaseHora;
+    @Column(name= "precio_base_hora", nullable = false, precision = 10, scale = 2)
+    private BigDecimal precioBaseHora;
 
     @Column(nullable= false)
     private Boolean activo;

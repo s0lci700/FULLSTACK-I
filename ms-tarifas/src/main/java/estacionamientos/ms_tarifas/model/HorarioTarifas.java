@@ -1,5 +1,6 @@
 package estacionamientos.ms_tarifas.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -38,6 +39,6 @@ public class HorarioTarifas {
     @Column(name = "hora_fin", nullable = false)
     private LocalDateTime horaFin;
 
-    @Column(nullable = false)
-    private Double multiplicador;
+    @Column(nullable = false, precision = 4, scale = 2)
+    private BigDecimal multiplicador;
 }

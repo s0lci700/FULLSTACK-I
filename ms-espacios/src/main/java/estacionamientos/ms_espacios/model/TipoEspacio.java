@@ -1,5 +1,7 @@
 package estacionamientos.ms_espacios.model;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,6 +27,6 @@ public class TipoEspacio {
     @Column(nullable = true)
     private String descripcion;
 
-    @Column(name = "factor_precio",nullable = false)
-    private Double factorPrecio;    
+    @Column(name = "factor_precio", nullable = false, precision = 5, scale = 2)
+    private BigDecimal factorPrecio;    
 }

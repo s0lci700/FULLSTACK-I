@@ -51,5 +51,5 @@ public class Cliente {
     private LocalDateTime fechaRegistro;
 
     @Column(nullable = false)
-    private Boolean activo;
+    private Boolean activo = true;
 }

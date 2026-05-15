@@ -37,5 +37,5 @@ public class UserCredential {
     private Rol rol;
 
     @Column(nullable = false)
-    private Boolean activo;
+    private Boolean activo = true;
 }

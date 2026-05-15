@@ -1,5 +1,7 @@
 package estacionamientos.ms_espacios.dto;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,5 +14,5 @@ public class TipoEspacioResponseDTO {
     private Long id;
     private String nombre;
     private String descripcion;
-    private Double factorPrecio;
+    private BigDecimal factorPrecio;
 }

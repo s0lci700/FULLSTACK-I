@@ -9,10 +9,9 @@ import estacionamientos.ms_tarifas.repository.HorarioTarifasRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -67,7 +66,7 @@ public class HorarioTarifasService {
         horario.setDiaTipo(dto.getDiaTipo());
         horario.setHoraInicio(dto.getHoraInicio());
         horario.setHoraFin(dto.getHoraFin());
-        horario.setMultiplicador(dto.getMultiplicador());
+        horario.setMultiplicador(BigDecimal.valueOf(dto.getMultiplicador()));
         HorarioTarifas guardado = horarioTarifasRepository.save(horario);
         log.info("Horario de tarifa creado con id: {}", guardado.getId());
         return toDTO(guardado);
@@ -91,6 +90,6 @@ public class HorarioTarifasService {
                 horario.getDiaTipo(),
                 horario.getHoraInicio(),
                 horario.getHoraFin(),
-                horario.getMultiplicador());
+                horario.getMultiplicador().doubleValue());
     }
 }

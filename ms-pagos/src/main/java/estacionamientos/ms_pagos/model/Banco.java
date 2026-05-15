@@ -16,15 +16,15 @@ public class Banco {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, length = 100)
     private String nombre;
 
     @Column(nullable = false, unique = true)
     private String codigo;
 
-    @Column(name = "descuento_pct", precision = 10, scale = 2)
+    @Column(name = "descuento_pct", precision = 5, scale = 2)
     private BigDecimal descuentoPct;
 
     @Column(nullable = false)
-    private Boolean activo;
+    private Boolean activo = true;
 }

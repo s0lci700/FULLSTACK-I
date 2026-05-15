@@ -37,9 +37,9 @@ private Integer piso;
 private TipoEspacio tipoEspacio;
 
 @Column(nullable = false)
-private Boolean disponible;
+private Boolean disponible = true;
 
 @Column(nullable = false)
-private Boolean activo;
+private Boolean activo = true;
 
 }

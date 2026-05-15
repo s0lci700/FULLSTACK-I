@@ -1,7 +1,6 @@
 package estacionamientos.ms_pagos.model;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
@@ -18,7 +17,7 @@ public class Cobro {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, name = "id_acceso_ref")
+    @Column(nullable = false, name = "id_acceso_ref", unique = true)
     private Long idAcceso;
 
     @ManyToOne
@@ -31,20 +30,20 @@ public class Cobro {
     @Column(nullable = false)
     private Integer minutos;
 
-    @Column(nullable = false)
-    private Float montoBase;
+    @Column(name = "monto_base", nullable = false, precision = 10, scale = 2)
+    private BigDecimal montoBase;
 
-    @Column(name = "desc_tipo_cliente", nullable = false,precision = 10, scale = 2)
+    @Column(name = "desc_tipo_cliente", nullable = false, precision = 5, scale = 2)
     private BigDecimal descTipoCliente;
 
-    @Column(name = "desc_suscripcion", nullable = false, precision = 10, scale = 2)
+    @Column(name = "desc_suscripcion", nullable = false, precision = 5, scale = 2)
     private BigDecimal descSuscripcion;
 
-    @Column(name = "desc_banco", nullable = false,precision = 10, scale = 2)
+    @Column(name = "desc_banco", nullable = false, precision = 5, scale = 2)
     private BigDecimal descBanco;
 
-    @Column(nullable = false)
-    private Double montoFinal;
+    @Column(name = "monto_final", nullable = false, precision = 10, scale = 2)
+    private BigDecimal montoFinal;
 
     @Column(nullable = false)
     private String estado;
