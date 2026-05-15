@@ -41,6 +41,7 @@ public class Reserva {
     @Column(nullable = false)
     private LocalDateTime fechaInicio;
 
+    @Column(nullable = false)
     private LocalDateTime fechaFin;
 
     @Enumerated(EnumType.STRING)
@@ -48,7 +49,7 @@ public class Reserva {
     private EstadoEnums estado = EstadoEnums.PENDIENTE;
 
     @CreationTimestamp
-    @Column(nullable = true)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime fechaCreacion;
 
 }

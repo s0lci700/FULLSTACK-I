@@ -86,6 +86,51 @@ Los servicios deben iniciarse en este orden — cada capa depende de la anterior
 
 ## 🛠️ Scripts de Utilidad
 
+### `start-all.ps1` — Arrancar todos los servicios
+
+Lanza los 12 microservicios en el orden correcto desde una sola terminal.
+Cada servicio abre en su propia ventana de PowerShell y el script espera que Eureka y el Gateway estén listos antes de continuar.
+
+> **Requiere PowerShell.** Ejecutar desde la raíz del repositorio.
+
+| Comando | Efecto |
+|---------|--------|
+| `.\start-all.ps1` | Arranca los 12 servicios en orden |
+| `.\start-all.ps1 -Services eureka-server,api-gateway,ms-accesos` | Arranca solo los servicios indicados |
+| `.\start-all.ps1 -NoPause` | No espera confirmación al finalizar (útil en pipelines) |
+
+**Maven se detecta automáticamente** en este orden de prioridad:
+1. `.\apache-maven-3.9.15\bin\mvn.cmd` — instalación local del repositorio (laboratorio sin internet)
+2. `mvn` del sistema — si Maven está instalado y en el `PATH`
+3. `.\mvnw` — wrapper del proyecto (requiere internet la primera vez)
+
+**Para detener todos los servicios:**
+```powershell
+Stop-Process -Name java -Force
+```
+
+---
+
+### `load-db.ps1` — Cargar esquemas y datos de prueba
+
+Crea todas las bases de datos y carga las tablas y datos de prueba en MySQL desde un único comando.
+Equivale a importar los 9 scripts `db/01`–`db/09` en orden, pero sin salir de la terminal.
+
+> **Requiere PowerShell** y `mysql` en el `PATH` (agregar `C:\xampp\mysql\bin`). Ejecutar desde la raíz del repositorio.
+
+| Comando | Efecto |
+|---------|--------|
+| `.\load-db.ps1` | Carga todo en `localhost:3306` sin contraseña (XAMPP por defecto) |
+| `.\load-db.ps1 -Password mipass` | Igual, con contraseña de root |
+| `.\load-db.ps1 -Port 3307` | Apunta a Docker MySQL en puerto 3307 |
+
+También es posible importar `db/00_run_all.sql` directamente desde **phpMyAdmin** (pestaña Importar) o desde la terminal con:
+```powershell
+Get-Content db\00_run_all.sql | mysql -u root
+```
+
+---
+
 ### `set-db-port.ps1` — Puerto de base de datos
 
 Actualiza el puerto MySQL en **todos** los `application.properties` del proyecto desde un único lugar.

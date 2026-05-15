@@ -26,7 +26,7 @@ public class TipoCliente {
     @Column(nullable = false, unique = true)
     private String nombre;
 
-    @Column(name = "descuento_pct", precision = 10, scale = 2)
+    @Column(name = "descuento_pct", nullable = false, precision = 5, scale = 2)
     private BigDecimal descuentoPct;
     
     //@Column(name = "descripcion", nullable = false)

@@ -25,7 +25,7 @@ public class MetodoPago {
     @JoinColumn(name = "id_banco", nullable = false)
     private Banco banco;
 
-    @Column(name = "ultimos_4", nullable = false, length = 4)
+    @Column(name = "ultimos_4", nullable = false, length = 4, columnDefinition = "CHAR(4)")
     private String ultimos4;
 
     @Column(name = "nombre_titular", nullable = false)
@@ -38,8 +38,8 @@ public class MetodoPago {
     private Integer anioVencimiento;
 
     @Column(nullable = false)
-    private Boolean predeterminado;
+    private Boolean predeterminado = false;
 
     @Column(nullable = false)
-    private Boolean activo;
+    private Boolean activo = true;
 }

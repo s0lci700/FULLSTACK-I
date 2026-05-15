@@ -1,0 +1,186 @@
+<#
+.SYNOPSIS
+    Starts all microservices in the correct order for local development.
+
+.DESCRIPTION
+    Phase 1 — Eureka (port 8761): started first; script waits until it accepts connections.
+    Phase 2 — API Gateway (port 8080): started after Eureka is ready; script waits again.
+    Phase 3 — All remaining services: started in dependency order with a short stagger.
+
+    Maven resolution order:
+      1. Local install at .\apache-maven-3.9.15\bin\mvn.cmd  (lab / offline)
+      2. System mvn on PATH                                   (home with Maven installed)
+      3. .\mvnw wrapper                                       (home without Maven, needs internet)
+
+.PARAMETER Services
+    Optional list of service folder names to start. If omitted, all services are started.
+    Example: .\start-all.ps1 -Services eureka-server,api-gateway,ms-accesos
+
+.PARAMETER NoPause
+    Skip the "Press any key" prompt at the end.
+
+.EXAMPLE
+    .\start-all.ps1
+    Starts all 12 services.
+
+.EXAMPLE
+    .\start-all.ps1 -Services eureka-server,api-gateway,ms-reservas,ms-accesos
+    Starts only the listed services (still respects startup order).
+
+.EXAMPLE
+    .\start-all.ps1 -NoPause
+    Starts everything without waiting for a keypress at the end.
+#>
+
+param(
+    [string[]]$Services = @(),
+    [switch]$NoPause
+)
+
+# ── Helpers ────────────────────────────────────────────────────────────────
+
+function Write-Phase([string]$msg) {
+    Write-Host ""
+    Write-Host "  $msg" -ForegroundColor Cyan
+    Write-Host "  $('─' * ($msg.Length))" -ForegroundColor DarkGray
+}
+
+function Write-Ok([string]$msg)   { Write-Host "  [OK] $msg"   -ForegroundColor Green  }
+function Write-Info([string]$msg) { Write-Host "  [..] $msg"   -ForegroundColor Yellow }
+function Write-Skip([string]$msg) { Write-Host "  [--] $msg"   -ForegroundColor DarkGray }
+
+function Wait-Port([int]$port, [string]$label) {
+    Write-Info "Waiting for $label on port $port ..."
+    $dots = 0
+    while ($true) {
+        try {
+            $tcp = New-Object System.Net.Sockets.TcpClient
+            $tcp.Connect("localhost", $port)
+            $tcp.Close()
+            Write-Ok "$label is up."
+            return
+        } catch {
+            Start-Sleep -Seconds 3
+            Write-Host "    ." -NoNewline -ForegroundColor DarkGray
+            $dots++
+            if ($dots % 10 -eq 0) { Write-Host "" }
+        }
+    }
+}
+
+function Start-Svc([string]$name) {
+    $path = Join-Path $root $name
+    if (-not (Test-Path $path)) {
+        Write-Skip "$name — folder not found, skipping."
+        return
+    }
+    $cmd = "cd '$path'; Write-Host '' ; Write-Host '  ► $name' -ForegroundColor Cyan; Write-Host ''; $mvnCmd spring-boot:run"
+    Start-Process powershell -ArgumentList "-NoExit", "-Command", $cmd -WindowStyle Normal
+    Write-Ok "Launched $name"
+}
+
+function Should-Start([string]$name) {
+    if ($Services.Count -eq 0) { return $true }
+    return $Services -contains $name
+}
+
+# ── Maven detection ─────────────────────────────────────────────────────────
+
+$root = $PSScriptRoot
+
+$localMvn = Join-Path $root "apache-maven-3.9.15\bin\mvn.cmd"
+if (Test-Path $localMvn) {
+    $mvnCmd = "& '$localMvn'"
+    $mvnSource = "local (.\apache-maven-3.9.15)"
+} elseif (Get-Command mvn -ErrorAction SilentlyContinue) {
+    $mvnCmd = "mvn"
+    $mvnSource = "system PATH"
+} else {
+    $mvnCmd = ".\mvnw"
+    $mvnSource = "wrapper (.\mvnw) — requires internet on first run"
+}
+
+# ── Banner ──────────────────────────────────────────────────────────────────
+
+Write-Host ""
+Write-Host "  ╔══════════════════════════════════════════════════╗" -ForegroundColor DarkCyan
+Write-Host "  ║   Estacionamiento Inteligente — Start All        ║" -ForegroundColor DarkCyan
+Write-Host "  ╚══════════════════════════════════════════════════╝" -ForegroundColor DarkCyan
+Write-Host ""
+Write-Host "  Maven : $mvnSource" -ForegroundColor DarkGray
+if ($Services.Count -gt 0) {
+    Write-Host "  Filter: $($Services -join ', ')" -ForegroundColor DarkGray
+} else {
+    Write-Host "  Mode  : all services" -ForegroundColor DarkGray
+}
+
+# ── Phase 1: Eureka ─────────────────────────────────────────────────────────
+
+Write-Phase "Phase 1 — Eureka (8761)"
+
+if (Should-Start "eureka-server") {
+    Start-Svc "eureka-server"
+    Wait-Port 8761 "eureka-server"
+} else {
+    Write-Skip "eureka-server (not in filter)"
+}
+
+# ── Phase 2: API Gateway ─────────────────────────────────────────────────────
+
+Write-Phase "Phase 2 — API Gateway (8080)"
+
+if (Should-Start "api-gateway") {
+    Start-Svc "api-gateway"
+    Wait-Port 8080 "api-gateway"
+} else {
+    Write-Skip "api-gateway (not in filter)"
+}
+
+# ── Phase 3: Remaining services ───────────────────────────────────────────────
+
+Write-Phase "Phase 3 — Services (8081–8090)"
+
+# Order matters for Feign dependencies:
+#   ms-espacios, ms-vehiculos, user-service → ms-reservas
+#   ms-reservas, ms-espacios, ms-tarifas   → ms-accesos
+#   ms-accesos, ms-tarifas, user-service   → ms-pagos
+#   everything                             → ms-reportes
+
+$phase3 = @(
+    "auth-service",      # 8081
+    "user-service",      # 8082
+    "security-service",  # 8083
+    "ms-vehiculos",      # 8084
+    "ms-espacios",       # 8085
+    "ms-tarifas",        # 8088 — before reservas/accesos/pagos
+    "ms-reservas",       # 8086
+    "ms-accesos",        # 8087
+    "ms-pagos",          # 8089
+    "ms-reportes"        # 8090
+)
+
+foreach ($svc in $phase3) {
+    if (Should-Start $svc) {
+        Start-Svc $svc
+        Start-Sleep -Seconds 2
+    } else {
+        Write-Skip "$svc (not in filter)"
+    }
+}
+
+# ── Done ─────────────────────────────────────────────────────────────────────
+
+Write-Host ""
+Write-Host "  All services launched." -ForegroundColor Green
+Write-Host ""
+Write-Host "  Eureka dashboard : http://localhost:8761" -ForegroundColor DarkGray
+Write-Host "  API Gateway      : http://localhost:8080" -ForegroundColor DarkGray
+Write-Host ""
+Write-Host "  To stop everything: close the PowerShell windows, or run:" -ForegroundColor DarkGray
+Write-Host "    Stop-Process -Name java -Force" -ForegroundColor DarkYellow
+Write-Host ""
+
+if (-not $NoPause) {
+    Write-Host "  Press any key to exit this launcher..." -ForegroundColor DarkGray
+    $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+}

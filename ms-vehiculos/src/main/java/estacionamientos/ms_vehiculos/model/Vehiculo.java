@@ -62,5 +62,5 @@ public class Vehiculo {
     // Boolean mapea directamente a TINYINT(1) en MySQL, que es lo que define el
     // ERD.
     @Column(nullable = false, unique = false)
-    private Boolean activo;
+    private Boolean activo = true;
 }

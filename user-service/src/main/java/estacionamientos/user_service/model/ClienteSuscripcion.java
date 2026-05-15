@@ -40,5 +40,5 @@ public class ClienteSuscripcion {
     private LocalDate fechaFin;
 
     @Column(nullable = false)
-    private Boolean activo;
+    private Boolean activo = true;
 }

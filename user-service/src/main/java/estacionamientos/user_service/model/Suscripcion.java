@@ -31,12 +31,12 @@ public class Suscripcion {
     @Column(nullable = false)
     private BigDecimal precio;
 
-    @Column(name = "descuento_pct", precision = 10, scale = 2)
+    @Column(name = "descuento_pct", precision = 5, scale = 2)
     private BigDecimal descuentoPct;
 
     @Column(name = "duracion_dias", nullable = false)
     private Integer duracionDias;
 
     @Column(nullable = false)
-    private Boolean activo;
+    private Boolean activo = true;
 }
