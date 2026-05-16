@@ -177,15 +177,15 @@ monto_final = monto_base
 | `eureka-server` | scaffold | — |
 | `api-gateway` | **complete** | Routing via `application.yaml` — all 9 services routed. No JWT filter (not required yet). Uses YAML config, not .properties. |
 | `auth-service` | **complete** | Full CSR + JWT + BCrypt + GlobalExceptionHandler + SLF4J logs. `jwt.secret` is a valid 256-bit Base64 key. Swagger enabled; `/swagger-ui/**` and `/v3/api-docs/**` are public in SecurityConfig. |
-| `user-service` | **complete** | Done by Catalina — Cliente, TipoCliente, Suscripcion, ClienteSuscripcion entities; full CRUD + DTOs + GlobalExceptionHandler (`@RestControllerAdvice`). DB on port 3307. Duplicate subscription check in `ClienteSuscripcionService`. Swagger enabled. |
-| `security-service` | scaffold | — |
+| `user-service` | **complete** | Done by Catalina — Cliente, TipoCliente, Suscripcion, ClienteSuscripcion entities; full CRUD + DTOs + GlobalExceptionHandler (`@RestControllerAdvice`). Duplicate subscription check in `ClienteSuscripcionService`. Swagger enabled. |
+| `security-service` | **complete** | Full CRUD for Permiso + RolPermiso. Routes: `/api/permisos/**`, `/api/roles-permisos/**`. Swagger enabled. |
 | `ms-vehiculos` | **complete** | Full CRUD for Vehiculo + TipoVehiculo. `VehiculoResponseDTO` complete (all entity fields). Controller returns DTO, not entity. Soft delete on Vehiculo (activo=false). `ConflictException` used (AlreadyFoundException removed). Swagger enabled. |
 | `ms-espacios` | **complete** | Full CRUD for Espacio + TipoEspacio (singular). PATCH `/api/espacios/{id}/disponibilidad` used by ms-accesos to toggle space availability. Swagger enabled. |
 | `ms-tarifas` | **complete** | Full CRUD for Tarifas + HorarioTarifas. GET `/api/tarifas/vigente` used by ms-pagos to retrieve the active rate. Swagger enabled. |
 | `ms-reservas` | **complete** | Full CRUD + cancelar. Feign clients: EspacioClient, VehiculoClient, ClienteClient. Estado managed via `EstadoEnums` (separate class: PENDIENTE, CONFIRMADA, CANCELADA, FINALIZADA). Space availability NOT changed on create — ms-accesos handles that on physical entry. Swagger enabled. |
-| `ms-accesos` | scaffold | Empty Feign clients (EspacioClient, ReservaClient). Next to implement. |
-| `ms-pagos` | scaffold | Empty Feign clients (AccesoClient, ClienteClient, TarifaClient). |
-| `ms-reportes` | scaffold | No own DB — Feign-only reads from all other services. |
+| `ms-accesos` | **complete** | `registrarEntrada` + `registrarSalida` + findById + findByReserva. EspacioClient toggles disponibilidad; ReservaClient finalizes reserva on salida. Swagger enabled. |
+| `ms-pagos` | **complete** | Full CRUD for Cobro, Banco, MetodoPago, TipoTarjeta. PagoService refactored into private methods; BigDecimal billing formula with `RoundingMode.HALF_UP`. 7 Feign clients. Swagger enabled. |
+| `ms-reportes` | **complete** | No own DB — Feign-only. Endpoints: ocupacion, acceso by reserva, cobros by cliente. 4 Feign clients (AccesoClient, CobroClient, EspacioClient, VehiculoClient). Swagger enabled. |
 
 ## ms-reservas Notes
 

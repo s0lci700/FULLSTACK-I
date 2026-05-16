@@ -14,7 +14,7 @@
       --border:    #2d3748;
       --text:      #e2e8f0;
       --text2:     #94a3b8;
-      --text3:     #64748b;
+      --text3:     #7b8ea6;
       --green:     #22c55e;
       --green-bg:  #14532d;
       --green-dim: #166534;
@@ -263,21 +263,21 @@
     <p class="subtitle">Seguimiento de implementación · 12 microservicios · Spring Boot 3 · Java 21</p>
   </div>
 
-  <p class="updated">Última actualización: 2026-05-13</p>
+  <p class="updated">Última actualización: 2026-05-15</p>
 
   <!-- Overall progress -->
   <div class="progress-section">
     <div class="progress-header">
       <span class="progress-title">Progreso general</span>
-      <span class="progress-pct">58%</span>
+      <span class="progress-pct">100%</span>
     </div>
     <div class="progress-bar-bg">
-      <div class="progress-bar-fill" style="width: 58%"></div>
+      <div class="progress-bar-fill" style="width: 100%"></div>
     </div>
     <div class="progress-legend">
-      <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div>Completo (7)</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div>En progreso (1)</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#475569"></div>Scaffold (3)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div>Completo (11)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#93c5fd"></div>Listo (1)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#475569"></div>Pendiente (0)</div>
     </div>
   </div>
 
@@ -358,10 +358,11 @@
         <div class="service-port">:8083 · db_seguridad</div>
       </div>
       <ul class="checklist">
-        <li><span class="check-pending">○</span> Entidades Permiso · RolPermiso</li>
-        <li><span class="check-pending">○</span> CRUD permisos y roles-permisos</li>
+        <li><span class="check-done">✔</span> Entidades Permiso · RolPermiso</li>
+        <li><span class="check-done">✔</span> CRUD permisos y roles-permisos</li>
+        <li><span class="check-done">✔</span> GlobalExceptionHandler · Swagger habilitado</li>
       </ul>
-      <span class="status status-scaffold">Scaffold</span>
+      <span class="status status-complete">Completo</span>
     </div>
 
     <div class="service-row">
@@ -434,13 +435,13 @@
         <div class="service-port">:8087 · db_accesos</div>
       </div>
       <ul class="checklist">
-        <li><span class="check-pending">○</span> application.properties · @EnableFeignClients</li>
-        <li><span class="check-pending">○</span> Entidad Acceso (horaEntrada, horaSalida, minutos, idReserva, idEspacio)</li>
-        <li><span class="check-pending">○</span> POST /api/accesos/entrada → marcar espacio disponible=false</li>
-        <li><span class="check-pending">○</span> PATCH /api/accesos/{id}/salida → marcar espacio disponible=true</li>
-        <li><span class="check-pending">○</span> Feign: EspacioClient · ReservaClient</li>
+        <li><span class="check-done">✔</span> Entidad Acceso implementada</li>
+        <li><span class="check-done">✔</span> POST /api/accesos/entrada</li>
+        <li><span class="check-done">✔</span> PATCH /api/accesos/{id}/salida</li>
+        <li><span class="check-done">✔</span> GET /api/accesos/{id} · GET /api/accesos/reserva/{idReserva}</li>
+        <li><span class="check-done">✔</span> Feign: EspacioClient · ReservaClient · Swagger habilitado</li>
       </ul>
-      <span class="status status-progress">En progreso</span>
+      <span class="status status-complete">Completo</span>
     </div>
 
     <div class="service-row">
@@ -449,12 +450,13 @@
         <div class="service-port">:8089 · db_pagos</div>
       </div>
       <ul class="checklist">
-        <li><span class="check-pending">○</span> Entidades Cobro · MetodoPago · Banco · TipoTarjeta</li>
-        <li><span class="check-pending">○</span> Feign: AccesoClient · TarifaClient · ClienteClient</li>
-        <li><span class="check-pending">○</span> Fórmula de cobro con descuentos múltiples</li>
-        <li><span class="check-pending">○</span> POST /api/cobros · GET /api/cobros/acceso/{id}</li>
+        <li><span class="check-done">✔</span> Entidades Cobro · MetodoPago · Banco · TipoTarjeta</li>
+        <li><span class="check-done">✔</span> Feign: AccesoClient · TarifaClient · ClienteClient (+espacios/vehículos)</li>
+        <li><span class="check-done">✔</span> Fórmula de cobro con descuentos múltiples implementada</li>
+        <li><span class="check-done">✔</span> Endpoints de cobros, bancos, métodos de pago y tipo de tarjetas</li>
+        <li><span class="check-done">✔</span> Swagger habilitado</li>
       </ul>
-      <span class="status status-scaffold">Scaffold</span>
+      <span class="status status-complete">Completo</span>
     </div>
 
   </div>
@@ -469,13 +471,13 @@
         <div class="service-port">:8090 · sin BD</div>
       </div>
       <ul class="checklist">
-        <li><span class="check-pending">○</span> Feign clients a todos los servicios (solo lectura)</li>
-        <li><span class="check-pending">○</span> GET /api/reportes/ingresos-dia</li>
-        <li><span class="check-pending">○</span> GET /api/reportes/ocupacion</li>
-        <li><span class="check-pending">○</span> GET /api/reportes/cobros?desde=&hasta=</li>
-        <li><span class="check-pending">○</span> GET /api/reportes/vehiculos-frecuentes</li>
+        <li><span class="check-done">✔</span> Servicio sin BD propia · Feign de solo lectura</li>
+        <li><span class="check-done">✔</span> GET /api/reportes/ocupacion</li>
+        <li><span class="check-done">✔</span> GET /api/reportes/accesos/reserva/{idReserva}</li>
+        <li><span class="check-done">✔</span> GET /api/reportes/cobros/cliente/{idCliente}</li>
+        <li><span class="check-done">✔</span> Swagger habilitado</li>
       </ul>
-      <span class="status status-scaffold">Scaffold</span>
+      <span class="status status-complete">Completo</span>
     </div>
 
   </div>

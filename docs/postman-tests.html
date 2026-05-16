@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>API Test Guide — Estacionamiento Inteligente</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0f1117;
+      --bg2:       #1a1f2e;
+      --bg3:       #1e2330;
+      --border:    #2d3748;
+      --text:      #e2e8f0;
+      --text2:     #94a3b8;
+      --text3:     #7b8ea6;
+      --green:     #22c55e;
+      --green-bg:  #14532d;
+      --blue:      #93c5fd;
+      --blue-bg:   #1e3a5f;
+      --yellow:    #f59e0b;
+      --yellow-bg: #3b2700;
+      --orange:    #fb923c;
+      --orange-bg: #431407;
+      --purple:    #c4b5fd;
+      --purple-bg: #2d1b4e;
+      --red:       #ef4444;
+      --red-bg:    #450a0a;
+      --cyan:      #67e8f9;
+      --cyan-bg:   #164e63;
+      --sidebar-w: 260px;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .layout { display: flex; min-height: 100vh; }
+
+    /* ── Sidebar ── */
+    nav {
+      width: var(--sidebar-w);
+      min-width: var(--sidebar-w);
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      padding: 1.5rem 1rem;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    nav h2 {
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-bottom: 1rem;
+    }
+
+    nav ul { list-style: none; }
+    nav ul li { margin-bottom: 0.1rem; }
+
+    nav ul li a {
+      display: block;
+      padding: 0.28rem 0.6rem;
+      border-radius: 4px;
+      color: var(--text2);
+      text-decoration: none;
+      font-size: 0.8rem;
+      transition: background 0.12s, color 0.12s;
+    }
+
+    nav ul li a:hover { background: var(--bg3); color: var(--text); }
+    nav ul li a.active { background: var(--blue-bg); color: var(--blue); }
+
+    nav .section-label {
+      font-size: 0.66rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text3);
+      margin: 1.1rem 0 0.3rem 0.6rem;
+    }
+
+    nav .back {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.75rem; color: var(--text3);
+      text-decoration: none; margin-bottom: 1.5rem;
+      padding: 0.3rem 0.6rem; border-radius: 4px;
+      transition: color 0.12s;
+    }
+    nav .back:hover { color: var(--text2); }
+
+    /* ── Main ── */
+    main { flex: 1; padding: 2rem 2.5rem; max-width: 1000px; }
+
+    h1 { font-size: 1.6rem; color: var(--text); margin-bottom: 0.4rem; }
+    h2 { font-size: 1.1rem; color: var(--blue); margin: 2.5rem 0 0.8rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--border); }
+    h3 { font-size: 0.92rem; color: var(--purple); margin: 1.4rem 0 0.5rem; }
+    p  { color: var(--text2); margin-bottom: 0.7rem; font-size: 0.88rem; }
+
+    .subtitle { color: var(--text3); font-size: 0.83rem; margin-bottom: 1.5rem; }
+
+    .divider { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+    /* ── Badges ── */
+    .badge {
+      display: inline-block; font-size: 0.65rem; font-weight: 700;
+      padding: 0.12rem 0.5rem; border-radius: 9999px; vertical-align: middle;
+      font-family: 'Cascadia Code', 'Fira Code', monospace;
+    }
+    .get    { background: var(--green-bg);  color: var(--green);  }
+    .post   { background: var(--blue-bg);   color: var(--blue);   }
+    .put    { background: var(--yellow-bg); color: var(--yellow); }
+    .patch  { background: var(--orange-bg); color: var(--orange); }
+    .delete { background: var(--red-bg);    color: var(--red);    }
+    .badge-ok     { background: var(--green-bg);  color: var(--green);  }
+    .badge-error  { background: var(--red-bg);    color: var(--red);    }
+    .badge-swagger{ background: var(--purple-bg); color: var(--purple); font-size: 0.62rem; }
+    .badge-port   { background: var(--bg3);       color: var(--text3);  font-size: 0.62rem; }
+
+    /* ── Swagger cards ── */
+    .swagger-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 0.6rem;
+      margin: 1rem 0 1.5rem;
+    }
+
+    .swagger-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .swagger-card .svc-info { display: flex; flex-direction: column; gap: 0.2rem; }
+    .swagger-card .svc-name {
+      font-family: 'Cascadia Code', 'Fira Code', monospace;
+      font-size: 0.82rem; color: var(--text);
+    }
+    .swagger-card .svc-db { font-size: 0.72rem; color: var(--text3); }
+
+    .swagger-links { display: flex; flex-direction: column; gap: 0.3rem; align-items: flex-end; }
+    .swagger-links a {
+      font-size: 0.7rem;
+      color: var(--purple);
+      text-decoration: none;
+      font-family: 'Cascadia Code', 'Fira Code', monospace;
+      padding: 0.1rem 0.4rem;
+      border: 1px solid var(--purple-bg);
+      border-radius: 3px;
+      transition: background 0.1s;
+    }
+    .swagger-links a:hover { background: var(--purple-bg); }
+
+    /* ── Base URL box ── */
+    .base-url-box {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--blue);
+      border-radius: 6px;
+      padding: 0.8rem 1rem;
+      margin: 1rem 0 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .base-url-box .label { font-size: 0.72rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; }
+    .base-url-box code {
+      font-family: 'Cascadia Code', 'Fira Code', monospace;
+      font-size: 0.85rem;
+      color: var(--cyan);
+    }
+
+    /* ── Test table ── */
+    .test-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      margin: 0.5rem 0 1.5rem;
+    }
+
+    .test-table th {
+      background: var(--bg3);
+      color: var(--text3);
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.45rem 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .test-table td {
+      padding: 0.45rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text2);
+      vertical-align: top;
+    }
+
+    .test-table tr:last-child td { border-bottom: none; }
+    .test-table tr:hover td { background: var(--bg3); }
+
+    .test-table td:first-child {
+      color: var(--text3);
+      font-size: 0.75rem;
+      width: 28px;
+      text-align: right;
+      padding-right: 0.5rem;
+    }
+
+    .test-table td.url {
+      font-family: 'Cascadia Code', 'Fira Code', monospace;
+      font-size: 0.78rem;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .test-table td.url .path-param { color: var(--orange); }
+
+    .test-table td code {
+      font-family: 'Cascadia Code', 'Fira Code', monospace;
+      font-size: 0.75rem;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      padding: 0.1rem 0.3rem;
+      border-radius: 3px;
+      color: var(--blue);
+    }
+
+    /* ── Body blocks ── */
+    .body-block {
+      margin: 0.2rem 0 0;
+      border-radius: 5px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .body-block pre {
+      background: var(--bg);
+      padding: 0.5rem 0.75rem;
+      font-family: 'Cascadia Code', 'Fira Code', monospace;
+      font-size: 0.74rem;
+      color: var(--text2);
+      overflow-x: auto;
+      line-height: 1.5;
+    }
+
+    .body-label {
+      background: var(--bg3);
+      padding: 0.2rem 0.6rem;
+      font-size: 0.63rem;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .copy-btn {
+      font-size: 0.63rem; color: var(--text3); background: none;
+      border: 1px solid var(--border); border-radius: 3px;
+      padding: 0.1rem 0.4rem; cursor: pointer; transition: color 0.1s;
+    }
+    .copy-btn:hover { color: var(--text2); }
+
+    /* ── Expect callout ── */
+    .expect {
+      font-size: 0.75rem;
+      color: var(--text3);
+      margin-top: 0.25rem;
+    }
+    .expect .ok   { color: var(--green); }
+    .expect .err  { color: var(--red); }
+
+    /* ── Callout ── */
+    .callout {
+      border-radius: 6px; padding: 0.7rem 0.9rem;
+      margin: 0.8rem 0; font-size: 0.84rem; border-left: 3px solid;
+    }
+    .callout-blue { background: var(--blue-bg); border-color: var(--blue); color: var(--blue); }
+    .callout strong { display: block; margin-bottom: 0.2rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+<!-- ══════ SIDEBAR ══════ -->
+<nav>
+  <a href="index.html" class="back">← índice docs</a>
+
+  <h2>API Test Guide</h2>
+  <ul>
+    <li><a href="#swagger">Swagger / OpenAPI</a></li>
+    <li><a href="#coverage">Índice de cobertura</a></li>
+    <li><a href="#base">Base URL</a></li>
+  </ul>
+
+  <div class="section-label">Fases de test</div>
+  <ul>
+    <li><a href="#p1">1 · Auth</a></li>
+    <li><a href="#p2">2 · Datos de referencia</a></li>
+    <li><a href="#p3">3 · Clientes</a></li>
+    <li><a href="#p4">4 · Vehículos</a></li>
+    <li><a href="#p5">5 · Espacios</a></li>
+    <li><a href="#p6">6 · Tarifas</a></li>
+    <li><a href="#p7">7 · Reservas</a></li>
+    <li><a href="#p8">8 · Accesos</a></li>
+    <li><a href="#p9">9 · Cobros</a></li>
+    <li><a href="#p10">10 · Métodos de pago</a></li>
+    <li><a href="#p11">11 · Seguridad</a></li>
+    <li><a href="#p12">12 · Reportes</a></li>
+  </ul>
+</nav>
+
+<!-- ══════ MAIN ══════ -->
+<main>
+
+  <h1>API Test Guide</h1>
+  <p class="subtitle">73 requests ordenadas por dependencia · Cobertura funcional por servicio · Gateway <code>http://localhost:8080</code></p>
+
+  <!-- ── Swagger ── -->
+  <section id="swagger">
+    <h2>Swagger / OpenAPI</h2>
+    <p>Cada servicio expone documentación interactiva en <code>/swagger-ui/index.html</code> y el JSON en <code>/v3/api-docs</code>. Acceder directamente al puerto del servicio (no por el gateway).</p>
+
+    <div class="swagger-grid">
+
+      <div class="swagger-card">
+        <div class="svc-info">
+          <span class="svc-name">auth-service</span>
+          <span class="svc-db"><span class="badge badge-port">:8081</span></span>
+        </div>
+        <div class="swagger-links">
+          <a href="http://localhost:8081/swagger-ui/index.html" target="_blank">Swagger UI</a>
+          <a href="http://localhost:8081/v3/api-docs" target="_blank">api-docs JSON</a>
+        </div>
+      </div>
+
+      <div class="swagger-card">
+        <div class="svc-info">
+          <span class="svc-name">user-service</span>
+          <span class="svc-db"><span class="badge badge-port">:8082</span></span>
+        </div>
+        <div class="swagger-links">
+          <a href="http://localhost:8082/swagger-ui/index.html" target="_blank">Swagger UI</a>
+          <a href="http://localhost:8082/v3/api-docs" target="_blank">api-docs JSON</a>
+        </div>
+      </div>
+
+      <div class="swagger-card">
+        <div class="svc-info">
+          <span class="svc-name">security-service</span>
+          <span class="svc-db"><span class="badge badge-port">:8083</span></span>
+        </div>
+        <div class="swagger-links">
+          <a href="http://localhost:8083/swagger-ui/index.html" target="_blank">Swagger UI</a>
+          <a href="http://localhost:8083/v3/api-docs" target="_blank">api-docs JSON</a>
+        </div>
+      </div>
+
+      <div class="swagger-card">
+        <div class="svc-info">
+          <span class="svc-name">ms-vehiculos</span>
+          <span class="svc-db"><span class="badge badge-port">:8084</span></span>
+        </div>
+        <div class="swagger-links">
+          <a href="http://localhost:8084/swagger-ui/index.html" target="_blank">Swagger UI</a>
+          <a href="http://localhost:8084/v3/api-docs" target="_blank">api-docs JSON</a>
+        </div>
+      </div>
+
+      <div class="swagger-card">
+        <div class="svc-info">
+          <span class="svc-name">ms-espacios</span>
+          <span class="svc-db"><span class="badge badge-port">:8085</span></span>
+        </div>
+        <div class="swagger-links">
+          <a href="http://localhost:8085/swagger-ui/index.html" target="_blank">Swagger UI</a>
+          <a href="http://localhost:8085/v3/api-docs" target="_blank">api-docs JSON</a>
+        </div>
+      </div>
+
+      <div class="swagger-card">
+        <div class="svc-info">
+          <span class="svc-name">ms-reservas</span>
+          <span class="svc-db"><span class="badge badge-port">:8086</span></span>
+        </div>
+        <div class="swagger-links">
+          <a href="http://localhost:8086/swagger-ui/index.html" target="_blank">Swagger UI</a>
+          <a href="http://localhost:8086/v3/api-docs" target="_blank">api-docs JSON</a>
+        </div>
+      </div>
+
+      <div class="swagger-card">
+        <div class="svc-info">
+          <span class="svc-name">ms-accesos</span>
+          <span class="svc-db"><span class="badge badge-port">:8087</span></span>
+        </div>
+        <div class="swagger-links">
+          <a href="http://localhost:8087/swagger-ui/index.html" target="_blank">Swagger UI</a>
+          <a href="http://localhost:8087/v3/api-docs" target="_blank">api-docs JSON</a>
+        </div>
+      </div>
+
+      <div class="swagger-card">
+        <div class="svc-info">
+          <span class="svc-name">ms-tarifas</span>
+          <span class="svc-db"><span class="badge badge-port">:8088</span></span>
+        </div>
+        <div class="swagger-links">
+          <a href="http://localhost:8088/swagger-ui/index.html" target="_blank">Swagger UI</a>
+          <a href="http://localhost:8088/v3/api-docs" target="_blank">api-docs JSON</a>
+        </div>
+      </div>
+
+      <div class="swagger-card">
+        <div class="svc-info">
+          <span class="svc-name">ms-pagos</span>
+          <span class="svc-db"><span class="badge badge-port">:8089</span></span>
+        </div>
+        <div class="swagger-links">
+          <a href="http://localhost:8089/swagger-ui/index.html" target="_blank">Swagger UI</a>
+          <a href="http://localhost:8089/v3/api-docs" target="_blank">api-docs JSON</a>
+        </div>
+      </div>
+
+      <div class="swagger-card">
+        <div class="svc-info">
+          <span class="svc-name">ms-reportes</span>
+          <span class="svc-db"><span class="badge badge-port">:8090</span></span>
+        </div>
+        <div class="swagger-links">
+          <a href="http://localhost:8090/swagger-ui/index.html" target="_blank">Swagger UI</a>
+          <a href="http://localhost:8090/v3/api-docs" target="_blank">api-docs JSON</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ── Coverage Index ── -->
+  <section id="coverage">
+    <h2>Índice de cobertura Postman</h2>
+    <p>Checklist de cobertura funcional por servicio (CRUD principal, flujos y casos de error). Cada bloque enlaza también a su documentación de endpoints.</p>
+    <table class="test-table">
+      <thead><tr><th>Servicio</th><th>Cobertura Postman</th><th>Requests</th><th>Referencia</th></tr></thead>
+      <tbody>
+        <tr><td>auth-service</td><td>login válido/inválido + registro</td><td>1–4</td><td><a href="api/auth-service.html">API docs</a> · <a href="http://localhost:8081/v3/api-docs" target="_blank">openapi</a></td></tr>
+        <tr><td>user-service</td><td>CRUD clientes + suscripciones + tipo cliente</td><td>5, 14–21</td><td><a href="api/user-service.html">API docs</a> · <a href="http://localhost:8082/v3/api-docs" target="_blank">openapi</a></td></tr>
+        <tr><td>security-service</td><td>CRUD permisos + CRUD roles-permisos</td><td>62–68</td><td><a href="api/security-service.html">API docs</a> · <a href="http://localhost:8083/v3/api-docs" target="_blank">openapi</a></td></tr>
+        <tr><td>ms-vehiculos</td><td>listar/buscar/validar + crear/editar/eliminar</td><td>22–28</td><td><a href="api/ms-vehiculos.html">API docs</a> · <a href="http://localhost:8084/v3/api-docs" target="_blank">openapi</a></td></tr>
+        <tr><td>ms-espacios</td><td>tipo espacio + listar/disponibles + disponibilidad PATCH + CRUD básico</td><td>7, 29–35</td><td><a href="api/ms-espacios.html">API docs</a> · <a href="http://localhost:8085/v3/api-docs" target="_blank">openapi</a></td></tr>
+        <tr><td>ms-reservas</td><td>listar/filtrar + crear + confirmar/cancelar</td><td>41–47</td><td><a href="api/ms-reservas.html">API docs</a> · <a href="http://localhost:8086/v3/api-docs" target="_blank">openapi</a></td></tr>
+        <tr><td>ms-accesos</td><td>entrada/salida + búsquedas por id y reserva</td><td>48–52</td><td><a href="api/ms-accesos.html">API docs</a> · <a href="http://localhost:8087/v3/api-docs" target="_blank">openapi</a></td></tr>
+        <tr><td>ms-tarifas</td><td>tarifas + horarios-tarifa + vigentes</td><td>8–11, 36–40</td><td><a href="api/ms-tarifas.html">API docs</a> · <a href="http://localhost:8088/v3/api-docs" target="_blank">openapi</a></td></tr>
+        <tr><td>ms-pagos</td><td>cobros + bancos + métodos + tipo-tarjetas + error 422</td><td>12–13, 53–61</td><td><a href="api/ms-pagos.html">API docs</a> · <a href="http://localhost:8089/v3/api-docs" target="_blank">openapi</a></td></tr>
+        <tr><td>ms-reportes</td><td>3 endpoints de reporte agregado</td><td>69–73</td><td><a href="api/ms-reportes.html">API docs</a> · <a href="http://localhost:8090/v3/api-docs" target="_blank">openapi</a></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ── Base URL ── -->
+  <section id="base">
+    <h2>Base URL</h2>
+    <p>Todas las requests van por el API Gateway. Crear una variable de entorno en Postman:</p>
+
+    <div class="base-url-box">
+      <span class="label">Variable Postman</span>
+      <code>{{base}}</code>
+      <span style="color:var(--text3);font-size:0.8rem">=</span>
+      <code>http://localhost:8080</code>
+    </div>
+
+    <div class="callout callout-blue">
+      <strong>Tip — Eureka dashboard</strong>
+      Para verificar que todos los servicios están registrados antes de testear: <a href="http://localhost:8761" target="_blank" style="color:var(--blue)">http://localhost:8761</a>
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ══════ FASE 1 — AUTH ══════ -->
+  <section id="p1">
+    <h2>Fase 1 — Auth</h2>
+    <p>Verificar login con usuarios del seed. La contraseña en texto plano de todos es <code>Test1234!</code>.</p>
+
+    <table class="test-table">
+      <thead><tr><th>#</th><th>Método</th><th>URL</th><th>Body / Esperado</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td><span class="badge post">POST</span></td>
+          <td class="url">{{base}}/api/auth/login</td>
+          <td>
+            <div class="body-block">
+              <div class="body-label">Body JSON <button class="copy-btn" onclick="copyBlock(this)">Copiar</button></div>
+              <pre>{"email": "admin@parking.cl", "password": "Test1234!"}</pre>
+            </div>
+            <div class="expect"><span class="ok">200</span> — retorna JWT token</div>
+          </td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td><span class="badge post">POST</span></td>
+          <td class="url">{{base}}/api/auth/login</td>
+          <td>
+            <div class="body-block">
+              <div class="body-label">Body JSON <button class="copy-btn" onclick="copyBlock(this)">Copiar</button></div>
+              <pre>{"email": "maria@gmail.com", "password": "Test1234!"}</pre>
+            </div>
+            <div class="expect"><span class="ok">200</span> — token de cliente</div>
+          </td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td><span class="badge post">POST</span></td>
+          <td class="url">{{base}}/api/auth/login</td>
+          <td>
+            <div class="body-block">
+              <div class="body-label">Body JSON <button class="copy-btn" onclick="copyBlock(this)">Copiar</button></div>
+              <pre>{"email": "noexiste@x.cl", "password": "wrong"}</pre>
+            </div>
+            <div class="expect"><span class="err">401</span> — credenciales inválidas</div>
+          </td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td><span class="badge post">POST</span></td>
+          <td class="url">{{base}}/api/auth/register</td>
+          <td>
+            <div class="body-block">
+              <div class="body-label">Body JSON <button class="copy-btn" onclick="copyBlock(this)">Copiar</button></div>
+              <pre>{"email": "nuevo@test.cl", "password": "Test1234!", "idRol": 2}</pre>
+            </div>
+            <div class="expect"><span class="ok">201</span> — usuario creado</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ══════ FASE 2 — DATOS DE REFERENCIA ══════ -->
+  <section id="p2">
+    <h2>Fase 2 — Datos de referencia</h2>
+    <p>Verificar que el seed se cargó correctamente. Todos son GET sin body.</p>
+
+    <table class="test-table">
+      <thead><tr><th>#</th><th>Método</th><th>URL</th><th>Esperado</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>5</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/tipo-cliente</td>
+          <td><div class="expect"><span class="ok">200</span> — 3 tipos: ESTANDAR, FRECUENTE, VIP</div></td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/tipos-vehiculo</td>
+          <td><div class="expect"><span class="ok">200</span> — 4 tipos: AUTO, MOTO, CAMIONETA, BUS</div></td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/tipo-espacio</td>
+          <td><div class="expect"><span class="ok">200</span> — 4 tipos de espacio</div></td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/tarifas</td>
+          <td><div class="expect"><span class="ok">200</span> — 2 tarifas</div></td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/tarifas/vigente</td>
+          <td><div class="expect"><span class="ok">200</span> — TARIFA_BASE (precioBaseHora: 1500.00)</div></td>
+        </tr>
+        <tr>
+          <td>10</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/horarios-tarifa</td>
+          <td><div class="expect"><span class="ok">200</span> — 6 horarios</div></td>
+        </tr>
+        <tr>
+          <td>11</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/horarios-tarifa/vigente</td>
+          <td><div class="expect"><span class="ok">200</span> — horario para la hora actual · <span class="err">404</span> si no hay horario configurado para este momento</div></td>
+        </tr>
+        <tr>
+          <td>12</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/bancos</td>
+          <td><div class="expect"><span class="ok">200</span> — 4 bancos (Banco Estado 5%, BCI 3%, BCH 2%, Santander 0%)</div></td>
+        </tr>
+        <tr>
+          <td>13</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/tipo-tarjetas</td>
+          <td><div class="expect"><span class="ok">200</span> — 4 tipos de tarjeta</div></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ══════ FASE 3 — CLIENTES ══════ -->
+  <section id="p3">
+    <h2>Fase 3 — Clientes</h2>
+
+    <table class="test-table">
+      <thead><tr><th>#</th><th>Método</th><th>URL</th><th>Body / Esperado</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>14</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/clientes</td>
+          <td><div class="expect"><span class="ok">200</span> — María González y Carlos Pérez</div></td>
+        </tr>
+        <tr>
+          <td>15</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/clientes/<span class="path-param">1</span></td>
+          <td><div class="expect"><span class="ok">200</span> — María González, ESTANDAR</div></td>
+        </tr>
+        <tr>
+          <td>16</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/clientes/<span class="path-param">999</span></td>
+          <td><div class="expect"><span class="err">404</span> — cliente no encontrado</div></td>
+        </tr>
+        <tr>
+          <td>17</td>
+          <td><span class="badge post">POST</span></td>
+          <td class="url">{{base}}/api/clientes</td>
+          <td>
+            <div class="body-block">
+              <div class="body-label">Body JSON <button class="copy-btn" onclick="copyBlock(this)">Copiar</button></div>
+              <pre>{
+  "rut": "11111111-1",
+  "nombre": "Ana",
+  "apellido": "Soto",
+  "email": "ana@test.cl",
+  "telefono": "+56911111111",
+  "idTipoCliente": 1
+}</pre>
+            </div>
+            <div class="expect"><span class="ok">201</span> — guardar id retornado para tests 18–20</div>
+          </td>
+        </tr>
+        <tr>
+          <td>18</td>
+          <td><span class="badge put">PUT</span></td>
+          <td class="url">{{base}}/api/clientes/<span class="path-param">{id}</span></td>
+          <td>
+            <div class="body-block">
+              <div class="body-label">Body JSON <button class="copy-btn" onclick="copyBlock(this)">Copiar</button></div>
+              <pre>{
+  "rut": "11111111-1",
+  "nombre": "Ana",
+  "apellido": "Soto Vega",
+  "email": "ana@test.cl",
+  "telefono": "+56911111111",
+  "idTipoCliente": 2
+}</pre>
+            </div>
+            <div class="expect"><span class="ok">200</span> — apellido actualizado, tipo FRECUENTE</div>
+          </td>
+        </tr>
+        <tr>
+          <td>19</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/clientes/<span class="path-param">1</span>/suscripciones</td>
+          <td><div class="expect"><span class="ok">200</span> — lista vacía (María no tiene suscripción)</div></td>
+        </tr>
+        <tr>
+          <td>20</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/clientes/<span class="path-param">2</span>/suscripciones</td>
+          <td><div class="expect"><span class="ok">200</span> — Carlos tiene PREMIUM activa (mayo 2026)</div></td>
+        </tr>
+        <tr>
+          <td>21</td>
+          <td><span class="badge delete">DELETE</span></td>
+          <td class="url">{{base}}/api/clientes/<span class="path-param">{id de #17}</span></td>
+          <td><div class="expect"><span class="ok">204</span> — eliminación lógica de Ana</div></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ══════ FASE 4 — VEHÍCULOS ══════ -->
+  <section id="p4">
+    <h2>Fase 4 — Vehículos</h2>
+
+    <table class="test-table">
+      <thead><tr><th>#</th><th>Método</th><th>URL</th><th>Body / Esperado</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>22</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/vehiculos</td>
+          <td><div class="expect"><span class="ok">200</span> — 4 vehículos (AAAA00 inactivo)</div></td>
+        </tr>
+        <tr>
+          <td>23</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/vehiculos/cliente/<span class="path-param">1</span></td>
+          <td><div class="expect"><span class="ok">200</span> — BBBB11 y AAAA00 de María</div></td>
+        </tr>
+        <tr>
+          <td>24</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/vehiculos/validar/<span class="path-param">BBBB11</span></td>
+          <td><div class="expect"><span class="ok">200</span> — true</div></td>
+        </tr>
+        <tr>
+          <td>25</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/vehiculos/validar/<span class="path-param">ZZZZ99</span></td>
+          <td><div class="expect"><span class="ok">200</span> — false</div></td>
+        </tr>
+        <tr>
+          <td>26</td>
+          <td><span class="badge post">POST</span></td>
+          <td class="url">{{base}}/api/vehiculos</td>
+          <td>
+            <div class="body-block">
+              <div class="body-label">Body JSON <button class="copy-btn" onclick="copyBlock(this)">Copiar</button></div>
+              <pre>{
+  "patente": "EEEE55",
+  "marca": "Kia",
+  "modelo": "Picanto",
+  "color": "Azul",
+  "anio": 2023,
+  "idTipoVehiculo": 1,
+  "idClienteRef": 1
+}</pre>
+            </div>
+            <div class="expect"><span class="ok">201</span> — guardar id para tests 27–28</div>
+          </td>
+        </tr>
+        <tr>
+          <td>27</td>
+          <td><span class="badge put">PUT</span></td>
+          <td class="url">{{base}}/api/vehiculos/<span class="path-param">{id}</span></td>
+          <td>
+            <div class="body-block">
+              <div class="body-label">Body JSON <button class="copy-btn" onclick="copyBlock(this)">Copiar</button></div>
+              <pre>{
+  "marca": "Kia",
+  "modelo": "Picanto",
+  "color": "Rojo",
+  "anio": 2023,
+  "idTipoVehiculo": 1,
+  "idClienteRef": 1
+}</pre>
+            </div>
+            <div class="expect"><span class="ok">200</span> — color actualizado</div>
+          </td>
+        </tr>
+        <tr>
+          <td>28</td>
+          <td><span class="badge delete">DELETE</span></td>
+          <td class="url">{{base}}/api/vehiculos/<span class="path-param">{id de #26}</span></td>
+          <td><div class="expect"><span class="ok">204</span> — soft delete (activo=false)</div></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ══════ FASE 5 — ESPACIOS ══════ -->
+  <section id="p5">
+    <h2>Fase 5 — Espacios</h2>
+
+    <table class="test-table">
+      <thead><tr><th>#</th><th>Método</th><th>URL</th><th>Body / Esperado</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>29</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/espacios</td>
+          <td><div class="expect"><span class="ok">200</span> — 10 espacios</div></td>
+        </tr>
+        <tr>
+          <td>30</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/espacios/disponibles</td>
+          <td><div class="expect"><span class="ok">200</span> — 9 libres (M-01 está ocupado por DDDD33)</div></td>
+        </tr>
+        <tr>
+          <td>31</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/espacios/<span class="path-param">1</span></td>
+          <td><div class="expect"><span class="ok">200</span> — A-01, disponible</div></td>
+        </tr>
+        <tr>
+          <td>32</td>
+          <td><span class="badge patch">PATCH</span></td>
+          <td class="url">{{base}}/api/espacios/<span class="path-param">1</span>/disponibilidad</td>
+          <td>
+            <div class="body-block">
+              <div class="body-label">Body JSON <button class="copy-btn" onclick="copyBlock(this)">Copiar</button></div>
+              <pre>{"disponible": false}</pre>
+            </div>
+            <div class="expect"><span class="ok">200</span> — A-01 ocupado</div>
+          </td>
+        </tr>
+        <tr>
+          <td>33</td>
+          <td><span class="badge patch">PATCH</span></td>
+          <td class="url">{{base}}/api/espacios/<span class="path-param">1</span>/disponibilidad</td>
+          <td>
+            <div class="body-block">
+              <div class="body-label">Body JSON <button class="copy-btn" onclick="copyBlock(this)">Copiar</button></div>
+              <pre>{"disponible": true}</pre>
+            </div>
+            <div class="expect"><span class="ok">200</span> — A-01 libre nuevamente</div>
+          </td>
+        </tr>
+        <tr>
+          <td>34</td>
+          <td><span class="badge post">POST</span></td>
+          <td class="url">{{base}}/api/espacios</td>
+          <td>
+            <div class="body-block">
+              <div class="body-label">Body JSON <button class="copy-btn" onclick="copyBlock(this)">Copiar</button></div>
+              <pre>{"numero": "A-07", "zona": "A", "piso": 1, "idTipoEspacio": 1}</pre>
+            </div>
+            <div class="expect"><span class="ok">201</span> — guardar id para test 35</div>
+          </td>
+        </tr>
+        <tr>
+          <td>35</td>
+          <td><span class="badge delete">DELETE</span></td>
+          <td class="url">{{base}}/api/espacios/<span class="path-param">{id de #34}</span></td>
+          <td><div class="expect"><span class="ok">204</span></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ══════ FASE 6 — TARIFAS ══════ -->
+  <section id="p6">
+    <h2>Fase 6 — Tarifas (CRUD)</h2>
+
+    <table class="test-table">
+      <thead><tr><th>#</th><th>Método</th><th>URL</th><th>Body / Esperado</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>36</td>
+          <td><span class="badge post">POST</span></td>
+          <td class="url">{{base}}/api/tarifas</td>
+          <td>
+            <div class="body-block">
+              <div class="body-label">Body JSON <button class="copy-btn" onclick="copyBlock(this)">Copiar</button></div>
+              <pre>{
+  "nombre": "TARIFA_TEST",
+  "descripcion": "Tarifa temporal de prueba",
+  "precioBaseHora": 2000.00,
+  "activo": false
+}</pre>
+            </div>
+            <div class="expect"><span class="ok">201</span> — guardar id para tests 37–38</div>
+          </td>
+        </tr>
+        <tr>
+          <td>37</td>
+          <td><span class="badge put">PUT</span></td>
+          <td class="url">{{base}}/api/tarifas/<span class="path-param">{id}</span></td>
+          <td>
+            <div class="body-block">
+              <div class="body-label">Body JSON <button class="copy-btn" onclick="copyBlock(this)">Copiar</button></div>
+              <pre>{
+  "nombre": "TARIFA_TEST",
+  "descripcion": "Actualizada",
+  "precioBaseHora": 2500.00,
+  "activo": false
+}</pre>
+            </div>
+            <div class="expect"><span class="ok">200</span></div>
+          </td>
+        </tr>
+        <tr>
+          <td>38</td>
+          <td><span class="badge delete">DELETE</span></td>
+          <td class="url">{{base}}/api/tarifas/<span class="path-param">{id de #36}</span></td>
+          <td><div class="expect"><span class="ok">204</span> — desactivación lógica</div></td>
+        </tr>
+        <tr>
+          <td>39</td>
+          <td><span class="badge post">POST</span></td>
+          <td class="url">{{base}}/api/horarios-tarifa</td>
+          <td>
+            <div class="body-block">
+              <div class="body-label">Body JSON <button class="copy-btn" onclick="copyBlock(this)">Copiar</button></div>
+              <pre>{
+  "idTarifa": 1,
+  "diaTipo": "LABORAL",
+  "horaInicio": "2000-01-01T06:00:00",
+  "horaFin": "2000-01-01T08:00:00",
+  "multiplicador": 0.80
+}</pre>
+            </div>
+            <div class="expect"><span class="ok">201</span> — guardar id para test 40</div>
+          </td>
+        </tr>
+        <tr>
+          <td>40</td>
+          <td><span class="badge delete">DELETE</span></td>
+          <td class="url">{{base}}/api/horarios-tarifa/<span class="path-param">{id de #39}</span></td>
+          <td><div class="expect"><span class="ok">204</span></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ══════ FASE 7 — RESERVAS ══════ -->
+  <section id="p7">
+    <h2>Fase 7 — Reservas</h2>
+    <p>Depende de clientes, vehículos y espacios. Los ids 1 y 2 provienen del seed.</p>
+
+    <table class="test-table">
+      <thead><tr><th>#</th><th>Método</th><th>URL</th><th>Body / Esperado</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>41</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/reservas</td>
+          <td><div class="expect"><span class="ok">200</span> — 2 reservas del seed</div></td>
+        </tr>
+        <tr>
+          <td>42</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/reservas/<span class="path-param">1</span></td>
+          <td><div class="expect"><span class="ok">200</span> — reserva de María, FINALIZADA</div></td>
+        </tr>
+        <tr>
+          <td>43</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/reservas/cliente/<span class="path-param">2</span></td>
+          <td><div class="expect"><span class="ok">200</span> — reserva CONFIRMADA de Carlos</div></td>
+        </tr>
+        <tr>
+          <td>44</td>
+          <td><span class="badge post">POST</span></td>
+          <td class="url">{{base}}/api/reservas</td>
+          <td>
+            <div class="body-block">
+              <div class="body-label">Body JSON <button class="copy-btn" onclick="copyBlock(this)">Copiar</button></div>
+              <pre>{
+  "idCliente": 1,
+  "idVehiculo": 1,
+  "idEspacio": 3,
+  "fechaInicio": "2026-05-20T10:00:00",
+  "fechaFin": "2026-05-20T12:00:00"
+}</pre>
+            </div>
+            <div class="expect"><span class="ok">201</span> — estado PENDIENTE · guardar id para tests 45–47</div>
+          </td>
+        </tr>
+        <tr>
+          <td>45</td>
+          <td><span class="badge patch">PATCH</span></td>
+          <td class="url">{{base}}/api/reservas/<span class="path-param">{id}</span>/confirmar</td>
+          <td><div class="expect"><span class="ok">200</span> — estado CONFIRMADA</div></td>
+        </tr>
+        <tr>
+          <td>46</td>
+          <td><span class="badge patch">PATCH</span></td>
+          <td class="url">{{base}}/api/reservas/<span class="path-param">{id}</span>/cancelar</td>
+          <td><div class="expect"><span class="ok">200</span> — estado CANCELADA</div></td>
+        </tr>
+        <tr>
+          <td>47</td>
+          <td><span class="badge post">POST</span></td>
+          <td class="url">{{base}}/api/reservas</td>
+          <td>
+            <div class="body-block">
+              <div class="body-label">Body JSON — nueva reserva para la fase 8 <button class="copy-btn" onclick="copyBlock(this)">Copiar</button></div>
+              <pre>{
+  "idCliente": 1,
+  "idVehiculo": 1,
+  "idEspacio": 4,
+  "fechaInicio": "2026-05-20T14:00:00",
+  "fechaFin": "2026-05-20T16:30:00"
+}</pre>
+            </div>
+            <div class="expect"><span class="ok">201</span> — guardar id para fase 8</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ══════ FASE 8 — ACCESOS ══════ -->
+  <section id="p8">
+    <h2>Fase 8 — Accesos</h2>
+    <p>Test 51–52 usan el acceso creado en esta fase. El acceso id=2 (DDDD33) sigue ACTIVO del seed.</p>
+
+    <table class="test-table">
+      <thead><tr><th>#</th><th>Método</th><th>URL</th><th>Body / Esperado</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>48</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/accesos/<span class="path-param">1</span></td>
+          <td><div class="expect"><span class="ok">200</span> — BBBB11, COMPLETADO, 150 min</div></td>
+        </tr>
+        <tr>
+          <td>49</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/accesos/<span class="path-param">2</span></td>
+          <td><div class="expect"><span class="ok">200</span> — DDDD33, ACTIVO, sin salida</div></td>
+        </tr>
+        <tr>
+          <td>50</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/accesos/reserva/<span class="path-param">1</span></td>
+          <td><div class="expect"><span class="ok">200</span> — acceso de la reserva 1</div></td>
+        </tr>
+        <tr>
+          <td>51</td>
+          <td><span class="badge post">POST</span></td>
+          <td class="url">{{base}}/api/accesos/entrada</td>
+          <td>
+            <div class="body-block">
+              <div class="body-label">Body JSON <button class="copy-btn" onclick="copyBlock(this)">Copiar</button></div>
+              <pre>{
+  "idVehiculo": 1,
+  "idEspacio": 4,
+  "idReserva": {id de #47},
+  "patenteEscaneada": "BBBB11"
+}</pre>
+            </div>
+            <div class="expect"><span class="ok">201</span> — estado ACTIVO · guardar id para tests 52 y 55</div>
+          </td>
+        </tr>
+        <tr>
+          <td>52</td>
+          <td><span class="badge patch">PATCH</span></td>
+          <td class="url">{{base}}/api/accesos/<span class="path-param">{id de #51}</span>/salida</td>
+          <td><div class="expect"><span class="ok">200</span> — estado COMPLETADO · <code>minutos</code> calculado automáticamente</div></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ══════ FASE 9 — COBROS ══════ -->
+  <section id="p9">
+    <h2>Fase 9 — Cobros</h2>
+    <p>El cobro id=1 existe del seed (acceso BBBB11, 150 min, monto_final 3562.50). El test 55 genera un cobro nuevo con la fórmula completa.</p>
+
+    <table class="test-table">
+      <thead><tr><th>#</th><th>Método</th><th>URL</th><th>Body / Esperado</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>53</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/cobros/<span class="path-param">1</span></td>
+          <td><div class="expect"><span class="ok">200</span> — montoFinal: 3562.50 (3750 × (1−5%))</div></td>
+        </tr>
+        <tr>
+          <td>54</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/cobros/acceso/<span class="path-param">1</span></td>
+          <td><div class="expect"><span class="ok">200</span> — mismo cobro del seed</div></td>
+        </tr>
+        <tr>
+          <td>55</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/cobros/cliente/<span class="path-param">1</span></td>
+          <td><div class="expect"><span class="ok">200</span> — cobros de María</div></td>
+        </tr>
+        <tr>
+          <td>56</td>
+          <td><span class="badge post">POST</span></td>
+          <td class="url">{{base}}/api/cobros</td>
+          <td>
+            <div class="body-block">
+              <div class="body-label">Body JSON — usar acceso del test 52 <button class="copy-btn" onclick="copyBlock(this)">Copiar</button></div>
+              <pre>{
+  "idAcceso": {id de #51},
+  "idMetodoPago": 1,
+  "idCliente": 1
+}</pre>
+            </div>
+            <div class="expect"><span class="ok">201</span> — montoFinal calculado con fórmula completa (descuento 5% Banco Estado)</div>
+          </td>
+        </tr>
+        <tr>
+          <td>57</td>
+          <td><span class="badge post">POST</span></td>
+          <td class="url">{{base}}/api/cobros</td>
+          <td>
+            <div class="body-block">
+              <div class="body-label">Body JSON — mismo idAcceso, debe fallar <button class="copy-btn" onclick="copyBlock(this)">Copiar</button></div>
+              <pre>{
+  "idAcceso": {id de #51},
+  "idMetodoPago": 1,
+  "idCliente": 1
+}</pre>
+            </div>
+            <div class="expect"><span class="err">422</span> — ya existe un cobro para este acceso</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ══════ FASE 10 — MÉTODOS DE PAGO ══════ -->
+  <section id="p10">
+    <h2>Fase 10 — Métodos de pago</h2>
+
+    <table class="test-table">
+      <thead><tr><th>#</th><th>Método</th><th>URL</th><th>Body / Esperado</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>58</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/metodos-pago</td>
+          <td><div class="expect"><span class="ok">200</span> — 2 métodos del seed</div></td>
+        </tr>
+        <tr>
+          <td>59</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/metodos-pago/<span class="path-param">1</span></td>
+          <td><div class="expect"><span class="ok">200</span> — Visa crédito Banco Estado de María</div></td>
+        </tr>
+        <tr>
+          <td>60</td>
+          <td><span class="badge post">POST</span></td>
+          <td class="url">{{base}}/api/metodos-pago</td>
+          <td>
+            <div class="body-block">
+              <div class="body-label">Body JSON <button class="copy-btn" onclick="copyBlock(this)">Copiar</button></div>
+              <pre>{
+  "idClienteRef": 1,
+  "idTipoTarjeta": 2,
+  "idBanco": 3,
+  "ultimos4": "1234",
+  "nombreTitular": "MARIA GONZALEZ LOPEZ",
+  "mesVencimiento": 6,
+  "anioVencimiento": 2028,
+  "predeterminado": false
+}</pre>
+            </div>
+            <div class="expect"><span class="ok">201</span> — guardar id para test 61</div>
+          </td>
+        </tr>
+        <tr>
+          <td>61</td>
+          <td><span class="badge delete">DELETE</span></td>
+          <td class="url">{{base}}/api/metodos-pago/<span class="path-param">{id de #60}</span></td>
+          <td><div class="expect"><span class="ok">204</span></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ══════ FASE 11 — SEGURIDAD ══════ -->
+  <section id="p11">
+    <h2>Fase 11 — Seguridad</h2>
+
+    <table class="test-table">
+      <thead><tr><th>#</th><th>Método</th><th>URL</th><th>Body / Esperado</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>62</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/permisos</td>
+          <td><div class="expect"><span class="ok">200</span> — listado de permisos</div></td>
+        </tr>
+        <tr>
+          <td>63</td>
+          <td><span class="badge post">POST</span></td>
+          <td class="url">{{base}}/api/permisos</td>
+          <td>
+            <div class="body-block">
+              <div class="body-label">Body JSON <button class="copy-btn" onclick="copyBlock(this)">Copiar</button></div>
+              <pre>{"codigo": "TEST_EXPORT", "descripcion": "Permiso temporal de pruebas"}</pre>
+            </div>
+            <div class="expect"><span class="ok">201</span> — guardar id para tests 64–66</div>
+          </td>
+        </tr>
+        <tr>
+          <td>64</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/permisos/<span class="path-param">{id de #63}</span></td>
+          <td><div class="expect"><span class="ok">200</span></div></td>
+        </tr>
+        <tr>
+          <td>65</td>
+          <td><span class="badge put">PUT</span></td>
+          <td class="url">{{base}}/api/permisos/<span class="path-param">{id de #63}</span></td>
+          <td>
+            <div class="body-block">
+              <div class="body-label">Body JSON <button class="copy-btn" onclick="copyBlock(this)">Copiar</button></div>
+              <pre>{"codigo": "TEST_EXPORT", "descripcion": "Permiso temporal actualizado"}</pre>
+            </div>
+            <div class="expect"><span class="ok">200</span></div>
+          </td>
+        </tr>
+        <tr>
+          <td>66</td>
+          <td><span class="badge post">POST</span></td>
+          <td class="url">{{base}}/api/roles-permisos</td>
+          <td>
+            <div class="body-block">
+              <div class="body-label">Body JSON <button class="copy-btn" onclick="copyBlock(this)">Copiar</button></div>
+              <pre>{"idRol": 1, "idPermiso": {id de #63}}</pre>
+            </div>
+            <div class="expect"><span class="ok">201</span> — relación creada</div>
+          </td>
+        </tr>
+        <tr>
+          <td>67</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/roles-permisos/rol/<span class="path-param">1</span></td>
+          <td><div class="expect"><span class="ok">200</span> — listado de permisos del rol</div></td>
+        </tr>
+        <tr>
+          <td>68</td>
+          <td><span class="badge delete">DELETE</span></td>
+          <td class="url">{{base}}/api/permisos/<span class="path-param">{id de #63}</span></td>
+          <td><div class="expect"><span class="ok">204</span> — cleanup</div></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ══════ FASE 12 — REPORTES ══════ -->
+  <section id="p12">
+    <h2>Fase 12 — Reportes</h2>
+
+    <table class="test-table">
+      <thead><tr><th>#</th><th>Método</th><th>URL</th><th>Esperado</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>69</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/reportes/ocupacion</td>
+          <td><div class="expect"><span class="ok">200</span> — resumen de ocupación por zona/espacios</div></td>
+        </tr>
+        <tr>
+          <td>70</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/reportes/accesos/reserva/<span class="path-param">1</span></td>
+          <td><div class="expect"><span class="ok">200</span> — acceso asociado a reserva</div></td>
+        </tr>
+        <tr>
+          <td>71</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/reportes/cobros/cliente/<span class="path-param">1</span></td>
+          <td><div class="expect"><span class="ok">200</span> — cobros del cliente</div></td>
+        </tr>
+        <tr>
+          <td>72</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/reportes/accesos/reserva/<span class="path-param">999</span></td>
+          <td><div class="expect"><span class="err">404</span> — reserva/acceso no encontrado</div></td>
+        </tr>
+        <tr>
+          <td>73</td>
+          <td><span class="badge get">GET</span></td>
+          <td class="url">{{base}}/api/reportes/cobros/cliente/<span class="path-param">999</span></td>
+          <td><div class="expect"><span class="ok">200</span> o <span class="err">404</span> según implementación actual (lista vacía/no encontrado)</div></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+</main>
+</div>
+
+<script>
+  function copyBlock(btn) {
+    const pre = btn.closest('.body-block').querySelector('pre');
+    navigator.clipboard.writeText(pre.innerText).then(() => {
+      btn.textContent = 'Copiado';
+      setTimeout(() => btn.textContent = 'Copiar', 2000);
+    });
+  }
+
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('nav a[href^="#"]');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        const a = document.querySelector(`nav a[href="#${e.target.id}"]`);
+        if (a) a.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
