@@ -1,6 +1,6 @@
 # FULLSTACK-I — Proyecto Semestral
 
-> **Docente:** Mauricio González V. | **Institución:** holas DUOC UC
+> **Docente:** Mauricio González V. | **Institución:** DUOC UC
 
 Sistema de aplicación basado en **microservicios** desarrollado con Spring Boot, que implementa múltiples operaciones CRUD, reglas de negocio, seguridad y comunicación entre servicios.
 
@@ -10,14 +10,17 @@ Sistema de aplicación basado en **microservicios** desarrollado con Spring Boot
 
 | Documento | Descripción |
 |-----------|-------------|
-| [Arquitectura](docs/ARQUITECTURA.md) | Diseño general del sistema, microservicios y patrones usados |
-| [Base de Datos](docs/BASE_DE_DATOS.md) | Modelado entidad-relación y reglas de integridad |
-| [Roles de Usuario](docs/ROLES_USUARIO.md) | Definición de roles, permisos y privilegios |
-| [Funcionalidades](docs/FUNCIONALIDADES.md) | Módulos, operaciones CRUD y reglas de negocio |
-| [Seguridad](docs/SEGURIDAD.md) | Autenticación, autorización y tokens JWT |
-| [Herramientas](docs/HERRAMIENTAS.md) | Stack tecnológico y metodologías utilizadas |
-| [Pruebas](docs/PRUEBAS.md) | Estrategia de pruebas unitarias e integración |
-| [Despliegue](docs/DESPLIEGUE.md) | Instrucciones de instalación y despliegue |
+| [Índice de Documentación](docs/index.html) | Navegación central de la documentación del proyecto |
+| [Índice HTML Completo](docs/html-index.html) | Catálogo de todos los archivos HTML del repositorio |
+| [Índice API](docs/api/index.html) | Acceso centralizado a la documentación de endpoints por microservicio |
+| [Arquitectura](docs/ARQUITECTURA.html) | Diseño general del sistema, microservicios y patrones usados |
+| [Base de Datos](docs/BASE_DE_DATOS.html) | Modelado entidad-relación y reglas de integridad |
+| [Roles de Usuario](docs/ROLES_USUARIO.html) | Definición de roles, permisos y privilegios |
+| [Funcionalidades](docs/FUNCIONALIDADES.html) | Módulos, operaciones CRUD y reglas de negocio |
+| [Seguridad](docs/SEGURIDAD.html) | Autenticación, autorización y tokens JWT |
+| [Herramientas](docs/HERRAMIENTAS.html) | Stack tecnológico y metodologías utilizadas |
+| [Pruebas](docs/PRUEBAS.html) | Estrategia de pruebas unitarias e integración |
+| [Despliegue](docs/DESPLIEGUE.html) | Instrucciones de instalación y despliegue |
 
 ---
 
@@ -45,7 +48,7 @@ docker-compose up --build
 
 ### Levantar en Local (sin Docker)
 
-1. Crear las bases de datos indicadas en [Base de Datos](docs/BASE_DE_DATOS.md).
+1. Crear las bases de datos indicadas en [Base de Datos](docs/BASE_DE_DATOS.html).
 2. Configurar `application.properties` de cada microservicio (ver tabla de puertos abajo).
 3. Ejecutar cada servicio respetando el orden de arranque:
 

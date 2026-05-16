@@ -14,7 +14,7 @@
       --border:  #2d3748;
       --text:    #e2e8f0;
       --text2:   #94a3b8;
-      --text3:   #64748b;
+      --text3:   #7b8ea6;
       --blue:    #93c5fd;
       --blue-bg: #1e3a5f;
       --green:   #22c55e;
@@ -34,6 +34,17 @@
       max-width: 900px;
       margin: 0 auto;
     }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.8rem;
+      color: var(--text3);
+      text-decoration: none;
+      margin-bottom: 1.2rem;
+    }
+    .back-link:hover { color: var(--blue); }
 
     .header {
       text-align: center;
@@ -158,6 +169,7 @@
 </head>
 <body>
 
+  <a class="back-link" href="../index.html">← Inicio documentación</a>
   <div class="header">
     <div class="header-badge">DUOC UC · FULLSTACK-I</div>
     <h1>Estacionamiento Inteligente</h1>
@@ -176,12 +188,21 @@
       </div>
     </a>
 
-    <a class="card" href="ROADMAP.md">
+    <a class="card" href="ROADMAP.html">
       <div class="card-icon">🗺️</div>
       <div>
         <div class="card-title">Roadmap</div>
         <div class="card-desc">Fases de desarrollo, división de trabajo, patrón de application.properties y puertos de referencia.</div>
-        <div class="pill pill-blue">Markdown</div>
+        <div class="pill pill-blue">HTML</div>
+      </div>
+    </a>
+
+    <a class="card" href="html-index.html">
+      <div class="card-icon">🧭</div>
+      <div>
+        <div class="card-title">Índice HTML completo</div>
+        <div class="card-desc">Catálogo de todos los archivos .html del repositorio (documentación general + API).</div>
+        <div class="pill pill-yellow">37 HTML</div>
       </div>
     </a>
   </div>
@@ -198,21 +219,21 @@
       </div>
     </a>
 
-    <a class="card" href="ARQUITECTURA.md">
+    <a class="card" href="ARQUITECTURA.html">
       <div class="card-icon">📐</div>
       <div>
         <div class="card-title">Arquitectura</div>
         <div class="card-desc">Decisiones de diseño, patrones aplicados y flujo general del sistema.</div>
-        <div class="pill pill-blue">Markdown</div>
+        <div class="pill pill-blue">HTML</div>
       </div>
     </a>
 
-    <a class="card" href="FUNCIONALIDADES.md">
+    <a class="card" href="FUNCIONALIDADES.html">
       <div class="card-icon">⚙️</div>
       <div>
         <div class="card-title">Funcionalidades</div>
         <div class="card-desc">Descripción de las funcionalidades del sistema desde la perspectiva de negocio.</div>
-        <div class="pill pill-blue">Markdown</div>
+        <div class="pill pill-blue">HTML</div>
       </div>
     </a>
   </div>
@@ -247,21 +268,21 @@
       </div>
     </a>
 
-    <a class="card" href="ERD_estacionamiento.md">
+    <a class="card" href="ERD_estacionamiento.html">
       <div class="card-icon">📄</div>
       <div>
-        <div class="card-title">ERD (Markdown)</div>
+        <div class="card-title">ERD</div>
         <div class="card-desc">Versión en texto plano del diagrama entidad-relación.</div>
-        <div class="pill pill-blue">Markdown</div>
+        <div class="pill pill-blue">HTML</div>
       </div>
     </a>
 
-    <a class="card" href="BASE_DE_DATOS.md">
+    <a class="card" href="BASE_DE_DATOS.html">
       <div class="card-icon">📝</div>
       <div>
-        <div class="card-title">Base de Datos (Markdown)</div>
+        <div class="card-title">Base de Datos</div>
         <div class="card-desc">Documentación de DDL y decisiones de modelado de datos.</div>
-        <div class="pill pill-blue">Markdown</div>
+        <div class="pill pill-blue">HTML</div>
       </div>
     </a>
   </div>
@@ -269,21 +290,21 @@
   <!-- Seguridad y roles -->
   <div class="section-label">Seguridad y roles</div>
   <div class="grid">
-    <a class="card" href="SEGURIDAD.md">
+    <a class="card" href="SEGURIDAD.html">
       <div class="card-icon">🔐</div>
       <div>
         <div class="card-title">Seguridad</div>
         <div class="card-desc">JWT, BCrypt, Spring Security, rutas públicas y protegidas, filtros.</div>
-        <div class="pill pill-blue">Markdown</div>
+        <div class="pill pill-blue">HTML</div>
       </div>
     </a>
 
-    <a class="card" href="ROLES_USUARIO.md">
+    <a class="card" href="ROLES_USUARIO.html">
       <div class="card-icon">👤</div>
       <div>
         <div class="card-title">Roles de Usuario</div>
         <div class="card-desc">Definición de roles, permisos y accesos por tipo de usuario en el sistema.</div>
-        <div class="pill pill-blue">Markdown</div>
+        <div class="pill pill-blue">HTML</div>
       </div>
     </a>
   </div>
@@ -309,39 +330,48 @@
       </div>
     </a>
 
-    <a class="card" href="HERRAMIENTAS.md">
+    <a class="card" href="postman-tests.html">
+      <div class="card-icon">✅</div>
+      <div>
+        <div class="card-title">Postman — Cobertura completa API</div>
+        <div class="card-desc">Índice de pruebas por fases (73 requests), con cobertura por servicio y enlaces Springdoc/OpenAPI.</div>
+        <div class="pill pill-yellow">HTML</div>
+      </div>
+    </a>
+
+    <a class="card" href="HERRAMIENTAS.html">
       <div class="card-icon">🛠️</div>
       <div>
         <div class="card-title">Herramientas</div>
         <div class="card-desc">Stack tecnológico, IDEs, extensiones y herramientas usadas en el desarrollo.</div>
-        <div class="pill pill-blue">Markdown</div>
+        <div class="pill pill-blue">HTML</div>
       </div>
     </a>
 
-    <a class="card" href="SPRING_INITIALIZR.md">
+    <a class="card" href="SPRING_INITIALIZR.html">
       <div class="card-icon">🚀</div>
       <div>
         <div class="card-title">Spring Initializr</div>
         <div class="card-desc">Configuración base usada para scaffoldear cada microservicio.</div>
-        <div class="pill pill-blue">Markdown</div>
+        <div class="pill pill-blue">HTML</div>
       </div>
     </a>
 
-    <a class="card" href="DESPLIEGUE.md">
+    <a class="card" href="DESPLIEGUE.html">
       <div class="card-icon">📦</div>
       <div>
         <div class="card-title">Despliegue</div>
         <div class="card-desc">Instrucciones de despliegue, orden de arranque y configuración de entorno.</div>
-        <div class="pill pill-blue">Markdown</div>
+        <div class="pill pill-blue">HTML</div>
       </div>
     </a>
 
-    <a class="card" href="PRUEBAS.md">
+    <a class="card" href="PRUEBAS.html">
       <div class="card-icon">🧪</div>
       <div>
         <div class="card-title">Pruebas</div>
         <div class="card-desc">Estrategia de testing, configuración H2 en tests y patrones de pruebas unitarias e integración.</div>
-        <div class="pill pill-blue">Markdown</div>
+        <div class="pill pill-blue">HTML</div>
       </div>
     </a>
   </div>
