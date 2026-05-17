@@ -401,12 +401,12 @@ public ReservaResponseDTO finalizar(Long id) {
         <span class="code-filename">ReservaController.java — nuevos endpoints</span>
         <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
       </div>
-      <pre>@PatchMapping("/{id}/confirmar")
+      <pre>@PutMapping("/{id}/confirmar")
 public ResponseEntity&lt;ReservaResponseDTO&gt; confirmar(@PathVariable Long id) {
     return ResponseEntity.ok(reservasService.confirmar(id));
 }
 
-@PatchMapping("/{id}/finalizar")
+@PutMapping("/{id}/finalizar")
 public ResponseEntity&lt;ReservaResponseDTO&gt; finalizar(@PathVariable Long id) {
     return ResponseEntity.ok(reservasService.finalizar(id));
 }</pre>
@@ -747,7 +747,7 @@ import org.springframework.web.bind.annotation.*;
 @FeignClient(name = "ms-espacios")
 public interface EspacioClient {
 
-    @PatchMapping("/api/espacios/{id}/disponibilidad")
+    @PutMapping("/api/espacios/{id}/disponibilidad")
     void updateDisponibilidad(@PathVariable Long id, @RequestParam Boolean disponible);
 }</pre>
     </div>
@@ -771,7 +771,7 @@ public interface ReservaClient {
     @GetMapping("/api/reservas/{id}")
     ReservaResponseDTO findById(@PathVariable Long id);
 
-    @PatchMapping("/api/reservas/{id}/finalizar")
+    @PutMapping("/api/reservas/{id}/finalizar")
     void finalizar(@PathVariable Long id);
 }</pre>
     </div>
@@ -924,7 +924,7 @@ public class AccesoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(accesoService.registrarEntrada(dto));
     }
 
-    @PatchMapping("/{id}/salida")
+    @PutMapping("/{id}/salida")
     public ResponseEntity&lt;AccesoResponseDTO&gt; registrarSalida(@PathVariable Long id) {
         return ResponseEntity.ok(accesoService.registrarSalida(id));
     }
@@ -944,7 +944,7 @@ public class AccesoController {
     <div class="order-grid">
       <div class="order-row"><div class="order-num">1</div><span class="badge badge-ms-reservas">ms-reservas</span><span>Agregar <code>ConflictException</code> + handler en GlobalExceptionHandler</span></div>
       <div class="order-row"><div class="order-num">2</div><span class="badge badge-ms-reservas">ms-reservas</span><span>Métodos <code>confirmar()</code> y <code>finalizar()</code> en ReservaService</span></div>
-      <div class="order-row"><div class="order-num">3</div><span class="badge badge-ms-reservas">ms-reservas</span><span>Endpoints PATCH <code>/confirmar</code> y <code>/finalizar</code> en ReservaController</span></div>
+      <div class="order-row"><div class="order-num">3</div><span class="badge badge-ms-reservas">ms-reservas</span><span>Endpoints PUT <code>/confirmar</code> y <code>/finalizar</code> en ReservaController</span></div>
       <div class="order-row"><div class="order-num">4</div><span class="badge badge-ms-accesos">ms-accesos</span><span><code>application.properties</code> → <code>pom.xml</code> → <code>MsAccesosApplication.java</code></span></div>
       <div class="order-row"><div class="order-num">5</div><span class="badge badge-ms-accesos">ms-accesos</span><span>Excepciones: <code>NotFoundException</code>, <code>ConflictException</code>, <code>GlobalExceptionHandler</code></span></div>
       <div class="order-row"><div class="order-num">6</div><span class="badge badge-ms-accesos">ms-accesos</span><span>Entidad: <code>Acceso.java</code></span></div>
@@ -965,7 +965,7 @@ public class AccesoController {
         <span>Registra entrada física. Body: <code>{ "idReserva": 1 }</code></span>
       </div>
       <div class="order-row">
-        <code style="color:var(--yellow);min-width:4rem">PATCH</code>
+        <code style="color:var(--yellow);min-width:4rem">PUT</code>
         <code>/api/accesos/{id}/salida</code>
         <span>Registra salida. Calcula minutos y libera el espacio.</span>
       </div>

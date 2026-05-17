@@ -263,7 +263,7 @@
     <p class="subtitle">Seguimiento de implementación · 12 microservicios · Spring Boot 3 · Java 21</p>
   </div>
 
-  <p class="updated">Última actualización: 2026-05-15</p>
+  <p class="updated">Última actualización: 2026-05-17</p>
 
   <!-- Overall progress -->
   <div class="progress-section">
@@ -388,7 +388,7 @@
       <ul class="checklist">
         <li><span class="check-done">✔</span> CRUD Espacio · TipoEspacio</li>
         <li><span class="check-done">✔</span> GET /api/espacios/disponibles · puerto 3307</li>
-        <li><span class="check-done">✔</span> PATCH /api/espacios/{id}/disponibilidad (usado por ms-accesos)</li>
+        <li><span class="check-done">✔</span> PUT /api/espacios/{id}/disponibilidad (usado por ms-accesos)</li>
         <li><span class="check-done">✔</span> Swagger habilitado</li>
       </ul>
       <span class="status status-complete">Completo</span>
@@ -423,7 +423,7 @@
         <li><span class="check-done">✔</span> Entidad Reserva · EstadoEnums (PENDIENTE/CONFIRMADA/CANCELADA/FINALIZADA)</li>
         <li><span class="check-done">✔</span> Feign: EspacioClient · VehiculoClient · ClienteClient</li>
         <li><span class="check-done">✔</span> Validación cliente activo · vehículo activo · espacio disponible</li>
-        <li><span class="check-done">✔</span> POST /api/reservas · GET /api/reservas/cliente/{id} · PATCH cancelar</li>
+        <li><span class="check-done">✔</span> POST /api/reservas · GET /api/reservas/cliente/{id} · PUT cancelar/confirmar/finalizar</li>
         <li><span class="check-done">✔</span> GlobalExceptionHandler · NotFoundException · Swagger habilitado</li>
       </ul>
       <span class="status status-complete">Completo</span>
@@ -437,7 +437,7 @@
       <ul class="checklist">
         <li><span class="check-done">✔</span> Entidad Acceso implementada</li>
         <li><span class="check-done">✔</span> POST /api/accesos/entrada</li>
-        <li><span class="check-done">✔</span> PATCH /api/accesos/{id}/salida</li>
+        <li><span class="check-done">✔</span> PUT /api/accesos/{id}/salida</li>
         <li><span class="check-done">✔</span> GET /api/accesos/{id} · GET /api/accesos/reserva/{idReserva}</li>
         <li><span class="check-done">✔</span> Feign: EspacioClient · ReservaClient · Swagger habilitado</li>
       </ul>

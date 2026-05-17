@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pruebas del Sistema — Estacionamiento Inteligente</title>
+  <style>
+:root { --bg:#0f1117;--bg2:#1a1f2e;--border:#2d3748;--text:#e2e8f0;--text2:#94a3b8;--text3:#7b8ea6;--blue:#93c5fd; }
+*{box-sizing:border-box}
+body{margin:0;font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+.container{max-width:980px;margin:0 auto;padding:2rem}
+.back{display:inline-flex;gap:.4rem;color:var(--text3);text-decoration:none;font-size:.85rem;margin-bottom:1rem}
+.back:hover{color:var(--blue)}
+.header{border-bottom:1px solid var(--border);padding-bottom:1rem;margin-bottom:1.25rem}
+.header h1{margin:0;font-size:1.9rem}
+.header p{margin:.35rem 0 0;color:var(--text2);font-size:.92rem}
+main{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.25rem 1.5rem}
+a{color:var(--blue)}
+h1,h2,h3{color:#f8fafc}
+h2{margin-top:1.6rem;border-bottom:1px solid var(--border);padding-bottom:.35rem}
+h3{margin-top:1.2rem}
+p,li{color:var(--text2)}
+code{background:#111827;border:1px solid var(--border);padding:.1rem .35rem;border-radius:4px;color:#c4b5fd;font-family:Consolas,monospace}
+pre{background:#111827;border:1px solid var(--border);padding:.8rem;border-radius:8px;overflow:auto}
+pre code{border:none;background:none;padding:0;color:#e2e8f0}
+table{width:100%;border-collapse:collapse;margin:.8rem 0}
+th,td{border:1px solid var(--border);padding:.5rem .6rem;text-align:left}
+th{background:#1e2330;color:var(--text3);font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+blockquote{border-left:3px solid var(--border);margin:1rem 0;padding:.2rem .8rem;color:var(--text3)}
+hr{border:none;border-top:1px solid var(--border);margin:1.2rem 0}
+</style>
+</head>
+<body>
+  <div class="container">
+    <a class="back" href="index.html">← Índice docs</a>
+    <div class="header">
+      <h1>Pruebas del Sistema</h1>
+      <p>Versión HTML legible generada desde <code>PRUEBAS.md</code>.</p>
+    </div>
+    <main>
+      <h1 id="pruebas-del-sistema">Pruebas del Sistema</h1>
+<h2 id="estrategia-de-pruebas">Estrategia de Pruebas</h2>
+<p>El proyecto implementa una estrategia de pruebas en capas para garantizar la calidad del código:</p>
+<pre><code>         ┌───────────────────────────┐
+         │   Pruebas de Integración  │  (menos, más lentas)
+         ├───────────────────────────┤
+         │    Pruebas de Servicio    │  (con Mockito)
+         ├───────────────────────────┤
+         │    Pruebas Unitarias      │  (más, más rápidas)
+         └───────────────────────────┘
+</code></pre>
+<hr />
+<h2 id="herramientas">Herramientas</h2>
+<table>
+<thead>
+<tr>
+<th>Herramienta</th>
+<th>Versión</th>
+<th>Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>JUnit 5</strong></td>
+<td>Incluida en Spring Boot</td>
+<td>Framework de pruebas</td>
+</tr>
+<tr>
+<td><strong>Mockito</strong></td>
+<td>Incluida en Spring Boot</td>
+<td>Simulación de dependencias</td>
+</tr>
+<tr>
+<td><strong>Spring Boot Test</strong></td>
+<td>Incluida en Spring Boot</td>
+<td>Pruebas de integración</td>
+</tr>
+<tr>
+<td><strong>H2 Database</strong></td>
+<td><code>2.x</code></td>
+<td>BD en memoria para pruebas</td>
+</tr>
+<tr>
+<td><strong>AssertJ</strong></td>
+<td>Incluida en Spring Boot</td>
+<td>Aserciones fluidas</td>
+</tr>
+</tbody>
+</table>
+<h3 id="dependencias-pomxml">Dependencias (pom.xml)</h3>
+<pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+    &lt;!-- Incluye: JUnit 5, Mockito, AssertJ, Spring Test --&gt;
+&lt;/dependency&gt;
+
+&lt;!-- Base de datos en memoria para pruebas --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;com.h2database&lt;/groupId&gt;
+    &lt;artifactId&gt;h2&lt;/artifactId&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+</code></pre>
+<hr />
+<h2 id="pruebas-unitarias-capa-de-servicio">Pruebas Unitarias (Capa de Servicio)</h2>
+<p>Las pruebas unitarias verifican la lógica de negocio de forma <strong>aislada</strong>, simulando las dependencias con Mockito.</p>
+<h3 id="ejemplo-prueba-de-productoservice">Ejemplo: Prueba de <code>ProductoService</code></h3>
+<pre><code class="language-java">@ExtendWith(MockitoExtension.class)
+class ProductoServiceTest {
+
+    @Mock
+    private ProductoRepository productoRepository;
+
+    @Mock
+    private CategoriaRepository categoriaRepository;
+
+    @InjectMocks
+    private ProductoService productoService;
+
+    @Test
+    @DisplayName(&quot;Debe crear producto exitosamente cuando los datos son válidos&quot;)
+    void debeCrearProductoExitosamente() {
+        // Arrange
+        ProductoCreateDTO dto = new ProductoCreateDTO();
+        dto.setNombre(&quot;Producto Test&quot;);
+        dto.setPrecio(new BigDecimal(&quot;100.00&quot;));
+        dto.setStock(50);
+        dto.setCategoriaId(1L);
+
+        Categoria categoria = new Categoria(1L, &quot;Electrónica&quot;);
+        Producto productoGuardado = new Producto(1L, &quot;Producto Test&quot;,
+            new BigDecimal(&quot;100.00&quot;), 50, categoria);
+
+        when(categoriaRepository.findById(1L)).thenReturn(Optional.of(categoria));
+        when(productoRepository.save(any(Producto.class))).thenReturn(productoGuardado);
+
+        // Act
+        ProductoDTO resultado = productoService.crear(dto);
+
+        // Assert
+        assertThat(resultado).isNotNull();
+        assertThat(resultado.getNombre()).isEqualTo(&quot;Producto Test&quot;);
+        assertThat(resultado.getPrecio()).isEqualByComparingTo(&quot;100.00&quot;);
+        verify(productoRepository, times(1)).save(any(Producto.class));
+    }
+
+    @Test
+    @DisplayName(&quot;Debe lanzar excepción cuando la categoría no existe&quot;)
+    void debeLanzarExcepcionCuandoCategoriaNoExiste() {
+        // Arrange
+        ProductoCreateDTO dto = new ProductoCreateDTO();
+        dto.setCategoriaId(999L);
+        when(categoriaRepository.findById(999L)).thenReturn(Optional.empty());
+
+        // Act &amp; Assert
+        assertThatThrownBy(() -&gt; productoService.crear(dto))
+            .isInstanceOf(EntityNotFoundException.class)
+            .hasMessageContaining(&quot;Categoría no encontrada&quot;);
+    }
+
+    @Test
+    @DisplayName(&quot;Debe lanzar excepción cuando el precio es negativo&quot;)
+    void debeLanzarExcepcionCuandoPrecioEsNegativo() {
+        ProductoCreateDTO dto = new ProductoCreateDTO();
+        dto.setPrecio(new BigDecimal(&quot;-10.00&quot;));
+
+        assertThatThrownBy(() -&gt; productoService.crear(dto))
+            .isInstanceOf(BusinessException.class);
+    }
+}
+</code></pre>
+<hr />
+<h2 id="pruebas-de-reglas-de-negocio">Pruebas de Reglas de Negocio</h2>
+<pre><code class="language-java">@ExtendWith(MockitoExtension.class)
+class PedidoServiceTest {
+
+    @Mock private PedidoRepository pedidoRepository;
+    @Mock private InventarioClient inventarioClient;
+    @InjectMocks private PedidoService pedidoService;
+
+    @Test
+    @DisplayName(&quot;No debe crear pedido si no hay stock suficiente&quot;)
+    void noDebeCrearPedidoSinStock() {
+        // Arrange
+        PedidoCreateDTO dto = new PedidoCreateDTO();
+        dto.setProductoId(1L);
+        dto.setCantidad(100);
+
+        ProductoDTO producto = new ProductoDTO(1L, &quot;Producto&quot;, 5); // solo 5 en stock
+        when(inventarioClient.obtener(1L)).thenReturn(producto);
+
+        // Act &amp; Assert
+        assertThatThrownBy(() -&gt; pedidoService.crearPedido(dto))
+            .isInstanceOf(BusinessException.class)
+            .hasMessageContaining(&quot;Stock insuficiente&quot;);
+    }
+
+    @Test
+    @DisplayName(&quot;Solo debe cancelar pedido en estado PENDIENTE&quot;)
+    void soloCancelarPedidoEnEstadoPendiente() {
+        Pedido pedido = new Pedido(1L, EstadoPedido.PROCESADO);
+        when(pedidoRepository.findById(1L)).thenReturn(Optional.of(pedido));
+
+        assertThatThrownBy(() -&gt; pedidoService.cancelarPedido(1L))
+            .isInstanceOf(BusinessException.class)
+            .hasMessageContaining(&quot;PENDIENTE&quot;);
+    }
+}
+</code></pre>
+<hr />
+<h2 id="pruebas-de-integracion-capa-web">Pruebas de Integración (Capa Web)</h2>
+<p>Las pruebas de integración verifican el comportamiento completo de los endpoints.</p>
+<pre><code class="language-java">@SpringBootTest
+@AutoConfigureMockMvc
+@ActiveProfiles(&quot;test&quot;)
+class ProductoControllerIntegrationTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @MockBean
+    private ProductoService productoService;
+
+    @Test
+    @DisplayName(&quot;GET /api/productos debe retornar 200 con lista de productos&quot;)
+    void debeRetornarListaDeProductos() throws Exception {
+        List&lt;ProductoDTO&gt; productos = List.of(
+            new ProductoDTO(1L, &quot;Producto A&quot;, new BigDecimal(&quot;50.00&quot;)),
+            new ProductoDTO(2L, &quot;Producto B&quot;, new BigDecimal(&quot;75.00&quot;))
+        );
+        when(productoService.listarTodos(any())).thenReturn(new PageImpl&lt;&gt;(productos));
+
+        mockMvc.perform(get(&quot;/api/productos&quot;)
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath(&quot;$.content&quot;, hasSize(2)))
+            .andExpect(jsonPath(&quot;$.content[0].nombre&quot;).value(&quot;Producto A&quot;));
+    }
+
+    @Test
+    @DisplayName(&quot;POST /api/productos debe retornar 400 con datos inválidos&quot;)
+    void debeRetornar400ConDatosInvalidos() throws Exception {
+        ProductoCreateDTO dto = new ProductoCreateDTO(); // sin campos requeridos
+
+        mockMvc.perform(post(&quot;/api/productos&quot;)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser(roles = &quot;ADMIN&quot;)
+    @DisplayName(&quot;DELETE /api/productos/{id} debe retornar 204 como ADMIN&quot;)
+    void debeEliminarProductoComoAdmin() throws Exception {
+        doNothing().when(productoService).eliminar(1L);
+
+        mockMvc.perform(delete(&quot;/api/productos/1&quot;))
+            .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @WithMockUser(roles = &quot;USER&quot;)
+    @DisplayName(&quot;DELETE /api/productos/{id} debe retornar 403 como USER&quot;)
+    void debeRetornar403ComoUser() throws Exception {
+        mockMvc.perform(delete(&quot;/api/productos/1&quot;))
+            .andExpect(status().isForbidden());
+    }
+}
+</code></pre>
+<hr />
+<h2 id="pruebas-de-repositorio-con-h2">Pruebas de Repositorio (con H2)</h2>
+<pre><code class="language-java">@DataJpaTest
+@ActiveProfiles(&quot;test&quot;)
+class ProductoRepositoryTest {
+
+    @Autowired
+    private ProductoRepository productoRepository;
+
+    @Autowired
+    private TestEntityManager entityManager;
+
+    @Test
+    @DisplayName(&quot;Debe encontrar productos por categoría&quot;)
+    void debeEncontrarProductosPorCategoria() {
+        Categoria categoria = entityManager.persist(new Categoria(&quot;Electrónica&quot;));
+        entityManager.persist(new Producto(&quot;Laptop&quot;, new BigDecimal(&quot;999.00&quot;), 10, categoria));
+        entityManager.persist(new Producto(&quot;Mouse&quot;, new BigDecimal(&quot;25.00&quot;), 50, categoria));
+        entityManager.flush();
+
+        List&lt;Producto&gt; resultado = productoRepository.findByCategoriaId(categoria.getId());
+
+        assertThat(resultado).hasSize(2);
+    }
+}
+</code></pre>
+<hr />
+<h2 id="configuracion-para-pruebas">Configuración para Pruebas</h2>
+<h3 id="srctestresourcesapplication-testproperties"><code>src/test/resources/application-test.properties</code></h3>
+<pre><code class="language-properties"># Base de datos en memoria H2 para pruebas
+spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+spring.datasource.driver-class-name=org.h2.Driver
+spring.jpa.hibernate.ddl-auto=create-drop
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+
+# Deshabilitar Eureka en pruebas
+eureka.client.enabled=false
+spring.cloud.discovery.enabled=false
+</code></pre>
+<hr />
+<h2 id="ejecucion-de-pruebas">Ejecución de Pruebas</h2>
+<pre><code class="language-bash"># Ejecutar todas las pruebas
+mvn test
+
+# Ejecutar pruebas de un servicio específico
+cd nombre-servicio &amp;&amp; mvn test
+
+# Ejecutar una clase de prueba específica
+mvn test -Dtest=ProductoServiceTest
+
+# Generar reporte de cobertura (con JaCoCo)
+mvn verify
+# Reporte en: target/site/jacoco/index.html
+</code></pre>
+<hr />
+<h2 id="buenas-practicas">Buenas Prácticas</h2>
+<ul>
+<li>✅ Seguir el patrón <strong>AAA</strong> (Arrange, Act, Assert)</li>
+<li>✅ Un <code>@Test</code> por escenario</li>
+<li>✅ Nombres descriptivos con <code>@DisplayName</code></li>
+<li>✅ Usar <code>@MockBean</code> para dependencias externas en integración</li>
+<li>✅ Separar pruebas unitarias de integración con perfiles</li>
+<li>✅ Cobertura mínima recomendada: <strong>80% en capa de servicios</strong></li>
+</ul>
+<hr />
+<p><em>Ver también: <a href="FUNCIONALIDADES.html">Funcionalidades</a> | <a href="DESPLIEGUE.html">Despliegue</a></em></p>
+    </main>
+  </div>
+</body>
+</html>

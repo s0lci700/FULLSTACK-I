@@ -20,7 +20,7 @@
     .sidebar a { display:flex;align-items:center;gap:0.5rem;padding:0.3rem 1rem;font-size:0.76rem;color:var(--text2);transition:background 0.1s; }
     .sidebar a:hover { background:var(--bg3);color:var(--text);text-decoration:none; }
     .dot { width:6px;height:6px;border-radius:50%;flex-shrink:0; }
-    .dot-GET { background:var(--green); } .dot-POST { background:var(--blue); } .dot-PUT { background:var(--yellow); } .dot-PATCH { background:var(--cyan); } .dot-DELETE { background:var(--red); }
+    .dot-GET { background:var(--green); } .dot-POST { background:var(--blue); } .dot-PUT { background:var(--yellow); } .dot-DELETE { background:var(--red); }
     .content { flex:1;padding:2rem 2.5rem;max-width:860px; }
     .service-header { margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border); }
     .service-header h1 { font-size:1.5rem;font-weight:700;color:#f8fafc;margin-bottom:0.5rem; }
@@ -47,7 +47,6 @@
     .GET { background:#091f10;color:var(--green);border:1px solid #1a4020; }
     .POST { background:#091630;color:var(--blue);border:1px solid #1a2a50; }
     .PUT { background:#241a00;color:var(--yellow);border:1px solid #403000; }
-    .PATCH { background:#09201f;color:var(--cyan);border:1px solid #1a3838; }
     .DELETE { background:#240909;color:var(--red);border:1px solid #401515; }
     .statuses { display:flex;gap:0.4rem;flex-wrap:wrap; }
     .status { font-size:0.68rem;font-family:monospace;padding:0.12rem 0.4rem;border-radius:4px; }
@@ -73,7 +72,7 @@
       <a href="#e-disponibles"><span class="dot dot-GET"></span>GET /espacios/disponibles</a>
       <a href="#e-post"><span class="dot dot-POST"></span>POST /espacios</a>
       <a href="#e-put"><span class="dot dot-PUT"></span>PUT /espacios/{id}</a>
-      <a href="#e-disponibilidad"><span class="dot dot-PATCH"></span>PATCH /espacios/{id}/disponibilidad</a>
+      <a href="#e-disponibilidad"><span class="dot dot-PUT"></span>PUT /espacios/{id}/disponibilidad</a>
       <a href="#e-delete"><span class="dot dot-DELETE"></span>DELETE /espacios/{id}</a>
     </div>
     <div class="sidebar-group">
@@ -91,8 +90,8 @@
         <span class="meta-chip">/api/espacios</span>
         <span class="meta-chip">/api/tipo-espacio</span>
       </div>
-      <p class="service-desc">Gestión de espacios de estacionamiento y tipos. La disponibilidad es actualizada por ms-accesos en cada entrada/salida vía PATCH.</p>
-      <div class="feign-note">⚡ Feign: ms-reservas y ms-accesos llaman a <strong>PATCH /{id}/disponibilidad</strong> para bloquear/liberar espacios.</div>
+      <p class="service-desc">Gestión de espacios de estacionamiento y tipos. La disponibilidad es actualizada por ms-accesos en cada entrada/salida vía PUT.</p>
+      <div class="feign-note">⚡ Feign: ms-reservas y ms-accesos llaman a <strong>PUT /{id}/disponibilidad</strong> para bloquear/liberar espacios.</div>
     </div>
 
     <div class="group-title">EspacioController — /api/espacios</div>
@@ -183,7 +182,7 @@
 
     <div class="endpoint" id="e-disponibilidad">
       <div class="endpoint-header">
-        <span class="method PATCH">PATCH</span>
+        <span class="method PUT">PUT</span>
         <span class="endpoint-path">/api/espacios/{id}/disponibilidad</span>
       </div>
       <p class="endpoint-summary">Cambia la disponibilidad de un espacio. Llamado por ms-accesos al registrar entrada (false) y salida (true).</p>
