@@ -43,15 +43,12 @@ INSERT INTO rol (nombre, descripcion) VALUES
     ('USER',     'Cliente del estacionamiento'),
     ('OPERATOR', 'Operador de turno — gestión operativa');
 
--- IMPORTANTE: el password_hash de abajo es un PLACEHOLDER.
--- La contraseña en texto plano es "Test1234!".
--- Reemplazar con: new BCryptPasswordEncoder(10).encode("Test1234!")
--- desde Java cuando auth-service esté implementado.
+-- Contraseña en texto plano: "Test1234!" — hash generado con BCryptPasswordEncoder(10)
 INSERT INTO user_credential (email, password_hash, id_rol, id_cliente_ref, activo) VALUES
-    ('admin@parking.cl',    '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 1, NULL, 1),
-    ('operador@parking.cl', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 3, NULL, 1),
-    ('maria@gmail.com',     '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 2, 1,    1),
-    ('carlos@gmail.com',    '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 2, 2,    1);
+    ('admin@parking.cl',    '$2a$10$nFpcGs64KwDjfcgzaoQ14e/JSPJrjBQm345.vNortOOWjIZD.sBQK', 1, NULL, 1),
+    ('operador@parking.cl', '$2a$10$nFpcGs64KwDjfcgzaoQ14e/JSPJrjBQm345.vNortOOWjIZD.sBQK', 3, NULL, 1),
+    ('maria@gmail.com',     '$2a$10$nFpcGs64KwDjfcgzaoQ14e/JSPJrjBQm345.vNortOOWjIZD.sBQK', 2, 1,    1),
+    ('carlos@gmail.com',    '$2a$10$nFpcGs64KwDjfcgzaoQ14e/JSPJrjBQm345.vNortOOWjIZD.sBQK', 2, 2,    1);
 
 -- ---- Verificación ------------------------------------------
 -- SELECT 'rol' AS tabla, COUNT(*) AS filas FROM rol
