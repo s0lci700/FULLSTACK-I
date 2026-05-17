@@ -55,6 +55,10 @@ public class MetodoPagoService {
         log.info("Creando metodo de pago nombre={}", dto.getNombre());
         MetodoPago metodo = new MetodoPago();
         metodo.setNombreTitular(dto.getNombre());
+        metodo.setIdClienteRef(dto.getIdClienteRef() != null ? dto.getIdClienteRef() : 0L);
+        metodo.setUltimos4(dto.getUltimos4() != null ? dto.getUltimos4() : "0000");
+        metodo.setMesVencimiento(dto.getMesVencimiento() != null ? dto.getMesVencimiento() : 1);
+        metodo.setAnioVencimiento(dto.getAnioVencimiento() != null ? dto.getAnioVencimiento() : 2099);
 
         if (dto.getIdBanco() != null) {
             Banco banco = bancoRepository.findById(dto.getIdBanco())

@@ -181,10 +181,10 @@ public class PagoService {
     }
 
     private BigDecimal resolverDescuentoCliente(ClienteResponseDTO cliente) {
-        if (cliente.getTipoCliente() == null) {
+        if (cliente.getTipoCliente() == null || cliente.getTipoCliente().getDescuentoPct() == null) {
             return BigDecimal.ZERO;
         }
-        BigDecimal desc = BigDecimal.valueOf(cliente.getTipoCliente().getDescuentoPorcentaje());
+        BigDecimal desc = cliente.getTipoCliente().getDescuentoPct();
         log.info("Descuento tipo cliente aplicado: {}%", desc);
         return desc;
     }

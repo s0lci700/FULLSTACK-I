@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PermisoCreateDTO {
 
-    // Nombre del permiso, ej: CREATE_RESERVA, DELETE_ESPACIO
-    // No puede estar vacio y no puede repetirse
     @NotBlank
     private String nombre;
 
-    // Descripcion legible del permiso para saber que hace
     @NotBlank
-    private String descripcion;
+    private String recurso;
+
+    @NotBlank
+    private String accion;
 }
