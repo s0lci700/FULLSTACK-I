@@ -2078,7 +2078,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\"codigo\": \"TEST_EXPORT\", \"descripcion\": \"Permiso temporal actualizado\"}",
+              "raw": "{\n  \"nombre\": \"TEST_EXPORT\",\n  \"descripcion\": \"Permiso temporal actualizado\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
