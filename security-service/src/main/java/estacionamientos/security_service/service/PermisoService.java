@@ -13,6 +13,7 @@ import estacionamientos.security_service.exception.BusinessException;
 import estacionamientos.security_service.exception.ResourceNotFoundException;
 import estacionamientos.security_service.model.Permiso;
 import estacionamientos.security_service.repository.PermisoRepository;
+import estacionamientos.security_service.repository.RolPermisoRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,11 +25,12 @@ public class PermisoService {
 
 
 
-    // Inyeccion por constructor, mas segura que @Autowired
     private final PermisoRepository permisoRepository;
+    private final RolPermisoRepository rolPermisoRepository;
 
-    public PermisoService(PermisoRepository permisoRepository) {
+    public PermisoService(PermisoRepository permisoRepository, RolPermisoRepository rolPermisoRepository) {
         this.permisoRepository = permisoRepository;
+        this.rolPermisoRepository = rolPermisoRepository;
     }
 
     // Retorna todos los permisos registrados en la base de datos
@@ -84,6 +86,7 @@ public class PermisoService {
         if (!permisoRepository.existsById(id)) {
             throw new ResourceNotFoundException("Permiso no encontrado id=" + id);
         }
+        rolPermisoRepository.deleteAll(rolPermisoRepository.findAllByPermisoId(id));
         permisoRepository.deleteById(id);
     }
 
