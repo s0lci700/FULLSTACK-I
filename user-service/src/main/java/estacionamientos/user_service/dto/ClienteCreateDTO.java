@@ -12,6 +12,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ClienteCreateDTO {
 
+    @NotBlank(message = "El RUT es obligatorio")
+    private String rut;
+
     @NotBlank(message = "El nombre es obligatorio")
     private String nombre;
 

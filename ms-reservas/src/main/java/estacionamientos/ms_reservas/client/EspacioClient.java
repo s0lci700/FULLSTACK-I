@@ -2,7 +2,7 @@ package estacionamientos.ms_reservas.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -14,7 +14,7 @@ public interface EspacioClient {
     @GetMapping("/api/espacios/{id}")
     EspacioResponseDTO findById(@PathVariable Long id);
 
-    @PatchMapping("/api/espacios/{id}/disponibilidad")
+    @PutMapping("/api/espacios/{id}/disponibilidad")
     void updateDisponibilidad(@PathVariable Long id, @RequestParam Boolean disponible);
 
 }

@@ -55,6 +55,7 @@ public class ClienteService {
         }
         TipoCliente tipo = tipoClienteService.findEntityById(dto.getIdTipoCliente());
         Cliente cliente = new Cliente();
+        cliente.setRut(dto.getRut());
         cliente.setNombre(dto.getNombre());
         cliente.setApellido(dto.getApellido());
         cliente.setEmail(dto.getEmail());

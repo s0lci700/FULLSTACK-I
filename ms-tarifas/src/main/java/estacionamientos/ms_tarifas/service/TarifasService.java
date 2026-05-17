@@ -45,7 +45,7 @@ public class TarifasService {
     // Retorna la tarifa activa actualmente — la usa ms-pagos via Feign para calcular cobros
     public TarifaResponseDTO findVigente() {
         log.info("Obteniendo tarifa vigente");
-        Tarifas tarifa = tarifasRepository.findByActivoTrue()
+        Tarifas tarifa = tarifasRepository.findFirstByActivoTrue()
                 .orElseThrow(() -> new ResourceNotFoundException("No hay tarifa activa actualmente"));
         return toDTO(tarifa);
     }

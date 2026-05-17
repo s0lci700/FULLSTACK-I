@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -52,21 +52,21 @@ public class ReservaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(reservasService.create(reserva));
     }
 
-    @PatchMapping("/{id}/cancelar")
+    @PutMapping("/{id}/cancelar")
     public ResponseEntity<ReservaResponseDTO> cancelar(@PathVariable Long id) {
-        log.info("PATCH /api/reservas/{}/cancelar", id);
+        log.info("PUT /api/reservas/{}/cancelar", id);
         return ResponseEntity.ok(reservasService.cancelar(id));
     }
 
-    @PatchMapping("/{id}/confirmar")
+    @PutMapping("/{id}/confirmar")
     public ResponseEntity<ReservaResponseDTO> confirmar(@PathVariable Long id) {
-        log.info("PATCH /api/reservas/{}/confirmar", id);
+        log.info("PUT /api/reservas/{}/confirmar", id);
         return ResponseEntity.ok(reservasService.confirmar(id));
     }
 
-    @PatchMapping("/{id}/finalizar")
+    @PutMapping("/{id}/finalizar")
     public ResponseEntity<ReservaResponseDTO> finalizar(@PathVariable Long id) {
-        log.info("PATCH /api/reservas/{}/finalizar", id);
+        log.info("PUT /api/reservas/{}/finalizar", id);
         return ResponseEntity.ok(reservasService.finalizar(id));
     }
 }

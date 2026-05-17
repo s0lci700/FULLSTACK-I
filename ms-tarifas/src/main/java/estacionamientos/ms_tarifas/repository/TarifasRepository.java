@@ -11,6 +11,6 @@ import estacionamientos.ms_tarifas.model.Tarifas;
 @Repository
 public interface TarifasRepository extends JpaRepository<Tarifas, Long>{
     boolean existsByNombre(String nombre);
-    Optional<Tarifas> findByActivoTrue();
+    Optional<Tarifas> findFirstByActivoTrue();
     List<Tarifas> findAllByActivoTrue();
 }

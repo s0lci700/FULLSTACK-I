@@ -105,12 +105,11 @@ public class EspacioService {
     @Transactional
     public void delete(Long id) {
         log.info("Eliminando espacio con id: {}", id);
-        if (!espaciosRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Espacio no encontrado con id: " + id);
-        }
-        EspacioResponseDTO espacio = toDTO(espaciosRepository.findById(id).get());
+        Espacio espacio = espaciosRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Espacio no encontrado con id: " + id));
         espacio.setActivo(false);
-        log.info("Espacio eliminado con id: {}", id);
+        espaciosRepository.save(espacio);
+        log.info("Espacio desactivado con id: {}", id);
     }
 
     private EspacioResponseDTO toDTO(Espacio espacio) {

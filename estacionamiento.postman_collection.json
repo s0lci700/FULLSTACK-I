@@ -6,716 +6,2308 @@
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
-    { "key": "base",         "value": "http://localhost:8080" },
-    { "key": "clienteId",    "value": "" },
-    { "key": "vehiculoId",   "value": "" },
-    { "key": "espacioId",    "value": "" },
-    { "key": "tarifaId",     "value": "" },
-    { "key": "horarioId",    "value": "" },
-    { "key": "reservaId1",   "value": "" },
-    { "key": "reservaId2",   "value": "" },
-    { "key": "accesoId",     "value": "" },
-    { "key": "metodoPagoId", "value": "" },
-    { "key": "permisoId",    "value": "" },
-    { "key": "rolPermisoId", "value": "" }
+    {
+      "key": "base",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "clienteId",
+      "value": ""
+    },
+    {
+      "key": "vehiculoId",
+      "value": ""
+    },
+    {
+      "key": "espacioId",
+      "value": ""
+    },
+    {
+      "key": "tarifaId",
+      "value": ""
+    },
+    {
+      "key": "horarioId",
+      "value": ""
+    },
+    {
+      "key": "reservaId1",
+      "value": ""
+    },
+    {
+      "key": "reservaId2",
+      "value": ""
+    },
+    {
+      "key": "accesoId",
+      "value": ""
+    },
+    {
+      "key": "metodoPagoId",
+      "value": ""
+    },
+    {
+      "key": "permisoId",
+      "value": ""
+    },
+    {
+      "key": "rolPermisoId",
+      "value": ""
+    }
   ],
   "item": [
-
     {
       "name": "Fase 1 — Auth",
       "item": [
         {
           "name": "#1 — Login admin",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "if (pm.response.code === 200) { pm.collectionVariables.set('token', pm.response.json().token); }"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\"email\": \"admin@parking.cl\", \"password\": \"Test1234!\"}", "options": { "raw": { "language": "json" } } },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"admin@parking.cl\", \"password\": \"Test1234!\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": "{{base}}/api/auth/login"
           }
         },
         {
           "name": "#2 — Login María (cliente)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\"email\": \"maria@gmail.com\", \"password\": \"Test1234!\"}", "options": { "raw": { "language": "json" } } },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"maria@gmail.com\", \"password\": \"Test1234!\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": "{{base}}/api/auth/login"
           }
         },
         {
           "name": "#3 — Login credenciales inválidas",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('401 Unauthorized', () => pm.response.to.have.status(401));"] } }],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('401 Unauthorized', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\"email\": \"noexiste@x.cl\", \"password\": \"wrongpassword\"}", "options": { "raw": { "language": "json" } } },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"noexiste@x.cl\", \"password\": \"wrongpassword\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": "{{base}}/api/auth/login"
           }
         },
         {
           "name": "#4 — Register nuevo usuario",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('201 Created', () => pm.response.to.have.status(201));"] } }],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\"email\": \"nuevo@test.cl\", \"password\": \"Test1234!\", \"nombreRol\": \"USER\"}", "options": { "raw": { "language": "json" } } },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"nuevo_{{}}@test.cl\",\n  \"password\": \"Test1234!\",\n  \"nombreRol\": \"USER\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": "{{base}}/api/auth/register"
           }
         }
       ]
     },
-
     {
       "name": "Fase 2 — Datos de referencia",
       "item": [
         {
           "name": "#5 — GET tipos de cliente",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/tipo-cliente" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/tipo-cliente"
+          }
         },
         {
           "name": "#6 — GET tipos de vehículo",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/tipos-vehiculo" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/tipos-vehiculo"
+          }
         },
         {
           "name": "#7 — GET tipos de espacio",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/tipo-espacio" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/tipo-espacio"
+          }
         },
         {
           "name": "#8 — GET tarifas",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/tarifas" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/tarifas"
+          }
         },
         {
           "name": "#9 — GET tarifa vigente",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/tarifas/vigente" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/tarifas/vigente"
+          }
         },
         {
           "name": "#10 — GET horarios de tarifa",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/horarios-tarifa" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/horarios-tarifa"
+          }
         },
         {
           "name": "#11 — GET horario vigente",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 o 404', () => pm.expect(pm.response.code).to.be.oneOf([200, 404]));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/horarios-tarifa/vigente" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 o 404', () => pm.expect(pm.response.code).to.be.oneOf([200, 404]));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/horarios-tarifa/vigente"
+          }
         },
         {
           "name": "#12 — GET bancos",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/bancos" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/bancos"
+          }
         },
         {
           "name": "#13 — GET tipos de tarjeta",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/tipo-tarjetas" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/tipo-tarjetas"
+          }
         }
       ]
     },
-
     {
       "name": "Fase 3 — Clientes",
       "item": [
         {
           "name": "#14 — GET todos los clientes",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/clientes" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/clientes"
+          }
         },
         {
           "name": "#15 — GET cliente 1 (María)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/clientes/1" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/clientes/1"
+          }
         },
         {
           "name": "#16 — GET cliente 999 (no existe → 404)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('404 Not Found', () => pm.response.to.have.status(404));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/clientes/999" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('404 Not Found', () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/clientes/999"
+          }
         },
         {
           "name": "#17 — POST crear cliente Ana",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": [
-              "pm.test('201 Created', () => pm.response.to.have.status(201));",
-              "if (pm.response.code === 201) { pm.collectionVariables.set('clienteId', String(pm.response.json().id)); }"
-            ] } }],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', () => pm.response.to.have.status(201));",
+                  "if (pm.response.code === 201) { pm.collectionVariables.set('clienteId', String(pm.response.json().id)); }"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw",
-              "raw": "{\n  \"rut\": \"11111111-1\",\n  \"nombre\": \"Ana\",\n  \"apellido\": \"Soto\",\n  \"email\": \"ana@test.cl\",\n  \"telefono\": \"+56911111111\",\n  \"idTipoCliente\": 1\n}",
-              "options": { "raw": { "language": "json" } } },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rut\": \"99{{}}-{{}}\",\n  \"nombre\": \"Ana\",\n  \"apellido\": \"Soto\",\n  \"email\": \"ana_{{}}@test.cl\",\n  \"telefono\": \"+56911111111\",\n  \"idTipoCliente\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": "{{base}}/api/clientes"
           }
         },
         {
           "name": "#18 — PUT actualizar Ana (apellido + tipo)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
               "raw": "{\n  \"rut\": \"11111111-1\",\n  \"nombre\": \"Ana\",\n  \"apellido\": \"Soto Vega\",\n  \"email\": \"ana@test.cl\",\n  \"telefono\": \"+56911111111\",\n  \"idTipoCliente\": 2\n}",
-              "options": { "raw": { "language": "json" } } },
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": "{{base}}/api/clientes/{{clienteId}}"
           }
         },
         {
           "name": "#19 — GET suscripciones cliente 1 (vacía)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/clientes/1/suscripciones" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/clientes/1/suscripciones"
+          }
         },
         {
           "name": "#20 — GET suscripciones cliente 2 (Carlos PREMIUM)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/clientes/2/suscripciones" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/clientes/2/suscripciones"
+          }
         },
         {
           "name": "#21 — DELETE cliente Ana",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('204 No Content', () => pm.response.to.have.status(204));"] } }],
-          "request": { "method": "DELETE", "header": [], "url": "{{base}}/api/clientes/{{clienteId}}" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('204 No Content', () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/clientes/{{clienteId}}"
+          }
         }
       ]
     },
-
     {
       "name": "Fase 4 — Vehículos",
       "item": [
         {
           "name": "#22 — GET todos los vehículos",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/vehiculos" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/vehiculos"
+          }
         },
         {
           "name": "#23 — GET vehículos de cliente 1 (María)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/vehiculos/cliente/1" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/vehiculos/cliente/1"
+          }
         },
         {
           "name": "#24 — GET validar patente BBBB11 (existe)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/vehiculos/validar/BBBB11" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/vehiculos/validar/BBBB11"
+          }
         },
         {
           "name": "#25 — GET validar patente ZZZZ99 (no existe)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/vehiculos/validar/ZZZZ99" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/vehiculos/validar/ZZZZ99"
+          }
         },
         {
           "name": "#26 — POST crear vehículo EEEE55",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": [
-              "pm.test('201 Created', () => pm.response.to.have.status(201));",
-              "if (pm.response.code === 201) { pm.collectionVariables.set('vehiculoId', String(pm.response.json().id)); }"
-            ] } }],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', () => pm.response.to.have.status(201));",
+                  "if (pm.response.code === 201) { pm.collectionVariables.set('vehiculoId', String(pm.response.json().id)); }"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('patentePrueba', 'ZZ' + Math.floor(Math.random()*9000+1000));"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw",
-              "raw": "{\n  \"patente\": \"EEEE55\",\n  \"marca\": \"Kia\",\n  \"modelo\": \"Picanto\",\n  \"color\": \"Azul\",\n  \"anio\": 2023,\n  \"idTipoVehiculo\": 1,\n  \"idClienteRef\": 1\n}",
-              "options": { "raw": { "language": "json" } } },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"patente\": \"{{patentePrueba}}\",\n  \"marca\": \"Kia\",\n  \"modelo\": \"Picanto\",\n  \"color\": \"Azul\",\n  \"anio\": 2023,\n  \"idTipoVehiculo\": 1,\n  \"idClienteRef\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": "{{base}}/api/vehiculos"
           }
         },
         {
           "name": "#27 — PUT actualizar color vehículo",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
               "raw": "{\n  \"marca\": \"Kia\",\n  \"modelo\": \"Picanto\",\n  \"color\": \"Rojo\",\n  \"anio\": 2023,\n  \"idTipoVehiculo\": 1,\n  \"idClienteRef\": 1\n}",
-              "options": { "raw": { "language": "json" } } },
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": "{{base}}/api/vehiculos/{{vehiculoId}}"
           }
         },
         {
           "name": "#28 — DELETE vehículo EEEE55 (soft delete)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('204 No Content', () => pm.response.to.have.status(204));"] } }],
-          "request": { "method": "DELETE", "header": [], "url": "{{base}}/api/vehiculos/{{vehiculoId}}" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('204 No Content', () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/vehiculos/{{vehiculoId}}"
+          }
         }
       ]
     },
-
     {
       "name": "Fase 5 — Espacios",
       "item": [
         {
           "name": "#29 — GET todos los espacios",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/espacios" }
-        },
-        {
-          "name": "#30 — GET espacios disponibles",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/espacios/disponibles" }
-        },
-        {
-          "name": "#31 — GET espacio 1 (A-01)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/espacios/1" }
-        },
-        {
-          "name": "#32 — PATCH espacio 1 disponibilidad=false",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
           "request": {
-            "method": "PATCH",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\"disponible\": false}", "options": { "raw": { "language": "json" } } },
-            "url": "{{base}}/api/espacios/1/disponibilidad"
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/espacios"
           }
         },
         {
-          "name": "#33 — PATCH espacio 1 disponibilidad=true",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
+          "name": "#30 — GET espacios disponibles",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
           "request": {
-            "method": "PATCH",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\"disponible\": true}", "options": { "raw": { "language": "json" } } },
-            "url": "{{base}}/api/espacios/1/disponibilidad"
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/espacios/disponibles"
+          }
+        },
+        {
+          "name": "#31 — GET espacio 1 (A-01)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/espacios/1"
+          }
+        },
+        {
+          "name": "#32 — PUT espacio 1 disponibilidad=false",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base}}/api/espacios/1/disponibilidad?disponible=false",
+              "host": [
+                "{{base}}"
+              ],
+              "path": [
+                "api",
+                "espacios",
+                "1",
+                "disponibilidad"
+              ],
+              "query": [
+                {
+                  "key": "disponible",
+                  "value": "false"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "#33 — PUT espacio 1 disponibilidad=true",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base}}/api/espacios/1/disponibilidad?disponible=true",
+              "host": [
+                "{{base}}"
+              ],
+              "path": [
+                "api",
+                "espacios",
+                "1",
+                "disponibilidad"
+              ],
+              "query": [
+                {
+                  "key": "disponible",
+                  "value": "true"
+                }
+              ]
+            }
           }
         },
         {
           "name": "#34 — POST crear espacio A-07",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": [
-              "pm.test('201 Created', () => pm.response.to.have.status(201));",
-              "if (pm.response.code === 201) { pm.collectionVariables.set('espacioId', String(pm.response.json().id)); }"
-            ] } }],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', () => pm.response.to.have.status(201));",
+                  "if (pm.response.code === 201) { pm.collectionVariables.set('espacioId', String(pm.response.json().id)); }"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\"numero\": \"A-07\", \"zona\": \"A\", \"piso\": 1, \"idTipoEspacio\": 1}", "options": { "raw": { "language": "json" } } },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"numero\": \"A-07\",\n  \"zona\": \"A\",\n  \"piso\": 1,\n  \"idTipoEspacio\": 1,\n  \"disponible\": true,\n  \"activo\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": "{{base}}/api/espacios"
           }
         },
         {
           "name": "#35 — DELETE espacio A-07",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('204 No Content', () => pm.response.to.have.status(204));"] } }],
-          "request": { "method": "DELETE", "header": [], "url": "{{base}}/api/espacios/{{espacioId}}" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('204 No Content', () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/espacios/{{espacioId}}"
+          }
         }
       ]
     },
-
     {
       "name": "Fase 6 — Tarifas CRUD",
       "item": [
         {
           "name": "#36 — POST crear TARIFA_TEST",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": [
-              "pm.test('201 Created', () => pm.response.to.have.status(201));",
-              "if (pm.response.code === 201) { pm.collectionVariables.set('tarifaId', String(pm.response.json().id)); }"
-            ] } }],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', () => pm.response.to.have.status(201));",
+                  "if (pm.response.code === 201) { pm.collectionVariables.set('tarifaId', String(pm.response.json().id)); }"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('tarifaTestNombre', 'TARIFA_TEST_' + Date.now());"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw",
-              "raw": "{\n  \"nombre\": \"TARIFA_TEST\",\n  \"descripcion\": \"Tarifa temporal de prueba\",\n  \"precioBaseHora\": 2000.00,\n  \"activo\": false\n}",
-              "options": { "raw": { "language": "json" } } },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"{{tarifaTestNombre}}\",\n  \"descripcion\": \"Tarifa temporal de prueba\",\n  \"precioBaseHora\": 2000,\n  \"activo\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": "{{base}}/api/tarifas"
           }
         },
         {
           "name": "#37 — PUT actualizar TARIFA_TEST",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw",
-              "raw": "{\n  \"nombre\": \"TARIFA_TEST\",\n  \"descripcion\": \"Actualizada\",\n  \"precioBaseHora\": 2500.00,\n  \"activo\": false\n}",
-              "options": { "raw": { "language": "json" } } },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"{{tarifaTestNombre}}\",\n  \"descripcion\": \"Tarifa actualizada\",\n  \"precioBaseHora\": 2500,\n  \"activo\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": "{{base}}/api/tarifas/{{tarifaId}}"
           }
         },
         {
           "name": "#38 — DELETE (desactivar) TARIFA_TEST",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('204 No Content', () => pm.response.to.have.status(204));"] } }],
-          "request": { "method": "DELETE", "header": [], "url": "{{base}}/api/tarifas/{{tarifaId}}" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('204 No Content', () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/tarifas/{{tarifaId}}"
+          }
         },
         {
           "name": "#39 — POST crear horario-tarifa",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": [
-              "pm.test('201 Created', () => pm.response.to.have.status(201));",
-              "if (pm.response.code === 201) { pm.collectionVariables.set('horarioId', String(pm.response.json().id)); }"
-            ] } }],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', () => pm.response.to.have.status(201));",
+                  "if (pm.response.code === 201) { pm.collectionVariables.set('horarioId', String(pm.response.json().id)); }"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
               "raw": "{\n  \"idTarifa\": 1,\n  \"diaTipo\": \"LABORAL\",\n  \"horaInicio\": \"2000-01-01T06:00:00\",\n  \"horaFin\": \"2000-01-01T08:00:00\",\n  \"multiplicador\": 0.80\n}",
-              "options": { "raw": { "language": "json" } } },
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": "{{base}}/api/horarios-tarifa"
           }
         },
         {
           "name": "#40 — DELETE horario-tarifa",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('204 No Content', () => pm.response.to.have.status(204));"] } }],
-          "request": { "method": "DELETE", "header": [], "url": "{{base}}/api/horarios-tarifa/{{horarioId}}" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('204 No Content', () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/horarios-tarifa/{{horarioId}}"
+          }
         }
       ]
     },
-
     {
       "name": "Fase 7 — Reservas",
       "item": [
         {
           "name": "#41 — GET todas las reservas",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/reservas" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/reservas"
+          }
         },
         {
           "name": "#42 — GET reserva 1 (María, FINALIZADA)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/reservas/1" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/reservas/1"
+          }
         },
         {
           "name": "#43 — GET reservas de cliente 2 (Carlos, CONFIRMADA)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/reservas/cliente/2" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/reservas/cliente/2"
+          }
         },
         {
           "name": "#44 — POST crear reserva espacio 3",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": [
-              "pm.test('201 Created', () => pm.response.to.have.status(201));",
-              "if (pm.response.code === 201) { pm.collectionVariables.set('reservaId1', String(pm.response.json().id)); }"
-            ] } }],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', () => pm.response.to.have.status(201));",
+                  "if (pm.response.code === 201) { pm.collectionVariables.set('reservaId1', String(pm.response.json().id)); }"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
               "raw": "{\n  \"idCliente\": 1,\n  \"idVehiculo\": 1,\n  \"idEspacio\": 3,\n  \"fechaInicio\": \"2026-05-20T10:00:00\",\n  \"fechaFin\": \"2026-05-20T12:00:00\"\n}",
-              "options": { "raw": { "language": "json" } } },
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": "{{base}}/api/reservas"
           }
         },
         {
-          "name": "#45 — PATCH confirmar reserva 1",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "PATCH", "header": [], "url": "{{base}}/api/reservas/{{reservaId1}}/confirmar" }
+          "name": "#45 — PUT confirmar reserva 1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/reservas/{{reservaId1}}/confirmar"
+          }
         },
         {
-          "name": "#46 — PATCH cancelar reserva 1",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "PATCH", "header": [], "url": "{{base}}/api/reservas/{{reservaId1}}/cancelar" }
+          "name": "#46 — PUT cancelar reserva 1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/reservas/{{reservaId1}}/cancelar"
+          }
         },
         {
           "name": "#47 — POST crear reserva espacio 4 (para Fase 8)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": [
-              "pm.test('201 Created', () => pm.response.to.have.status(201));",
-              "if (pm.response.code === 201) { pm.collectionVariables.set('reservaId2', String(pm.response.json().id)); }"
-            ] } }],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', () => pm.response.to.have.status(201));",
+                  "if (pm.response.code === 201) { pm.collectionVariables.set('reservaId2', String(pm.response.json().id)); }"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
               "raw": "{\n  \"idCliente\": 1,\n  \"idVehiculo\": 1,\n  \"idEspacio\": 4,\n  \"fechaInicio\": \"2026-05-20T14:00:00\",\n  \"fechaFin\": \"2026-05-20T16:30:00\"\n}",
-              "options": { "raw": { "language": "json" } } },
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": "{{base}}/api/reservas"
           }
         },
         {
-          "name": "#47b — PATCH confirmar reserva 2 (prep acceso)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK — CONFIRMADA antes de entrada', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "PATCH", "header": [], "url": "{{base}}/api/reservas/{{reservaId2}}/confirmar" }
+          "name": "#47b — PUT confirmar reserva 2 (prep acceso)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK — CONFIRMADA antes de entrada', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/reservas/{{reservaId2}}/confirmar"
+          }
         }
       ]
     },
-
     {
       "name": "Fase 8 — Accesos",
       "item": [
         {
           "name": "#48 — GET acceso 1 (BBBB11, COMPLETADO, 150 min)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/accesos/1" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/accesos/1"
+          }
         },
         {
           "name": "#49 — GET acceso 2 (DDDD33, ACTIVO)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/accesos/2" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/accesos/2"
+          }
         },
         {
           "name": "#50 — GET acceso por reserva 1",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/accesos/reserva/1" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/accesos/reserva/1"
+          }
         },
         {
           "name": "#51 — POST registrar entrada (reserva 2)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": [
-              "pm.test('201 Created', () => pm.response.to.have.status(201));",
-              "if (pm.response.code === 201) { pm.collectionVariables.set('accesoId', String(pm.response.json().id)); }"
-            ] } }],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', () => pm.response.to.have.status(201));",
+                  "if (pm.response.code === 201) { pm.collectionVariables.set('accesoId', String(pm.response.json().id)); }"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
               "raw": "{\n  \"idVehiculo\": 1,\n  \"idEspacio\": 4,\n  \"idReserva\": {{reservaId2}},\n  \"patenteEscaneada\": \"BBBB11\"\n}",
-              "options": { "raw": { "language": "json" } } },
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": "{{base}}/api/accesos/entrada"
           }
         },
         {
-          "name": "#52 — PATCH registrar salida",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK — minutos calculados', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "PATCH", "header": [], "url": "{{base}}/api/accesos/{{accesoId}}/salida" }
+          "name": "#52 — PUT registrar salida",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK — minutos calculados', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/accesos/{{accesoId}}/salida"
+          }
         }
       ]
     },
-
     {
       "name": "Fase 9 — Cobros",
       "item": [
         {
           "name": "#53 — GET cobro 1 (montoFinal: 3562.50)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/cobros/1" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/cobros/1"
+          }
         },
         {
           "name": "#54 — GET cobro por acceso 1",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/cobros/acceso/1" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/cobros/acceso/1"
+          }
         },
         {
           "name": "#55 — GET cobros de cliente 1 (María)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/cobros/cliente/1" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/cobros/cliente/1"
+          }
         },
         {
           "name": "#56 — POST crear cobro (acceso nuevo, fórmula completa)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('201 Created', () => pm.response.to.have.status(201));"] } }],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
               "raw": "{\n  \"idAcceso\": {{accesoId}},\n  \"idMetodoPago\": 1,\n  \"idCliente\": 1\n}",
-              "options": { "raw": { "language": "json" } } },
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": "{{base}}/api/cobros"
           }
         },
         {
           "name": "#57 — POST cobro duplicado (→ 422)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('422 Business Rule Violation', () => pm.response.to.have.status(422));"] } }],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('422 Business Rule Violation', () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
               "raw": "{\n  \"idAcceso\": {{accesoId}},\n  \"idMetodoPago\": 1,\n  \"idCliente\": 1\n}",
-              "options": { "raw": { "language": "json" } } },
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": "{{base}}/api/cobros"
           }
         }
       ]
     },
-
     {
       "name": "Fase 10 — Métodos de pago",
       "item": [
         {
           "name": "#58 — GET todos los métodos de pago",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/metodos-pago" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/metodos-pago"
+          }
         },
         {
           "name": "#59 — GET método de pago 1 (Visa Banco Estado)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/metodos-pago/1" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/metodos-pago/1"
+          }
         },
         {
           "name": "#60 — POST crear método de pago",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": [
-              "pm.test('201 Created', () => pm.response.to.have.status(201));",
-              "if (pm.response.code === 201) { pm.collectionVariables.set('metodoPagoId', String(pm.response.json().id)); }"
-            ] } }],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', () => pm.response.to.have.status(201));",
+                  "if (pm.response.code === 201) { pm.collectionVariables.set('metodoPagoId', String(pm.response.json().id)); }"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw",
-              "raw": "{\n  \"idClienteRef\": 1,\n  \"idTipoTarjeta\": 2,\n  \"idBanco\": 3,\n  \"ultimos4\": \"1234\",\n  \"nombreTitular\": \"MARIA GONZALEZ LOPEZ\",\n  \"mesVencimiento\": 6,\n  \"anioVencimiento\": 2028,\n  \"predeterminado\": false\n}",
-              "options": { "raw": { "language": "json" } } },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Visa Débito de María\",\n  \"idBanco\": 1,\n  \"idTipoTarjeta\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": "{{base}}/api/metodos-pago"
           }
         },
         {
           "name": "#61 — DELETE método de pago",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('204 No Content', () => pm.response.to.have.status(204));"] } }],
-          "request": { "method": "DELETE", "header": [], "url": "{{base}}/api/metodos-pago/{{metodoPagoId}}" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('204 No Content', () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/metodos-pago/{{metodoPagoId}}"
+          }
         }
       ]
     },
-
     {
       "name": "Fase 11 — Seguridad",
       "item": [
         {
           "name": "#62 — GET todos los permisos",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/permisos" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/permisos"
+          }
         },
         {
           "name": "#63 — POST crear permiso TEST_EXPORT",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": [
-              "pm.test('201 Created', () => pm.response.to.have.status(201));",
-              "if (pm.response.code === 201) { pm.collectionVariables.set('permisoId', String(pm.response.json().id)); }"
-            ] } }],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', () => pm.response.to.have.status(201));",
+                  "if (pm.response.code === 201) { pm.collectionVariables.set('permisoId', String(pm.response.json().id)); }"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw",
-              "raw": "{\"codigo\": \"TEST_EXPORT\", \"descripcion\": \"Permiso temporal de pruebas\"}",
-              "options": { "raw": { "language": "json" } } },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"TEST_EXPORT\",\n  \"descripcion\": \"Permiso temporal de pruebas\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": "{{base}}/api/permisos"
           }
         },
         {
           "name": "#64 — GET permiso por id",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/permisos/{{permisoId}}" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/permisos/{{permisoId}}"
+          }
         },
         {
           "name": "#65 — PUT actualizar descripción permiso",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
               "raw": "{\"codigo\": \"TEST_EXPORT\", \"descripcion\": \"Permiso temporal actualizado\"}",
-              "options": { "raw": { "language": "json" } } },
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": "{{base}}/api/permisos/{{permisoId}}"
           }
         },
         {
           "name": "#66 — POST asignar permiso a rol 1",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": [
-              "pm.test('201 Created', () => pm.response.to.have.status(201));",
-              "if (pm.response.code === 201) { pm.collectionVariables.set('rolPermisoId', String(pm.response.json().id)); }"
-            ] } }],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', () => pm.response.to.have.status(201));",
+                  "if (pm.response.code === 201) { pm.collectionVariables.set('rolPermisoId', String(pm.response.json().id)); }"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
               "raw": "{\"idRol\": 1, \"idPermiso\": {{permisoId}}}",
-              "options": { "raw": { "language": "json" } } },
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": "{{base}}/api/roles-permisos"
           }
         },
         {
           "name": "#67 — GET roles-permisos de rol 1",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/roles-permisos/rol/1" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/roles-permisos/rol/1"
+          }
         },
         {
           "name": "#68 — DELETE permiso TEST_EXPORT (cleanup)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('204 No Content', () => pm.response.to.have.status(204));"] } }],
-          "request": { "method": "DELETE", "header": [], "url": "{{base}}/api/permisos/{{permisoId}}" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('204 No Content', () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/permisos/{{permisoId}}"
+          }
         }
       ]
     },
-
     {
       "name": "Fase 12 — Reportes",
       "item": [
         {
           "name": "#69 — GET reporte de ocupación",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/reportes/ocupacion" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/reportes/ocupacion"
+          }
         },
         {
           "name": "#70 — GET acceso por reserva 1 (reporte)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/reportes/accesos/reserva/1" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/reportes/accesos/reserva/1"
+          }
         },
         {
           "name": "#71 — GET cobros de cliente 1 (reporte)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/reportes/cobros/cliente/1" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/reportes/cobros/cliente/1"
+          }
         },
         {
           "name": "#72 — GET acceso reserva 999 (→ 404)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('404 Not Found', () => pm.response.to.have.status(404));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/reportes/accesos/reserva/999" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('404 Not Found', () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/reportes/accesos/reserva/999"
+          }
         },
         {
           "name": "#73 — GET cobros cliente 999 (200 lista vacía o 404)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript",
-            "exec": ["pm.test('200 o 404', () => pm.expect(pm.response.code).to.be.oneOf([200, 404]));"] } }],
-          "request": { "method": "GET", "header": [], "url": "{{base}}/api/reportes/cobros/cliente/999" }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 o 404', () => pm.expect(pm.response.code).to.be.oneOf([200, 404]));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/reportes/cobros/cliente/999"
+          }
         }
       ]
     }
-
   ]
 }
