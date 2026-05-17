@@ -14,4 +14,6 @@ public interface RolPermisoRepository extends JpaRepository<RolPermiso, Long> {
     // Verifica si un rol ya tiene asignado ese permiso
     // Lo usamos para no asignar el mismo permiso dos veces al mismo rol
     boolean existsByIdRolAndPermisoId(Long idRol, Long permisoId);
+
+    List<RolPermiso> findAllByPermisoId(Long permisoId);
 }

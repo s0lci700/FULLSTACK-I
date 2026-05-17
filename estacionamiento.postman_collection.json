@@ -2025,6 +2025,30 @@
                   "if (pm.response.code === 201) { pm.collectionVariables.set('permisoId', String(pm.response.json().id)); }"
                 ]
               }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.sendRequest({",
+                  "    url: pm.variables.get('base') + '/api/permisos',",
+                  "    method: 'GET',",
+                  "    header: [{ key: 'Authorization', value: 'Bearer ' + pm.collectionVariables.get('token') }]",
+                  "}, function(err, res) {",
+                  "    if (!err && res.code === 200) {",
+                  "        var existing = res.json().find(function(p) { return p.nombre === 'TEST_EXPORT'; });",
+                  "        if (existing) {",
+                  "            pm.sendRequest({",
+                  "                url: pm.variables.get('base') + '/api/permisos/' + existing.id,",
+                  "                method: 'DELETE',",
+                  "                header: [{ key: 'Authorization', value: 'Bearer ' + pm.collectionVariables.get('token') }]",
+                  "            }, function() {});",
+                  "        }",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
             }
           ],
           "request": {
