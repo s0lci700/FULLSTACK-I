@@ -615,7 +615,7 @@
             <div class="endpoint"><span class="method method-put">PUT</span><span class="endpoint-path">/api/espacios/{id}</span></div>
             <div class="endpoint"><span class="method method-delete">DELETE</span><span class="endpoint-path">/api/espacios/{id}</span></div>
             <div class="endpoint"><span class="method method-get">GET</span><span class="endpoint-path">/api/espacios/disponibles</span></div>
-            <div class="endpoint"><span class="method method-patch">PATCH</span><span class="endpoint-path">/api/espacios/{id}/disponibilidad</span></div>
+            <div class="endpoint"><span class="method method-put">PUT</span><span class="endpoint-path">/api/espacios/{id}/disponibilidad</span></div>
           </div>
         </div>
         <div>
@@ -702,7 +702,7 @@
             <div class="endpoint"><span class="method method-post">POST</span><span class="endpoint-path">/api/reservas</span><span class="endpoint-desc">valida disponibilidad vía Feign</span></div>
             <div class="endpoint"><span class="method method-get">GET</span><span class="endpoint-path">/api/reservas/{id}</span></div>
             <div class="endpoint"><span class="method method-get">GET</span><span class="endpoint-path">/api/reservas/cliente/{id}</span></div>
-            <div class="endpoint"><span class="method method-patch">PATCH</span><span class="endpoint-path">/api/reservas/{id}/estado</span><span class="endpoint-desc">CONFIRMADA / CANCELADA / EXPIRADA</span></div>
+            <div class="endpoint"><span class="method method-put">PUT</span><span class="endpoint-path">/api/reservas/{id}/cancelar · /confirmar · /finalizar</span><span class="endpoint-desc">CANCELADA / CONFIRMADA / FINALIZADA</span></div>
           </div>
         </div>
         <div>
@@ -745,7 +745,7 @@
           <div class="section-title">Endpoints</div>
           <div class="endpoint-list">
             <div class="endpoint"><span class="method method-post">POST</span><span class="endpoint-path">/api/accesos/entrada</span><span class="endpoint-desc">registra ingreso</span></div>
-            <div class="endpoint"><span class="method method-patch">PATCH</span><span class="endpoint-path">/api/accesos/{id}/salida</span><span class="endpoint-desc">registra salida + calcula minutos</span></div>
+            <div class="endpoint"><span class="method method-put">PUT</span><span class="endpoint-path">/api/accesos/{id}/salida</span><span class="endpoint-desc">registra salida + calcula minutos</span></div>
             <div class="endpoint"><span class="method method-get">GET</span><span class="endpoint-path">/api/accesos/{id}</span></div>
             <div class="endpoint"><span class="method method-get">GET</span><span class="endpoint-path">/api/accesos/activos</span><span class="endpoint-desc">vehículos estacionados ahora</span></div>
           </div>

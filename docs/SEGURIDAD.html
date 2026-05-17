@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Seguridad del Sistema — Estacionamiento Inteligente</title>
+  <style>
+:root { --bg:#0f1117;--bg2:#1a1f2e;--border:#2d3748;--text:#e2e8f0;--text2:#94a3b8;--text3:#7b8ea6;--blue:#93c5fd; }
+*{box-sizing:border-box}
+body{margin:0;font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+.container{max-width:980px;margin:0 auto;padding:2rem}
+.back{display:inline-flex;gap:.4rem;color:var(--text3);text-decoration:none;font-size:.85rem;margin-bottom:1rem}
+.back:hover{color:var(--blue)}
+.header{border-bottom:1px solid var(--border);padding-bottom:1rem;margin-bottom:1.25rem}
+.header h1{margin:0;font-size:1.9rem}
+.header p{margin:.35rem 0 0;color:var(--text2);font-size:.92rem}
+main{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.25rem 1.5rem}
+a{color:var(--blue)}
+h1,h2,h3{color:#f8fafc}
+h2{margin-top:1.6rem;border-bottom:1px solid var(--border);padding-bottom:.35rem}
+h3{margin-top:1.2rem}
+p,li{color:var(--text2)}
+code{background:#111827;border:1px solid var(--border);padding:.1rem .35rem;border-radius:4px;color:#c4b5fd;font-family:Consolas,monospace}
+pre{background:#111827;border:1px solid var(--border);padding:.8rem;border-radius:8px;overflow:auto}
+pre code{border:none;background:none;padding:0;color:#e2e8f0}
+table{width:100%;border-collapse:collapse;margin:.8rem 0}
+th,td{border:1px solid var(--border);padding:.5rem .6rem;text-align:left}
+th{background:#1e2330;color:var(--text3);font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+blockquote{border-left:3px solid var(--border);margin:1rem 0;padding:.2rem .8rem;color:var(--text3)}
+hr{border:none;border-top:1px solid var(--border);margin:1.2rem 0}
+</style>
+</head>
+<body>
+  <div class="container">
+    <a class="back" href="index.html">← Índice docs</a>
+    <div class="header">
+      <h1>Seguridad del Sistema</h1>
+      <p>Versión HTML legible generada desde <code>SEGURIDAD.md</code>.</p>
+    </div>
+    <main>
+      <h1 id="seguridad-del-sistema">Seguridad del Sistema</h1>
+<h2 id="mecanismos-de-seguridad-implementados">Mecanismos de Seguridad Implementados</h2>
+<table>
+<thead>
+<tr>
+<th>Mecanismo</th>
+<th>Herramienta</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cifrado de contraseñas</td>
+<td><strong>BCrypt</strong></td>
+<td>Almacenamiento seguro en BD</td>
+</tr>
+<tr>
+<td>Autenticación</td>
+<td><strong>Spring Security</strong></td>
+<td>Verifica identidad del usuario</td>
+</tr>
+<tr>
+<td>Tokens de sesión</td>
+<td><strong>JWT (JJWT)</strong></td>
+<td>Autenticación sin estado</td>
+</tr>
+<tr>
+<td>Control de acceso</td>
+<td><strong>RBAC</strong></td>
+<td>Restricción por roles</td>
+</tr>
+<tr>
+<td>Validación de tokens</td>
+<td><strong>API Gateway</strong></td>
+<td>Centralizada en el punto de entrada</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="1-cifrado-de-contrasenas-con-bcrypt">1. Cifrado de Contraseñas con BCrypt</h2>
+<p><strong>Regla:</strong> Las contraseñas <strong>nunca</strong> se almacenan en texto plano.</p>
+<h3 id="dependencia-pomxml">Dependencia (pom.xml)</h3>
+<pre><code class="language-xml">&lt;!-- Incluido en spring-boot-starter-security --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre>
+<h3 id="configuracion">Configuración</h3>
+<pre><code class="language-java">@Configuration
+public class PasswordConfig {
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(12); // strength: 10-12 recomendado
+    }
+}
+</code></pre>
+<h3 id="uso-al-registrar-usuario">Uso al Registrar Usuario</h3>
+<pre><code class="language-java">@Service
+public class AuthService {
+
+    private final PasswordEncoder passwordEncoder;
+    private final UsuarioRepository usuarioRepository;
+
+    public UsuarioDTO registrar(RegistroDTO dto) {
+        if (usuarioRepository.existsByEmail(dto.getEmail())) {
+            throw new BusinessException(&quot;El email ya está registrado&quot;);
+        }
+        Usuario usuario = new Usuario();
+        usuario.setNombre(dto.getNombre());
+        usuario.setEmail(dto.getEmail());
+        // ✅ Contraseña cifrada antes de guardar
+        usuario.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
+        usuario.setActivo(true);
+        return mapper.toDTO(usuarioRepository.save(usuario));
+    }
+}
+</code></pre>
+<hr />
+<h2 id="2-autenticacion-y-generacion-de-jwt">2. Autenticación y Generación de JWT</h2>
+<h3 id="dependencia-jjwt-pomxml">Dependencia JJWT (pom.xml)</h3>
+<pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;io.jsonwebtoken&lt;/groupId&gt;
+    &lt;artifactId&gt;jjwt-api&lt;/artifactId&gt;
+    &lt;version&gt;0.11.5&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;io.jsonwebtoken&lt;/groupId&gt;
+    &lt;artifactId&gt;jjwt-impl&lt;/artifactId&gt;
+    &lt;version&gt;0.11.5&lt;/version&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;io.jsonwebtoken&lt;/groupId&gt;
+    &lt;artifactId&gt;jjwt-jackson&lt;/artifactId&gt;
+    &lt;version&gt;0.11.5&lt;/version&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;
+</code></pre>
+<h3 id="configuracion-applicationproperties">Configuración (application.properties)</h3>
+<pre><code class="language-properties">jwt.secret=clave-super-secreta-de-al-menos-256-bits-en-base64
+jwt.expiration=86400000
+# 86400000 ms = 24 horas
+</code></pre>
+<h3 id="servicio-jwt">Servicio JWT</h3>
+<pre><code class="language-java">@Service
+public class JwtService {
+
+    @Value(&quot;${jwt.secret}&quot;)
+    private String secret;
+
+    @Value(&quot;${jwt.expiration}&quot;)
+    private long expiration;
+
+    public String generarToken(UserDetails userDetails) {
+        Map&lt;String, Object&gt; claims = new HashMap&lt;&gt;();
+        // Incluir roles en el token
+        claims.put(&quot;roles&quot;, userDetails.getAuthorities()
+            .stream()
+            .map(GrantedAuthority::getAuthority)
+            .collect(Collectors.toList()));
+
+        return Jwts.builder()
+            .setClaims(claims)
+            .setSubject(userDetails.getUsername())
+            .setIssuedAt(new Date())
+            .setExpiration(new Date(System.currentTimeMillis() + expiration))
+            .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+            .compact();
+    }
+
+    public boolean validarToken(String token, UserDetails userDetails) {
+        final String username = extraerUsername(token);
+        return username.equals(userDetails.getUsername()) &amp;&amp; !isTokenExpirado(token);
+    }
+
+    public String extraerUsername(String token) {
+        return extraerClaim(token, Claims::getSubject);
+    }
+
+    private Key getSigningKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(secret);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    private boolean isTokenExpirado(String token) {
+        return extraerClaim(token, Claims::getExpiration).before(new Date());
+    }
+
+    private &lt;T&gt; T extraerClaim(String token, Function&lt;Claims, T&gt; resolver) {
+        return resolver.apply(
+            Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+        );
+    }
+}
+</code></pre>
+<h3 id="endpoint-de-login">Endpoint de Login</h3>
+<pre><code class="language-java">@RestController
+@RequestMapping(&quot;/api/auth&quot;)
+@Tag(name = &quot;Autenticación&quot;)
+public class AuthController {
+
+    @Operation(summary = &quot;Iniciar sesión y obtener token JWT&quot;)
+    @PostMapping(&quot;/login&quot;)
+    public ResponseEntity&lt;LoginResponseDTO&gt; login(@Valid @RequestBody LoginDTO dto) {
+        Authentication auth = authManager.authenticate(
+            new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword())
+        );
+        UserDetails userDetails = (UserDetails) auth.getPrincipal();
+        String token = jwtService.generarToken(userDetails);
+        return ResponseEntity.ok(new LoginResponseDTO(token));
+    }
+
+    @Operation(summary = &quot;Registrar nuevo usuario&quot;)
+    @PostMapping(&quot;/registro&quot;)
+    public ResponseEntity&lt;UsuarioDTO&gt; registro(@Valid @RequestBody RegistroDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(authService.registrar(dto));
+    }
+}
+</code></pre>
+<hr />
+<h2 id="3-filtro-jwt-jwtauthfilter">3. Filtro JWT (JwtAuthFilter)</h2>
+<pre><code class="language-java">@Component
+public class JwtAuthFilter extends OncePerRequestFilter {
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
+            throws ServletException, IOException {
+
+        String authHeader = request.getHeader(&quot;Authorization&quot;);
+        if (authHeader == null || !authHeader.startsWith(&quot;Bearer &quot;)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        String token = authHeader.substring(7);
+        String username = jwtService.extraerUsername(token);
+
+        if (username != null &amp;&amp; SecurityContextHolder.getContext()
+                                                      .getAuthentication() == null) {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            if (jwtService.validarToken(token, userDetails)) {
+                UsernamePasswordAuthenticationToken authToken =
+                    new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities());
+                authToken.setDetails(
+                    new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
+        }
+        filterChain.doFilter(request, response);
+    }
+}
+</code></pre>
+<hr />
+<h2 id="4-control-de-acceso-basado-en-roles-rbac">4. Control de Acceso Basado en Roles (RBAC)</h2>
+<pre><code class="language-java">@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        return http
+            .csrf(csrf -&gt; csrf.disable())
+            .sessionManagement(s -&gt; s.sessionCreationPolicy(STATELESS))
+            .authorizeHttpRequests(auth -&gt; auth
+                // Rutas públicas
+                .requestMatchers(&quot;/api/auth/**&quot;).permitAll()
+                .requestMatchers(&quot;/swagger-ui/**&quot;, &quot;/v3/api-docs/**&quot;).permitAll()
+                // Rutas protegidas por rol
+                .requestMatchers(&quot;/api/admin/**&quot;).hasRole(&quot;ADMIN&quot;)
+                .requestMatchers(&quot;/api/operator/**&quot;).hasAnyRole(&quot;ADMIN&quot;, &quot;OPERATOR&quot;)
+                // Todo lo demás requiere autenticación
+                .anyRequest().authenticated()
+            )
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+            .build();
+    }
+}
+</code></pre>
+<hr />
+<h2 id="5-flujo-completo-de-autenticacion">5. Flujo Completo de Autenticación</h2>
+<pre><code>1. Cliente envía credenciales
+   POST /api/auth/login { email, password }
+         │
+2. Spring Security verifica credenciales contra BD
+         │
+3. Se genera token JWT firmado con roles del usuario
+   { &quot;sub&quot;: &quot;user@email.com&quot;, &quot;roles&quot;: [&quot;ROLE_USER&quot;], &quot;exp&quot;: ... }
+         │
+4. Token retornado al cliente
+   { &quot;token&quot;: &quot;eyJhbGci...&quot; }
+         │
+5. Cliente incluye token en cada petición
+   Authorization: Bearer eyJhbGci...
+         │
+6. JwtAuthFilter valida el token en cada request
+         │
+7. Spring Security aplica restricciones por rol
+</code></pre>
+<hr />
+<h2 id="buenas-practicas-de-seguridad">Buenas Prácticas de Seguridad</h2>
+<ul>
+<li>✅ Nunca registrar contraseñas ni tokens en logs</li>
+<li>✅ Usar HTTPS en producción</li>
+<li>✅ El <code>jwt.secret</code> debe ser una clave de al menos 256 bits</li>
+<li>✅ Usar variables de entorno para credenciales (no hardcoded)</li>
+<li>✅ Configurar CORS apropiadamente para producción</li>
+<li>✅ Usar <code>ddl-auto=validate</code> en producción (nunca <code>create-drop</code>)</li>
+<li>✅ Validar inputs con <code>@Valid</code> en todos los endpoints</li>
+</ul>
+<hr />
+<p><em>Ver también: <a href="ROLES_USUARIO.html">Roles de Usuario</a> | <a href="ARQUITECTURA.html">Arquitectura</a></em></p>
+    </main>
+  </div>
+</body>
+</html>

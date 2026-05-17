@@ -19,7 +19,7 @@
     .sidebar a { display:flex;align-items:center;gap:0.5rem;padding:0.3rem 1rem;font-size:0.76rem;color:var(--text2);transition:background 0.1s; }
     .sidebar a:hover { background:var(--bg3);color:var(--text);text-decoration:none; }
     .dot { width:6px;height:6px;border-radius:50%;flex-shrink:0; }
-    .dot-GET { background:var(--green); } .dot-POST { background:var(--blue); } .dot-PATCH { background:var(--cyan); }
+    .dot-GET { background:var(--green); } .dot-POST { background:var(--blue); } .dot-PUT { background:var(--yellow); }
     .content { flex:1;padding:2rem 2.5rem;max-width:860px; }
     .service-header { margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border); }
     .service-header h1 { font-size:1.5rem;font-weight:700;color:#f8fafc;margin-bottom:0.5rem; }
@@ -45,7 +45,7 @@
     .method { font-size:0.63rem;font-weight:700;font-family:monospace;padding:0.22rem 0.5rem;border-radius:5px;text-transform:uppercase;min-width:52px;text-align:center;flex-shrink:0; }
     .GET { background:#091f10;color:var(--green);border:1px solid #1a4020; }
     .POST { background:#091630;color:var(--blue);border:1px solid #1a2a50; }
-    .PATCH { background:#09201f;color:var(--cyan);border:1px solid #1a3838; }
+    .PUT { background:#1a1400;color:var(--yellow);border:1px solid #78350f; }
     .statuses { display:flex;gap:0.4rem;flex-wrap:wrap; }
     .status { font-size:0.68rem;font-family:monospace;padding:0.12rem 0.4rem;border-radius:4px; }
     .s2xx { background:#091f10;color:var(--green); } .s4xx { background:#241a00;color:var(--yellow); }
@@ -68,9 +68,9 @@
     <a href="#r-get"><span class="dot dot-GET"></span>GET /reservas/{id}</a>
     <a href="#r-by-cliente"><span class="dot dot-GET"></span>GET /reservas/cliente/{id}</a>
     <a href="#r-post"><span class="dot dot-POST"></span>POST /reservas</a>
-    <a href="#r-cancelar"><span class="dot dot-PATCH"></span>PATCH /{id}/cancelar</a>
-    <a href="#r-confirmar"><span class="dot dot-PATCH"></span>PATCH /{id}/confirmar</a>
-    <a href="#r-finalizar"><span class="dot dot-PATCH"></span>PATCH /{id}/finalizar</a>
+    <a href="#r-cancelar"><span class="dot dot-PUT"></span>PUT /{id}/cancelar</a>
+    <a href="#r-confirmar"><span class="dot dot-PUT"></span>PUT /{id}/confirmar</a>
+    <a href="#r-finalizar"><span class="dot dot-PUT"></span>PUT /{id}/finalizar</a>
   </aside>
   <main class="content">
     <div class="service-header">
@@ -162,7 +162,7 @@
 
     <div class="endpoint" id="r-cancelar">
       <div class="endpoint-header">
-        <span class="method PATCH">PATCH</span>
+        <span class="method PUT">PUT</span>
         <span class="endpoint-path">/api/reservas/{id}/cancelar</span>
       </div>
       <p class="endpoint-summary">Cancela la reserva (estado → CANCELADA). No libera espacio (nunca fue bloqueado).</p>
@@ -173,7 +173,7 @@
 
     <div class="endpoint" id="r-confirmar">
       <div class="endpoint-header">
-        <span class="method PATCH">PATCH</span>
+        <span class="method PUT">PUT</span>
         <span class="endpoint-path">/api/reservas/{id}/confirmar</span>
       </div>
       <p class="endpoint-summary">Confirma la reserva (estado → CONFIRMADA). Llamado por ms-accesos al registrar la entrada.</p>
@@ -184,7 +184,7 @@
 
     <div class="endpoint" id="r-finalizar">
       <div class="endpoint-header">
-        <span class="method PATCH">PATCH</span>
+        <span class="method PUT">PUT</span>
         <span class="endpoint-path">/api/reservas/{id}/finalizar</span>
       </div>
       <p class="endpoint-summary">Finaliza la reserva (estado → FINALIZADA). Llamado por ms-accesos al registrar la salida.</p>

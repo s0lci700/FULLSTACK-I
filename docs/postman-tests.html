@@ -329,7 +329,7 @@
 <main>
 
   <h1>API Test Guide</h1>
-  <p class="subtitle">73 requests ordenadas por dependencia · Cobertura funcional por servicio · Gateway <code>http://localhost:8080</code></p>
+  <p class="subtitle">74 requests ordenadas por dependencia · Cobertura funcional por servicio · Gateway <code>http://localhost:8080</code></p>
 
   <!-- ── Swagger ── -->
   <section id="swagger">
@@ -464,12 +464,12 @@
         <tr><td>user-service</td><td>CRUD clientes + suscripciones + tipo cliente</td><td>5, 14–21</td><td><a href="api/user-service.html">API docs</a> · <a href="http://localhost:8082/v3/api-docs" target="_blank">openapi</a></td></tr>
         <tr><td>security-service</td><td>CRUD permisos + CRUD roles-permisos</td><td>62–68</td><td><a href="api/security-service.html">API docs</a> · <a href="http://localhost:8083/v3/api-docs" target="_blank">openapi</a></td></tr>
         <tr><td>ms-vehiculos</td><td>listar/buscar/validar + crear/editar/eliminar</td><td>22–28</td><td><a href="api/ms-vehiculos.html">API docs</a> · <a href="http://localhost:8084/v3/api-docs" target="_blank">openapi</a></td></tr>
-        <tr><td>ms-espacios</td><td>tipo espacio + listar/disponibles + disponibilidad PATCH + CRUD básico</td><td>7, 29–35</td><td><a href="api/ms-espacios.html">API docs</a> · <a href="http://localhost:8085/v3/api-docs" target="_blank">openapi</a></td></tr>
+        <tr><td>ms-espacios</td><td>tipo espacio + listar/disponibles + disponibilidad PUT + CRUD básico</td><td>7, 29–35</td><td><a href="api/ms-espacios.html">API docs</a> · <a href="http://localhost:8085/v3/api-docs" target="_blank">openapi</a></td></tr>
         <tr><td>ms-reservas</td><td>listar/filtrar + crear + confirmar/cancelar</td><td>41–47</td><td><a href="api/ms-reservas.html">API docs</a> · <a href="http://localhost:8086/v3/api-docs" target="_blank">openapi</a></td></tr>
         <tr><td>ms-accesos</td><td>entrada/salida + búsquedas por id y reserva</td><td>48–52</td><td><a href="api/ms-accesos.html">API docs</a> · <a href="http://localhost:8087/v3/api-docs" target="_blank">openapi</a></td></tr>
         <tr><td>ms-tarifas</td><td>tarifas + horarios-tarifa + vigentes</td><td>8–11, 36–40</td><td><a href="api/ms-tarifas.html">API docs</a> · <a href="http://localhost:8088/v3/api-docs" target="_blank">openapi</a></td></tr>
         <tr><td>ms-pagos</td><td>cobros + bancos + métodos + tipo-tarjetas + error 422</td><td>12–13, 53–61</td><td><a href="api/ms-pagos.html">API docs</a> · <a href="http://localhost:8089/v3/api-docs" target="_blank">openapi</a></td></tr>
-        <tr><td>ms-reportes</td><td>3 endpoints de reporte agregado</td><td>69–73</td><td><a href="api/ms-reportes.html">API docs</a> · <a href="http://localhost:8090/v3/api-docs" target="_blank">openapi</a></td></tr>
+        <tr><td>ms-reportes</td><td>3 endpoints de reporte agregado</td><td>69–74</td><td><a href="api/ms-reportes.html">API docs</a> · <a href="http://localhost:8090/v3/api-docs" target="_blank">openapi</a></td></tr>
       </tbody>
     </table>
   </section>
@@ -822,25 +822,17 @@
         </tr>
         <tr>
           <td>32</td>
-          <td><span class="badge patch">PATCH</span></td>
-          <td class="url">{{base}}/api/espacios/<span class="path-param">1</span>/disponibilidad</td>
+          <td><span class="badge put">PUT</span></td>
+          <td class="url">{{base}}/api/espacios/<span class="path-param">1</span>/disponibilidad?disponible=false</td>
           <td>
-            <div class="body-block">
-              <div class="body-label">Body JSON <button class="copy-btn" onclick="copyBlock(this)">Copiar</button></div>
-              <pre>{"disponible": false}</pre>
-            </div>
             <div class="expect"><span class="ok">200</span> — A-01 ocupado</div>
           </td>
         </tr>
         <tr>
           <td>33</td>
-          <td><span class="badge patch">PATCH</span></td>
-          <td class="url">{{base}}/api/espacios/<span class="path-param">1</span>/disponibilidad</td>
+          <td><span class="badge put">PUT</span></td>
+          <td class="url">{{base}}/api/espacios/<span class="path-param">1</span>/disponibilidad?disponible=true</td>
           <td>
-            <div class="body-block">
-              <div class="body-label">Body JSON <button class="copy-btn" onclick="copyBlock(this)">Copiar</button></div>
-              <pre>{"disponible": true}</pre>
-            </div>
             <div class="expect"><span class="ok">200</span> — A-01 libre nuevamente</div>
           </td>
         </tr>
@@ -991,13 +983,13 @@
         </tr>
         <tr>
           <td>45</td>
-          <td><span class="badge patch">PATCH</span></td>
+          <td><span class="badge put">PUT</span></td>
           <td class="url">{{base}}/api/reservas/<span class="path-param">{id}</span>/confirmar</td>
           <td><div class="expect"><span class="ok">200</span> — estado CONFIRMADA</div></td>
         </tr>
         <tr>
           <td>46</td>
-          <td><span class="badge patch">PATCH</span></td>
+          <td><span class="badge put">PUT</span></td>
           <td class="url">{{base}}/api/reservas/<span class="path-param">{id}</span>/cancelar</td>
           <td><div class="expect"><span class="ok">200</span> — estado CANCELADA</div></td>
         </tr>
@@ -1070,7 +1062,7 @@
         </tr>
         <tr>
           <td>52</td>
-          <td><span class="badge patch">PATCH</span></td>
+          <td><span class="badge put">PUT</span></td>
           <td class="url">{{base}}/api/accesos/<span class="path-param">{id de #51}</span>/salida</td>
           <td><div class="expect"><span class="ok">200</span> — estado COMPLETADO · <code>minutos</code> calculado automáticamente</div></td>
         </tr>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arquitectura del Sistema — Estacionamiento Inteligente</title>
+  <style>
+:root { --bg:#0f1117;--bg2:#1a1f2e;--border:#2d3748;--text:#e2e8f0;--text2:#94a3b8;--text3:#7b8ea6;--blue:#93c5fd; }
+*{box-sizing:border-box}
+body{margin:0;font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+.container{max-width:980px;margin:0 auto;padding:2rem}
+.back{display:inline-flex;gap:.4rem;color:var(--text3);text-decoration:none;font-size:.85rem;margin-bottom:1rem}
+.back:hover{color:var(--blue)}
+.header{border-bottom:1px solid var(--border);padding-bottom:1rem;margin-bottom:1.25rem}
+.header h1{margin:0;font-size:1.9rem}
+.header p{margin:.35rem 0 0;color:var(--text2);font-size:.92rem}
+main{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.25rem 1.5rem}
+a{color:var(--blue)}
+h1,h2,h3{color:#f8fafc}
+h2{margin-top:1.6rem;border-bottom:1px solid var(--border);padding-bottom:.35rem}
+h3{margin-top:1.2rem}
+p,li{color:var(--text2)}
+code{background:#111827;border:1px solid var(--border);padding:.1rem .35rem;border-radius:4px;color:#c4b5fd;font-family:Consolas,monospace}
+pre{background:#111827;border:1px solid var(--border);padding:.8rem;border-radius:8px;overflow:auto}
+pre code{border:none;background:none;padding:0;color:#e2e8f0}
+table{width:100%;border-collapse:collapse;margin:.8rem 0}
+th,td{border:1px solid var(--border);padding:.5rem .6rem;text-align:left}
+th{background:#1e2330;color:var(--text3);font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+blockquote{border-left:3px solid var(--border);margin:1rem 0;padding:.2rem .8rem;color:var(--text3)}
+hr{border:none;border-top:1px solid var(--border);margin:1.2rem 0}
+</style>
+</head>
+<body>
+  <div class="container">
+    <a class="back" href="index.html">← Índice docs</a>
+    <div class="header">
+      <h1>Arquitectura del Sistema</h1>
+      <p>Versión HTML legible generada desde <code>ARQUITECTURA.md</code>.</p>
+    </div>
+    <main>
+      <h1 id="arquitectura-del-sistema">Arquitectura del Sistema</h1>
+<h2 id="estilo-arquitectonico-microservicios-desacoplados">Estilo Arquitectónico: Microservicios Desacoplados</h2>
+<p>El sistema se construye sobre un patrón de <strong>microservicios independientes</strong>, donde cada módulo de negocio es un servicio autónomo con su propia base de datos, expone sus propias APIs REST y no comparte tablas con otros servicios.</p>
+<hr />
+<h2 id="diagrama-de-alto-nivel">Diagrama de Alto Nivel</h2>
+<pre><code>                          ┌──────────────────────────────────┐
+ Clientes (browser/app)   │           API GATEWAY             │
+ ─────────────────────►   │  (Spring Cloud Gateway)           │
+                          │  Puerto: 8080                     │
+                          └────────────┬─────────────────────┘
+                                       │
+               ┌───────────────────────┼───────────────────────┐
+               │                       │                       │
+               ▼                       ▼                       ▼
+    ┌──────────────────┐   ┌──────────────────┐   ┌──────────────────┐
+    │  Servicio Auth   │   │  Servicio A      │   │  Servicio B      │
+    │  (Seguridad/JWT) │   │  (Módulo X)      │   │  (Módulo Y)      │
+    │  Puerto: 8081    │   │  Puerto: 8082    │   │  Puerto: 8083    │
+    └────────┬─────────┘   └────────┬─────────┘   └────────┬─────────┘
+             │                      │                       │
+             ▼                      ▼                       ▼
+        ┌─────────┐          ┌─────────────┐         ┌─────────────┐
+        │ BD Auth │          │   BD Srv A  │         │   BD Srv B  │
+        │ (MySQL) │          │   (MySQL)   │         │   (MySQL)   │
+        └─────────┘          └─────────────┘         └─────────────┘
+
+                    ┌───────────────────────┐
+                    │   Eureka Server        │
+                    │  (Service Discovery)   │
+                    │  Puerto: 8761          │
+                    └───────────────────────┘
+
+                    ┌───────────────────────┐
+                    │   Apache Kafka         │
+                    │  (Mensajería Async)    │
+                    └───────────────────────┘
+</code></pre>
+<hr />
+<h2 id="componentes-principales">Componentes Principales</h2>
+<h3 id="1-api-gateway">1. API Gateway</h3>
+<ul>
+<li><strong>Framework:</strong> Spring Cloud Gateway</li>
+<li><strong>Responsabilidad:</strong> Punto de entrada único para todas las solicitudes externas.</li>
+<li><strong>Funciones:</strong></li>
+<li>Enrutamiento dinámico hacia microservicios</li>
+<li>Validación de tokens JWT</li>
+<li>Rate limiting y filtros de seguridad</li>
+</ul>
+<h3 id="2-eureka-server-service-discovery">2. Eureka Server (Service Discovery)</h3>
+<ul>
+<li><strong>Framework:</strong> Spring Cloud Netflix Eureka</li>
+<li><strong>Responsabilidad:</strong> Registro y localización dinámica de microservicios.</li>
+<li>Cada microservicio se registra al arrancar con su nombre lógico.</li>
+</ul>
+<h3 id="3-microservicios-de-negocio">3. Microservicios de Negocio</h3>
+<p>Cada servicio es una aplicación Spring Boot independiente:</p>
+<table>
+<thead>
+<tr>
+<th>Servicio</th>
+<th>Responsabilidad</th>
+<th>Puerto sugerido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>auth-service</code></td>
+<td>Autenticación y generación de JWT</td>
+<td>8081</td>
+</tr>
+<tr>
+<td><code>[servicio-A]</code></td>
+<td>Módulo de negocio principal</td>
+<td>8082</td>
+</tr>
+<tr>
+<td><code>[servicio-B]</code></td>
+<td>Módulo de negocio secundario</td>
+<td>8083</td>
+</tr>
+<tr>
+<td><code>[servicio-C]</code></td>
+<td>Módulo de negocio adicional</td>
+<td>8084</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Los nombres de servicios específicos dependen del dominio elegido (ej: <code>reservation-service</code>, <code>inventory-service</code>, <code>order-service</code>, etc.)</p>
+</blockquote>
+<h3 id="4-base-de-datos-por-servicio">4. Base de Datos por Servicio</h3>
+<ul>
+<li><strong>Patrón obligatorio:</strong> cada microservicio gestiona su propia base de datos.</li>
+<li><strong>Motor soportado:</strong> MySQL (recomendado) u Oracle.</li>
+<li><strong>Herramienta de acceso:</strong> Spring Data JPA + Hibernate.</li>
+<li><strong>Entornos:</strong> XAMPP o Laragon para desarrollo local.</li>
+</ul>
+<hr />
+<h2 id="patrones-de-comunicacion">Patrones de Comunicación</h2>
+<h3 id="comunicacion-sincronica-feign-client">Comunicación Sincrónica (Feign Client)</h3>
+<p>Utilizada cuando un servicio necesita respuesta inmediata de otro:</p>
+<pre><code class="language-java">@FeignClient(name = &quot;servicio-a&quot;)
+public interface ServicioAClient {
+    @GetMapping(&quot;/api/recurso/{id}&quot;)
+    RecursoDTO obtenerRecurso(@PathVariable Long id);
+}
+</code></pre>
+<h3 id="comunicacion-asincronica-apache-kafka">Comunicación Asincrónica (Apache Kafka)</h3>
+<p>Utilizada para sincronización de datos mediante eventos:</p>
+<pre><code>Servicio A  ──► [Topic: evento.creado] ──► Servicio B
+</code></pre>
+<hr />
+<h2 id="principios-de-diseno-aplicados">Principios de Diseño Aplicados</h2>
+<table>
+<thead>
+<tr>
+<th>Principio</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Database per Service</strong></td>
+<td>Cada microservicio posee su propia BD aislada</td>
+</tr>
+<tr>
+<td><strong>Single Responsibility</strong></td>
+<td>Cada servicio maneja un único contexto de negocio</td>
+</tr>
+<tr>
+<td><strong>API First</strong></td>
+<td>Las APIs son el contrato principal entre servicios</td>
+</tr>
+<tr>
+<td><strong>Fail Fast</strong></td>
+<td>Validaciones tempranas con <code>@Valid</code> y manejo de excepciones</td>
+</tr>
+<tr>
+<td><strong>Stateless</strong></td>
+<td>Sin sesiones de servidor; el estado se mantiene en JWT</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="requisitos-del-proyecto">Requisitos del Proyecto</h2>
+<p>El proyecto debe evidenciar:
+- ✅ Entidades correctamente modeladas
+- ✅ Relaciones entre entidades
+- ✅ Integridad de los datos
+- ✅ Validaciones y reglas de negocio aplicadas a nivel de aplicación
+- ✅ Múltiples microservicios comunicándose entre sí
+- ✅ Base de datos independiente por servicio</p>
+<hr />
+<p><em>Ver también: <a href="BASE_DE_DATOS.html">Base de Datos</a> | <a href="SEGURIDAD.html">Seguridad</a> | <a href="HERRAMIENTAS.html">Herramientas</a></em></p>
+    </main>
+  </div>
+</body>
+</html>

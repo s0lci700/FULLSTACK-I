@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Roles de Usuario — Estacionamiento Inteligente</title>
+  <style>
+:root { --bg:#0f1117;--bg2:#1a1f2e;--border:#2d3748;--text:#e2e8f0;--text2:#94a3b8;--text3:#7b8ea6;--blue:#93c5fd; }
+*{box-sizing:border-box}
+body{margin:0;font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+.container{max-width:980px;margin:0 auto;padding:2rem}
+.back{display:inline-flex;gap:.4rem;color:var(--text3);text-decoration:none;font-size:.85rem;margin-bottom:1rem}
+.back:hover{color:var(--blue)}
+.header{border-bottom:1px solid var(--border);padding-bottom:1rem;margin-bottom:1.25rem}
+.header h1{margin:0;font-size:1.9rem}
+.header p{margin:.35rem 0 0;color:var(--text2);font-size:.92rem}
+main{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.25rem 1.5rem}
+a{color:var(--blue)}
+h1,h2,h3{color:#f8fafc}
+h2{margin-top:1.6rem;border-bottom:1px solid var(--border);padding-bottom:.35rem}
+h3{margin-top:1.2rem}
+p,li{color:var(--text2)}
+code{background:#111827;border:1px solid var(--border);padding:.1rem .35rem;border-radius:4px;color:#c4b5fd;font-family:Consolas,monospace}
+pre{background:#111827;border:1px solid var(--border);padding:.8rem;border-radius:8px;overflow:auto}
+pre code{border:none;background:none;padding:0;color:#e2e8f0}
+table{width:100%;border-collapse:collapse;margin:.8rem 0}
+th,td{border:1px solid var(--border);padding:.5rem .6rem;text-align:left}
+th{background:#1e2330;color:var(--text3);font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+blockquote{border-left:3px solid var(--border);margin:1rem 0;padding:.2rem .8rem;color:var(--text3)}
+hr{border:none;border-top:1px solid var(--border);margin:1.2rem 0}
+</style>
+</head>
+<body>
+  <div class="container">
+    <a class="back" href="index.html">← Índice docs</a>
+    <div class="header">
+      <h1>Roles de Usuario</h1>
+      <p>Versión HTML legible generada desde <code>ROLES_USUARIO.md</code>.</p>
+    </div>
+    <main>
+      <h1 id="roles-de-usuario">Roles de Usuario</h1>
+<h2 id="resumen">Resumen</h2>
+<p>El sistema contempla entre <strong>2 y 3 roles de usuario diferenciados</strong>, cada uno con funcionalidades distintas, permisos específicos y acceso a diferentes módulos del sistema.</p>
+<hr />
+<h2 id="roles-definidos">Roles Definidos</h2>
+<table>
+<thead>
+<tr>
+<th>Rol</th>
+<th>Identificador</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Administrador</strong></td>
+<td><code>ADMIN</code></td>
+<td>Control total del sistema, gestión de usuarios y configuración</td>
+</tr>
+<tr>
+<td><strong>Usuario / Cliente</strong></td>
+<td><code>USER</code></td>
+<td>Acceso a funcionalidades propias del cliente final</td>
+</tr>
+<tr>
+<td><strong>Operador</strong></td>
+<td><code>OPERATOR</code></td>
+<td>Gestión operativa del día a día (sin acceso a configuración)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="detalle-de-permisos-por-rol">Detalle de Permisos por Rol</h2>
+<h3 id="administrador-admin">🔴 Administrador (<code>ADMIN</code>)</h3>
+<p>El administrador tiene acceso irrestricto a todos los módulos del sistema.</p>
+<p><strong>Funcionalidades exclusivas:</strong>
+- Crear, editar y eliminar usuarios del sistema
+- Asignar y revocar roles
+- Ver reportes y estadísticas globales
+- Configurar parámetros del sistema
+- Acceder a logs y auditoría
+- Gestionar catálogos maestros (categorías, tipos, etc.)</p>
+<p><strong>Módulos accesibles:</strong>
+- ✅ Gestión de usuarios
+- ✅ Gestión de roles y permisos
+- ✅ Todos los módulos de negocio (lectura y escritura)
+- ✅ Módulo de reportes
+- ✅ Configuración del sistema</p>
+<hr />
+<h3 id="usuario-cliente-user">🔵 Usuario / Cliente (<code>USER</code>)</h3>
+<p>El usuario cliente interactúa con el sistema para consumir los servicios ofrecidos.</p>
+<p><strong>Funcionalidades disponibles:</strong>
+- Registrarse e iniciar sesión
+- Consultar su información personal
+- Crear y gestionar sus propias solicitudes/pedidos/reservas
+- Ver el historial de sus operaciones
+- Actualizar su perfil</p>
+<p><strong>Módulos accesibles:</strong>
+- ✅ Perfil personal (solo el propio)
+- ✅ Módulo de solicitudes/pedidos/reservas (solo los propios)
+- ✅ Catálogo (solo lectura)
+- ❌ Gestión de usuarios de terceros
+- ❌ Reportes globales
+- ❌ Configuración del sistema</p>
+<hr />
+<h3 id="operador-operator">🟡 Operador (<code>OPERATOR</code>)</h3>
+<p>El operador gestiona los procesos del día a día del negocio.</p>
+<p><strong>Funcionalidades disponibles:</strong>
+- Ver y gestionar todas las solicitudes/pedidos/reservas
+- Actualizar estados de operaciones
+- Gestionar inventario o disponibilidad
+- Generar reportes operativos básicos</p>
+<p><strong>Módulos accesibles:</strong>
+- ✅ Módulo de operaciones (lectura y escritura)
+- ✅ Módulo de inventario / disponibilidad
+- ✅ Reportes operativos
+- ❌ Gestión de usuarios
+- ❌ Configuración del sistema</p>
+<hr />
+<h2 id="matriz-de-permisos">Matriz de Permisos</h2>
+<table>
+<thead>
+<tr>
+<th>Acción</th>
+<th style="text-align: center;">ADMIN</th>
+<th style="text-align: center;">OPERATOR</th>
+<th style="text-align: center;">USER</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Crear usuario</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td>Ver todos los usuarios</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td>Eliminar usuario</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td>Ver/editar propio perfil</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Crear solicitud/pedido</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Ver todas las solicitudes</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td>Ver solo propias solicitudes</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Actualizar estado solicitud</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td>Gestionar catálogo</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td>Ver catálogo</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Gestionar inventario</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td>Ver reportes globales</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td>Ver reportes operativos</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td>Configurar sistema</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">❌</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="implementacion-con-spring-security">Implementación con Spring Security</h2>
+<h3 id="entidad-rol">Entidad Rol</h3>
+<pre><code class="language-java">@Entity
+@Table(name = &quot;roles&quot;)
+public class Rol {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(unique = true, nullable = false)
+    @Enumerated(EnumType.STRING)
+    private NombreRol nombre;
+
+    public enum NombreRol {
+        ADMIN, USER, OPERATOR
+    }
+}
+</code></pre>
+<h3 id="proteccion-de-endpoints-por-rol">Protección de Endpoints por Rol</h3>
+<pre><code class="language-java">@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+            .authorizeHttpRequests(auth -&gt; auth
+                .requestMatchers(&quot;/api/auth/**&quot;).permitAll()
+                .requestMatchers(&quot;/api/admin/**&quot;).hasRole(&quot;ADMIN&quot;)
+                .requestMatchers(&quot;/api/operator/**&quot;).hasAnyRole(&quot;ADMIN&quot;, &quot;OPERATOR&quot;)
+                .requestMatchers(&quot;/api/user/**&quot;).hasAnyRole(&quot;ADMIN&quot;, &quot;OPERATOR&quot;, &quot;USER&quot;)
+                .anyRequest().authenticated()
+            )
+            .sessionManagement(s -&gt; s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+        return http.build();
+    }
+}
+</code></pre>
+<h3 id="anotaciones-a-nivel-de-metodo">Anotaciones a Nivel de Método</h3>
+<pre><code class="language-java">@RestController
+@RequestMapping(&quot;/api/users&quot;)
+public class UsuarioController {
+
+    @PreAuthorize(&quot;hasRole('ADMIN')&quot;)
+    @DeleteMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Void&gt; eliminarUsuario(@PathVariable Long id) { ... }
+
+    @PreAuthorize(&quot;hasAnyRole('ADMIN', 'OPERATOR')&quot;)
+    @GetMapping
+    public ResponseEntity&lt;List&lt;UsuarioDTO&gt;&gt; listarUsuarios() { ... }
+
+    @PreAuthorize(&quot;#id == authentication.principal.id or hasRole('ADMIN')&quot;)
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;UsuarioDTO&gt; obtenerUsuario(@PathVariable Long id) { ... }
+}
+</code></pre>
+<hr />
+<p><em>Ver también: <a href="SEGURIDAD.html">Seguridad</a> | <a href="FUNCIONALIDADES.html">Funcionalidades</a></em></p>
+    </main>
+  </div>
+</body>
+</html>

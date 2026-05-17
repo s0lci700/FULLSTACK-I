@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Herramientas y Metodologías — Estacionamiento Inteligente</title>
+  <style>
+:root { --bg:#0f1117;--bg2:#1a1f2e;--border:#2d3748;--text:#e2e8f0;--text2:#94a3b8;--text3:#7b8ea6;--blue:#93c5fd; }
+*{box-sizing:border-box}
+body{margin:0;font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+.container{max-width:980px;margin:0 auto;padding:2rem}
+.back{display:inline-flex;gap:.4rem;color:var(--text3);text-decoration:none;font-size:.85rem;margin-bottom:1rem}
+.back:hover{color:var(--blue)}
+.header{border-bottom:1px solid var(--border);padding-bottom:1rem;margin-bottom:1.25rem}
+.header h1{margin:0;font-size:1.9rem}
+.header p{margin:.35rem 0 0;color:var(--text2);font-size:.92rem}
+main{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.25rem 1.5rem}
+a{color:var(--blue)}
+h1,h2,h3{color:#f8fafc}
+h2{margin-top:1.6rem;border-bottom:1px solid var(--border);padding-bottom:.35rem}
+h3{margin-top:1.2rem}
+p,li{color:var(--text2)}
+code{background:#111827;border:1px solid var(--border);padding:.1rem .35rem;border-radius:4px;color:#c4b5fd;font-family:Consolas,monospace}
+pre{background:#111827;border:1px solid var(--border);padding:.8rem;border-radius:8px;overflow:auto}
+pre code{border:none;background:none;padding:0;color:#e2e8f0}
+table{width:100%;border-collapse:collapse;margin:.8rem 0}
+th,td{border:1px solid var(--border);padding:.5rem .6rem;text-align:left}
+th{background:#1e2330;color:var(--text3);font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+blockquote{border-left:3px solid var(--border);margin:1rem 0;padding:.2rem .8rem;color:var(--text3)}
+hr{border:none;border-top:1px solid var(--border);margin:1.2rem 0}
+</style>
+</head>
+<body>
+  <div class="container">
+    <a class="back" href="index.html">← Índice docs</a>
+    <div class="header">
+      <h1>Herramientas y Metodologías</h1>
+      <p>Versión HTML legible generada desde <code>HERRAMIENTAS.md</code>.</p>
+    </div>
+    <main>
+      <h1 id="herramientas-y-metodologias">Herramientas y Metodologías</h1>
+<p>Resumen completo del stack tecnológico y las herramientas utilizadas en el proyecto.</p>
+<hr />
+<h2 id="i-arquitectura">I. Arquitectura</h2>
+<h3 id="spring-boot">Spring Boot</h3>
+<p>Framework principal para crear cada microservicio de forma rápida y estandarizada.</p>
+<pre><code class="language-xml">&lt;parent&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;
+    &lt;version&gt;3.2.x&lt;/version&gt;
+&lt;/parent&gt;
+</code></pre>
+<h3 id="microservicios-desacoplados">Microservicios Desacoplados</h3>
+<p>Técnica de diseño donde cada módulo es independiente, maneja su propia base de datos y no depende directamente de los otros para funcionar.</p>
+<ul>
+<li>Cada servicio = un proyecto Spring Boot independiente</li>
+<li>Comunicación vía HTTP (Feign) o mensajería (Kafka)</li>
+<li>Escalabilidad independiente por servicio</li>
+</ul>
+<hr />
+<h2 id="ii-base-de-datos">II. Base de Datos</h2>
+<h3 id="mysql-recomendado">MySQL (Recomendado)</h3>
+<p>Motor de base de datos relacional. Un esquema/BD por microservicio.</p>
+<pre><code class="language-yaml"># docker-compose.yml
+mysql:
+  image: mysql:8.0
+  environment:
+    MYSQL_ROOT_PASSWORD: root
+    MYSQL_DATABASE: nombre_db
+  ports:
+    - &quot;3306:3306&quot;
+</code></pre>
+<h3 id="spring-data-jpa">Spring Data JPA</h3>
+<p>Facilita la interacción entre código Java y la base de datos sin escribir SQL manual.</p>
+<pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-data-jpa&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;com.mysql&lt;/groupId&gt;
+    &lt;artifactId&gt;mysql-connector-j&lt;/artifactId&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;
+</code></pre>
+<h3 id="diagrama-entidad-relacion-der">Diagrama Entidad-Relación (DER)</h3>
+<p>Técnica de modelado para planificar y validar la estructura de datos antes de crear tablas.
+Ver: <a href="BASE_DE_DATOS.html">Base de Datos</a></p>
+<hr />
+<h2 id="iii-documentacion">III. Documentación</h2>
+<h3 id="springdoc-openapi-swagger">SpringDoc OpenAPI / Swagger</h3>
+<p>Genera automáticamente una página interactiva para visualizar y probar los endpoints.</p>
+<pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.springdoc&lt;/groupId&gt;
+    &lt;artifactId&gt;springdoc-openapi-starter-webmvc-ui&lt;/artifactId&gt;
+    &lt;version&gt;2.3.0&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<p>URL de acceso: <code>http://localhost:{puerto}/swagger-ui.html</code></p>
+<h3 id="anotaciones-de-swagger">Anotaciones de Swagger</h3>
+<p>Etiquetas especiales que añaden descripciones a la documentación:</p>
+<pre><code class="language-java">@Tag(name = &quot;Productos&quot;)
+@Operation(summary = &quot;Crear producto&quot;, description = &quot;Crea un nuevo producto en el catálogo&quot;)
+@ApiResponse(responseCode = &quot;201&quot;, description = &quot;Producto creado exitosamente&quot;)
+@ApiResponse(responseCode = &quot;400&quot;, description = &quot;Datos inválidos&quot;)
+</code></pre>
+<h3 id="markdown-readmemd">Markdown (README.md)</h3>
+<p>Archivo guía en el repositorio que explica el proyecto, cómo instalarlo y cómo ejecutarlo.
+Ver: <a href="../README.html">README</a></p>
+<hr />
+<h2 id="iv-pruebas-calidad">IV. Pruebas (Calidad)</h2>
+<h3 id="junit-5">JUnit 5</h3>
+<p>Framework estándar para escribir y ejecutar pruebas automáticas.</p>
+<pre><code class="language-xml">&lt;!-- Incluido en spring-boot-starter-test --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+</code></pre>
+<h3 id="mockito">Mockito</h3>
+<p>Biblioteca para simular comportamientos de objetos complejos (bases de datos, servicios externos) en pruebas unitarias.</p>
+<pre><code class="language-java">@ExtendWith(MockitoExtension.class)
+class ProductoServiceTest {
+    @Mock ProductoRepository repositorio;
+    @InjectMocks ProductoService servicio;
+    // ...
+}
+</code></pre>
+<h3 id="spring-boot-validation">Spring Boot Validation</h3>
+<p>Anotaciones para validar datos de entrada antes de procesarlos.</p>
+<pre><code class="language-java">@NotNull @NotBlank @Size @Email @Min @Max @DecimalMin @Pattern
+</code></pre>
+<p>Ver detalle en: <a href="PRUEBAS.html">Pruebas</a></p>
+<hr />
+<h2 id="v-comunicacion">V. Comunicación</h2>
+<h3 id="feign-client">Feign Client</h3>
+<p>Biblioteca para comunicación sincrónica entre microservicios vía HTTP.</p>
+<pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-starter-openfeign&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre>
+<pre><code class="language-java">@FeignClient(name = &quot;inventario-service&quot;)
+public interface InventarioClient {
+    @GetMapping(&quot;/api/productos/{id}&quot;)
+    ProductoDTO obtenerProducto(@PathVariable Long id);
+}
+</code></pre>
+<h3 id="apache-kafka">Apache Kafka</h3>
+<p>Plataforma de mensajería para comunicación asincrónica entre microservicios.</p>
+<pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.kafka&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-kafka&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre>
+<p>Casos de uso:
+- Notificaciones de eventos (pedido creado, stock actualizado)
+- Sincronización de datos entre servicios</p>
+<h3 id="eureka-service-discovery">Eureka (Service Discovery)</h3>
+<p>Directorio dinámico donde cada microservicio se registra al iniciar.</p>
+<pre><code class="language-xml">&lt;!-- Servidor Eureka --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-starter-netflix-eureka-server&lt;/artifactId&gt;
+&lt;/dependency&gt;
+
+&lt;!-- Cliente Eureka (en cada microservicio) --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-starter-netflix-eureka-client&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre>
+<p>URL: <code>http://localhost:8761</code></p>
+<h3 id="api-gateway">API Gateway</h3>
+<p>Punto de entrada único para todas las solicitudes externas.</p>
+<pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-starter-gateway&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre>
+<hr />
+<h2 id="vi-seguridad">VI. Seguridad</h2>
+<h3 id="spring-security">Spring Security</h3>
+<p>Framework para gestionar autenticación y autorización.</p>
+<pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre>
+<h3 id="bcrypt">BCrypt</h3>
+<p>Algoritmo de cifrado para contraseñas (incluido en Spring Security).</p>
+<pre><code class="language-java">@Bean
+public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder(12);
+}
+</code></pre>
+<h3 id="json-web-token-jjwt">JSON Web Token (JJWT)</h3>
+<p>Tokens de sesión seguros y sin estado.</p>
+<pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;io.jsonwebtoken&lt;/groupId&gt;
+    &lt;artifactId&gt;jjwt-api&lt;/artifactId&gt;
+    &lt;version&gt;0.11.5&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<h3 id="control-de-acceso-rbac">Control de Acceso (RBAC)</h3>
+<p>Restricción de acceso basada en roles (ADMIN, USER, OPERATOR).
+Ver: <a href="ROLES_USUARIO.html">Roles de Usuario</a> y <a href="SEGURIDAD.html">Seguridad</a></p>
+<hr />
+<h2 id="vii-despliegue-devops">VII. Despliegue (DevOps)</h2>
+<h3 id="maven">Maven</h3>
+<p>Gestión de dependencias y empaquetado del proyecto.</p>
+<pre><code class="language-bash">mvn clean package -DskipTests
+java -jar target/nombre-servicio-1.0.0.jar
+</code></pre>
+<h3 id="docker-docker-compose">Docker / Docker Compose</h3>
+<p>Contenerización de la aplicación y base de datos.</p>
+<pre><code class="language-bash">docker-compose up --build   # Levantar todos los servicios
+docker-compose down         # Detener y eliminar contenedores
+docker-compose logs -f      # Ver logs en tiempo real
+</code></pre>
+<h3 id="ngrok-localtunnel">Ngrok / Localtunnel</h3>
+<p>Exposición del servidor local a internet para pruebas externas.</p>
+<pre><code class="language-bash">ngrok http 8080             # Exponer el API Gateway
+</code></pre>
+<h3 id="railway-render-koyeb">Railway / Render / Koyeb</h3>
+<p>Servicios en la nube gratuitos para despliegue en producción con URL fija.
+Ver: <a href="DESPLIEGUE.html">Despliegue</a></p>
+<hr />
+<h2 id="viii-gestion-de-codigo">VIII. Gestión de Código</h2>
+<h3 id="github">GitHub</h3>
+<p>Plataforma para almacenar código, controlar versiones y trabajar en equipo.</p>
+<h3 id="branches-ramas-recomendadas">Branches (Ramas) Recomendadas</h3>
+<table>
+<thead>
+<tr>
+<th>Rama</th>
+<th>Propósito</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>main</code></td>
+<td>Código estable en producción</td>
+</tr>
+<tr>
+<td><code>develop</code></td>
+<td>Integración de features</td>
+</tr>
+<tr>
+<td><code>feature/nombre</code></td>
+<td>Desarrollo de nueva funcionalidad</td>
+</tr>
+<tr>
+<td><code>fix/nombre</code></td>
+<td>Corrección de bugs</td>
+</tr>
+<tr>
+<td><code>release/vX.X</code></td>
+<td>Preparación de release</td>
+</tr>
+</tbody>
+</table>
+<h3 id="commits-frecuentes">Commits Frecuentes</h3>
+<p>Prácticas recomendadas:</p>
+<pre><code class="language-bash"># Formato de commit
+git commit -m &quot;feat: agregar endpoint de creación de pedidos&quot;
+git commit -m &quot;fix: corregir validación de stock negativo&quot;
+git commit -m &quot;docs: actualizar README con instrucciones de despliegue&quot;
+git commit -m &quot;test: agregar pruebas unitarias a PedidoService&quot;
+</code></pre>
+<hr />
+<h2 id="resumen-de-dependencias-por-area">Resumen de Dependencias por Área</h2>
+<table>
+<thead>
+<tr>
+<th>Área</th>
+<th>Dependencia Principal</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Microservicio base</td>
+<td><code>spring-boot-starter-web</code></td>
+</tr>
+<tr>
+<td>Base de datos</td>
+<td><code>spring-boot-starter-data-jpa</code> + <code>mysql-connector-j</code></td>
+</tr>
+<tr>
+<td>Seguridad</td>
+<td><code>spring-boot-starter-security</code> + <code>jjwt-api</code></td>
+</tr>
+<tr>
+<td>Validación</td>
+<td><code>spring-boot-starter-validation</code></td>
+</tr>
+<tr>
+<td>Documentación</td>
+<td><code>springdoc-openapi-starter-webmvc-ui</code></td>
+</tr>
+<tr>
+<td>Comunicación sync</td>
+<td><code>spring-cloud-starter-openfeign</code></td>
+</tr>
+<tr>
+<td>Comunicación async</td>
+<td><code>spring-kafka</code></td>
+</tr>
+<tr>
+<td>Service Discovery</td>
+<td><code>spring-cloud-starter-netflix-eureka-client</code></td>
+</tr>
+<tr>
+<td>API Gateway</td>
+<td><code>spring-cloud-starter-gateway</code></td>
+</tr>
+<tr>
+<td>Pruebas</td>
+<td><code>spring-boot-starter-test</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><em>Ver también: <a href="ARQUITECTURA.html">Arquitectura</a> | <a href="DESPLIEGUE.html">Despliegue</a></em></p>
+    </main>
+  </div>
+</body>
+</html>

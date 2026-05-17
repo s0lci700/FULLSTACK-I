@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Funcionalidades del Sistema — Estacionamiento Inteligente</title>
+  <style>
+:root { --bg:#0f1117;--bg2:#1a1f2e;--border:#2d3748;--text:#e2e8f0;--text2:#94a3b8;--text3:#7b8ea6;--blue:#93c5fd; }
+*{box-sizing:border-box}
+body{margin:0;font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+.container{max-width:980px;margin:0 auto;padding:2rem}
+.back{display:inline-flex;gap:.4rem;color:var(--text3);text-decoration:none;font-size:.85rem;margin-bottom:1rem}
+.back:hover{color:var(--blue)}
+.header{border-bottom:1px solid var(--border);padding-bottom:1rem;margin-bottom:1.25rem}
+.header h1{margin:0;font-size:1.9rem}
+.header p{margin:.35rem 0 0;color:var(--text2);font-size:.92rem}
+main{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.25rem 1.5rem}
+a{color:var(--blue)}
+h1,h2,h3{color:#f8fafc}
+h2{margin-top:1.6rem;border-bottom:1px solid var(--border);padding-bottom:.35rem}
+h3{margin-top:1.2rem}
+p,li{color:var(--text2)}
+code{background:#111827;border:1px solid var(--border);padding:.1rem .35rem;border-radius:4px;color:#c4b5fd;font-family:Consolas,monospace}
+pre{background:#111827;border:1px solid var(--border);padding:.8rem;border-radius:8px;overflow:auto}
+pre code{border:none;background:none;padding:0;color:#e2e8f0}
+table{width:100%;border-collapse:collapse;margin:.8rem 0}
+th,td{border:1px solid var(--border);padding:.5rem .6rem;text-align:left}
+th{background:#1e2330;color:var(--text3);font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+blockquote{border-left:3px solid var(--border);margin:1rem 0;padding:.2rem .8rem;color:var(--text3)}
+hr{border:none;border-top:1px solid var(--border);margin:1.2rem 0}
+</style>
+</head>
+<body>
+  <div class="container">
+    <a class="back" href="index.html">← Índice docs</a>
+    <div class="header">
+      <h1>Funcionalidades del Sistema</h1>
+      <p>Versión HTML legible generada desde <code>FUNCIONALIDADES.md</code>.</p>
+    </div>
+    <main>
+      <h1 id="funcionalidades-del-sistema">Funcionalidades del Sistema</h1>
+<h2 id="requisitos-minimos">Requisitos Mínimos</h2>
+<p>El sistema debe incluir funcionalidades suficientes para justificar su arquitectura de microservicios:</p>
+<table>
+<thead>
+<tr>
+<th>Requisito</th>
+<th>Estado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Múltiples operaciones CRUD</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Operaciones personalizadas adicionales</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Validaciones de datos</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Reglas de negocio</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Consultas a bases de datos</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Flujo de información entre microservicios</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>APIs completas para gestionar todos los procesos</td>
+<td>✅</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="ejemplos-de-proyectos-aceptables">Ejemplos de Proyectos Aceptables</h2>
+<p>Los siguientes tipos de sistemas cumplen con el nivel de complejidad esperado:</p>
+<table>
+<thead>
+<tr>
+<th>Sistema</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🏨 Sistema de gestión de reservas de hoteles</td>
+<td>Reservas, habitaciones, clientes, check-in/out</td>
+</tr>
+<tr>
+<td>🍽️ Plataforma de gestión de pedidos para restaurantes</td>
+<td>Menú, pedidos, mesas, cocina, delivery</td>
+</tr>
+<tr>
+<td>📚 Sistema de gestión de bibliotecas</td>
+<td>Libros, préstamos, usuarios, multas</td>
+</tr>
+<tr>
+<td>🛒 Plataforma de gestión de ventas online</td>
+<td>Productos, carrito, órdenes, pagos</td>
+</tr>
+<tr>
+<td>📦 Sistema de gestión de inventario con logística</td>
+<td>Stock, proveedores, movimientos, despacho</td>
+</tr>
+<tr>
+<td>🏪 Marketplace de servicios o productos</td>
+<td>Vendedores, compradores, catálogo, transacciones</td>
+</tr>
+<tr>
+<td>📅 Plataforma de gestión de reservas de servicios</td>
+<td>Citas, disponibilidad, profesionales, clientes</td>
+</tr>
+</tbody>
+</table>
+<h3 id="proyectos-no-aceptables">Proyectos NO Aceptables</h3>
+<p>❌ Listas básicas de tareas<br />
+❌ Agendas simples<br />
+❌ CRUD simples sin lógica de negocio<br />
+❌ Sistemas sin interacción entre microservicios<br />
+❌ Aplicaciones con una única base de datos compartida  </p>
+<hr />
+<h2 id="operaciones-crud">Operaciones CRUD</h2>
+<p>Cada microservicio de negocio debe implementar operaciones CRUD completas sobre sus entidades principales.</p>
+<h3 id="endpoints-rest-estandar">Endpoints REST Estándar</h3>
+<pre><code>POST   /api/{recurso}          → Crear
+GET    /api/{recurso}          → Listar todos (con paginación)
+GET    /api/{recurso}/{id}     → Obtener por ID
+PUT    /api/{recurso}/{id}     → Actualizar completo
+PATCH  /api/{recurso}/{id}     → Actualizar parcial
+DELETE /api/{recurso}/{id}     → Eliminar (o desactivar lógicamente)
+</code></pre>
+<h3 id="ejemplo-crud-de-productos-servicio-de-inventario">Ejemplo: CRUD de Productos (Servicio de Inventario)</h3>
+<pre><code class="language-java">@RestController
+@RequestMapping(&quot;/api/productos&quot;)
+@Tag(name = &quot;Productos&quot;, description = &quot;Gestión del catálogo de productos&quot;)
+public class ProductoController {
+
+    @Operation(summary = &quot;Listar todos los productos&quot;)
+    @GetMapping
+    public ResponseEntity&lt;Page&lt;ProductoDTO&gt;&gt; listar(Pageable pageable) { ... }
+
+    @Operation(summary = &quot;Obtener producto por ID&quot;)
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;ProductoDTO&gt; obtener(@PathVariable Long id) { ... }
+
+    @Operation(summary = &quot;Crear nuevo producto&quot;)
+    @PostMapping
+    @PreAuthorize(&quot;hasAnyRole('ADMIN', 'OPERATOR')&quot;)
+    public ResponseEntity&lt;ProductoDTO&gt; crear(@Valid @RequestBody ProductoCreateDTO dto) { ... }
+
+    @Operation(summary = &quot;Actualizar producto&quot;)
+    @PutMapping(&quot;/{id}&quot;)
+    @PreAuthorize(&quot;hasAnyRole('ADMIN', 'OPERATOR')&quot;)
+    public ResponseEntity&lt;ProductoDTO&gt; actualizar(@PathVariable Long id,
+                                                   @Valid @RequestBody ProductoUpdateDTO dto) { ... }
+
+    @Operation(summary = &quot;Eliminar producto&quot;)
+    @DeleteMapping(&quot;/{id}&quot;)
+    @PreAuthorize(&quot;hasRole('ADMIN')&quot;)
+    public ResponseEntity&lt;Void&gt; eliminar(@PathVariable Long id) { ... }
+}
+</code></pre>
+<hr />
+<h2 id="operaciones-personalizadas">Operaciones Personalizadas</h2>
+<p>Además de los CRUD básicos, el sistema debe incluir operaciones de negocio específicas:</p>
+<h3 id="ejemplos-de-operaciones-personalizadas">Ejemplos de Operaciones Personalizadas</h3>
+<table>
+<thead>
+<tr>
+<th>Operación</th>
+<th>Endpoint</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Buscar por criterio</td>
+<td><code>GET /api/productos/buscar?nombre=X&amp;categoria=Y</code></td>
+<td>Búsqueda filtrada</td>
+</tr>
+<tr>
+<td>Cambiar estado</td>
+<td><code>PATCH /api/pedidos/{id}/estado</code></td>
+<td>Actualizar estado de un pedido</td>
+</tr>
+<tr>
+<td>Reporte</td>
+<td><code>GET /api/reportes/ventas?desde=X&amp;hasta=Y</code></td>
+<td>Reporte de ventas por período</td>
+</tr>
+<tr>
+<td>Comunicación inter-servicio</td>
+<td>Evento Kafka / Feign</td>
+<td>Sincronizar datos entre servicios</td>
+</tr>
+<tr>
+<td>Cálculo de negocio</td>
+<td>Lógica en <code>@Service</code></td>
+<td>Cálculo de descuentos, totales, etc.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="validaciones-de-datos">Validaciones de Datos</h2>
+<h3 id="validaciones-de-entrada-spring-boot-validation">Validaciones de Entrada (Spring Boot Validation)</h3>
+<pre><code class="language-java">public class ProductoCreateDTO {
+
+    @NotBlank(message = &quot;El nombre es obligatorio&quot;)
+    @Size(max = 150)
+    private String nombre;
+
+    @NotBlank
+    private String descripcion;
+
+    @NotNull
+    @DecimalMin(value = &quot;0.01&quot;, message = &quot;El precio debe ser mayor a 0&quot;)
+    private BigDecimal precio;
+
+    @NotNull
+    @Min(value = 0, message = &quot;El stock no puede ser negativo&quot;)
+    private Integer stock;
+
+    @NotNull
+    private Long categoriaId;
+}
+</code></pre>
+<h3 id="manejo-global-de-excepciones">Manejo Global de Excepciones</h3>
+<pre><code class="language-java">@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity&lt;ErrorResponse&gt; handleValidationErrors(
+            MethodArgumentNotValidException ex) {
+        List&lt;String&gt; errores = ex.getBindingResult()
+            .getFieldErrors()
+            .stream()
+            .map(e -&gt; e.getField() + &quot;: &quot; + e.getDefaultMessage())
+            .collect(Collectors.toList());
+        return ResponseEntity.badRequest().body(new ErrorResponse(errores));
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity&lt;ErrorResponse&gt; handleNotFound(EntityNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+               .body(new ErrorResponse(ex.getMessage()));
+    }
+}
+</code></pre>
+<hr />
+<h2 id="reglas-de-negocio">Reglas de Negocio</h2>
+<p>Las reglas de negocio se implementan en la capa de servicio (<code>@Service</code>):</p>
+<h3 id="ejemplos-de-reglas">Ejemplos de Reglas</h3>
+<pre><code class="language-java">@Service
+@Transactional
+public class PedidoService {
+
+    // Regla 1: No se puede crear un pedido si no hay stock suficiente
+    public PedidoDTO crearPedido(PedidoCreateDTO dto) {
+        ProductoDTO producto = productoClient.obtener(dto.getProductoId());
+        if (producto.getStock() &lt; dto.getCantidad()) {
+            throw new BusinessException(&quot;Stock insuficiente para el producto: &quot;
+                + producto.getNombre());
+        }
+        // ... lógica de creación
+    }
+
+    // Regla 2: Solo se puede cancelar un pedido en estado PENDIENTE
+    public PedidoDTO cancelarPedido(Long id) {
+        Pedido pedido = pedidoRepository.findById(id)
+            .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Pedido no encontrado&quot;));
+        if (pedido.getEstado() != EstadoPedido.PENDIENTE) {
+            throw new BusinessException(&quot;Solo se pueden cancelar pedidos en estado PENDIENTE&quot;);
+        }
+        pedido.setEstado(EstadoPedido.CANCELADO);
+        return mapper.toDTO(pedidoRepository.save(pedido));
+    }
+
+    // Regla 3: Calcular total con descuento según tipo de cliente
+    private BigDecimal calcularTotal(List&lt;ItemPedido&gt; items, TipoCliente tipoCliente) {
+        BigDecimal subtotal = items.stream()
+            .map(i -&gt; i.getPrecio().multiply(BigDecimal.valueOf(i.getCantidad())))
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal descuento = tipoCliente == TipoCliente.PREMIUM
+            ? subtotal.multiply(new BigDecimal(&quot;0.10&quot;))
+            : BigDecimal.ZERO;
+        return subtotal.subtract(descuento);
+    }
+}
+</code></pre>
+<hr />
+<h2 id="flujo-de-informacion-entre-microservicios">Flujo de Información entre Microservicios</h2>
+<h3 id="escenario-creacion-de-pedido-con-actualizacion-de-inventario">Escenario: Creación de Pedido con Actualización de Inventario</h3>
+<pre><code>Cliente ──► API Gateway ──► pedido-service
+                                │
+                    1. Valida datos del pedido
+                                │
+                    2. Consulta stock (Feign) ──► inventario-service
+                                │                      │
+                                │◄── respuesta stock ──┘
+                                │
+                    3. Crea el pedido en BD
+                                │
+                    4. Publica evento Kafka ──► [topic: pedido.creado]
+                                                       │
+                                        inventario-service (consumer)
+                                                       │
+                                        5. Descuenta stock en BD
+</code></pre>
+<hr />
+<h2 id="documentacion-de-apis-con-swagger">Documentación de APIs con Swagger</h2>
+<p>Cada microservicio expone documentación interactiva en:</p>
+<pre><code>http://localhost:{puerto}/swagger-ui.html
+</code></pre>
+<p>Configuración mínima:</p>
+<pre><code class="language-java">@Configuration
+public class SwaggerConfig {
+
+    @Bean
+    public OpenAPI openAPI() {
+        return new OpenAPI()
+            .info(new Info()
+                .title(&quot;Nombre del Servicio API&quot;)
+                .version(&quot;1.0&quot;)
+                .description(&quot;Descripción del microservicio&quot;))
+            .addSecurityItem(new SecurityRequirement().addList(&quot;Bearer Auth&quot;))
+            .components(new Components()
+                .addSecuritySchemes(&quot;Bearer Auth&quot;,
+                    new SecurityScheme()
+                        .type(SecurityScheme.Type.HTTP)
+                        .scheme(&quot;bearer&quot;)
+                        .bearerFormat(&quot;JWT&quot;)));
+    }
+}
+</code></pre>
+<hr />
+<p><em>Ver también: <a href="ARQUITECTURA.html">Arquitectura</a> | <a href="ROLES_USUARIO.html">Roles de Usuario</a> | <a href="PRUEBAS.html">Pruebas</a></em></p>
+    </main>
+  </div>
+</body>
+</html>
