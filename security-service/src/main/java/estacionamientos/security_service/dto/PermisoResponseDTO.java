@@ -9,12 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PermisoResponseDTO {
 
-    // ID generado por la base de datos
     private Long id;
-
-    // Nombre tecnico del permiso
     private String nombre;
-
-    // Descripcion legible del permiso
-    //private String descripcion;
+    private String recurso;
+    private String accion;
 }

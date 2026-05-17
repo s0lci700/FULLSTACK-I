@@ -13,7 +13,15 @@ public class MetodoPagoCreateDTO {
     @NotBlank
     private String nombre;
 
+    private Long idClienteRef;
+
     private Long idBanco;
 
     private Long idTipoTarjeta;
+
+    private String ultimos4;
+
+    private Integer mesVencimiento;
+
+    private Integer anioVencimiento;
 }

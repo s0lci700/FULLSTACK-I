@@ -11,6 +11,5 @@ public class TipoClienteResponseDTO {
 
     private Long id;
     private String nombre;
-    private String descripcion;
-    private Double descuentoPorcentaje;
+    private java.math.BigDecimal descuentoPct;
 }

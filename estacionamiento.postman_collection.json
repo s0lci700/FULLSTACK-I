@@ -170,6 +170,15 @@
                   "pm.test('201 Created', () => pm.response.to.have.status(201));"
                 ]
               }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('testEmail', 'nuevo_' + Date.now() + '@test.cl');"
+                ]
+              }
             }
           ],
           "request": {
@@ -182,7 +191,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"nuevo_{{}}@test.cl\",\n  \"password\": \"Test1234!\",\n  \"nombreRol\": \"USER\"\n}",
+              "raw": "{\n  \"email\": \"{{testEmail}}\",\n  \"password\": \"Test1234!\",\n  \"nombreRol\": \"USER\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -514,6 +523,15 @@
                   "if (pm.response.code === 201) { pm.collectionVariables.set('clienteId', String(pm.response.json().id)); }"
                 ]
               }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const ts = Date.now();\npm.collectionVariables.set('anaEmail', 'ana_' + ts + '@test.cl');\npm.collectionVariables.set('anaRut', '9' + (Math.floor(Math.random()*8000000)+1000000) + '-' + Math.floor(Math.random()*9+1));"
+                ]
+              }
             }
           ],
           "request": {
@@ -531,7 +549,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"rut\": \"99{{}}-{{}}\",\n  \"nombre\": \"Ana\",\n  \"apellido\": \"Soto\",\n  \"email\": \"ana_{{}}@test.cl\",\n  \"telefono\": \"+56911111111\",\n  \"idTipoCliente\": 1\n}",
+              "raw": "{\n  \"rut\": \"{{anaRut}}\",\n  \"nombre\": \"Ana\",\n  \"apellido\": \"Soto\",\n  \"email\": \"{{anaEmail}}\",\n  \"telefono\": \"+56911111111\",\n  \"idTipoCliente\": 1\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1072,6 +1090,15 @@
                   "if (pm.response.code === 201) { pm.collectionVariables.set('espacioId', String(pm.response.json().id)); }"
                 ]
               }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('espacioNumero', 'Z-' + Math.floor(Math.random()*90+10));"
+                ]
+              }
             }
           ],
           "request": {
@@ -1089,7 +1116,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"numero\": \"A-07\",\n  \"zona\": \"A\",\n  \"piso\": 1,\n  \"idTipoEspacio\": 1,\n  \"disponible\": true,\n  \"activo\": true\n}",
+              "raw": "{\n  \"numero\": \"{{espacioNumero}}\",\n  \"zona\": \"Z\",\n  \"piso\": 1,\n  \"idTipoEspacio\": 1,\n  \"disponible\": true,\n  \"activo\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1921,7 +1948,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Visa Débito de María\",\n  \"idBanco\": 1,\n  \"idTipoTarjeta\": 1\n}",
+              "raw": "{\n  \"nombre\": \"Visa Crédito de Ana\",\n  \"idClienteRef\": 1,\n  \"idBanco\": 1,\n  \"idTipoTarjeta\": 1,\n  \"ultimos4\": \"1234\",\n  \"mesVencimiento\": 6,\n  \"anioVencimiento\": 2028\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2015,7 +2042,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nombre\": \"TEST_EXPORT\",\n  \"descripcion\": \"Permiso temporal de pruebas\"\n}",
+              "raw": "{\n  \"nombre\": \"TEST_EXPORT\",\n  \"recurso\": \"exportar\",\n  \"accion\": \"POST\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2078,7 +2105,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nombre\": \"TEST_EXPORT\",\n  \"descripcion\": \"Permiso temporal actualizado\"\n}",
+              "raw": "{\n  \"nombre\": \"TEST_EXPORT\",\n  \"recurso\": \"exportar\",\n  \"accion\": \"GET\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
