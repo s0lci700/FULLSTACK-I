@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guion Final de Grabacion - Evaluacion Parcial 2</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0f1117; --bg2: #1a1f2e; --bg3: #1e2330; --border: #2d3748;
+      --text: #e2e8f0; --text2: #94a3b8; --text3: #7b8ea6;
+      --blue: #93c5fd; --green: #22c55e; --yellow: #f59e0b; --red: #ef4444;
+    }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .back { font-size: 0.82rem; color: var(--text3); margin-bottom: 1rem; display: inline-block; }
+    .header { border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 1.2rem; }
+    h1 { font-size: 1.7rem; margin-bottom: 0.3rem; }
+    .subtitle { color: var(--text2); font-size: 0.9rem; }
+    .meta { color: var(--text3); font-size: 0.8rem; margin-top: 0.6rem; }
+    .section { margin-top: 1.2rem; background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    .section h2 { font-size: 1rem; padding: 0.8rem 1rem; background: var(--bg3); border-bottom: 1px solid var(--border); }
+    .section .body { padding: 0.9rem 1rem; }
+    .timeline { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    .timeline th { text-align: left; font-size: 0.7rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; background: var(--bg3); padding: 0.45rem 0.7rem; border-bottom: 1px solid var(--border); }
+    .timeline td { padding: 0.55rem 0.7rem; border-bottom: 1px solid #253047; vertical-align: top; color: var(--text2); }
+    .timeline tr:last-child td { border-bottom: none; }
+    .timeline td strong { color: var(--text); }
+    ul { margin-left: 1rem; color: var(--text2); }
+    li { margin-bottom: 0.2rem; }
+    .callout { border-left: 3px solid; border-radius: 6px; padding: 0.7rem 0.85rem; margin-top: 0.7rem; font-size: 0.85rem; }
+    .ok { border-color: var(--green); background: #10311f; color: #9df0bf; }
+    .warn { border-color: var(--yellow); background: #3b2700; color: #f8ce6b; }
+    .crit { border-color: var(--red); background: #3f1111; color: #fda4a4; }
+    code { background: var(--bg3); border-radius: 4px; padding: 0.08rem 0.35rem; color: #67e8f9; font-family: Consolas, monospace; font-size: 0.8rem; }
+    .speaker { font-weight: 700; color: var(--blue); margin-top: 0.5rem; margin-bottom: 0.25rem; }
+    footer { margin-top: 1.4rem; padding-top: 0.8rem; border-top: 1px solid var(--border); color: var(--text3); font-size: 0.76rem; text-align: center; }
+  </style>
+</head>
+<body>
+  <a class="back" href="../index.html">← Volver al index principal</a>
+
+  <header class="header">
+    <h1>Guion final de grabacion (listo para video)</h1>
+    <p class="subtitle">Evaluacion Parcial 2 - Estacionamiento Inteligente. Version final alineada con: rubrica, evidencias de evaluacion, arquitectura real (GitNexus), historial de commits y coleccion Postman.</p>
+    <p class="meta">Duracion objetivo: <strong>6:30 - 7:00</strong> | Formato obligatorio: funcionamiento real + Postman + logs + explicacion tecnica de cada integrante.</p>
+  </header>
+
+  <section class="section">
+    <h2>Antes de grabar (check rapido)</h2>
+    <div class="body">
+      <ul>
+        <li>Servicios arriba en Eureka (<code>http://localhost:8761</code>) y gateway operativo (<code>:8080</code>).</li>
+        <li>Pantalla dividida: Postman a la izquierda, consola con logs a la derecha.</li>
+        <li>Coleccion local importada: <code>estacionamiento.postman_collection.json</code>.</li>
+        <li>MySQL en laboratorio: <code>3307</code>.</li>
+      </ul>
+      <div class="callout ok">Postman detectado: 76 requests activos en 12 fases; login captura token automaticamente para el resto del flujo.</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Timeline de grabacion</h2>
+    <div class="body">
+      <table class="timeline">
+        <thead>
+          <tr>
+            <th>Tramo</th>
+            <th>Duracion</th>
+            <th>Que mostrar</th>
+            <th>Que decir (resumen)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1. Presentacion</strong></td>
+            <td>0:00 - 0:40</td>
+            <td>Proyecto + nombres + objetivo</td>
+            <td>"Somos Sol y Catalina. Sistema de estacionamiento con microservicios para reservas, accesos y cobros con validaciones, logs y API REST."</td>
+          </tr>
+          <tr>
+            <td><strong>2. Arquitectura</strong></td>
+            <td>0:40 - 1:40</td>
+            <td><code>docs/ARQUITECTURA.html</code> + mapa de servicios</td>
+            <td>"Tenemos 12 servicios: Eureka, Gateway y dominio desacoplado con BD por servicio. Integracion por Feign y JWT en el borde (gateway)."</td>
+          </tr>
+          <tr>
+            <td><strong>3. Levantamiento</strong></td>
+            <td>1:40 - 2:20</td>
+            <td>Eureka en UP + logs de arranque</td>
+            <td>"Orden: Eureka → Gateway → dominio. Se ven puertos activos y registro discovery en consola."</td>
+          </tr>
+          <tr>
+            <td><strong>4. Demo Postman</strong></td>
+            <td>2:20 - 5:20</td>
+            <td>Happy path + errores</td>
+            <td>"Mostramos login, reserva, confirmar, entrada, salida y cobro; luego 400/404/422 con GlobalExceptionHandler y logs."</td>
+          </tr>
+          <tr>
+            <td><strong>5. Explicacion individual</strong></td>
+            <td>5:20 - 6:40</td>
+            <td>Cada integrante explica codigo propio</td>
+            <td>"No solo que hizo: mostrar clase, endpoint, validacion y decision tecnica."</td>
+          </tr>
+          <tr>
+            <td><strong>6. Cierre</strong></td>
+            <td>6:40 - 7:00</td>
+            <td>Resumen final</td>
+            <td>"Proyecto completo, pruebas API pasando y preparacion lista para defensa individual."</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Secuencia exacta de Postman (demo obligatoria)</h2>
+    <div class="body">
+      <ul>
+        <li><code>POST /api/auth/login</code> (token JWT visible).</li>
+        <li><code>POST /api/reservas</code> (validaciones cruzadas por Feign).</li>
+        <li><code>PUT /api/reservas/{id}/confirmar</code> (cambio de estado).</li>
+        <li><code>POST /api/accesos/entrada</code> (espacio pasa a ocupado).</li>
+        <li><code>PUT /api/accesos/{id}/salida</code> (minutos calculados + libera espacio).</li>
+        <li><code>POST /api/cobros</code> (monto final con BigDecimal y factores remotos).</li>
+      </ul>
+      <div class="callout warn">Casos de error a mostrar: 400 (validacion), 404 (no encontrado), 422 (regla de negocio/cobro duplicado).</div>
+      <div class="speaker">Frase clave para cerrar esta seccion</div>
+      <p>"Los errores en todos los servicios mantienen formato consistente con GlobalExceptionHandler: <code>error</code>, <code>mensaje</code>, <code>timestamp</code> y, en validacion, mapa de <code>campos</code>."</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Guion de explicacion individual (defensa)</h2>
+    <div class="body">
+      <div class="speaker">Sol (40-50 seg)</div>
+      <p>"Trabaje fuerte en auth-service, ms-accesos, ms-reservas y parte de gateway/security. Muestro endpoints clave y la logica de entrada/salida/cobro con validaciones y logs."</p>
+      <div class="speaker">Catalina (40-50 seg)</div>
+      <p>"Trabaje fuerte en user-service y apoyo en servicios de dominio (espacios, pagos, tarifas, vehiculos). Muestro DTOs, validaciones y decisiones de modelado."</p>
+      <div class="callout ok">Aclaracion de autoria de commits: <strong>AO-Alumno</strong> corresponde a commits desde equipos de sala (trabajo de Sol y/o Catalina, usualmente colaborativo).</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Bloqueadores de nota (no fallar aqui)</h2>
+    <div class="body">
+      <ul>
+        <li>Video entre <strong>5 y 7 minutos</strong>.</li>
+        <li>Cada integrante sube el mismo video en AVA individual.</li>
+        <li>Subir ZIP del codigo al AVA grupal.</li>
+        <li><strong>No hacer commits</strong> despues de la entrega y antes de defensa.</li>
+        <li>Defensa presencial con proyecto corriendo y Postman disponible sin internet libre.</li>
+      </ul>
+      <div class="callout crit">Regla critica: commits posteriores a entrega antes de defensa pueden provocar nota 1.0 automatica segun pauta.</div>
+    </div>
+  </section>
+
+  <footer>FULLSTACK-I · Guion final para grabacion · Mayo 2026</footer>
+</body>
+</html>
