@@ -1,14 +1,14 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git -C 'D:\\\\estacionamientos\\\\FULLSTACK-I' status)",
-      "Bash(git -C 'D:\\\\estacionamientos\\\\FULLSTACK-I' log --oneline -5)",
-      "Bash(git -C 'D:\\\\estacionamientos\\\\FULLSTACK-I' add docs/ROADMAP.md)",
-      "Bash(git -C 'D:\\\\estacionamientos\\\\FULLSTACK-I' commit -m ' *)",
-      "Bash(git -C 'D:\\\\estacionamientos\\\\FULLSTACK-I' push)",
-      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\Sol\\\\Desktop\\\\FULLSTACK\\\\proyecto_semestre\\\\FULLSTACK-I\" -Directory)",
-      "Bash(Select-Object Name)",
-      "Bash(git *)"
+      "Bash(git *)",
+      "Bash(newman run *)",
+      "Bash(.\\mvnw.cmd *)",
+      "Bash(node *)"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "mysql"
+  ],
+  "enableAllProjectMcpServers": true
 }

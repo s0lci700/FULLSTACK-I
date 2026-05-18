@@ -24,7 +24,7 @@ spring:
         - id: user-service
           uri: lb://user-service
           predicates:
-            - Path=/api/clientes/**,/api/tipo-cliente/**
+            - Path=/api/clientes/**,/api/tipo-cliente/**,/api/suscripciones/**
         - id: ms-vehiculos
           uri: lb://ms-vehiculos
           predicates:

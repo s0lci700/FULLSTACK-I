@@ -1524,9 +1524,9 @@ const DATA_SOURCES = {
                  esc(r.tipoCliente?.nombre??'—'), boolBadge(r.activo)]
     },
     {
-      title: 'Tipos de Cliente', hint: 'GET /api/tipos-cliente', endpoint: '/api/tipos-cliente',
+      title: 'Tipos de Cliente', hint: 'GET /api/tipo-cliente', endpoint: '/api/tipo-cliente',
       cols: ['ID','Nombre','Descuento %'],
-      row: r => [mono('#'+r.id), esc(r.nombre??'—'), r.DescuentoPct!=null ? r.DescuentoPct+'%' : '—']
+      row: r => [mono('#'+r.id), esc(r.nombre??'—'), r.descuentoPct!=null ? r.descuentoPct+'%' : '—']
     },
     {
       title: 'Suscripciones', hint: 'GET /api/suscripciones', endpoint: '/api/suscripciones',
@@ -1558,7 +1558,7 @@ const DATA_SOURCES = {
                  boolBadge(r.disponible), boolBadge(r.activo)]
     },
     {
-      title: 'Tipos de Espacio', hint: 'GET /api/tipos-espacio', endpoint: '/api/tipos-espacio',
+      title: 'Tipos de Espacio', hint: 'GET /api/tipo-espacio', endpoint: '/api/tipo-espacio',
       cols: ['ID','Nombre','Descripción','Factor Precio'],
       row: r => [mono('#'+r.id), esc(r.nombre??'—'), esc(r.descripcion??'—'), r.factorPrecio??'—']
     }
@@ -1609,16 +1609,16 @@ const DATA_SOURCES = {
     {
       title: 'Bancos', hint: 'GET /api/bancos', endpoint: '/api/bancos',
       cols: ['ID','Nombre','Descuento %'],
-      row: r => [mono('#'+r.id), esc(r.nombre??'—'), r.descuentoPct!=null?r.descuentoPct+'%':'—']
+      row: r => [mono('#'+r.id), esc(r.nombre??'—'), r.descuento!=null?r.descuento+'%':'—']
     },
     {
       title: 'Métodos de Pago', hint: 'GET /api/metodos-pago', endpoint: '/api/metodos-pago',
-      cols: ['ID','Nombre','Banco','Tipo Tarjeta','Cliente ID'],
-      row: r => [mono('#'+r.id), esc(r.nombre??'—'), esc(r.banco?.nombre??'—'),
-                 esc(r.tipoTarjeta?.nombre??'—'), mono(r.idClienteRef??'—')]
+      cols: ['ID','Nombre','Banco','Tipo Tarjeta'],
+      row: r => [mono('#'+r.id), esc(r.nombre??'—'), esc(r.banco??'—'),
+                 esc(r.tipoTarjeta??'—')]
     },
     {
-      title: 'Tipos de Tarjeta', hint: 'GET /api/tipos-tarjeta', endpoint: '/api/tipos-tarjeta',
+      title: 'Tipos de Tarjeta', hint: 'GET /api/tipo-tarjetas', endpoint: '/api/tipo-tarjetas',
       cols: ['ID','Nombre'],
       row: r => [mono('#'+r.id), esc(r.nombre??'—')]
     }
