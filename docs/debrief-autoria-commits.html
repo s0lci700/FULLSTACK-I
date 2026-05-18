@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Debrief de Autoría por Commits - FULLSTACK-I</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f1117;
+      --bg2: #1a1f2e;
+      --bg3: #1e2330;
+      --border: #2d3748;
+      --text: #e2e8f0;
+      --text2: #94a3b8;
+      --text3: #7b8ea6;
+      --blue: #58a6ff;
+      --green: #3fb950;
+      --yellow: #d29922;
+      --purple: #bc8cff;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 2rem;
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.82rem;
+      color: var(--text3);
+      text-decoration: none;
+      margin-bottom: 1rem;
+    }
+    .back-link:hover { color: var(--blue); }
+
+    .header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1.2rem;
+      margin-bottom: 1.6rem;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #93c5fd;
+      background: #1e3a5f;
+      border-radius: 999px;
+      padding: 0.2rem 0.62rem;
+      margin-bottom: 0.65rem;
+    }
+
+    h1 {
+      font-size: 1.85rem;
+      color: #f8fafc;
+      margin-bottom: 0.3rem;
+    }
+
+    .subtitle {
+      color: var(--text2);
+      font-size: 0.92rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .meta {
+      font-size: 0.8rem;
+      color: var(--text3);
+    }
+    .meta strong { color: var(--text2); }
+
+    .section-label {
+      margin: 1.6rem 0 0.7rem;
+      padding-left: 0.6rem;
+      border-left: 3px solid var(--border);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text3);
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.7rem;
+    }
+
+    .card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.85rem 0.95rem;
+    }
+
+    .card h3 {
+      font-size: 0.82rem;
+      color: var(--text2);
+      margin-bottom: 0.2rem;
+      font-weight: 600;
+    }
+
+    .metric {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #f8fafc;
+    }
+
+    .metric-sub {
+      font-size: 0.77rem;
+      color: var(--text3);
+    }
+
+    .table-wrap {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-top: 0.45rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+    }
+
+    th {
+      text-align: left;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text3);
+      background: var(--bg3);
+      border-bottom: 1px solid var(--border);
+      padding: 0.66rem 0.9rem;
+    }
+
+    td {
+      border-bottom: 1px solid #222a3a;
+      padding: 0.58rem 0.9rem;
+      color: var(--text2);
+    }
+
+    tr:last-child td { border-bottom: none; }
+    td strong { color: #f1f5f9; }
+
+    .chip {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 0.08rem 0.48rem;
+      font-size: 0.66rem;
+      font-weight: 700;
+      margin-left: 0.35rem;
+      vertical-align: middle;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .chip-sol { color: #86efac; background: #10301b; }
+    .chip-ao { color: #93c5fd; background: #1e3a5f; }
+    .chip-empate { color: #e9d5ff; background: #321d4f; }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 0.62rem;
+      font-size: 0.76rem;
+      color: var(--text3);
+    }
+    .legend span { display: inline-flex; align-items: center; gap: 0.35rem; }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+    .dot-sol { background: var(--green); }
+    .dot-ao { background: var(--blue); }
+    .dot-cat { background: var(--yellow); }
+
+    .note {
+      margin-top: 0.6rem;
+      font-size: 0.78rem;
+      color: var(--text3);
+    }
+
+    footer {
+      margin-top: 1.7rem;
+      padding-top: 0.9rem;
+      border-top: 1px solid var(--border);
+      color: var(--text3);
+      font-size: 0.76rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <a class="back-link" href="../index.html">← Volver al index principal</a>
+
+  <header class="header">
+    <span class="badge">Debrief Git</span>
+    <h1>Debrief de autoría por commits</h1>
+    <p class="subtitle">Analisis de contribucion por autor y por microservicio del repositorio FULLSTACK-I.</p>
+    <p class="meta">
+      Fuente: <strong>git shortlog -sne HEAD</strong> + desglose por ruta de servicio.<br />
+      Corte del analisis: <strong>2026-05-18</strong> · Commits totales: <strong>92</strong>.<br />
+      Aclaracion del equipo: <strong>AO-Alumno</strong> corresponde a commits hechos desde equipos de sala y representa trabajo de <strong>Sol y/o Catalina</strong> (a menudo colaborativo).
+    </p>
+  </header>
+
+  <div class="section-label">Resumen ejecutivo</div>
+  <div class="cards">
+    <article class="card">
+      <h3>Contribuidor con más commits</h3>
+      <div class="metric">Sol León</div>
+      <div class="metric-sub">46 commits globales</div>
+    </article>
+    <article class="card">
+      <h3>Segundo bloque de autoria</h3>
+      <div class="metric">AO-Alumno</div>
+      <div class="metric-sub">30 commits globales de laboratorio (25 + 5 en 2 correos)</div>
+    </article>
+    <article class="card">
+      <h3>Servicios liderados por Sol León</h3>
+      <div class="metric">5 + 1 empate</div>
+      <div class="metric-sub">auth, user, accesos, reservas, tarifas + security (empate)</div>
+    </article>
+    <article class="card">
+      <h3>Servicios con mayor actividad AO-Alumno</h3>
+      <div class="metric">6 + 1 empate</div>
+      <div class="metric-sub">gateway, eureka, espacios, pagos, reportes, vehiculos + security (empate)</div>
+    </article>
+  </div>
+
+  <div class="section-label">Autores globales (commits)</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Autor</th>
+          <th>Commits</th>
+          <th>Observación</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Sol León</strong></td><td>46</td><td>Principal contribuidor individual</td></tr>
+        <tr><td><strong>AO-Alumno</strong></td><td>30</td><td>Commits desde sala (trabajo de Sol y/o Catalina, consolidado en 2 correos)</td></tr>
+        <tr><td><strong>catalina + Catalina Aguirre</strong></td><td>14</td><td>Contribución distribuida en varios servicios</td></tr>
+        <tr><td><strong>copilot-swe-agent[bot]</strong></td><td>2</td><td>Aportes puntuales de documentación</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Nota: Git registra identidad por nombre+correo. Se consolidaron visualmente identidades equivalentes para lectura ejecutiva y se aplico la aclaracion de autoria compartida para AO-Alumno.</p>
+
+  <div class="section-label">Liderazgo por microservicio</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Servicio</th>
+          <th>Sol León</th>
+          <th>AO-Alumno (sala)</th>
+          <th>catalina</th>
+          <th>Líder</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>api-gateway</strong></td><td>6</td><td>9</td><td>1</td><td>AO-Alumno <span class="chip chip-ao">lider</span></td></tr>
+        <tr><td><strong>auth-service</strong></td><td>9</td><td>8</td><td>1</td><td>Sol León <span class="chip chip-sol">lider</span></td></tr>
+        <tr><td><strong>eureka-server</strong></td><td>1</td><td>4</td><td>0</td><td>AO-Alumno <span class="chip chip-ao">lider</span></td></tr>
+        <tr><td><strong>security-service</strong></td><td>8</td><td>8</td><td>1</td><td>Empate <span class="chip chip-empate">compartido</span></td></tr>
+        <tr><td><strong>user-service</strong></td><td>10</td><td>6</td><td>1</td><td>Sol León <span class="chip chip-sol">lider</span></td></tr>
+        <tr><td><strong>ms-accesos</strong></td><td>11</td><td>7</td><td>1</td><td>Sol León <span class="chip chip-sol">lider</span></td></tr>
+        <tr><td><strong>ms-espacios</strong></td><td>8</td><td>9</td><td>5</td><td>AO-Alumno <span class="chip chip-ao">lider</span></td></tr>
+        <tr><td><strong>ms-pagos</strong></td><td>9</td><td>10</td><td>2</td><td>AO-Alumno <span class="chip chip-ao">lider</span></td></tr>
+        <tr><td><strong>ms-reportes</strong></td><td>4</td><td>8</td><td>1</td><td>AO-Alumno <span class="chip chip-ao">lider</span></td></tr>
+        <tr><td><strong>ms-reservas</strong></td><td>11</td><td>6</td><td>1</td><td>Sol León <span class="chip chip-sol">lider</span></td></tr>
+        <tr><td><strong>ms-tarifas</strong></td><td>6</td><td>5</td><td>2</td><td>Sol León <span class="chip chip-sol">lider</span></td></tr>
+        <tr><td><strong>ms-vehiculos</strong></td><td>8</td><td>10</td><td>2</td><td>AO-Alumno <span class="chip chip-ao">lider</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="legend">
+    <span><i class="dot dot-sol"></i> Sol León</span>
+    <span><i class="dot dot-ao"></i> AO-Alumno (sala: Sol y/o Catalina)</span>
+    <span><i class="dot dot-cat"></i> catalina</span>
+  </div>
+
+  <div class="section-label">Aportes transversales (fuera de servicios)</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Área</th>
+          <th>Detalle de autoría</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>docs/</strong></td><td>Sol León (15), AO-Alumno (6), Catalina Aguirre (2), bot (1)</td></tr>
+        <tr><td><strong>db/</strong></td><td>Sol León (4), AO-Alumno (1)</td></tr>
+        <tr><td><strong>scripts/</strong></td><td>Sol León (2)</td></tr>
+        <tr><td><strong>BDD/</strong></td><td>AO-Alumno (4)</td></tr>
+        <tr><td><strong>frontend/</strong></td><td>Sol León (2)</td></tr>
+        <tr><td><strong>README.md</strong></td><td>Sol León (6), Catalina Aguirre (1), bot (1)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer>
+    FULLSTACK-I · Informe generado desde historial Git del repositorio
+  </footer>
+</body>
+</html>

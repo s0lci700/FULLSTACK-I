@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Guión Video — Evaluación Parcial 2</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:        #0f1117;
+      --bg2:       #1a1f2e;
+      --bg3:       #1e2330;
+      --border:    #2d3748;
+      --text:      #e2e8f0;
+      --text2:     #94a3b8;
+      --text3:     #7b8ea6;
+      --green:     #22c55e;
+      --green-bg:  #14532d;
+      --blue:      #93c5fd;
+      --blue-bg:   #1e3a5f;
+      --yellow:    #f59e0b;
+      --yellow-bg: #3b2700;
+      --orange:    #fb923c;
+      --orange-bg: #431407;
+      --purple:    #c4b5fd;
+      --purple-bg: #2d1b4e;
+      --red:       #ef4444;
+      --red-bg:    #450a0a;
+      --cyan:      #67e8f9;
+      --cyan-bg:   #164e63;
+      --sidebar-w: 240px;
+    }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.65; }
+    .layout { display: flex; min-height: 100vh; }
+
+    nav {
+      width: var(--sidebar-w); min-width: var(--sidebar-w);
+      background: var(--bg2); border-right: 1px solid var(--border);
+      padding: 1.5rem 1rem; position: sticky; top: 0; height: 100vh; overflow-y: auto;
+    }
+    nav .back { display: flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; color: var(--text3); text-decoration: none; margin-bottom: 1.5rem; padding: 0.3rem 0.6rem; border-radius: 4px; }
+    nav .back:hover { color: var(--text2); }
+    nav h2 { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); margin-bottom: 0.8rem; }
+    .section-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); margin: 1.1rem 0 0.3rem 0.6rem; }
+    nav ul { list-style: none; }
+    nav ul li { margin-bottom: 0.1rem; }
+    nav ul li a { display: block; padding: 0.28rem 0.6rem; border-radius: 4px; color: var(--text2); text-decoration: none; font-size: 0.8rem; }
+    nav ul li a:hover { background: var(--bg3); color: var(--text); }
+    nav ul li a.active { background: var(--blue-bg); color: var(--blue); }
+
+    main { flex: 1; padding: 2rem 2.5rem; max-width: 960px; }
+    h1 { font-size: 1.6rem; color: var(--text); margin-bottom: 0.3rem; }
+    h2 { font-size: 1.05rem; color: var(--blue); margin: 2.5rem 0 0.8rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--border); }
+    h3 { font-size: 0.88rem; color: var(--purple); margin: 1.2rem 0 0.4rem; }
+    p { color: var(--text2); margin-bottom: 0.7rem; font-size: 0.88rem; }
+    .subtitle { color: var(--text3); font-size: 0.82rem; margin-bottom: 1.5rem; }
+    hr.divider { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+    /* Callouts */
+    .callout { border-radius: 6px; padding: 0.8rem 1rem; margin: 0.8rem 0; font-size: 0.84rem; border-left: 3px solid; }
+    .callout strong { display: block; margin-bottom: 0.25rem; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; }
+    .callout p { color: inherit; font-size: 0.83rem; margin-bottom: 0; }
+    .callout ul { margin: 0.3rem 0 0 1rem; }
+    .callout ul li { font-size: 0.82rem; margin-bottom: 0.15rem; }
+    .callout-red    { background: var(--red-bg);    border-color: var(--red);    color: var(--red); }
+    .callout-yellow { background: var(--yellow-bg); border-color: var(--yellow); color: var(--yellow); }
+    .callout-green  { background: var(--green-bg);  border-color: var(--green);  color: var(--green); }
+    .callout-blue   { background: var(--blue-bg);   border-color: var(--blue);   color: var(--blue); }
+    .callout-purple { background: var(--purple-bg); border-color: var(--purple); color: var(--purple); }
+
+    /* Scene card */
+    .scene { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 1.4rem; overflow: hidden; }
+    .scene-header { display: flex; align-items: center; gap: 0.75rem; background: var(--bg2); padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); }
+    .scene-num { font-size: 1rem; font-weight: 800; color: var(--blue); background: var(--blue-bg); width: 2rem; height: 2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .scene-title { font-size: 0.9rem; font-weight: 700; color: var(--text); flex: 1; }
+    .scene-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 0.2rem; }
+    .scene-time { font-size: 0.82rem; font-weight: 700; color: var(--green); white-space: nowrap; }
+    .scene-ie { font-family: monospace; font-size: 0.64rem; color: var(--cyan); }
+    .scene-body { padding: 1rem 1.1rem 1.2rem; }
+
+    /* Two-column layout */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin: 0.75rem 0; }
+    .col-screen, .col-script { background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem 0.9rem; }
+    .col-screen { border-top: 2px solid var(--cyan); }
+    .col-script { border-top: 2px solid var(--yellow); }
+    .col-label { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem; }
+    .col-screen .col-label { color: var(--cyan); }
+    .col-script .col-label { color: var(--yellow); }
+    .col-screen ul, .col-script ul { margin: 0; padding: 0 0 0 1rem; }
+    .col-screen li, .col-script li { font-size: 0.82rem; color: var(--text2); margin-bottom: 0.28rem; line-height: 1.5; }
+    .col-script li { color: var(--text); }
+
+    /* Script quote */
+    .say { background: var(--bg2); border-left: 3px solid var(--yellow); border-radius: 0 6px 6px 0; padding: 0.6rem 0.9rem; margin: 0.6rem 0; font-size: 0.84rem; color: var(--text); font-style: italic; line-height: 1.7; }
+    .say em { font-style: normal; color: var(--yellow); }
+    .say .note { display: block; font-style: normal; font-size: 0.74rem; color: var(--text3); margin-top: 0.4rem; }
+
+    /* Postman request pill */
+    .req { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 0.5rem 0.8rem; margin: 0.35rem 0; display: flex; align-items: flex-start; gap: 0.6rem; }
+    .req-num { font-size: 0.65rem; color: var(--text3); font-weight: 700; flex-shrink: 0; padding-top: 0.18rem; min-width: 1.4rem; }
+    .req-body { flex: 1; }
+    .req-name { font-size: 0.82rem; font-weight: 600; color: var(--text); margin-bottom: 0.15rem; }
+    .req-desc { font-size: 0.74rem; color: var(--text2); }
+    .method { display: inline-block; font-size: 0.6rem; font-weight: 800; font-family: monospace; padding: 0.04rem 0.32rem; border-radius: 3px; margin-right: 0.3rem; vertical-align: middle; }
+    .GET  { background: #14532d; color: #22c55e; }
+    .POST { background: #1e3a5f; color: #93c5fd; }
+    .PUT  { background: #3b2700; color: #f59e0b; }
+
+    /* Code block */
+    .code-block { background: var(--bg); border: 1px solid var(--border); border-radius: 5px; overflow: hidden; margin: 0.5rem 0; }
+    .code-label { background: var(--bg3); padding: 0.2rem 0.7rem; font-size: 0.62rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; }
+    .code-block pre { padding: 0.6rem 0.9rem; font-family: 'Cascadia Code','Fira Code',monospace; font-size: 0.77rem; color: var(--text2); overflow-x: auto; line-height: 1.55; }
+
+    /* Checklist */
+    .check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.45rem; margin: 0.75rem 0; }
+    .check-item { background: var(--bg2); border: 1px solid var(--border); border-radius: 6px; padding: 0.55rem 0.75rem; display: flex; align-items: flex-start; gap: 0.55rem; font-size: 0.81rem; color: var(--text2); }
+    .check-item .ci-icon { flex-shrink: 0; font-size: 0.85rem; margin-top: 0.05rem; }
+    .check-item strong { color: var(--text); font-size: 0.82rem; }
+    .check-item.crit { border-color: var(--red); }
+    .check-item.warn { border-color: var(--yellow); }
+    .check-item.ok   { border-color: var(--green); }
+
+    /* Timing overview bar */
+    .timing-overview {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 1rem 1.2rem;
+      margin: 1rem 0 1.5rem;
+    }
+    .timing-overview h3 { color: var(--text); font-size: 0.8rem; margin: 0 0 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; }
+    .t-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.4rem; }
+    .t-num { font-size: 0.7rem; font-weight: 800; color: var(--blue); background: var(--blue-bg); width: 1.4rem; height: 1.4rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .t-label { font-size: 0.8rem; color: var(--text); flex: 1; }
+    .t-dur { font-size: 0.8rem; font-weight: 700; color: var(--green); white-space: nowrap; }
+    .t-bar { height: 4px; border-radius: 2px; background: var(--blue-bg); flex: 2; position: relative; }
+    .t-bar-fill { height: 100%; border-radius: 2px; background: var(--blue); }
+    .timing-total { margin-top: 0.8rem; padding-top: 0.7rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .timing-total .tl { font-size: 0.82rem; color: var(--text2); }
+    .timing-total .tv { font-size: 1.1rem; font-weight: 700; color: var(--green); }
+
+    /* Table */
+    .t-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin: 0.5rem 0 1rem; }
+    .t-table th { background: var(--bg3); color: var(--text3); font-size: 0.66rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; padding: 0.4rem 0.7rem; text-align: left; border-bottom: 1px solid var(--border); }
+    .t-table td { padding: 0.45rem 0.7rem; border-bottom: 1px solid var(--border); color: var(--text2); vertical-align: top; }
+    .t-table tr:last-child td { border-bottom: none; }
+    .t-table tr:hover td { background: var(--bg3); }
+    .mono { font-family: monospace; font-size: 0.75rem; color: var(--cyan); }
+
+    /* OBS table */
+    .obs-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin: 0.5rem 0 1rem; }
+    .obs-table th { background: var(--bg3); color: var(--text3); font-size: 0.66rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; padding: 0.4rem 0.7rem; text-align: left; border-bottom: 1px solid var(--border); }
+    .obs-table td { padding: 0.4rem 0.7rem; border-bottom: 1px solid var(--border); color: var(--text2); vertical-align: middle; }
+    .obs-table tr:last-child td { border-bottom: none; }
+
+    /* Service cards */
+    .svc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; margin: 1rem 0 1.5rem; }
+    .svc-card { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .svc-card.infra  { border-top: 3px solid var(--text3); }
+    .svc-card.auth   { border-top: 3px solid var(--orange); }
+    .svc-card.data   { border-top: 3px solid var(--green); }
+    .svc-card.feign  { border-top: 3px solid var(--blue); }
+    .svc-card.reportes { border-top: 3px solid var(--purple); }
+    .svc-header { display: flex; justify-content: space-between; align-items: flex-start; background: var(--bg2); padding: 0.7rem 0.9rem; border-bottom: 1px solid var(--border); }
+    .svc-name { font-size: 0.88rem; font-weight: 700; color: var(--text); font-family: 'Cascadia Code','Fira Code',monospace; }
+    .svc-sub  { font-size: 0.7rem; color: var(--text3); margin-top: 0.2rem; }
+    .svc-port { font-size: 0.75rem; font-weight: 700; color: var(--cyan); font-family: monospace; white-space: nowrap; padding-top: 0.15rem; }
+    .svc-body { padding: 0.75rem 0.9rem; }
+    .svc-section-label { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text3); font-weight: 700; margin: 0.7rem 0 0.25rem; }
+    .svc-section-label:first-child { margin-top: 0; }
+    .svc-text { font-size: 0.79rem; color: var(--text2); line-height: 1.55; margin-bottom: 0; }
+    .svc-none { font-style: italic; color: var(--text3) !important; }
+    .ep { font-size: 0.78rem; color: var(--text2); margin-bottom: 0.2rem; display: flex; align-items: baseline; gap: 0.3rem; flex-wrap: wrap; }
+    .ep code { font-size: 0.74rem; color: var(--cyan); }
+    .caller { display: inline-block; font-size: 0.67rem; font-weight: 700; font-family: monospace; background: var(--blue-bg); color: var(--blue); padding: 0.05rem 0.35rem; border-radius: 3px; margin-right: 0.2rem; }
+    .method.DELETE { background: #450a0a; color: #ef4444; }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+<nav>
+  <a href="evaluacion-parcial2.html" class="back">← Evaluación Parcial 2</a>
+  <h2>Guión — Video</h2>
+  <ul>
+    <li><a href="#timing">Timing general</a></li>
+    <li><a href="#antes">Antes de grabar</a></li>
+    <li><a href="#obs">Setup OBS</a></li>
+  </ul>
+  <div class="section-label">6 secciones obligatorias</div>
+  <ul>
+    <li><a href="#s1">① Presentación <small style="color:var(--text3)">25s</small></a></li>
+    <li><a href="#s2">② Arquitectura <small style="color:var(--text3)">40s</small></a></li>
+    <li><a href="#s3">③ Levantamiento <small style="color:var(--text3)">30s</small></a></li>
+    <li><a href="#s4">④ Demo Postman <small style="color:var(--text3)">2:00</small></a></li>
+    <li><a href="#s5">⑤ Explicación técnica <small style="color:var(--text3)">1:20</small></a></li>
+    <li><a href="#s6">⑥ Cierre <small style="color:var(--text3)">20s</small></a></li>
+  </ul>
+  <div class="section-label">Referencia</div>
+  <ul>
+    <li><a href="#requests">Requests en orden</a></li>
+    <li><a href="#servicios">Servicios — cómo funcionan</a></li>
+    <li><a href="#frases">Frases técnicas (defensa)</a></li>
+  </ul>
+</nav>
+
+<main>
+  <h1>Guión — Video de Demostración</h1>
+  <p class="subtitle">DSY1103 · Evaluación Parcial 2 · Sol León &amp; Catalina Aguirre</p>
+
+  <div class="callout callout-red">
+    <strong>Regla de oro del video</strong>
+    <p>El guión es ajustado a propósito. Cada sección tiene un tiempo máximo — si te excedés en una, te quedás sin tiempo para las demás. Practicá el guión completo en voz alta <strong>al menos dos veces</strong> antes de grabar.</p>
+  </div>
+
+  <!-- TIMING OVERVIEW -->
+  <section id="timing">
+    <h2>Timing general del video</h2>
+
+    <div class="timing-overview">
+      <h3>Presupuesto por sección</h3>
+
+      <div class="t-row">
+        <div class="t-num">1</div>
+        <div class="t-label">Presentación General</div>
+        <div class="t-bar"><div class="t-bar-fill" style="width:7%"></div></div>
+        <div class="t-dur">25 seg</div>
+      </div>
+      <div class="t-row">
+        <div class="t-num">2</div>
+        <div class="t-label">Arquitectura del Sistema</div>
+        <div class="t-bar"><div class="t-bar-fill" style="width:12%"></div></div>
+        <div class="t-dur">40 seg</div>
+      </div>
+      <div class="t-row">
+        <div class="t-num">3</div>
+        <div class="t-label">Levantamiento del Proyecto</div>
+        <div class="t-bar"><div class="t-bar-fill" style="width:9%"></div></div>
+        <div class="t-dur">30 seg</div>
+      </div>
+      <div class="t-row">
+        <div class="t-num">4</div>
+        <div class="t-label">Demostración Funcional en Postman</div>
+        <div class="t-bar"><div class="t-bar-fill" style="width:60%"></div></div>
+        <div class="t-dur">2 min</div>
+      </div>
+      <div class="t-row">
+        <div class="t-num">5</div>
+        <div class="t-label">Explicación Técnica (Sol + Catalina)</div>
+        <div class="t-bar"><div class="t-bar-fill" style="width:40%"></div></div>
+        <div class="t-dur">1 min 20 seg</div>
+      </div>
+      <div class="t-row">
+        <div class="t-num">6</div>
+        <div class="t-label">Cierre</div>
+        <div class="t-bar"><div class="t-bar-fill" style="width:6%"></div></div>
+        <div class="t-dur">20 seg</div>
+      </div>
+
+      <div class="timing-total">
+        <span class="tl">Total de secciones</span>
+        <span class="tv">~ 5 min 15 seg</span>
+        <span class="tl" style="font-size:0.74rem">+ ~45 seg buffer para transiciones y pausas naturales → <strong style="color:var(--text)">~ 6 min</strong></span>
+      </div>
+    </div>
+
+    <div class="callout callout-yellow">
+      <strong>Sobre la sección 4 — la más densa</strong>
+      <p>Tenés 2 minutos para mostrar 10 requests. Eso es <strong>12 segundos por request</strong>. El truco: ejecutar rápido, narrar solo las frases clave, y no leer la respuesta completa de Postman — el docente puede verla. Tu voz explica; Postman muestra.</p>
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ANTES DE GRABAR -->
+  <section id="antes">
+    <h2>Antes de grabar — checklist</h2>
+
+    <div class="callout callout-red">
+      <strong>Restaurar datos seed antes de cada toma</strong>
+      <p>Correr <code>.\scripts\load-db.ps1 -Port 3307</code> desde la raíz. Garantiza que el cobro seed id=1 vale exactamente 3562.50 y que todos los estados están limpios.</p>
+    </div>
+
+    <div class="check-grid">
+      <div class="check-item crit">
+        <span class="ci-icon">🗄️</span>
+        <div><strong>XAMPP</strong> — MySQL corriendo en puerto 3307</div>
+      </div>
+      <div class="check-item crit">
+        <span class="ci-icon">🔄</span>
+        <div><code>.\scripts\load-db.ps1 -Port 3307</code> — seed restaurado</div>
+      </div>
+      <div class="check-item crit">
+        <span class="ci-icon">🚀</span>
+        <div><code>.\scripts\start-all.ps1</code> → esperar ~60 s → <strong>localhost:8761</strong> muestra 12 servicios UP</div>
+      </div>
+      <div class="check-item crit">
+        <span class="ci-icon">📬</span>
+        <div><strong>Postman</strong> abierto con <code>demo-eval2.postman_collection.json</code> importada</div>
+      </div>
+      <div class="check-item ok">
+        <span class="ci-icon">🗑️</span>
+        <div>Limpiar variables Postman: <code>token</code>, <code>reservaId</code>, <code>accesoId</code> → Current Value vacío</div>
+      </div>
+      <div class="check-item ok">
+        <span class="ci-icon">🌐</span>
+        <div>Browser abierto en <code>localhost:8761</code> (Eureka)</div>
+      </div>
+      <div class="check-item ok">
+        <span class="ci-icon">📋</span>
+        <div>PowerShell visible con logs del último servicio en pantalla</div>
+      </div>
+      <div class="check-item warn">
+        <span class="ci-icon">🎤</span>
+        <div>Micrófono activo en OBS — barras del Mezclador de Audio se mueven al hablar</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- OBS -->
+  <section id="obs">
+    <h2>Setup OBS — ya configurado ✅</h2>
+
+    <table class="obs-table">
+      <thead><tr><th>Ajuste</th><th>Valor actual</th><th>Estado</th></tr></thead>
+      <tbody>
+        <tr><td>Resolución</td><td class="mono">1920×1080</td><td style="color:var(--green)">✅</td></tr>
+        <tr><td>FPS</td><td class="mono">60</td><td style="color:var(--green)">✅</td></tr>
+        <tr><td>Encoder</td><td class="mono">NVENC H.264 (GPU)</td><td style="color:var(--green)">✅ CPU ~1% durante grabación</td></tr>
+        <tr><td>Formato</td><td class="mono">MP4 híbrido</td><td style="color:var(--green)">✅</td></tr>
+        <tr><td>Micrófono</td><td class="mono">Mic/Aux</td><td style="color:var(--yellow)">⚠️ Verificar barras al hablar</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Pasos para grabar</h3>
+    <ol style="font-size:0.84rem;color:var(--text2);margin:0.4rem 0 0 1.2rem;line-height:2">
+      <li>Escena "Parcial2" → Fuente: Captura de pantalla (monitor principal)</li>
+      <li>Verificar preview y micrófono</li>
+      <li>Clic <strong>"Iniciar Grabación"</strong></li>
+      <li>Al terminar: <strong>"Detener Grabación"</strong> — archivo en <code>C:\Users\Sol\Videos</code></li>
+    </ol>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ══════ SECCIÓN 1 ══════ -->
+  <section id="s1">
+    <div class="scene">
+      <div class="scene-header">
+        <div class="scene-num">1</div>
+        <div style="flex:1">
+          <div class="scene-title">Presentación General</div>
+          <div class="scene-ie">IE 1.1.1 · IE 1.1.2</div>
+        </div>
+        <div class="scene-meta">
+          <span class="scene-time">25 seg</span>
+        </div>
+      </div>
+      <div class="scene-body">
+
+        <div class="two-col">
+          <div class="col-screen">
+            <div class="col-label">🖥️ En pantalla</div>
+            <ul>
+              <li>Dashboard <code>frontend/index.html</code> o diagrama <code>docs/ARQUITECTURA.html</code></li>
+              <li>Hablar directo a la cámara, fluido, sin leer</li>
+            </ul>
+          </div>
+          <div class="col-script">
+            <div class="col-label">🎤 Decir exactamente</div>
+            <ul>
+              <li>Nombre, institución</li>
+              <li>Nombre del sistema y qué resuelve</li>
+              <li>Stack: Spring Boot, 12 microservicios</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="say">
+          "Hola, soy <em>Sol León</em>, y junto a <em>Catalina Aguirre</em> desarrollamos <em>Estacionamiento Inteligente</em> para el curso DSY1103 de DUOC UC. Es un sistema de gestión de estacionamiento construido con <em>12 microservicios</em> en Spring Boot 3 y Java 21, que automatiza el ciclo completo: reserva, entrada y salida de vehículos, y cálculo automático del cobro."
+          <span class="note">⏱ Terminar antes de los 25 segundos. No elabores más acá — la arquitectura la explicas en la sección 2.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════ SECCIÓN 2 ══════ -->
+  <section id="s2">
+    <div class="scene">
+      <div class="scene-header">
+        <div class="scene-num">2</div>
+        <div style="flex:1">
+          <div class="scene-title">Arquitectura del Sistema</div>
+          <div class="scene-ie">IE 1.3.1 · IE 2.1.1 · IE 2.1.2 · IE 2.4.1 · IE 2.4.2</div>
+        </div>
+        <div class="scene-meta">
+          <span class="scene-time">40 seg</span>
+        </div>
+      </div>
+      <div class="scene-body">
+
+        <div class="two-col">
+          <div class="col-screen">
+            <div class="col-label">🖥️ En pantalla</div>
+            <ul>
+              <li>Browser en <code>localhost:8761</code> — Eureka dashboard con los 12 servicios registrados</li>
+              <li>Mover el mouse sobre la lista de instancias mientras hablas</li>
+            </ul>
+          </div>
+          <div class="col-script">
+            <div class="col-label">🎤 Decir exactamente</div>
+            <ul>
+              <li>Patrón de arquitectura</li>
+              <li>Rol del API Gateway y Eureka</li>
+              <li>Comunicación Feign entre servicios</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="say">
+          "La arquitectura es de <em>microservicios con Spring Cloud</em>. Cada servicio tiene su propia base de datos MySQL — en total 10 bases de datos sin tablas compartidas.
+          El <em>API Gateway</em> en el puerto 8080 es el único punto de entrada y valida el token JWT. El <em>Eureka Server</em> en 8761 es el registro de servicios — pueden ver acá los 12 servicios registrados y activos. La comunicación entre servicios usa <em>Feign Client</em>: ms-reservas, ms-accesos, ms-pagos y ms-reportes se llaman entre sí por nombre de servicio, sin URLs hardcodeadas."
+          <span class="note">⏱ 40 segundos es suficiente. No entres al detalle de cada servicio — eso lo mostrás en Postman.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════ SECCIÓN 3 ══════ -->
+  <section id="s3">
+    <div class="scene">
+      <div class="scene-header">
+        <div class="scene-num">3</div>
+        <div style="flex:1">
+          <div class="scene-title">Levantamiento del Proyecto</div>
+          <div class="scene-ie">IE 2.2.1 · IE 2.2.2</div>
+        </div>
+        <div class="scene-meta">
+          <span class="scene-time">30 seg</span>
+        </div>
+      </div>
+      <div class="scene-body">
+
+        <div class="two-col">
+          <div class="col-screen">
+            <div class="col-label">🖥️ En pantalla</div>
+            <ul>
+              <li>PowerShell con logs de arranque de algún servicio (<em>"Started MsReservasApplication in X seconds"</em>)</li>
+              <li>Luego cambiar a Eureka en browser — todos UP</li>
+            </ul>
+          </div>
+          <div class="col-script">
+            <div class="col-label">🎤 Decir exactamente</div>
+            <ul>
+              <li>Script de arranque</li>
+              <li>Orden de inicio (Eureka primero)</li>
+              <li>Confirmar todos UP</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="say">
+          "Para levantar el proyecto usamos <code>start-all.ps1</code>, que arranca los 12 servicios en orden — Eureka primero, luego el Gateway, después los servicios de negocio. En la consola pueden ver los logs de Spring Boot con <em>SLF4J</em>: cada servicio reporta cuándo está listo. En Eureka podemos confirmar que los 12 están UP. Ahora pasamos a la demo funcional."
+          <span class="note">⏱ Esta sección es la más prescindible en tiempo. Si los servicios ya están levantados, mostrá Eureka y pasá rápido.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════ SECCIÓN 4 ══════ -->
+  <section id="s4">
+    <div class="scene">
+      <div class="scene-header">
+        <div class="scene-num">4</div>
+        <div style="flex:1">
+          <div class="scene-title">Demostración Funcional en Postman</div>
+          <div class="scene-ie">IE 2.2.3 · IE 2.2.4 · IE 2.3.1 · IE 2.3.2 · IE 2.3.3 · IE 3.1.1</div>
+        </div>
+        <div class="scene-meta">
+          <span class="scene-time">2 min</span>
+        </div>
+      </div>
+      <div class="scene-body">
+
+        <div class="callout callout-yellow">
+          <strong>Estrategia: flujo lineal, narración telegráfica</strong>
+          <p>Corré los requests en orden sin parar. Una frase por request — solo resaltás la parte técnica interesante. Postman muestra los datos; tu voz explica el <em>por qué</em>.</p>
+        </div>
+
+        <!-- Request 1 -->
+        <div class="req">
+          <div class="req-num">#1</div>
+          <div class="req-body">
+            <div class="req-name"><span class="method POST">POST</span> /api/auth/login</div>
+            <div class="req-desc">Body: <code>{"email":"admin@parking.cl","password":"Test1234!"}</code> → 200 + JWT. El script de test captura el token automáticamente en <code>{{token}}</code>.</div>
+          </div>
+        </div>
+        <div class="say">
+          "Primero el login. El auth-service genera un <em>JWT de 24 horas</em> con BCrypt strength 12. El script de Postman captura el token y lo reutiliza en todos los siguientes requests como Bearer token."
+        </div>
+
+        <!-- Request 2 -->
+        <div class="req">
+          <div class="req-num">#2</div>
+          <div class="req-body">
+            <div class="req-name"><span class="method POST">POST</span> /api/auth/login — credenciales inválidas → 401</div>
+            <div class="req-desc">Muestra GlobalExceptionHandler + log WARN en consola.</div>
+          </div>
+        </div>
+        <div class="say">
+          "Con credenciales inválidas: <em>401</em> con cuerpo estructurado — timestamp, status, mensaje. En la consola de auth-service aparece el log WARN del GlobalExceptionHandler."
+          <span class="note">⏱ Ejecutá y mostrá la respuesta. No te quedes en el log más de 3 segundos.</span>
+        </div>
+
+        <!-- Request 3 -->
+        <div class="req">
+          <div class="req-num">#3</div>
+          <div class="req-body">
+            <div class="req-name"><span class="method GET">GET</span> /api/espacios/disponibles → array de espacios</div>
+            <div class="req-desc">Patrón CSR: Controller → Service → Repository <code>findByDisponibleTrue()</code>.</div>
+          </div>
+        </div>
+        <div class="say">
+          "María consulta los espacios disponibles. Esto recorre el <em>patrón CSR</em>: EspacioController → EspacioService → EspacioRepository."
+        </div>
+
+        <!-- Request 4 -->
+        <div class="req">
+          <div class="req-num">#4</div>
+          <div class="req-body">
+            <div class="req-name"><span class="method POST">POST</span> /api/reservas → 201 PENDIENTE</div>
+            <div class="req-desc">Body: cliente=1, vehículo=1, espacio=3, fechas. ReservaService hace <strong>3 llamadas Feign</strong>: ClienteClient, VehiculoClient, EspacioClient. Captura <code>{{reservaId}}</code>.</div>
+          </div>
+        </div>
+        <div class="say">
+          "María reserva el espacio 3. Antes de guardar, el ReservaService hace <em>3 llamadas Feign</em>: valida que el cliente esté activo, el vehículo activo, y el espacio activo y disponible. Si cualquiera falla, no se crea la reserva. La respuesta llega en estado <em>PENDIENTE</em>."
+        </div>
+
+        <!-- Request 5 -->
+        <div class="req">
+          <div class="req-num">#6</div>
+          <div class="req-body">
+            <div class="req-name"><span class="method PUT">PUT</span> /api/reservas/&#123;&#123;reservaId&#125;&#125;/confirmar → CONFIRMADA</div>
+            <div class="req-desc">Máquina de estados: solo desde PENDIENTE. Nota: @PutMapping, no @PatchMapping — Feign no soporta PATCH.</div>
+          </div>
+        </div>
+        <div class="say">
+          "Confirmamos la reserva — máquina de estados: <em>PENDIENTE → CONFIRMADA</em>. Usamos @PutMapping porque Feign no soporta PATCH."
+        </div>
+
+        <!-- Request 6 -->
+        <div class="req">
+          <div class="req-num">#7</div>
+          <div class="req-body">
+            <div class="req-name"><span class="method POST">POST</span> /api/accesos/entrada → ACTIVO</div>
+            <div class="req-desc">AccesoService hace 2 Feign: ms-reservas (valida CONFIRMADA) + ms-espacios (marca no disponible). Captura <code>{{accesoId}}</code>.</div>
+          </div>
+        </div>
+        <div class="say">
+          "El vehículo entra. ms-accesos hace <em>2 Feign</em>: valida que la reserva esté CONFIRMADA, y marca el espacio como no disponible en ms-espacios."
+        </div>
+
+        <!-- Request 7 -->
+        <div class="req">
+          <div class="req-num">#8</div>
+          <div class="req-body">
+            <div class="req-name"><span class="method PUT">PUT</span> /api/accesos/&#123;&#123;accesoId&#125;&#125;/salida → COMPLETADO + minutos</div>
+            <div class="req-desc">Calcula minutos con ChronoUnit.MINUTES. Libera el espacio y finaliza la reserva vía Feign.</div>
+          </div>
+        </div>
+        <div class="say">
+          "El vehículo sale. El servicio calcula los <em>minutos</em> con ChronoUnit, libera el espacio y finaliza la reserva vía Feign."
+        </div>
+
+        <!-- Request 8 -->
+        <div class="req">
+          <div class="req-num">#9</div>
+          <div class="req-body">
+            <div class="req-name"><span class="method POST">POST</span> /api/cobros → 201 + montoFinal</div>
+            <div class="req-desc">PagoService hace <strong>7 llamadas Feign</strong> para resolver todos los factores. Aplica fórmula con BigDecimal + RoundingMode.HALF_UP.</div>
+          </div>
+        </div>
+        <div class="say">
+          "El cobro es donde ms-pagos hace <em>7 llamadas Feign</em>: obtiene los minutos, la tarifa vigente, el multiplicador horario, los factores por tipo de vehículo y espacio, y los descuentos del cliente. Con eso aplica la fórmula con <em>BigDecimal</em> — no double — para exactitud financiera."
+          <span class="note">⏱ Esta es la más importante de narrar. 15 segundos aquí están bien invertidos.</span>
+        </div>
+
+        <h3>Errores — ejecutar los tres seguidos, sin parar</h3>
+
+        <div class="req">
+          <div class="req-num">#11</div>
+          <div class="req-body">
+            <div class="req-name"><span class="method POST">POST</span> /api/cobros (mismo acceso) → 422 BUSINESS_RULE_VIOLATION</div>
+            <div class="req-desc">Cobro duplicado: UNIQUE constraint en id_acceso_ref → BusinessException → GlobalExceptionHandler.</div>
+          </div>
+        </div>
+        <div class="req">
+          <div class="req-num">#12</div>
+          <div class="req-body">
+            <div class="req-name"><span class="method POST">POST</span> /api/reservas (body incompleto) → 400 campos inválidos</div>
+            <div class="req-desc">@Valid activa Bean Validation → MethodArgumentNotValidException → 400 con mapa de errores por campo.</div>
+          </div>
+        </div>
+        <div class="req">
+          <div class="req-num">#13</div>
+          <div class="req-body">
+            <div class="req-name"><span class="method GET">GET</span> /api/clientes/999 → 404 NOT_FOUND</div>
+            <div class="req-desc">Optional.empty() → NotFoundException → GlobalExceptionHandler → 404 estructurado.</div>
+          </div>
+        </div>
+        <div class="say">
+          "Ahora tres casos de error. Cobro duplicado: <em>422</em> — BusinessException detecta el constraint UNIQUE. Body incompleto en una reserva: <em>400</em> — Bean Validation con mapa de qué campo falló. Y un id inexistente: <em>404</em> — NotFoundException. Los tres los maneja el mismo <em>GlobalExceptionHandler</em> centralizado — ningún Controller tiene try/catch."
+          <span class="note">⏱ Ejecutá los tres requests rápido mientras decís esto. Una narración para los tres, no una por uno.</span>
+        </div>
+
+        <div class="callout callout-green">
+          <strong>✅ Lo que cubriste en esta sección</strong>
+          <p>POST exitoso · GET · flujo completo login→reserva→acceso→cobro · validación 400 (Bean Validation) · 404 dominio · 422 regla de negocio · GlobalExceptionHandler · Feign entre servicios · BigDecimal.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════ SECCIÓN 5 ══════ -->
+  <section id="s5">
+    <div class="scene">
+      <div class="scene-header">
+        <div class="scene-num">5</div>
+        <div style="flex:1">
+          <div class="scene-title">Explicación Técnica — Sol León &amp; Catalina Aguirre</div>
+          <div class="scene-ie">IE 3.2.1 · IE 3.2.2 · IE 3.2.3</div>
+        </div>
+        <div class="scene-meta">
+          <span class="scene-time">40 seg cada una</span>
+        </div>
+      </div>
+      <div class="scene-body">
+
+        <div class="callout callout-red">
+          <strong>40 segundos cada una — no más</strong>
+          <p>Nombrar: (1) microservicios propios, (2) un endpoint o método concreto con su lógica, (3) una dificultad técnica real. No decir "trabajé en el backend" — decir la clase, el método, la lógica.</p>
+        </div>
+
+        <h3>Sol León — 40 seg</h3>
+
+        <div class="two-col">
+          <div class="col-screen">
+            <div class="col-label">🖥️ En pantalla</div>
+            <ul>
+              <li>Postman con la respuesta del cobro visible (el montoFinal)</li>
+              <li>O los logs de consola de ms-reservas con la cadena de Feign</li>
+              <li>No es necesario abrir código — hablá de memoria</li>
+            </ul>
+          </div>
+          <div class="col-script">
+            <div class="col-label">🎤 Decir exactamente</div>
+            <ul>
+              <li>Servicios propios</li>
+              <li>Lógica más compleja implementada</li>
+              <li>Dificultad técnica concreta</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="say">
+          "Yo trabajé en <em>ms-reservas</em>, <em>ms-accesos</em>, <em>ms-pagos</em>, <em>ms-reportes</em> y <em>auth-service</em>. La lógica más compleja fue en ms-pagos: el método <code>crear()</code> del PagoService hace 7 llamadas Feign para resolver cada factor de la fórmula de cobro, usando BigDecimal con RoundingMode.HALF_UP para exactitud financiera. La dificultad técnica fue que Feign lanza FeignException y no retorna null — tuve que capturarla explícitamente y convertirla en una NotFoundException de dominio para que el GlobalExceptionHandler la manejara correctamente."
+          <span class="note">⏱ Eso es exactamente 40 segundos hablando a ritmo normal. No agregues más.</span>
+        </div>
+
+        <h3>Catalina Aguirre — 40 seg</h3>
+
+        <div class="say">
+          "Yo trabajé en <em>user-service</em>. Implementé el CRUD completo de cuatro entidades: <em>Cliente</em>, <em>TipoCliente</em>, <em>Suscripcion</em> y <em>ClienteSuscripcion</em>, cada una con su controller, service y repository. La lógica más compleja fue la gestión de la suscripción del cliente: mantener la relación entre cliente y su suscripción activa con vigencia. Usé <em>soft delete</em> — los clientes se marcan como inactivos con el campo <code>activo=false</code> en lugar de eliminarse físicamente, para mantener la integridad de las reservas históricas."
+          <span class="note">⏱ Catalina puede ajustar esta frase con sus propias palabras — pero el contenido técnico debe quedar igual.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════ SECCIÓN 6 ══════ -->
+  <section id="s6">
+    <div class="scene">
+      <div class="scene-header">
+        <div class="scene-num">6</div>
+        <div style="flex:1">
+          <div class="scene-title">Cierre</div>
+          <div class="scene-ie">Resumen</div>
+        </div>
+        <div class="scene-meta">
+          <span class="scene-time">20 seg</span>
+        </div>
+      </div>
+      <div class="scene-body">
+        <div class="say">
+          "Para cerrar: <em>12 microservicios</em> completamente funcionales, <em>10 bases de datos independientes</em>, <em>74 tests de integración</em> con Newman pasando al 100%. El sistema implementa CSR, Feign, Bean Validation, GlobalExceptionHandler, SLF4J, JWT y Swagger en todos los servicios. Como mejoras futuras: mensajería asíncrona con Kafka, despliegue en Docker y Kubernetes, y un frontend completo. Muchas gracias."
+          <span class="note">⏱ 20 segundos. Hablá rápido y confiado. No es el momento de elaborar.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- TABLA DE REQUESTS -->
+  <section id="requests">
+    <h2>Requests de la demo — en orden</h2>
+    <p>Usar <code>demo-eval2.postman_collection.json</code>. Ejecutar en este orden exacto. Los números corresponden al ID de la colección.</p>
+
+    <table class="t-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Método + Endpoint</th>
+          <th>Qué demuestra</th>
+          <th>Resultado esperado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td><span class="method POST">POST</span><span class="mono">/api/auth/login</span> (admin)</td>
+          <td>JWT + BCrypt</td>
+          <td style="color:var(--green)">200 + token capturado en {{token}}</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td><span class="method POST">POST</span><span class="mono">/api/auth/login</span> (inválido)</td>
+          <td>GlobalExceptionHandler 401 + log WARN</td>
+          <td style="color:var(--red)">401 + cuerpo estructurado</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td><span class="method GET">GET</span><span class="mono">/api/espacios/disponibles</span></td>
+          <td>Patrón CSR, GET</td>
+          <td style="color:var(--green)">200 + array de espacios</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td><span class="method POST">POST</span><span class="mono">/api/reservas</span></td>
+          <td>POST exitoso + 3 Feign calls + estado PENDIENTE</td>
+          <td style="color:var(--green)">201 + {{reservaId}} capturado</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td><span class="method PUT">PUT</span><span class="mono">/api/reservas/{{reservaId}}/confirmar</span></td>
+          <td>Máquina de estados · @PutMapping</td>
+          <td style="color:var(--green)">200 + estado CONFIRMADA</td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td><span class="method POST">POST</span><span class="mono">/api/accesos/entrada</span></td>
+          <td>2 Feign: ms-reservas + ms-espacios</td>
+          <td style="color:var(--green)">201 + {{accesoId}} capturado</td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td><span class="method PUT">PUT</span><span class="mono">/api/accesos/{{accesoId}}/salida</span></td>
+          <td>ChronoUnit.MINUTES + Feign libera espacio</td>
+          <td style="color:var(--green)">200 + minutos calculados</td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td><span class="method POST">POST</span><span class="mono">/api/cobros</span></td>
+          <td>7 Feign + BigDecimal + fórmula</td>
+          <td style="color:var(--green)">201 + montoFinal</td>
+        </tr>
+        <tr>
+          <td>11</td>
+          <td><span class="method POST">POST</span><span class="mono">/api/cobros</span> (duplicado)</td>
+          <td>422 BUSINESS_RULE_VIOLATION</td>
+          <td style="color:var(--red)">422 + BusinessException</td>
+        </tr>
+        <tr>
+          <td>12</td>
+          <td><span class="method POST">POST</span><span class="mono">/api/reservas</span> (body incompleto)</td>
+          <td>400 Bean Validation + mapa de campos</td>
+          <td style="color:var(--red)">400 + errores por campo</td>
+        </tr>
+        <tr>
+          <td>13</td>
+          <td><span class="method GET">GET</span><span class="mono">/api/clientes/999</span></td>
+          <td>404 NotFoundException</td>
+          <td style="color:var(--red)">404 NOT_FOUND</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-purple">
+      <strong>Requests #5, #10, #14a, #14b, #15, #16, #17 — omitir en el video</strong>
+      <p>#5 (GET reserva) es redundante con #4. #10 (cobro seed 3562.50) es un check de precisión — si tenés tiempo es lindo de mostrar. #14b, #15 no funcionan como estaban diseñados. #16, #17 (reportes) son opcionales si te sobra tiempo al final de S4.</p>
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ══════ SERVICIOS ══════ -->
+  <section id="servicios">
+    <h2>Cómo funciona cada servicio y cómo se comunican</h2>
+    <p>Referencia técnica por microservicio — endpoints reales, Feign clients exactos, y lógica de negocio clave. Útil tanto para el video como para la defensa.</p>
+
+    <!-- MAPA DE DEPENDENCIAS -->
+    <h3>Mapa de dependencias Feign</h3>
+    <div class="code-block">
+      <div class="code-label">Quién llama a quién vía Feign</div>
+      <pre>ms-reservas  ──→  user-service       (ClienteClient:  GET /api/clientes/{id})
+             ──→  ms-vehiculos       (VehiculoClient: GET /api/vehiculos/{id})
+             ──→  ms-espacios        (EspacioClient:  GET /api/espacios/{id} · PUT /disponibilidad)
+
+ms-accesos   ──→  ms-espacios        (EspacioClient:  PUT /api/espacios/{id}/disponibilidad)
+             ──→  ms-reservas        (ReservaClient:  GET /api/reservas/{id} · PUT /finalizar)
+
+ms-pagos     ──→  ms-accesos         (AccesoClient:       GET /api/accesos/{id})
+             ──→  ms-tarifas         (TarifaClient:       GET /api/tarifas/vigente)
+             ──→  ms-tarifas         (HorarioTarifaClient: GET /api/horarios-tarifa/vigente)
+             ──→  ms-vehiculos       (TipoVehiculoClient: GET /api/tipos-vehiculo/{id})
+             ──→  ms-vehiculos       (VehiculoClient:     GET /api/vehiculos/{id})
+             ──→  ms-espacios        (EspacioClient:      GET /api/espacios/{id})
+             ──→  user-service       (ClienteClient:      GET /api/clientes/{id})
+
+ms-reportes  ──→  ms-accesos         (AccesoClient:  GET /api/accesos/{id} · /reserva/{id})
+             ──→  ms-pagos           (CobroClient:   GET /api/cobros/cliente/{id})
+             ──→  ms-espacios        (EspacioClient: GET /api/espacios/{id})
+             ──→  ms-vehiculos       (VehiculoClient: GET /api/vehiculos/{id})</pre>
+    </div>
+
+    <div class="callout callout-blue">
+      <strong>Servicios más solicitados (reciben Feign de otros)</strong>
+      <p><strong>ms-espacios</strong> es llamado por ms-reservas, ms-accesos, ms-pagos y ms-reportes — 4 servicios. Es el más crítico: si cae, la cadena completa se rompe. <strong>user-service</strong> y <strong>ms-vehiculos</strong> son llamados por ms-reservas y ms-pagos. <strong>ms-accesos</strong> es llamado por ms-pagos y ms-reportes. <strong>ms-reservas</strong> solo es llamado por ms-accesos.</p>
+    </div>
+
+    <!-- GRILLA DE SERVICIO CARDS -->
+    <div class="svc-grid">
+
+      <!-- ── EUREKA ── -->
+      <div class="svc-card infra">
+        <div class="svc-header">
+          <div>
+            <div class="svc-name">eureka-server</div>
+            <div class="svc-sub">Infraestructura · Sin base de datos</div>
+          </div>
+          <div class="svc-port">:8761</div>
+        </div>
+        <div class="svc-body">
+          <div class="svc-section-label">Rol</div>
+          <p class="svc-text">Registro de servicios (Service Discovery). Todos los demás microservicios se registran aquí al arrancar indicando su nombre y puerto. Feign Client resuelve nombres de servicio (<code>ms-espacios</code>, <code>user-service</code>, etc.) consultando Eureka — sin URLs hardcodeadas.</p>
+          <div class="svc-section-label">Dashboard</div>
+          <p class="svc-text"><code>http://localhost:8761</code> — muestra todos los servicios registrados con estado UP/DOWN.</p>
+          <div class="svc-section-label">Feign calls</div>
+          <p class="svc-text svc-none">No hace ni recibe llamadas Feign. Es la base del ecosistema.</p>
+        </div>
+      </div>
+
+      <!-- ── GATEWAY ── -->
+      <div class="svc-card infra">
+        <div class="svc-header">
+          <div>
+            <div class="svc-name">api-gateway</div>
+            <div class="svc-sub">Infraestructura · Sin base de datos · application.yaml</div>
+          </div>
+          <div class="svc-port">:8080</div>
+        </div>
+        <div class="svc-body">
+          <div class="svc-section-label">Rol</div>
+          <p class="svc-text">Único punto de entrada al sistema. Enruta todas las requests a los microservicios internos. Aplica <code>JwtAuthFilter</code> para validar el Bearer token en cada request antes de enrutar.</p>
+          <div class="svc-section-label">Rutas públicas (sin JWT)</div>
+          <p class="svc-text"><code>/api/auth/**</code> · <code>/swagger-ui/**</code> · <code>/v3/api-docs/**</code></p>
+          <div class="svc-section-label">Nota técnica</div>
+          <p class="svc-text">Usa <code>application.yaml</code> (no .properties). Spring Cloud Gateway con <code>spring.cloud.gateway.routes</code>. VS Code puede marcar el config como deprecated — se ignora.</p>
+        </div>
+      </div>
+
+      <!-- ── AUTH ── -->
+      <div class="svc-card auth">
+        <div class="svc-header">
+          <div>
+            <div class="svc-name">auth-service</div>
+            <div class="svc-sub">db_auth · Rol · UserCredential</div>
+          </div>
+          <div class="svc-port">:8081</div>
+        </div>
+        <div class="svc-body">
+          <div class="svc-section-label">Endpoints</div>
+          <div class="ep"><span class="method POST">POST</span> <code>/api/auth/login</code> → valida email+BCrypt → genera JWT 24h</div>
+          <div class="ep"><span class="method POST">POST</span> <code>/api/auth/register</code> → crea UserCredential (201)</div>
+          <div class="svc-section-label">Lógica clave</div>
+          <p class="svc-text">Login usa <code>email</code> como identificador (no username). Repository: <code>findByEmail(String email)</code>. BCrypt strength 12. JWT generado con JJWT 0.11.5, clave 256-bit Base64, vigencia 24h. El token incluye el email y rol en los claims.</p>
+          <div class="svc-section-label">Feign calls</div>
+          <p class="svc-text svc-none">No hace llamadas Feign. Es el único emisor de JWT.</p>
+          <div class="svc-section-label">Llamado por</div>
+          <p class="svc-text svc-none">Nadie lo llama vía Feign. El API Gateway sí valida el JWT localmente.</p>
+        </div>
+      </div>
+
+      <!-- ── USER SERVICE ── -->
+      <div class="svc-card data">
+        <div class="svc-header">
+          <div>
+            <div class="svc-name">user-service</div>
+            <div class="svc-sub">db_usuarios · Cliente · TipoCliente · Suscripcion · ClienteSuscripcion</div>
+          </div>
+          <div class="svc-port">:8082</div>
+        </div>
+        <div class="svc-body">
+          <div class="svc-section-label">Endpoints clave</div>
+          <div class="ep"><span class="method GET">GET</span> <code>/api/clientes</code> · <code>/api/clientes/{id}</code></div>
+          <div class="ep"><span class="method POST">POST</span> <code>/api/clientes</code> → crea cliente (201)</div>
+          <div class="ep"><span class="method PUT">PUT</span> <code>/api/clientes/{id}</code> → actualiza cliente</div>
+          <div class="ep"><span class="method DELETE">DEL</span> <code>/api/clientes/{id}</code> → soft delete (activo=false)</div>
+          <div class="ep"><span class="method GET">GET</span> <code>/api/clientes/{id}/suscripciones</code></div>
+          <div class="ep"><span class="method POST">POST</span> <code>/api/clientes/{id}/suscripciones</code> → asigna suscripción</div>
+          <div class="ep"><span class="method GET">GET</span> <code>/api/tipo-cliente</code> · <code>/api/suscripciones</code></div>
+          <div class="svc-section-label">Lógica clave</div>
+          <p class="svc-text">Soft delete: <code>activo=false</code>. El campo <code>activo</code> y los descuentos de tipo de cliente (<code>descuento</code>) y suscripción son leídos por ms-reservas y ms-pagos para validaciones y cálculo de cobro.</p>
+          <div class="svc-section-label">Feign calls</div>
+          <p class="svc-text svc-none">No hace llamadas Feign.</p>
+          <div class="svc-section-label">Llamado por</div>
+          <p class="svc-text"><span class="caller">ms-reservas</span> ClienteClient: valida que cliente esté activo antes de crear reserva.<br/><span class="caller">ms-pagos</span> ClienteClient: obtiene descuento por tipo cliente y suscripción para la fórmula.</p>
+        </div>
+      </div>
+
+      <!-- ── SECURITY ── -->
+      <div class="svc-card data">
+        <div class="svc-header">
+          <div>
+            <div class="svc-name">security-service</div>
+            <div class="svc-sub">db_seguridad · Permiso · RolPermiso</div>
+          </div>
+          <div class="svc-port">:8083</div>
+        </div>
+        <div class="svc-body">
+          <div class="svc-section-label">Endpoints</div>
+          <div class="ep"><span class="method GET">GET</span> <code>/api/permisos</code> · <code>/api/permisos/{id}</code></div>
+          <div class="ep"><span class="method POST">POST</span> <code>/api/permisos</code> → crea permiso</div>
+          <div class="ep"><span class="method PUT">PUT</span> <code>/api/permisos/{id}</code> · <span class="method DELETE">DEL</span> <code>/api/permisos/{id}</code></div>
+          <div class="ep"><span class="method GET">GET</span> <code>/api/roles-permisos</code> · <code>/api/roles-permisos/rol/{idRol}</code></div>
+          <div class="ep"><span class="method POST">POST</span> <code>/api/roles-permisos</code> · <span class="method DELETE">DEL</span> <code>/api/roles-permisos/{id}</code></div>
+          <div class="svc-section-label">Feign calls</div>
+          <p class="svc-text svc-none">No hace llamadas Feign.</p>
+          <div class="svc-section-label">Llamado por</div>
+          <p class="svc-text svc-none">Ningún servicio lo llama vía Feign. CRUD autónomo de permisos y roles.</p>
+        </div>
+      </div>
+
+      <!-- ── VEHICULOS ── -->
+      <div class="svc-card data">
+        <div class="svc-header">
+          <div>
+            <div class="svc-name">ms-vehiculos</div>
+            <div class="svc-sub">db_vehiculos · Vehiculo · TipoVehiculo</div>
+          </div>
+          <div class="svc-port">:8084</div>
+        </div>
+        <div class="svc-body">
+          <div class="svc-section-label">Endpoints</div>
+          <div class="ep"><span class="method GET">GET</span> <code>/api/vehiculos</code> · <code>/api/vehiculos/{id}</code></div>
+          <div class="ep"><span class="method GET">GET</span> <code>/api/vehiculos/cliente/{idClienteRef}</code> → vehículos de un cliente</div>
+          <div class="ep"><span class="method GET">GET</span> <code>/api/vehiculos/validar/{patente}</code> → Boolean</div>
+          <div class="ep"><span class="method POST">POST</span> <code>/api/vehiculos</code> → crea (201)</div>
+          <div class="ep"><span class="method PUT">PUT</span> <code>/api/vehiculos/{id}</code> → actualiza (patente inmutable)</div>
+          <div class="ep"><span class="method DELETE">DEL</span> <code>/api/vehiculos/{id}</code> → soft delete</div>
+          <div class="ep"><span class="method GET">GET</span> <code>/api/tipos-vehiculo</code> · <code>/api/tipos-vehiculo/{id}</code></div>
+          <div class="svc-section-label">Lógica clave</div>
+          <p class="svc-text"><code>Vehiculo.idTipoVehiculo</code> es <code>@ManyToOne @JoinColumn</code> — relación real dentro del mismo servicio. <code>idClienteRef</code> es FK lógica (Long). <code>VehiculoUpdateDTO</code> no incluye patente — es inmutable. Soft delete: <code>activo=false</code>.</p>
+          <div class="svc-section-label">Llamado por</div>
+          <p class="svc-text"><span class="caller">ms-reservas</span> VehiculoClient: valida que vehículo esté activo.<br/><span class="caller">ms-pagos</span> VehiculoClient + TipoVehiculoClient: obtiene factor multiplicador del tipo de vehículo para la fórmula.</p>
+        </div>
+      </div>
+
+      <!-- ── ESPACIOS ── -->
+      <div class="svc-card data">
+        <div class="svc-header">
+          <div>
+            <div class="svc-name">ms-espacios</div>
+            <div class="svc-sub">db_espacios · Espacio · TipoEspacio</div>
+          </div>
+          <div class="svc-port">:8085</div>
+        </div>
+        <div class="svc-body">
+          <div class="svc-section-label">Endpoints</div>
+          <div class="ep"><span class="method GET">GET</span> <code>/api/espacios</code> · <code>/api/espacios/{id}</code></div>
+          <div class="ep"><span class="method GET">GET</span> <code>/api/espacios/disponibles</code> → solo donde <code>disponible=true</code></div>
+          <div class="ep"><span class="method GET">GET</span> <code>/api/espacios/zona/{zona}</code> → filtra por zona (A, B, D, M)</div>
+          <div class="ep"><span class="method PUT">PUT</span> <code>/api/espacios/{id}/disponibilidad?disponible=</code> → toggle disponible flag</div>
+          <div class="ep"><span class="method POST">POST</span> <code>/api/espacios</code> · <span class="method PUT">PUT</span> <code>/api/espacios/{id}</code> · <span class="method DELETE">DEL</span> <code>/api/espacios/{id}</code></div>
+          <div class="ep"><span class="method GET">GET</span> <code>/api/tipo-espacio</code> · <code>/api/tipo-espacio/{id}</code></div>
+          <div class="svc-section-label">Lógica clave</div>
+          <p class="svc-text"><code>disponible</code> y <code>activo</code> son campos independientes. El endpoint <code>/disponibilidad</code> solo cambia <code>disponible</code> — lo llaman ms-reservas (al confirmar) y ms-accesos (al entrar/salir). Soft delete: <code>activo=false</code>.</p>
+          <div class="svc-section-label">Llamado por (el más solicitado del sistema)</div>
+          <p class="svc-text">
+            <span class="caller">ms-reservas</span> EspacioClient: valida activo+disponible antes de crear. Llama a <code>/disponibilidad</code> al confirmar.<br/>
+            <span class="caller">ms-accesos</span> EspacioClient: llama a <code>/disponibilidad</code> en entrada y salida.<br/>
+            <span class="caller">ms-pagos</span> EspacioClient: obtiene factor tipo espacio para la fórmula.<br/>
+            <span class="caller">ms-reportes</span> EspacioClient: agrega datos de ocupación.
+          </p>
+        </div>
+      </div>
+
+      <!-- ── TARIFAS ── -->
+      <div class="svc-card data">
+        <div class="svc-header">
+          <div>
+            <div class="svc-name">ms-tarifas</div>
+            <div class="svc-sub">db_tarifas · Tarifas · HorarioTarifas</div>
+          </div>
+          <div class="svc-port">:8088</div>
+        </div>
+        <div class="svc-body">
+          <div class="svc-section-label">Endpoints</div>
+          <div class="ep"><span class="method GET">GET</span> <code>/api/tarifas/vigente</code> → tarifa activa (precio base/hora)</div>
+          <div class="ep"><span class="method GET">GET</span> <code>/api/horarios-tarifa/vigente</code> → horario que aplica ahora (LABORAL/FIN_DE_SEMANA/FESTIVO)</div>
+          <div class="ep"><span class="method GET">GET</span> <code>/api/tarifas</code> · <code>/api/tarifas/{id}</code> · CRUD completo</div>
+          <div class="ep"><span class="method GET">GET</span> <code>/api/horarios-tarifa</code> · <code>/api/horarios-tarifa/{id}</code> · CREATE + DELETE</div>
+          <div class="svc-section-label">Lógica clave</div>
+          <p class="svc-text">La clase de entidad se llama <code>Tarifas</code> (plural). <code>HorarioTarifas.diaTipo</code> es un enum: <code>LABORAL</code>, <code>FIN_DE_SEMANA</code>, <code>FESTIVO</code>. El horario vigente determina el multiplicador de precio. ms-pagos usa dos Feign clients distintos al mismo servicio: <code>TarifaClient</code> y <code>HorarioTarifaClient</code>, diferenciados con <code>contextId</code>.</p>
+          <div class="svc-section-label">Llamado por</div>
+          <p class="svc-text"><span class="caller">ms-pagos</span> TarifaClient: obtiene precio base/hora de la tarifa vigente.<br/><span class="caller">ms-pagos</span> HorarioTarifaClient: obtiene multiplicador del horario actual.</p>
+        </div>
+      </div>
+
+      <!-- ── RESERVAS ── -->
+      <div class="svc-card feign">
+        <div class="svc-header">
+          <div>
+            <div class="svc-name">ms-reservas</div>
+            <div class="svc-sub">db_reservas · Reserva · EstadoEnums</div>
+          </div>
+          <div class="svc-port">:8086</div>
+        </div>
+        <div class="svc-body">
+          <div class="svc-section-label">Endpoints</div>
+          <div class="ep"><span class="method GET">GET</span> <code>/api/reservas</code> · <code>/api/reservas/{id}</code></div>
+          <div class="ep"><span class="method GET">GET</span> <code>/api/reservas/cliente/{id}</code> · <code>/api/reservas/estado/{estado}</code></div>
+          <div class="ep"><span class="method POST">POST</span> <code>/api/reservas</code> → crea en estado PENDIENTE (201)</div>
+          <div class="ep"><span class="method PUT">PUT</span> <code>/api/reservas/{id}/confirmar</code> → PENDIENTE → CONFIRMADA</div>
+          <div class="ep"><span class="method PUT">PUT</span> <code>/api/reservas/{id}/cancelar</code> → PENDIENTE/CONFIRMADA → CANCELADA</div>
+          <div class="ep"><span class="method PUT">PUT</span> <code>/api/reservas/{id}/finalizar</code> → CONFIRMADA → FINALIZADA</div>
+          <div class="svc-section-label">Máquina de estados (EstadoEnums)</div>
+          <div class="code-block" style="margin:0.4rem 0">
+            <pre style="font-size:0.72rem">PENDIENTE ──→ CONFIRMADA ──→ FINALIZADA
+          └──→ CANCELADA
+(FINALIZADA y CANCELADA son terminales)</pre>
+          </div>
+          <div class="svc-section-label">Lógica de create() — 3 Feign calls</div>
+          <p class="svc-text">1. <code>ClienteClient.findById()</code> → verifica <code>activo=true</code><br/>2. <code>VehiculoClient.findById()</code> → verifica <code>activo=true</code><br/>3. <code>EspacioClient.findById()</code> → verifica <code>activo=true</code> y <code>disponible=true</code><br/>Si cualquiera falla, lanza <code>NotFoundException</code> y no guarda nada.</p>
+          <div class="svc-section-label">Lógica de confirmar() — Feign adicional</div>
+          <p class="svc-text">Además de cambiar estado, llama a <code>EspacioClient.updateDisponibilidad(id, false)</code> para bloquear el espacio.</p>
+          <div class="svc-section-label">Nota: cancelar() NO llama a ms-espacios</div>
+          <p class="svc-text">Solo cambia estado — el espacio nunca se bloqueó al crear (solo al confirmar), entonces no hay nada que liberar.</p>
+          <div class="svc-section-label">Feign que sale</div>
+          <p class="svc-text"><code>user-service</code> · <code>ms-vehiculos</code> · <code>ms-espacios</code></p>
+          <div class="svc-section-label">Llamado por</div>
+          <p class="svc-text"><span class="caller">ms-accesos</span> ReservaClient: lee estado para validar entrada (debe ser CONFIRMADA), y llama a <code>/finalizar</code> al registrar salida.</p>
+        </div>
+      </div>
+
+      <!-- ── ACCESOS ── -->
+      <div class="svc-card feign">
+        <div class="svc-header">
+          <div>
+            <div class="svc-name">ms-accesos</div>
+            <div class="svc-sub">db_accesos · Acceso · EstadoEnum (ACTIVO / COMPLETADO)</div>
+          </div>
+          <div class="svc-port">:8087</div>
+        </div>
+        <div class="svc-body">
+          <div class="svc-section-label">Endpoints</div>
+          <div class="ep"><span class="method GET">GET</span> <code>/api/accesos</code> · <code>/api/accesos/{id}</code></div>
+          <div class="ep"><span class="method GET">GET</span> <code>/api/accesos/reserva/{idReserva}</code></div>
+          <div class="ep"><span class="method POST">POST</span> <code>/api/accesos/entrada</code> → crea Acceso estado ACTIVO (201)</div>
+          <div class="ep"><span class="method PUT">PUT</span> <code>/api/accesos/{id}/salida</code> → ACTIVO → COMPLETADO + calcula minutos</div>
+          <div class="svc-section-label">Lógica de registrarEntrada() — 2 Feign calls</div>
+          <p class="svc-text">1. <code>ReservaClient.findById()</code> → valida que estado sea CONFIRMADA (si no, lanza ConflictException)<br/>2. <code>EspacioClient.updateDisponibilidad(id, false)</code> → bloquea el espacio</p>
+          <div class="svc-section-label">Lógica de registrarSalida() — 2 Feign calls</div>
+          <p class="svc-text">1. Calcula minutos: <code>ChronoUnit.MINUTES.between(fechaHoraEntrada, LocalDateTime.now())</code><br/>2. <code>EspacioClient.updateDisponibilidad(id, true)</code> → libera el espacio<br/>3. <code>ReservaClient.finalizarReserva(idReserva)</code> → cambia reserva a FINALIZADA</p>
+          <div class="svc-section-label">Nota: idReserva es nullable</div>
+          <p class="svc-text">Permite accesos sin reserva previa (entrada directa sin reservar).</p>
+          <div class="svc-section-label">Feign que sale</div>
+          <p class="svc-text"><code>ms-espacios</code> · <code>ms-reservas</code></p>
+          <div class="svc-section-label">Llamado por</div>
+          <p class="svc-text"><span class="caller">ms-pagos</span> AccesoClient: obtiene los minutos y referencias del acceso para calcular el cobro.<br/><span class="caller">ms-reportes</span> AccesoClient: agrega datos de accesos por reserva y ocupación.</p>
+        </div>
+      </div>
+
+      <!-- ── PAGOS ── -->
+      <div class="svc-card feign">
+        <div class="svc-header">
+          <div>
+            <div class="svc-name">ms-pagos</div>
+            <div class="svc-sub">db_pagos · Cobro · Banco · MetodoPago · TipoTarjeta</div>
+          </div>
+          <div class="svc-port">:8089</div>
+        </div>
+        <div class="svc-body">
+          <div class="svc-section-label">Endpoints</div>
+          <div class="ep"><span class="method POST">POST</span> <code>/api/cobros</code> → calcula y guarda cobro (201)</div>
+          <div class="ep"><span class="method GET">GET</span> <code>/api/cobros/{id}</code> · <code>/api/cobros/acceso/{id}</code> · <code>/api/cobros/cliente/{id}</code></div>
+          <div class="ep"><span class="method GET">GET</span> <code>/api/bancos</code> · <span class="method POST">POST</span> · <span class="method PUT">PUT</span> · <span class="method DELETE">DEL</span> (CRUD bancos)</div>
+          <div class="ep"><span class="method GET">GET</span> <code>/api/metodos-pago</code> · <span class="method POST">POST</span> · <span class="method DELETE">DEL</span></div>
+          <div class="ep"><span class="method GET">GET</span> <code>/api/tipo-tarjetas</code> · <span class="method POST">POST</span> · <span class="method DELETE">DEL</span></div>
+          <div class="svc-section-label">Fórmula de cobro — 7 Feign calls</div>
+          <div class="code-block" style="margin:0.4rem 0">
+            <pre style="font-size:0.72rem">monto_base  = precio_base_hora          ← TarifaClient (ms-tarifas)
+            × multiplicador_horario     ← HorarioTarifaClient (ms-tarifas)
+            × factor_tipo_vehiculo      ← TipoVehiculoClient (ms-vehiculos)
+            × factor_tipo_espacio       ← EspacioClient (ms-espacios)
+            × (minutos / 60)            ← AccesoClient (ms-accesos)
+
+monto_final = monto_base
+            × (1 - desc_tipo_cliente/100)  ← ClienteClient (user-service)
+            × (1 - desc_suscripcion /100)  ← ClienteClient (user-service)
+            × (1 - desc_banco       /100)  ← del MetodoPago enviado en el body
+
+Todo con BigDecimal + RoundingMode.HALF_UP</pre>
+          </div>
+          <div class="svc-section-label">Constraint clave</div>
+          <p class="svc-text"><code>cobro.id_acceso_ref</code> tiene UNIQUE constraint — solo puede haber un cobro por acceso. Si se intenta cobrar dos veces el mismo acceso, el servicio lanza <code>BusinessException</code> → 422.</p>
+          <div class="svc-section-label">Feign que sale</div>
+          <p class="svc-text"><code>ms-accesos</code> · <code>ms-tarifas</code> (×2, contextId) · <code>ms-vehiculos</code> (×2) · <code>ms-espacios</code> · <code>user-service</code></p>
+          <div class="svc-section-label">Llamado por</div>
+          <p class="svc-text"><span class="caller">ms-reportes</span> CobroClient: historial de cobros por cliente.</p>
+        </div>
+      </div>
+
+      <!-- ── REPORTES ── -->
+      <div class="svc-card reportes">
+        <div class="svc-header">
+          <div>
+            <div class="svc-name">ms-reportes</div>
+            <div class="svc-sub">Sin base de datos · Sin @Entity · Sin Repository</div>
+          </div>
+          <div class="svc-port">:8090</div>
+        </div>
+        <div class="svc-body">
+          <div class="svc-section-label">Endpoints (solo lectura)</div>
+          <div class="ep"><span class="method GET">GET</span> <code>/api/reportes/ocupacion</code> → agrega datos de ms-accesos + ms-espacios</div>
+          <div class="ep"><span class="method GET">GET</span> <code>/api/reportes/accesos/reserva/{idReserva}</code> → acceso de una reserva</div>
+          <div class="ep"><span class="method GET">GET</span> <code>/api/reportes/cobros/cliente/{idCliente}</code> → historial de cobros</div>
+          <div class="svc-section-label">Lógica clave</div>
+          <p class="svc-text">No persiste nada. No tiene tablas. Todos los datos los obtiene en tiempo real vía Feign de los otros servicios y los agrega en el Service antes de retornar la respuesta. Es un microservicio de <strong>solo agregación</strong>.</p>
+          <div class="svc-section-label">Feign que sale</div>
+          <p class="svc-text"><code>ms-accesos</code> (AccesoClient) · <code>ms-pagos</code> (CobroClient) · <code>ms-espacios</code> (EspacioClient) · <code>ms-vehiculos</code> (VehiculoClient)</p>
+          <div class="svc-section-label">Llamado por</div>
+          <p class="svc-text svc-none">Ningún servicio lo llama. Es el último eslabón de la cadena.</p>
+        </div>
+      </div>
+
+    </div><!-- /svc-grid -->
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- FRASES TÉCNICAS -->
+  <section id="frases">
+    <h2>Frases técnicas clave — para la defensa del viernes</h2>
+    <p>Esta sección es para la <strong>defensa individual</strong>, no para el video. Practicá responder estas preguntas en voz alta.</p>
+
+    <table class="t-table">
+      <thead><tr><th>Pregunta</th><th>Respuesta clave</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>¿Por qué API Gateway?</td>
+          <td>Punto de entrada único — el cliente no conoce los puertos internos. Centraliza routing y validación JWT. Evita que cada servicio implemente su propia seguridad.</td>
+        </tr>
+        <tr>
+          <td>¿Para qué sirve Eureka?</td>
+          <td>Service discovery — cada microservicio se registra al arrancar. Feign resuelve <code>ms-vehiculos</code> → <code>localhost:8084</code> automáticamente, sin hardcodear URLs.</td>
+        </tr>
+        <tr>
+          <td>¿Por qué PUT y no PATCH?</td>
+          <td>El HttpURLConnection que usa Feign internamente no soporta PATCH. Por consistencia y compatibilidad, usamos @PutMapping en todas las operaciones parciales.</td>
+        </tr>
+        <tr>
+          <td>¿Por qué BigDecimal?</td>
+          <td>Para evitar errores de punto flotante en dinero. <code>double</code> puede dar 3562.4999. BigDecimal con RoundingMode.HALF_UP garantiza exactitud financiera.</td>
+        </tr>
+        <tr>
+          <td>¿Qué es el GlobalExceptionHandler?</td>
+          <td>Un <code>@RestControllerAdvice</code> que centraliza el manejo de errores. Ningún Controller tiene try/catch — las excepciones suben al handler que devuelve respuestas HTTP estructuradas.</td>
+        </tr>
+        <tr>
+          <td>¿Por qué FK lógicas y no de BD?</td>
+          <td>Porque cada microservicio tiene su propia base de datos. No se pueden tener foreign keys entre bases de datos distintas en MySQL. Las referencias cross-BD se guardan como <code>Long</code>.</td>
+        </tr>
+        <tr>
+          <td>¿Qué pasa si un Feign falla?</td>
+          <td>Feign lanza FeignException. La capturamos explícitamente y la convertimos en una excepción de dominio (NotFoundException, ConflictException) que el GlobalExceptionHandler maneja correctamente.</td>
+        </tr>
+        <tr>
+          <td>Explicar la máquina de estados de Reserva</td>
+          <td>PENDIENTE es el estado inicial. Desde PENDIENTE: CONFIRMADA o CANCELADA. Desde CONFIRMADA: FINALIZADA. FINALIZADA y CANCELADA son terminales. Implementado con EstadoEnums y guardias en cada método del Service.</td>
+        </tr>
+        <tr>
+          <td>¿Qué hace ms-reportes diferente a los demás?</td>
+          <td>No tiene base de datos propia, ni @Entity, ni Repository. Todo el contenido lo obtiene vía Feign de ms-accesos, ms-pagos y ms-espacios. Es un microservicio de solo lectura y agregación.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+</main>
+</div>
+
+<script>
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('nav a[href^="#"]');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        const a = document.querySelector(`nav a[href="#${e.target.id}"]`);
+        if (a) a.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

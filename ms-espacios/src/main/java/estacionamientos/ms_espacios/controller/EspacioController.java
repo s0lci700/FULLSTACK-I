@@ -3,6 +3,7 @@ package estacionamientos.ms_espacios.controller;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,11 +28,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/espacios")
 public class EspacioController {
 
-    private final EspacioService espaciosService;
+    @Autowired
+    private EspacioService espaciosService;
 
-    public EspacioController(EspacioService espaciosService) {
-        this.espaciosService = espaciosService;
-    }
     // Retorna la lista completa de todos los espacios registrados
     @GetMapping
     public ResponseEntity<List<EspacioResponseDTO>> getAll() {
