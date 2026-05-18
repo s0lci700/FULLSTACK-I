@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FULLSTACK-I — Proyecto Semestral</title>
+  <style>
+:root{--bg:#0f1117;--bg2:#1a1f2e;--border:#2d3748;--text:#e2e8f0;--text2:#94a3b8;--text3:#7b8ea6;--blue:#93c5fd;--green:#22c55e}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+.container{max-width:1020px;margin:0 auto;padding:2rem}
+.back{display:inline-flex;gap:.4rem;color:var(--text3);text-decoration:none;font-size:.85rem;margin-bottom:1rem}
+.back:hover{color:var(--blue)}
+.header{border-bottom:1px solid var(--border);padding-bottom:1rem;margin-bottom:1.25rem;text-align:center}
+.header h1{margin:0;font-size:2rem;color:#f8fafc}
+.header p{margin:.35rem 0 0;color:var(--text2)}
+main{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.25rem 1.5rem}
+a{color:var(--blue)}
+h1,h2,h3{color:#f8fafc}
+h2{margin-top:1.5rem;border-bottom:1px solid var(--border);padding-bottom:.35rem}
+p,li,td{color:var(--text2)}
+code{background:#111827;border:1px solid var(--border);padding:.1rem .35rem;border-radius:4px;color:#c4b5fd;font-family:Consolas,monospace}
+pre{background:#111827;border:1px solid var(--border);padding:.8rem;border-radius:8px;overflow:auto}
+table{width:100%;border-collapse:collapse;margin:.8rem 0}
+th,td{border:1px solid var(--border);padding:.5rem .6rem;text-align:left}
+th{background:#1e2330;color:var(--text3);font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+blockquote{border-left:3px solid var(--border);margin:1rem 0;padding:.2rem .8rem;color:var(--text3)}
+hr{border:none;border-top:1px solid var(--border);margin:1.2rem 0}
+</style>
+</head>
+<body>
+  <div class="container">
+    <a class="back" href="index.html">← Volver al índice HTML</a>
+    <div class="header">
+      <h1>FULLSTACK-I — Proyecto Semestral</h1>
+      <p>Versión HTML legible generada desde <code>README.md</code>.</p>
+    </div>
+    <main><h1>FULLSTACK-I — Proyecto Semestral</h1>
+<blockquote>
+<p><strong>Docente:</strong> Mauricio González V. | <strong>Institución:</strong> DUOC UC</p>
+</blockquote>
+<p>Sistema de aplicación basado en <strong>microservicios</strong> desarrollado con Spring Boot, que implementa múltiples operaciones CRUD, reglas de negocio, seguridad y comunicación entre servicios.</p>
+<hr />
+<h2>📑 Documentación del Proyecto</h2>
+<table>
+<thead>
+<tr>
+<th>Documento</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="docs/index.html">Índice de Documentación</a></td>
+<td>Navegación central de la documentación del proyecto</td>
+</tr>
+<tr>
+<td><a href="docs/html-index.html">Índice HTML Completo</a></td>
+<td>Catálogo de todos los archivos HTML del repositorio</td>
+</tr>
+<tr>
+<td><a href="docs/api/index.html">Índice API</a></td>
+<td>Acceso centralizado a la documentación de endpoints por microservicio</td>
+</tr>
+<tr>
+<td><a href="docs/ARQUITECTURA.html">Arquitectura</a></td>
+<td>Diseño general del sistema, microservicios y patrones usados</td>
+</tr>
+<tr>
+<td><a href="docs/BASE_DE_DATOS.html">Base de Datos</a></td>
+<td>Modelado entidad-relación y reglas de integridad</td>
+</tr>
+<tr>
+<td><a href="docs/ROLES_USUARIO.html">Roles de Usuario</a></td>
+<td>Definición de roles, permisos y privilegios</td>
+</tr>
+<tr>
+<td><a href="docs/FUNCIONALIDADES.html">Funcionalidades</a></td>
+<td>Módulos, operaciones CRUD y reglas de negocio</td>
+</tr>
+<tr>
+<td><a href="docs/SEGURIDAD.html">Seguridad</a></td>
+<td>Autenticación, autorización y tokens JWT</td>
+</tr>
+<tr>
+<td><a href="docs/HERRAMIENTAS.html">Herramientas</a></td>
+<td>Stack tecnológico y metodologías utilizadas</td>
+</tr>
+<tr>
+<td><a href="docs/PRUEBAS.html">Pruebas</a></td>
+<td>Estrategia de pruebas unitarias e integración</td>
+</tr>
+<tr>
+<td><a href="docs/DESPLIEGUE.html">Despliegue</a></td>
+<td>Instrucciones de instalación y despliegue</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>🚀 Inicio Rápido</h2>
+<h3>Requisitos Previos</h3>
+<ul>
+<li>Java 21+</li>
+<li>Maven 3.8+</li>
+<li>MySQL 8+ (o Docker con <code>docker-compose</code>)</li>
+<li>Docker &amp; Docker Compose <em>(opcional pero recomendado)</em></li>
+</ul>
+<h3>Clonar el Repositorio</h3>
+<pre><code class="language-bash">git clone https://github.com/s0lci700/FULLSTACK-I.git
+cd FULLSTACK-I
+</code></pre>
+<h3>Levantar con Docker Compose</h3>
+<pre><code class="language-bash">docker-compose up --build
+</code></pre>
+<h3>Levantar en Local (sin Docker)</h3>
+<ol>
+<li>Crear las bases de datos indicadas en <a href="docs/BASE_DE_DATOS.html">Base de Datos</a>.</li>
+<li>Configurar <code>application.properties</code> de cada microservicio (ver tabla de puertos abajo).</li>
+<li>Ejecutar cada servicio respetando el orden de arranque:</li>
+</ol>
+<pre><code class="language-bash">cd &lt;nombre-servicio&gt; &amp;&amp; mvn spring-boot:run
+</code></pre>
+<h3>Orden de Arranque</h3>
+<p>Los servicios deben iniciarse en este orden — cada capa depende de la anterior:</p>
+<ol>
+<li><code>eureka-server</code> — registro de servicios (debe estar listo antes que cualquier otro)</li>
+<li><code>api-gateway</code> — punto de entrada único</li>
+<li>Servicios de dominio en cualquier orden: <code>auth-service</code>, <code>user-service</code>, <code>ms-vehiculos</code>, <code>ms-espacios</code>, <code>ms-tarifas</code>, <code>security-service</code></li>
+<li>Servicios de orquestación (dependen de los anteriores): <code>ms-reservas</code>, <code>ms-accesos</code>, <code>ms-pagos</code></li>
+<li><code>ms-reportes</code> — último (consulta todos los demás vía Feign)</li>
+</ol>
+<h3>Puertos y Bases de Datos</h3>
+<table>
+<thead>
+<tr>
+<th>Servicio</th>
+<th>Puerto</th>
+<th>Base de datos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>eureka-server</code></td>
+<td>8761</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>api-gateway</code></td>
+<td>8080</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>auth-service</code></td>
+<td>8081</td>
+<td><code>db_auth</code></td>
+</tr>
+<tr>
+<td><code>user-service</code></td>
+<td>8082</td>
+<td><code>db_usuarios</code></td>
+</tr>
+<tr>
+<td><code>security-service</code></td>
+<td>8083</td>
+<td><code>db_seguridad</code></td>
+</tr>
+<tr>
+<td><code>ms-vehiculos</code></td>
+<td>8084</td>
+<td><code>db_vehiculos</code></td>
+</tr>
+<tr>
+<td><code>ms-espacios</code></td>
+<td>8085</td>
+<td><code>db_espacios</code></td>
+</tr>
+<tr>
+<td><code>ms-tarifas</code></td>
+<td>8088</td>
+<td><code>db_tarifas</code></td>
+</tr>
+<tr>
+<td><code>ms-reservas</code></td>
+<td>8086</td>
+<td><code>db_reservas</code></td>
+</tr>
+<tr>
+<td><code>ms-accesos</code></td>
+<td>8087</td>
+<td><code>db_accesos</code></td>
+</tr>
+<tr>
+<td><code>ms-pagos</code></td>
+<td>8089</td>
+<td><code>db_pagos</code></td>
+</tr>
+<tr>
+<td><code>ms-reportes</code></td>
+<td>8090</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Todos los servicios se registran automáticamente en Eureka. El acceso externo va siempre a través del API Gateway en <code>http://localhost:8080</code>.</p>
+</blockquote>
+<hr />
+<h2>🛠️ Scripts de Utilidad</h2>
+<h3><code>start-all.ps1</code> — Arrancar todos los servicios</h3>
+<p>Lanza los 12 microservicios en el orden correcto desde una sola terminal.
+Cada servicio abre en su propia ventana de PowerShell y el script espera que Eureka y el Gateway estén listos antes de continuar.</p>
+<blockquote>
+<p><strong>Requiere PowerShell.</strong> Ejecutar desde la raíz del repositorio.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Comando</th>
+<th>Efecto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.\start-all.ps1</code></td>
+<td>Arranca los 12 servicios en orden</td>
+</tr>
+<tr>
+<td><code>.\start-all.ps1 -Services eureka-server,api-gateway,ms-accesos</code></td>
+<td>Arranca solo los servicios indicados</td>
+</tr>
+<tr>
+<td><code>.\start-all.ps1 -NoPause</code></td>
+<td>No espera confirmación al finalizar (útil en pipelines)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Maven se detecta automáticamente</strong> en este orden de prioridad:
+1. <code>.\apache-maven-3.9.15\bin\mvn.cmd</code> — instalación local del repositorio (laboratorio sin internet)
+2. <code>mvn</code> del sistema — si Maven está instalado y en el <code>PATH</code>
+3. <code>.\mvnw</code> — wrapper del proyecto (requiere internet la primera vez)</p>
+<p><strong>Para detener todos los servicios:</strong></p>
+<pre><code class="language-powershell">Stop-Process -Name java -Force
+</code></pre>
+<hr />
+<h3><code>load-db.ps1</code> — Cargar esquemas y datos de prueba</h3>
+<p>Crea todas las bases de datos y carga las tablas y datos de prueba en MySQL desde un único comando.
+Equivale a importar los 9 scripts <code>db/01</code>–<code>db/09</code> en orden, pero sin salir de la terminal.</p>
+<blockquote>
+<p><strong>Requiere PowerShell</strong> y <code>mysql</code> en el <code>PATH</code> (agregar <code>C:\xampp\mysql\bin</code>). Ejecutar desde la raíz del repositorio.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Comando</th>
+<th>Efecto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.\load-db.ps1</code></td>
+<td>Carga todo en <code>localhost:3306</code> sin contraseña (XAMPP por defecto)</td>
+</tr>
+<tr>
+<td><code>.\load-db.ps1 -Password mipass</code></td>
+<td>Igual, con contraseña de root</td>
+</tr>
+<tr>
+<td><code>.\load-db.ps1 -Port 3307</code></td>
+<td>Apunta a Docker MySQL en puerto 3307</td>
+</tr>
+</tbody>
+</table>
+<p>También es posible importar <code>db/00_run_all.sql</code> directamente desde <strong>phpMyAdmin</strong> (pestaña Importar) o desde la terminal con:</p>
+<pre><code class="language-powershell">Get-Content db\00_run_all.sql | mysql -u root
+</code></pre>
+<hr />
+<h3><code>set-db-port.ps1</code> — Puerto de base de datos</h3>
+<p>Actualiza el puerto MySQL en <strong>todos</strong> los <code>application.properties</code> del proyecto desde un único lugar.
+Útil cuando se cambia entre una instalación local de MySQL en el puerto 3306 y Docker en 3307.</p>
+<blockquote>
+<p><strong>Requiere PowerShell.</strong> Ejecutar desde la raíz del repositorio.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Comando</th>
+<th>Efecto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.\set-db-port.ps1</code></td>
+<td>Establece el puerto <strong>3307</strong> en todos los servicios (valor por defecto)</td>
+</tr>
+<tr>
+<td><code>.\set-db-port.ps1 -Port 3306</code></td>
+<td>Cambia todos los servicios al puerto <strong>3306</strong></td>
+</tr>
+<tr>
+<td><code>.\set-db-port.ps1 -DryRun</code></td>
+<td><strong>Vista previa</strong> — muestra qué cambiaría sin escribir ningún archivo</td>
+</tr>
+<tr>
+<td><code>.\set-db-port.ps1 -Port 3306 -DryRun</code></td>
+<td>Vista previa de un cambio a 3306</td>
+</tr>
+</tbody>
+</table>
+<p>Los servicios sin base de datos propia (Eureka, API Gateway, ms-reportes) y los scaffolds sin <code>datasource.url</code> se omiten automáticamente.</p>
+<hr />
+<h2>🏗️ Arquitectura General</h2>
+<pre><code>┌─────────────┐
+│  API Gateway │  ← Punto de entrada único
+└──────┬──────┘
+       │
+  ┌────┴─────────────────────┐
+  │                          │
+  ▼                          ▼
+[Servicio A]           [Servicio B]   ...
+ (BD propia)            (BD propia)
+</code></pre>
+<blockquote>
+<p>Cada microservicio tiene su <strong>propia base de datos</strong>. La comunicación sincrónica se realiza mediante <strong>Feign Client</strong> y la asincrónica mediante <strong>Apache Kafka</strong>.</p>
+</blockquote>
+<hr />
+<h2>🔐 Seguridad</h2>
+<ul>
+<li>Contraseñas cifradas con <strong>BCrypt</strong></li>
+<li>Autenticación con <strong>JWT (JJWT)</strong></li>
+<li>Control de acceso basado en roles (<strong>RBAC</strong>)</li>
+<li>Validación de tokens en el API Gateway</li>
+</ul>
+<hr />
+<h2>📦 Control de Versiones</h2>
+<ul>
+<li>Repositorio en <strong>GitHub</strong> (obligatorio)</li>
+<li>Trabajo con <strong>ramas de desarrollo</strong> (<code>feature/</code>, <code>fix/</code>, <code>release/</code>)</li>
+<li><strong>Commits frecuentes</strong> para evidenciar avance progresivo</li>
+</ul>
+<hr />
+<h2>📄 Licencia</h2>
+<p>Proyecto académico — DUOC UC · FULLSTACK-I</p></main>
+  </div>
+</body>
+</html>

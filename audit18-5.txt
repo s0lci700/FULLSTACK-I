@@ -1,0 +1,72 @@
+I have enough data for a complete audit. Here's the full report:
+
+---
+Audit Report — Estacionamiento Inteligente
+
+✅ All demo endpoints — CONFIRMED PRESENT
+
+┌──────────────┬─────────────────────────────────────────┬────────┐
+│   Service    │                Endpoint                 │ Status │
+├──────────────┼─────────────────────────────────────────┼────────┤
+│ auth-service │ POST /api/auth/login                    │ ✓      │
+├──────────────┼─────────────────────────────────────────┼────────┤
+│ ms-reservas  │ POST /api/reservas                      │ ✓      │
+├──────────────┼─────────────────────────────────────────┼────────┤
+│ ms-reservas  │ PUT /api/reservas/{id}/confirmar        │ ✓      │
+├──────────────┼─────────────────────────────────────────┼────────┤
+│ ms-accesos   │ POST /api/accesos/entrada               │ ✓      │
+├──────────────┼─────────────────────────────────────────┼────────┤
+│ ms-accesos   │ PUT /api/accesos/{id}/salida            │ ✓      │
+├──────────────┼─────────────────────────────────────────┼────────┤
+│ ms-pagos     │ POST /api/cobros (BigDecimal + HALF_UP) │ ✓      │
+├──────────────┼─────────────────────────────────────────┼────────┤
+│ user-service │ GET /api/clientes/{id}/suscripciones    │ ✓      │
+├──────────────┼─────────────────────────────────────────┼────────┤
+│ ms-reportes  │ GET /api/reportes/ocupacion + 2 others  │ ✓      │
+├──────────────┼─────────────────────────────────────────┼────────┤
+│ api-gateway  │ All 10 services routed                  │ ✓      │
+└──────────────┴─────────────────────────────────────────┴────────┘
+
+---
+🐛 Live coding bug — CONFIRMED PRESENT (good — it's intentional)
+
+ReservaService.cancelar() at line 123 has no state guard at all:
+
+public ReservaResponseDTO cancelar(Long id) {
+    Reserva reserva = reservasRepository.findById(id)
+        .orElseThrow(() -> new NotFoundException("Reserva no encontrada"));
+    reserva.setEstado(EstadoEnums.CANCELADA);  // ← no check for FINALIZADA
+    return toDTO(reservasRepository.save(reserva));
+}
+
+A FINALIZADA reserva will return 200 OK — exactly the bug the guion says to fix live.
+
+---
+⚠️ Issues to address before delivery
+
+1. SuscripcionController.java is UNTRACKED (not committed)
+
+The file exists at user-service/.../controller/SuscripcionController.java and is wired correctly (GET /api/suscripciones, GET /api/suscripciones/{id}), and the gateway already routes /api/suscripciones/**. But it's not in git. It needs to go into the delivery commit.
+
+2. descSuscripcion hardcoded to ZERO in PagoService
+
+BigDecimal descSuscripcion = BigDecimal.ZERO; // pendiente endpoint ClienteSuscripcion
+
+The guion only claims "4 Feign calls" for cobro — this is consistent — but if the defense asks why suscripción discount isn't applied, the answer is it's a known TODO. Not a blocker but worth knowing.
+
+3. State machine is incomplete in confirmar() and finalizar()
+
+Both methods only check "not already in that state" — they don't enforce the valid transition sequence (PENDIENTE → CONFIRMADA → FINALIZADA). A CANCELADA reserva could be confirmed. Not part of the demo path so won't fail Newman tests, but if a professor asks live it's worth knowing.
+
+4. jwt.secret hardcoded in application.yaml
+
+Line 67: jwt.secret: acosiYPShfbW/MKtcBHBLNRQZHCN5ENrLFUb0ZPlHmI=. The CLAUDE.md says "never hardcode" — this one slipped through. Not a runtime issue, just a security architecture question risk.
+
+5. Duplicate @PutMapping import in EspacioController (lines 13+15) — harmless, won't break compilation.
+
+---
+Action needed before delivery commit
+
+git add user-service/src/main/java/estacionamientos/user_service/controller/SuscripcionController.java
+
+Everything else is committed and functional. The live coding bug is correctly present. All 74 Newman test endpoints exist in the codebase.

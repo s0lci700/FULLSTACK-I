@@ -1,0 +1,9 @@
+Execution policy issue — one-time fix, no admin needed:
+
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+Type Y when prompted, then run the script normally again. RemoteSigned lets local scripts run freely but still blocks unsigned scripts downloaded from the internet.
+
+If you're in a restricted environment (lab PC) and that doesn't work, you can also bypass per-run:
+
+powershell -ExecutionPolicy Bypass -File .\scripts\start-all.ps1
