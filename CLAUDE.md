@@ -32,7 +32,7 @@ cd <service-name>; .\mvnw.cmd test
 
 **Startup order**: eureka-server (8761) → api-gateway (8080) → phase 3 services (auth, user, security, vehiculos, espacios, tarifas) → phase 4 (reservas, accesos) → ms-pagos → ms-reportes.
 
-Use `.\start-all.ps1` to launch all 12 services automatically in correct order.
+Use `.\scripts\manage.ps1` for an interactive dashboard, or `.\scripts\start-all.ps1` to launch all 12 services automatically in correct order.
 
 ## Newman / Postman Tests
 
@@ -47,9 +47,10 @@ The collection captures `token` from the login response (Phase 1) via a post-res
 
 | Script | Purpose | Key flags |
 |--------|---------|-----------|
-| `start-all.ps1` | Launch all 12 services in dependency order, each in its own PowerShell window | `-Services list` · `-NoPause` |
-| `load-db.ps1` | Create 10 databases and load seed data from `db/00_run_all.sql` | `-Port 3307` · `-Password pass` |
-| `set-db-port.ps1` | Update `spring.datasource.url` port in all `application.properties` | `-Port 3306` · `-DryRun` |
+| `scripts/manage.ps1` | Interactive dashboard — start/stop/restart services by number or name | `start 4` · `stop all` · `db` · `quit` |
+| `scripts/start-all.ps1` | Launch all 12 services in dependency order, each in its own PowerShell window/tab | `-Services list` · `-NoPause` · `-Layout Tabs\|Windows` |
+| `scripts/load-db.ps1` | Create 10 databases and load seed data from `db/00_run_all.sql` | `-Port 3307` · `-Password pass` |
+| `scripts/set-db-port.ps1` | Update `spring.datasource.url` port in all `application.properties` | `-Port 3306` · `-DryRun` |
 
 ## Service Port Map
 

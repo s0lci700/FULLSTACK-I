@@ -38,7 +38,7 @@ param(
     [switch]$DryRun
 )
 
-$root = $PSScriptRoot
+$root = Split-Path -Parent $PSScriptRoot
 $files = Get-ChildItem -Path $root -Recurse -Filter "application.properties" |
     Where-Object { $_.FullName -notmatch '\\target\\' }
 

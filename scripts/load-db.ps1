@@ -19,7 +19,7 @@ param(
     [int]$Port = 3306
 )
 
-$script = Join-Path $PSScriptRoot "db\00_run_all.sql"
+$script = Join-Path (Split-Path -Parent $PSScriptRoot) "db\00_run_all.sql"
 
 if (-not (Test-Path $script)) {
     Write-Host "  [ERROR] No se encontro: $script" -ForegroundColor Red
