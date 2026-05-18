@@ -12,6 +12,7 @@ import java.util.Optional;
 @Repository
 public interface EspacioRepository extends JpaRepository<Espacio, Long>{
     List<Espacio> findByDisponibleTrue();
+    List<Espacio> findByZona(String zona);
     boolean existsByNumero(String numero);
     Optional<Espacio> findByNumero(String numero);
 }

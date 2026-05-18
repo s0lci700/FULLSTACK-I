@@ -974,6 +974,38 @@
           }
         },
         {
+          "name": "#30b — GET espacios zona A",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Array — todos zona A', () => {",
+                  "  const data = pm.response.json();",
+                  "  pm.expect(Array.isArray(data)).to.be.true;",
+                  "  pm.expect(data.length).to.be.above(0);",
+                  "  data.forEach(e => pm.expect(e.zona).to.eql('A'));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/espacios/zona/A",
+            "description": "Filtra espacios de la zona A. Verifica que todos los resultados tienen zona='A'. Endpoint: GET /api/espacios/zona/{zona}."
+          }
+        },
+        {
           "name": "#31 — GET espacio 1 (A-01)",
           "event": [
             {
@@ -1492,6 +1524,38 @@
             },
             "url": "{{base}}/api/reservas",
             "description": "Crea una reserva nueva para el espacio 3 (2026-05-20 10:00–12:00). Valida cliente activo, vehículo activo y espacio disponible vía Feign. Estado inicial: PENDIENTE. Guarda el ID en `reservaId1`."
+          }
+        },
+        {
+          "name": "#44b — GET reservas estado PENDIENTE",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Array — todos estado PENDIENTE', () => {",
+                  "  const data = pm.response.json();",
+                  "  pm.expect(Array.isArray(data)).to.be.true;",
+                  "  pm.expect(data.length).to.be.above(0);",
+                  "  data.forEach(r => pm.expect(r.estado).to.eql('PENDIENTE'));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base}}/api/reservas/estado/PENDIENTE",
+            "description": "Filtra reservas por estado PENDIENTE. Se ejecuta después de #44 (POST crear reserva) para garantizar al menos un resultado. Verifica que todos los resultados tienen estado='PENDIENTE'. Endpoint: GET /api/reservas/estado/{estado}."
           }
         },
         {

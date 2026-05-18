@@ -107,6 +107,13 @@ public class PagoService {
         return toResponse(cobro);
     }
 
+    public List<CobroResponseDTO> findAll() {
+        log.info("Obteniendo todos los cobros");
+        return cobroRepository.findAll().stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+    }
+
     public List<CobroResponseDTO> findByIdCliente(Long idCliente) {
         log.info("Buscando cobros del cliente id={}", idCliente);
         return cobroRepository.findAllByMetodoPagoIdClienteRef(idCliente)

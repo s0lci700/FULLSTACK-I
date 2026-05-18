@@ -290,8 +290,67 @@
       border-radius: 6px; padding: 0.7rem 0.9rem;
       margin: 0.8rem 0; font-size: 0.84rem; border-left: 3px solid;
     }
-    .callout-blue { background: var(--blue-bg); border-color: var(--blue); color: var(--blue); }
+    .callout-blue   { background: var(--blue-bg);   border-color: var(--blue);   color: var(--blue);   }
+    .callout-green  { background: var(--green-bg);  border-color: var(--green);  color: var(--green);  }
+    .callout-yellow { background: var(--yellow-bg); border-color: var(--yellow); color: var(--yellow); }
     .callout strong { display: block; margin-bottom: 0.2rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .callout p { color: inherit; font-size: 0.83rem; margin-bottom: 0; }
+
+    /* ── Step list ── */
+    .steps { list-style: none; counter-reset: step; margin: 0.8rem 0 1.2rem; }
+    .steps li {
+      counter-increment: step;
+      display: grid;
+      grid-template-columns: 2rem 1fr;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      align-items: start;
+    }
+    .steps li::before {
+      content: counter(step);
+      background: var(--blue-bg);
+      color: var(--blue);
+      font-size: 0.72rem; font-weight: 700;
+      border-radius: 50%;
+      width: 1.6rem; height: 1.6rem;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 0.1rem;
+    }
+    .steps li .step-content { display: flex; flex-direction: column; gap: 0.35rem; }
+    .steps li .step-title { font-size: 0.88rem; color: var(--text); font-weight: 600; }
+    .steps li .step-desc  { font-size: 0.82rem; color: var(--text2); }
+
+    /* ── Tab switcher ── */
+    .tab-bar { display: flex; gap: 0.3rem; margin-bottom: 0; border-bottom: 1px solid var(--border); }
+    .tab-btn {
+      background: none; border: none; border-bottom: 2px solid transparent;
+      padding: 0.4rem 0.9rem; font-size: 0.8rem; color: var(--text3);
+      cursor: pointer; margin-bottom: -1px; transition: color 0.12s, border-color 0.12s;
+    }
+    .tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
+    .tab-panel { display: none; padding: 1rem 0 0.5rem; }
+    .tab-panel.active { display: block; }
+
+    /* ── Token display ── */
+    .token-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 0.5rem 0.75rem;
+      font-family: 'Cascadia Code', 'Fira Code', monospace;
+      font-size: 0.74rem;
+      color: var(--cyan);
+      word-break: break-all;
+      line-height: 1.5;
+    }
+    .highlight-inline {
+      background: var(--blue-bg);
+      color: var(--blue);
+      font-family: 'Cascadia Code', 'Fira Code', monospace;
+      font-size: 0.8rem;
+      padding: 0.1rem 0.35rem;
+      border-radius: 3px;
+    }
   </style>
 </head>
 <body>
@@ -306,6 +365,11 @@
     <li><a href="#swagger">Swagger / OpenAPI</a></li>
     <li><a href="#coverage">Índice de cobertura</a></li>
     <li><a href="#base">Base URL</a></li>
+  </ul>
+
+  <div class="section-label">Setup</div>
+  <ul>
+    <li><a href="#manual-guide">Guía de pruebas manuales</a></li>
   </ul>
 
   <div class="section-label">Fases de test</div>
@@ -492,6 +556,213 @@
       <strong>Tip — Eureka dashboard</strong>
       Para verificar que todos los servicios están registrados antes de testear: <a href="http://localhost:8761" target="_blank" style="color:var(--blue)">http://localhost:8761</a>
     </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ══════ GUÍA DE PRUEBAS MANUALES ══════ -->
+  <section id="manual-guide">
+    <h2>Guía de pruebas manuales</h2>
+    <p>El problema más frecuente al testear manualmente es que el token JWT obtenido en el login no se propaga automáticamente al resto de las requests. Esta sección explica dos métodos para resolverlo.</p>
+
+    <div class="callout callout-yellow">
+      <strong>¿Por qué pasa esto?</strong>
+      <p>Postman no captura ni guarda el token automáticamente. Si solo copias el token una vez y lo pegas en cada request a mano, cualquier nueva ejecución del login genera un token diferente y todas las requests con el token viejo devuelven <code style="color:inherit">401 Unauthorized</code>.</p>
+    </div>
+
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab(event, 'tab-auto')">Opción A — Script automático (recomendado)</button>
+      <button class="tab-btn" onclick="switchTab(event, 'tab-manual')">Opción B — Variable de entorno manual</button>
+      <button class="tab-btn" onclick="switchTab(event, 'tab-swagger')">Opción C — Swagger UI</button>
+    </div>
+
+    <!-- ── Opción A ── -->
+    <div id="tab-auto" class="tab-panel active">
+      <p>Configura el request de login para que capture el token automáticamente y lo guarde como variable de colección. Con esto el token siempre estará actualizado sin intervención manual.</p>
+
+      <h3>Paso a paso</h3>
+      <ol class="steps">
+        <li>
+          <div class="step-content">
+            <span class="step-title">Abrir el request de Login (request #1)</span>
+            <span class="step-desc">En tu colección Postman, selecciona el request <code>POST /api/auth/login</code>.</span>
+          </div>
+        </li>
+        <li>
+          <div class="step-content">
+            <span class="step-title">Ir a la pestaña "Scripts" → "Post-response"</span>
+            <span class="step-desc">En versiones anteriores de Postman esta pestaña se llama "Tests". Es el script que se ejecuta después de recibir la respuesta.</span>
+          </div>
+        </li>
+        <li>
+          <div class="step-content">
+            <span class="step-title">Pegar el siguiente script</span>
+            <div class="body-block" style="margin-top:0.3rem">
+              <div class="body-label">Post-response Script <button class="copy-btn" onclick="copyBlock(this)">Copiar</button></div>
+              <pre>const json = pm.response.json();
+if (json.token) {
+    pm.collectionVariables.set("token", json.token);
+    console.log("Token guardado:", json.token.slice(0, 40) + "...");
+}</pre>
+            </div>
+            <span class="step-desc" style="margin-top:0.3rem">Esto guarda el campo <code>token</code> de la respuesta como variable de la colección.</span>
+          </div>
+        </li>
+        <li>
+          <div class="step-content">
+            <span class="step-title">Declarar la variable en la colección</span>
+            <span class="step-desc">Clic derecho en la colección → <strong>Edit</strong> → pestaña <strong>Variables</strong>. Agrega una fila: nombre <span class="highlight-inline">token</span>, valor inicial vacío. Guarda.</span>
+          </div>
+        </li>
+        <li>
+          <div class="step-content">
+            <span class="step-title">Agregar el header de autorización a cada request protegido</span>
+            <span class="step-desc">Existen dos formas — elige la que prefieras:</span>
+            <div style="margin-top:0.4rem; display:flex; flex-direction:column; gap:0.5rem;">
+              <div class="body-block">
+                <div class="body-label">Opción rápida — Header directo en cada request</div>
+                <pre>Key:   Authorization
+Value: Bearer {{token}}</pre>
+              </div>
+              <div class="body-block">
+                <div class="body-label">Opción elegante — Authorization a nivel de colección (se hereda en todos los requests)</div>
+                <pre>Colección → Edit → Authorization
+  Type:  Bearer Token
+  Token: {{token}}</pre>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="step-content">
+            <span class="step-title">Ejecutar el login y luego el resto de requests</span>
+            <span class="step-desc">Envía primero el request #1. Una vez que responda 200, <code>{{token}}</code> tiene el JWT y todos los requests que lo referencian quedan autorizados automáticamente.</span>
+          </div>
+        </li>
+      </ol>
+
+      <div class="callout callout-green">
+        <strong>Verificar que funcionó</strong>
+        <p>Abre la consola de Postman (<kbd>Ctrl+Alt+C</kbd>) y busca la línea "Token guardado: …". También puedes ir a la colección → Variables y ver el Current Value de <code>token</code>.</p>
+      </div>
+    </div>
+
+    <!-- ── Opción B ── -->
+    <div id="tab-manual" class="tab-panel">
+      <p>Método más simple pero más tedioso: copias el token de la respuesta y lo pegas a mano en una variable de entorno. Funciona bien para pruebas puntuales donde no quieres scripts.</p>
+
+      <ol class="steps">
+        <li>
+          <div class="step-content">
+            <span class="step-title">Crear un entorno de Postman</span>
+            <span class="step-desc">Clic en el ícono de entornos (engranaje ⚙ arriba a la derecha) → <strong>Add</strong>. Nómbralo <code>Estacionamiento Local</code>.</span>
+          </div>
+        </li>
+        <li>
+          <div class="step-content">
+            <span class="step-title">Agregar las variables del entorno</span>
+            <div class="body-block" style="margin-top:0.3rem">
+              <div class="body-label">Variables a crear</div>
+              <pre>base   →  http://localhost:8080
+token  →  (dejar vacío por ahora)</pre>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="step-content">
+            <span class="step-title">Seleccionar el entorno activo</span>
+            <span class="step-desc">En el dropdown superior derecho de Postman, selecciona <code>Estacionamiento Local</code>.</span>
+          </div>
+        </li>
+        <li>
+          <div class="step-content">
+            <span class="step-title">Enviar el login y copiar el token</span>
+            <span class="step-desc">Ejecuta <code>POST /api/auth/login</code>. En la respuesta verás un JSON con campo <code>token</code>. Copia el valor completo (es una cadena larga que empieza con <code>eyJ...</code>).</span>
+            <div class="token-box" style="margin-top:0.4rem">eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBwYXJraW5nLmNsIi...  ← ejemplo</div>
+          </div>
+        </li>
+        <li>
+          <div class="step-content">
+            <span class="step-title">Pegar el token en la variable de entorno</span>
+            <span class="step-desc">Ve a entornos → <code>Estacionamiento Local</code> → columna <strong>Current Value</strong> de la fila <code>token</code> → pegar → guardar.</span>
+          </div>
+        </li>
+        <li>
+          <div class="step-content">
+            <span class="step-title">Agregar el header Authorization en los requests</span>
+            <div class="body-block" style="margin-top:0.3rem">
+              <div class="body-label">Header que va en cada request protegido</div>
+              <pre>Authorization: Bearer {{token}}</pre>
+            </div>
+            <span class="step-desc">O configúralo a nivel de colección (Edit → Authorization → Bearer Token → <code>{{token}}</code>) para que se herede en todos.</span>
+          </div>
+        </li>
+      </ol>
+
+      <div class="callout callout-yellow">
+        <strong>Importante</strong>
+        <p>El token expira en 24 horas (<code>jwt.expiration=86400000</code>). Si ves 401 inesperados al día siguiente, repite el paso 4 y 5.</p>
+      </div>
+    </div>
+
+    <!-- ── Opción C — Swagger ── -->
+    <div id="tab-swagger" class="tab-panel">
+      <p>Swagger UI tiene su propio mecanismo de autorización. Útil para pruebas rápidas directamente en el navegador sin Postman.</p>
+
+      <ol class="steps">
+        <li>
+          <div class="step-content">
+            <span class="step-title">Obtener el token desde auth-service</span>
+            <span class="step-desc">Abre <a href="http://localhost:8081/swagger-ui/index.html" target="_blank" style="color:var(--blue)">http://localhost:8081/swagger-ui/index.html</a> → endpoint <code>POST /api/auth/login</code> → Try it out → ejecutar con <code>{"email":"admin@parking.cl","password":"Test1234!"}</code>. Copia el valor del campo <code>token</code> de la respuesta.</span>
+          </div>
+        </li>
+        <li>
+          <div class="step-content">
+            <span class="step-title">Abrir la página Swagger del servicio que quieres probar</span>
+            <span class="step-desc">Accede directamente al puerto del servicio, no por el gateway. Por ejemplo para ms-reservas: <a href="http://localhost:8086/swagger-ui/index.html" target="_blank" style="color:var(--blue)">http://localhost:8086/swagger-ui/index.html</a>.</span>
+          </div>
+        </li>
+        <li>
+          <div class="step-content">
+            <span class="step-title">Clic en "Authorize" (candado 🔒)</span>
+            <span class="step-desc">Está arriba a la derecha de la página Swagger. Se abre un diálogo de autorización.</span>
+          </div>
+        </li>
+        <li>
+          <div class="step-content">
+            <span class="step-title">Ingresar el token en el campo Bearer</span>
+            <div class="body-block" style="margin-top:0.3rem">
+              <div class="body-label">Formato en el campo "Value"</div>
+              <pre>Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIi...</pre>
+            </div>
+            <span class="step-desc">Prefija con <code>Bearer </code> (con espacio). Clic en <strong>Authorize</strong> → <strong>Close</strong>.</span>
+          </div>
+        </li>
+        <li>
+          <div class="step-content">
+            <span class="step-title">Ejecutar los endpoints</span>
+            <span class="step-desc">Todos los endpoints de esa página Swagger ahora usarán el token. El token sólo aplica a la pestaña actual del navegador — si abres otro servicio en Swagger debes repetir el paso 4.</span>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <h3>Resumen de headers requeridos</h3>
+    <table class="test-table">
+      <thead><tr><th>Header</th><th>Valor</th><th>Requerido en</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="url">Authorization</td>
+          <td><code>Bearer {{token}}</code></td>
+          <td style="color:var(--text2);font-size:0.8rem">Todos los endpoints excepto <code>/api/auth/**</code></td>
+        </tr>
+        <tr>
+          <td class="url">Content-Type</td>
+          <td><code>application/json</code></td>
+          <td style="color:var(--text2);font-size:0.8rem">Requests con body (POST, PUT)</td>
+        </tr>
+      </tbody>
+    </table>
   </section>
 
   <hr class="divider"/>
@@ -1306,6 +1577,14 @@
 </div>
 
 <script>
+  function switchTab(event, panelId) {
+    const bar = event.target.closest('.tab-bar');
+    bar.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    bar.parentElement.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById(panelId).classList.add('active');
+  }
+
   function copyBlock(btn) {
     const pre = btn.closest('.body-block').querySelector('pre');
     navigator.clipboard.writeText(pre.innerText).then(() => {

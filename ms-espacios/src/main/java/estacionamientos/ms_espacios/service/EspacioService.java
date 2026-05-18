@@ -45,6 +45,13 @@ public class EspacioService {
         return toDTO(espacio);
     }
 
+    public List<EspacioResponseDTO> findByZona(String zona) {
+        log.info("Buscando espacios por zona: {}", zona);
+        return espaciosRepository.findByZona(zona).stream()
+                .map(this::toDTO)
+                .toList();
+    }
+
     public List<EspacioResponseDTO> findDisponibles() {
         log.info("Obteniendo espacios disponibles");
         return espaciosRepository.findByDisponibleTrue().stream()

@@ -31,6 +31,12 @@ public class CobroController {
         this.pagoService = pagoService;
     }
 
+    @GetMapping
+    public ResponseEntity<List<CobroResponseDTO>> getAll() {
+        log.info("GET /api/cobros");
+        return ResponseEntity.ok(pagoService.findAll());
+    }
+
     // Genera un nuevo cobro a partir de un acceso completado
     // Consulta via Feign: acceso, tarifa vigente y cliente
     // Retorna 201 CREATED con el cobro generado

@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 import estacionamientos.ms_accesos.dto.AccesoCreateDTO;
 import estacionamientos.ms_accesos.dto.AccesoResponseDTO;
 import estacionamientos.ms_accesos.service.AccesoService;
@@ -24,6 +26,12 @@ public class AccesoController {
 
     @Autowired
     private AccesoService accesoService;
+
+    @GetMapping
+    public ResponseEntity<List<AccesoResponseDTO>> getAll() {
+        log.info("GET /api/accesos");
+        return ResponseEntity.ok(accesoService.findAll());
+    }
 
     @PostMapping("/entrada")
     public ResponseEntity<AccesoResponseDTO> registrarEntrada(

@@ -56,6 +56,13 @@ public class ReservaService {
                 .toList();
     }
 
+    public List<ReservaResponseDTO> findByEstado(EstadoEnums estado) {
+        log.info("Buscando reservas por estado: {}", estado);
+        return reservasRepository.findByEstado(estado).stream()
+                .map(this::toDTO)
+                .toList();
+    }
+
     @Transactional
     public ReservaResponseDTO create(ReservaCreateDTO reserva) {
 
