@@ -90,7 +90,8 @@
                 }
               }
             },
-            "url": "{{base}}/api/auth/login"
+            "url": "{{base}}/api/auth/login",
+            "description": "Autentica al administrador con email y contraseña. El script de test guarda el token JWT en la variable de colección `token`, que es reutilizado por todos los requests siguientes como Bearer token."
           }
         },
         {
@@ -123,7 +124,8 @@
                 }
               }
             },
-            "url": "{{base}}/api/auth/login"
+            "url": "{{base}}/api/auth/login",
+            "description": "Autentica a la clienta María González (rol USER). Verifica que usuarios no-admin también pueden obtener un token JWT válido."
           }
         },
         {
@@ -156,7 +158,8 @@
                 }
               }
             },
-            "url": "{{base}}/api/auth/login"
+            "url": "{{base}}/api/auth/login",
+            "description": "Intenta autenticar con un usuario inexistente. Valida que el sistema retorna 401 Unauthorized ante credenciales incorrectas."
           }
         },
         {
@@ -198,7 +201,8 @@
                 }
               }
             },
-            "url": "{{base}}/api/auth/register"
+            "url": "{{base}}/api/auth/register",
+            "description": "Registra una nueva credencial en auth-service con email único generado en pre-request (timestamp). Confirma 201 Created al crear el UserCredential."
           }
         }
       ]
@@ -228,7 +232,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/tipo-cliente"
+            "url": "{{base}}/api/tipo-cliente",
+            "description": "Lista todos los tipos de cliente disponibles (REGULAR, PREMIUM, CORPORATIVO). Cada tipo tiene un porcentaje de descuento que se aplica en el cálculo de cobros."
           }
         },
         {
@@ -253,7 +258,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/tipos-vehiculo"
+            "url": "{{base}}/api/tipos-vehiculo",
+            "description": "Lista todos los tipos de vehículo con sus factores de multiplicación de tarifa (AUTO, MOTO, CAMIONETA, BUS). Usado por ms-pagos en la fórmula de billing."
           }
         },
         {
@@ -278,7 +284,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/tipo-espacio"
+            "url": "{{base}}/api/tipo-espacio",
+            "description": "Lista todos los tipos de espacio del estacionamiento (ESTÁNDAR, DISCAPACITADO, MOTO, BICICLETA) con sus factores tarifarios."
           }
         },
         {
@@ -303,7 +310,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/tarifas"
+            "url": "{{base}}/api/tarifas",
+            "description": "Lista todas las tarifas configuradas en ms-tarifas. Cada tarifa tiene un precioBaseHora y puede estar activa o inactiva."
           }
         },
         {
@@ -328,7 +336,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/tarifas/vigente"
+            "url": "{{base}}/api/tarifas/vigente",
+            "description": "Retorna la tarifa con `activo=true`. Invocada internamente por ms-pagos vía Feign client al calcular el monto de un cobro."
           }
         },
         {
@@ -353,7 +362,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/horarios-tarifa"
+            "url": "{{base}}/api/horarios-tarifa",
+            "description": "Lista todos los horarios-tarifa con sus multiplicadores, rangos horarios y tipo de día (LABORAL, FIN_DE_SEMANA, FESTIVO)."
           }
         },
         {
@@ -378,7 +388,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/horarios-tarifa/vigente"
+            "url": "{{base}}/api/horarios-tarifa/vigente",
+            "description": "Retorna el horario-tarifa cuyo rango horario coincide con la hora actual del sistema. Acepta 200 o 404 si no hay horario configurado para ese rango."
           }
         },
         {
@@ -403,7 +414,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/bancos"
+            "url": "{{base}}/api/bancos",
+            "description": "Lista los bancos disponibles para métodos de pago (BancoEstado, Santander, BCI, Scotiabank). Cada banco tiene un porcentaje de descuento."
           }
         },
         {
@@ -428,7 +440,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/tipo-tarjetas"
+            "url": "{{base}}/api/tipo-tarjetas",
+            "description": "Lista los tipos de tarjeta soportados (DÉBITO, CRÉDITO) para registrar métodos de pago."
           }
         }
       ]
@@ -458,7 +471,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/clientes"
+            "url": "{{base}}/api/clientes",
+            "description": "Lista todos los clientes registrados en user-service con sus datos personales y tipo de cliente."
           }
         },
         {
@@ -483,7 +497,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/clientes/1"
+            "url": "{{base}}/api/clientes/1",
+            "description": "Obtiene el detalle completo del cliente seed María González (id=1). Verifica que el registro existe y tiene los datos correctos."
           }
         },
         {
@@ -508,7 +523,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/clientes/999"
+            "url": "{{base}}/api/clientes/999",
+            "description": "Intenta obtener un cliente con ID inexistente. Valida que GlobalExceptionHandler retorna 404 Not Found con el formato estándar de error."
           }
         },
         {
@@ -556,7 +572,8 @@
                 }
               }
             },
-            "url": "{{base}}/api/clientes"
+            "url": "{{base}}/api/clientes",
+            "description": "Crea el cliente Ana Soto con RUT y email únicos generados dinámicamente en pre-request para garantizar idempotencia. Guarda el ID retornado en la variable `clienteId`."
           }
         },
         {
@@ -594,7 +611,8 @@
                 }
               }
             },
-            "url": "{{base}}/api/clientes/{{clienteId}}"
+            "url": "{{base}}/api/clientes/{{clienteId}}",
+            "description": "Actualiza el apellido y tipo de cliente de Ana (reemplaza el recurso completo). Nota: se usa PUT, nunca PATCH, por limitación de Feign con HttpURLConnection."
           }
         },
         {
@@ -619,7 +637,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/clientes/1/suscripciones"
+            "url": "{{base}}/api/clientes/1/suscripciones",
+            "description": "Verifica que María González no tiene suscripciones activas. La respuesta debe ser una lista vacía []."
           }
         },
         {
@@ -644,7 +663,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/clientes/2/suscripciones"
+            "url": "{{base}}/api/clientes/2/suscripciones",
+            "description": "Verifica que Carlos Pérez tiene suscripción PREMIUM activa con descuento del 10%, configurada en el seed data."
           }
         },
         {
@@ -669,7 +689,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/clientes/{{clienteId}}"
+            "url": "{{base}}/api/clientes/{{clienteId}}",
+            "description": "Elimina el cliente creado en el request #17. Limpia los datos de prueba. Espera 204 No Content."
           }
         }
       ]
@@ -699,7 +720,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/vehiculos"
+            "url": "{{base}}/api/vehiculos",
+            "description": "Lista todos los vehículos registrados en ms-vehiculos con sus datos y estado activo/inactivo."
           }
         },
         {
@@ -724,7 +746,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/vehiculos/cliente/1"
+            "url": "{{base}}/api/vehiculos/cliente/1",
+            "description": "Lista los vehículos de María González. El seed incluye AAAA11 y BBBB11, ambos activos."
           }
         },
         {
@@ -749,7 +772,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/vehiculos/validar/BBBB11"
+            "url": "{{base}}/api/vehiculos/validar/BBBB11",
+            "description": "Verifica si la patente BBBB11 existe en el sistema. Retorna los datos del vehículo cuando se encuentra."
           }
         },
         {
@@ -774,7 +798,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/vehiculos/validar/ZZZZ99"
+            "url": "{{base}}/api/vehiculos/validar/ZZZZ99",
+            "description": "Verifica una patente inexistente. Retorna 200 con body indicando que no se encontró el vehículo."
           }
         },
         {
@@ -822,7 +847,8 @@
                 }
               }
             },
-            "url": "{{base}}/api/vehiculos"
+            "url": "{{base}}/api/vehiculos",
+            "description": "Crea un nuevo vehículo con patente aleatoria (prefijo ZZ + 4 dígitos) para evitar conflictos de UNIQUE. Guarda el ID en `vehiculoId`."
           }
         },
         {
@@ -860,7 +886,8 @@
                 }
               }
             },
-            "url": "{{base}}/api/vehiculos/{{vehiculoId}}"
+            "url": "{{base}}/api/vehiculos/{{vehiculoId}}",
+            "description": "Actualiza el color del vehículo creado en #26 de Azul a Rojo. La patente es inmutable: VehiculoUpdateDTO no incluye el campo patente."
           }
         },
         {
@@ -885,7 +912,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/vehiculos/{{vehiculoId}}"
+            "url": "{{base}}/api/vehiculos/{{vehiculoId}}",
+            "description": "Realiza soft delete del vehículo (establece activo=false). El registro permanece en la base de datos."
           }
         }
       ]
@@ -915,7 +943,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/espacios"
+            "url": "{{base}}/api/espacios",
+            "description": "Lista todos los espacios del estacionamiento con número, zona, piso, tipo y estado de disponibilidad."
           }
         },
         {
@@ -940,7 +969,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/espacios/disponibles"
+            "url": "{{base}}/api/espacios/disponibles",
+            "description": "Lista solo los espacios con disponible=true. Endpoint consultado por clientes para elegir dónde reservar."
           }
         },
         {
@@ -965,7 +995,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/espacios/1"
+            "url": "{{base}}/api/espacios/1",
+            "description": "Obtiene el detalle del espacio A-01 (zona A, piso 1, tipo ESTÁNDAR). Espacio seed del sistema."
           }
         },
         {
@@ -1020,7 +1051,8 @@
                   "value": "false"
                 }
               ]
-            }
+            },
+            "description": "Marca el espacio 1 como ocupado (disponible=false). Simula la llamada Feign que ejecuta ms-accesos al registrar una entrada."
           }
         },
         {
@@ -1075,7 +1107,8 @@
                   "value": "true"
                 }
               ]
-            }
+            },
+            "description": "Libera el espacio 1 (disponible=true). Simula la llamada Feign que ejecuta ms-accesos al registrar una salida. Restaura el espacio para pruebas posteriores."
           }
         },
         {
@@ -1123,7 +1156,8 @@
                 }
               }
             },
-            "url": "{{base}}/api/espacios"
+            "url": "{{base}}/api/espacios",
+            "description": "Crea un nuevo espacio con número aleatorio en zona Z. Guarda el ID en `espacioId` para el DELETE de cleanup."
           }
         },
         {
@@ -1148,7 +1182,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/espacios/{{espacioId}}"
+            "url": "{{base}}/api/espacios/{{espacioId}}",
+            "description": "Elimina el espacio creado en #34. Limpia los datos de prueba."
           }
         }
       ]
@@ -1201,7 +1236,8 @@
                 }
               }
             },
-            "url": "{{base}}/api/tarifas"
+            "url": "{{base}}/api/tarifas",
+            "description": "Crea una tarifa de prueba con nombre único (timestamp) y activo=false para no interferir con el sistema. Guarda el ID en `tarifaId`."
           }
         },
         {
@@ -1239,7 +1275,8 @@
                 }
               }
             },
-            "url": "{{base}}/api/tarifas/{{tarifaId}}"
+            "url": "{{base}}/api/tarifas/{{tarifaId}}",
+            "description": "Actualiza el precioBaseHora de la tarifa de prueba de 2000 a 2500."
           }
         },
         {
@@ -1264,7 +1301,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/tarifas/{{tarifaId}}"
+            "url": "{{base}}/api/tarifas/{{tarifaId}}",
+            "description": "Elimina la tarifa de prueba creada en #36. Espera 204 No Content."
           }
         },
         {
@@ -1303,7 +1341,8 @@
                 }
               }
             },
-            "url": "{{base}}/api/horarios-tarifa"
+            "url": "{{base}}/api/horarios-tarifa",
+            "description": "Crea un horario-tarifa para días LABORALES (06:00–08:00) con multiplicador 0.80 (descuento madrugada). Guarda el ID en `horarioId`."
           }
         },
         {
@@ -1328,7 +1367,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/horarios-tarifa/{{horarioId}}"
+            "url": "{{base}}/api/horarios-tarifa/{{horarioId}}",
+            "description": "Elimina el horario-tarifa creado en #39. Limpia los datos de prueba."
           }
         }
       ]
@@ -1358,7 +1398,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/reservas"
+            "url": "{{base}}/api/reservas",
+            "description": "Lista todas las reservas del sistema con sus estados (PENDIENTE, CONFIRMADA, CANCELADA, FINALIZADA)."
           }
         },
         {
@@ -1383,7 +1424,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/reservas/1"
+            "url": "{{base}}/api/reservas/1",
+            "description": "Obtiene la reserva seed de María González. Verifica que el estado es FINALIZADA (ciclo completo completado)."
           }
         },
         {
@@ -1408,7 +1450,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/reservas/cliente/2"
+            "url": "{{base}}/api/reservas/cliente/2",
+            "description": "Lista las reservas de Carlos Pérez. Verifica que tiene una reserva en estado CONFIRMADA en el seed."
           }
         },
         {
@@ -1447,7 +1490,8 @@
                 }
               }
             },
-            "url": "{{base}}/api/reservas"
+            "url": "{{base}}/api/reservas",
+            "description": "Crea una reserva nueva para el espacio 3 (2026-05-20 10:00–12:00). Valida cliente activo, vehículo activo y espacio disponible vía Feign. Estado inicial: PENDIENTE. Guarda el ID en `reservaId1`."
           }
         },
         {
@@ -1472,7 +1516,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/reservas/{{reservaId1}}/confirmar"
+            "url": "{{base}}/api/reservas/{{reservaId1}}/confirmar",
+            "description": "Transición de estado: PENDIENTE → CONFIRMADA. Válido solo desde estado PENDIENTE."
           }
         },
         {
@@ -1497,7 +1542,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/reservas/{{reservaId1}}/cancelar"
+            "url": "{{base}}/api/reservas/{{reservaId1}}/cancelar",
+            "description": "Transición de estado: CONFIRMADA → CANCELADA. cancelar() solo cambia el estado — no llama a ms-espacios porque el espacio no fue bloqueado en la creación."
           }
         },
         {
@@ -1536,7 +1582,8 @@
                 }
               }
             },
-            "url": "{{base}}/api/reservas"
+            "url": "{{base}}/api/reservas",
+            "description": "Crea la segunda reserva (espacio 4) que se usará en la Fase 8 para registrar un acceso real. Guarda el ID en `reservaId2`."
           }
         },
         {
@@ -1561,7 +1608,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/reservas/{{reservaId2}}/confirmar"
+            "url": "{{base}}/api/reservas/{{reservaId2}}/confirmar",
+            "description": "Confirma la reserva 2 (PENDIENTE → CONFIRMADA). ms-accesos requiere que la reserva esté CONFIRMADA antes de registrar la entrada."
           }
         }
       ]
@@ -1591,7 +1639,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/accesos/1"
+            "url": "{{base}}/api/accesos/1",
+            "description": "Obtiene el acceso seed del vehículo BBBB11. Estado COMPLETADO con 150 minutos de duración. Usado como referencia para verificar el cálculo de cobros."
           }
         },
         {
@@ -1616,7 +1665,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/accesos/2"
+            "url": "{{base}}/api/accesos/2",
+            "description": "Obtiene el acceso activo de Carlos Pérez (vehículo DDDD33 actualmente estacionado). Estado ACTIVO sin fecha de salida."
           }
         },
         {
@@ -1641,7 +1691,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/accesos/reserva/1"
+            "url": "{{base}}/api/accesos/reserva/1",
+            "description": "Busca el acceso vinculado a la reserva 1 de María. Permite obtener el acceso a partir del ID de reserva."
           }
         },
         {
@@ -1680,7 +1731,8 @@
                 }
               }
             },
-            "url": "{{base}}/api/accesos/entrada"
+            "url": "{{base}}/api/accesos/entrada",
+            "description": "Registra la entrada del vehículo vinculado a la reserva 2. Internamente llama a ms-espacios para marcar el espacio 4 como no disponible. Estado inicial: ACTIVO. Guarda el ID en `accesoId`."
           }
         },
         {
@@ -1705,7 +1757,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/accesos/{{accesoId}}/salida"
+            "url": "{{base}}/api/accesos/{{accesoId}}/salida",
+            "description": "Registra la salida del vehículo: establece fechaHoraSalida, calcula minutos totales, cambia estado a COMPLETADO y libera el espacio vía Feign a ms-espacios."
           }
         }
       ]
@@ -1735,7 +1788,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/cobros/1"
+            "url": "{{base}}/api/cobros/1",
+            "description": "Obtiene el cobro seed con el monto final 3562.50 calculado por la fórmula completa de billing (precioBaseHora × multiplicadorHorario × factorVehiculo × factorEspacio × minutos/60, con descuentos aplicados)."
           }
         },
         {
@@ -1760,7 +1814,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/cobros/acceso/1"
+            "url": "{{base}}/api/cobros/acceso/1",
+            "description": "Busca el cobro vinculado al acceso 1. La relación cobro–acceso es 1:1 (UNIQUE constraint en id_acceso_ref)."
           }
         },
         {
@@ -1785,7 +1840,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/cobros/cliente/1"
+            "url": "{{base}}/api/cobros/cliente/1",
+            "description": "Lista el historial de cobros de María González (cliente id=1)."
           }
         },
         {
@@ -1823,7 +1879,8 @@
                 }
               }
             },
-            "url": "{{base}}/api/cobros"
+            "url": "{{base}}/api/cobros",
+            "description": "Genera el cobro para el acceso creado en la Fase 8 usando la fórmula completa: precioBaseHora × multiplicadorHorario × factorTipoVehiculo × factorTipoEspacio × (minutos/60), menos descuentos de tipo cliente, suscripción y banco. Usa BigDecimal con HALF_UP."
           }
         },
         {
@@ -1861,7 +1918,8 @@
                 }
               }
             },
-            "url": "{{base}}/api/cobros"
+            "url": "{{base}}/api/cobros",
+            "description": "Intenta crear un segundo cobro para el mismo acceso. Debe retornar 422 Business Rule Violation por la constraint UNIQUE en id_acceso_ref. Valida la regla de negocio de cobro único por acceso."
           }
         }
       ]
@@ -1891,7 +1949,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/metodos-pago"
+            "url": "{{base}}/api/metodos-pago",
+            "description": "Lista todos los métodos de pago registrados en el sistema."
           }
         },
         {
@@ -1916,7 +1975,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/metodos-pago/1"
+            "url": "{{base}}/api/metodos-pago/1",
+            "description": "Obtiene el método de pago seed (Visa Banco Estado, últimos 4 dígitos: 9999). Verificación de datos del seed."
           }
         },
         {
@@ -1955,7 +2015,8 @@
                 }
               }
             },
-            "url": "{{base}}/api/metodos-pago"
+            "url": "{{base}}/api/metodos-pago",
+            "description": "Registra un nuevo método de pago Visa Crédito para el cliente 1 con vencimiento 06/2028. Guarda el ID en `metodoPagoId`."
           }
         },
         {
@@ -1980,7 +2041,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/metodos-pago/{{metodoPagoId}}"
+            "url": "{{base}}/api/metodos-pago/{{metodoPagoId}}",
+            "description": "Elimina el método de pago creado en #60. Limpia los datos de prueba."
           }
         }
       ]
@@ -2010,7 +2072,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/permisos"
+            "url": "{{base}}/api/permisos",
+            "description": "Lista todos los permisos del sistema de control de acceso (security-service)."
           }
         },
         {
@@ -2073,7 +2136,8 @@
                 }
               }
             },
-            "url": "{{base}}/api/permisos"
+            "url": "{{base}}/api/permisos",
+            "description": "Crea el permiso TEST_EXPORT (recurso: exportar, acción: POST). El pre-request verifica si ya existe y lo elimina para garantizar idempotencia al re-ejecutar la colección. Guarda el ID en `permisoId`."
           }
         },
         {
@@ -2098,7 +2162,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/permisos/{{permisoId}}"
+            "url": "{{base}}/api/permisos/{{permisoId}}",
+            "description": "Obtiene el permiso creado en #63 usando el ID guardado en `permisoId`."
           }
         },
         {
@@ -2136,7 +2201,8 @@
                 }
               }
             },
-            "url": "{{base}}/api/permisos/{{permisoId}}"
+            "url": "{{base}}/api/permisos/{{permisoId}}",
+            "description": "Actualiza la acción del permiso de POST a GET usando el ID en `permisoId`."
           }
         },
         {
@@ -2175,7 +2241,8 @@
                 }
               }
             },
-            "url": "{{base}}/api/roles-permisos"
+            "url": "{{base}}/api/roles-permisos",
+            "description": "Asigna el permiso TEST_EXPORT al rol ADMIN (idRol=1). Crea el vínculo en la tabla rol_permiso. Guarda el ID en `rolPermisoId`."
           }
         },
         {
@@ -2200,7 +2267,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/roles-permisos/rol/1"
+            "url": "{{base}}/api/roles-permisos/rol/1",
+            "description": "Lista todos los permisos asignados al rol ADMIN (rol id=1)."
           }
         },
         {
@@ -2225,7 +2293,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/permisos/{{permisoId}}"
+            "url": "{{base}}/api/permisos/{{permisoId}}",
+            "description": "Elimina el permiso TEST_EXPORT. El cascade delete en rol_permiso elimina también el rol-permiso creado en #66."
           }
         }
       ]
@@ -2255,7 +2324,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/reportes/ocupacion"
+            "url": "{{base}}/api/reportes/ocupacion",
+            "description": "Reporte agregado de ocupación del estacionamiento: total de espacios, cuántos están disponibles y cuántos accesos están activos. Datos obtenidos vía Feign desde ms-espacios y ms-accesos."
           }
         },
         {
@@ -2280,7 +2350,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/reportes/accesos/reserva/1"
+            "url": "{{base}}/api/reportes/accesos/reserva/1",
+            "description": "Reporte detallado del acceso vinculado a la reserva 1: datos del acceso enriquecidos con información del vehículo y espacio obtenidos vía Feign."
           }
         },
         {
@@ -2305,7 +2376,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/reportes/cobros/cliente/1"
+            "url": "{{base}}/api/reportes/cobros/cliente/1",
+            "description": "Reporte de historial de cobros del cliente 1 (María González): lista de cobros con detalles de vehículo y espacio de cada estadía."
           }
         },
         {
@@ -2330,7 +2402,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/reportes/accesos/reserva/999"
+            "url": "{{base}}/api/reportes/accesos/reserva/999",
+            "description": "Intenta obtener el reporte de una reserva inexistente. Valida que ms-reportes propaga el 404 recibido desde ms-accesos vía Feign."
           }
         },
         {
@@ -2355,7 +2428,8 @@
                 "type": "text"
               }
             ],
-            "url": "{{base}}/api/reportes/cobros/cliente/999"
+            "url": "{{base}}/api/reportes/cobros/cliente/999",
+            "description": "Intenta obtener cobros de un cliente inexistente. Acepta 200 con lista vacía o 404, dependiendo del comportamiento de ms-pagos ante IDs sin registros."
           }
         }
       ]
