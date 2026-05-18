@@ -171,9 +171,9 @@ cd FULLSTACK-I
 
 ```powershell
 # Opción A — script automático (requiere mysql en el PATH)
-.\load-db.ps1                    # MySQL en localhost:3306 sin contraseña
-.\load-db.ps1 -Port 3307         # MySQL en localhost:3307 (Docker/XAMPP alternativo)
-.\load-db.ps1 -Password mipass   # Con contraseña de root
+.\scripts\load-db.ps1                    # MySQL en localhost:3306 sin contraseña
+.\scripts\load-db.ps1 -Port 3307         # MySQL en localhost:3307 (Docker/XAMPP alternativo)
+.\scripts\load-db.ps1 -Password mipass   # Con contraseña de root
 
 # Opción B — desde phpMyAdmin o mysql CLI
 Get-Content db\00_run_all.sql | mysql -u root
@@ -182,21 +182,24 @@ Get-Content db\00_run_all.sql | mysql -u root
 ### 3. Ajustar el puerto de MySQL (si es necesario)
 
 ```powershell
-.\set-db-port.ps1             # Establece 3307 en todos los application.properties
-.\set-db-port.ps1 -Port 3306  # O cambia a 3306
-.\set-db-port.ps1 -DryRun     # Ver qué cambiaría sin escribir
+.\scripts\set-db-port.ps1             # Establece 3307 en todos los application.properties
+.\scripts\set-db-port.ps1 -Port 3306  # O cambia a 3306
+.\scripts\set-db-port.ps1 -DryRun     # Ver qué cambiaría sin escribir
 ```
 
 ### 4. Arrancar todos los servicios
 
 ```powershell
-# Opción A — script automático (abre cada servicio en su propia ventana)
-.\start-all.ps1
+# Opción A — gestor interactivo (dashboard en vivo + start/stop/restart por nombre)
+.\scripts\manage.ps1
 
-# Opción B — arrancar individualmente respetando el orden
-cd eureka-server     && .\mvnw.cmd spring-boot:run  # 1° Eureka
-cd api-gateway       && .\mvnw.cmd spring-boot:run  # 2° Gateway
-cd auth-service      && .\mvnw.cmd spring-boot:run  # 3° Auth
+# Opción B — arrancar todo automáticamente (una ventana por servicio)
+.\scripts\start-all.ps1
+
+# Opción C — arrancar individualmente respetando el orden
+cd eureka-server; .\mvnw.cmd spring-boot:run  # 1° Eureka
+cd api-gateway;   .\mvnw.cmd spring-boot:run  # 2° Gateway
+cd auth-service;  .\mvnw.cmd spring-boot:run  # 3° Auth
 # ... resto en cualquier orden
 ```
 
@@ -215,20 +218,47 @@ cd auth-service      && .\mvnw.cmd spring-boot:run  # 3° Auth
 
 - **Eureka dashboard:** http://localhost:8761 — los 12 servicios deben aparecer registrados
 - **API Gateway:** http://localhost:8080
-- **Detener todos:** `Stop-Process -Name java -Force`
+- **Detener todos:** `Stop-Process -Name java -Force` o `stop all` desde `manage.ps1`
 
 ---
 
 ## Scripts de utilidad
 
-### `start-all.ps1` — Arrancar todos los servicios
+Todos los scripts están en la carpeta `scripts/`. Ejecutarlos siempre desde la raíz del proyecto.
 
-Lanza los 12 microservicios en orden correcto, cada uno en su propia ventana de PowerShell. Espera activamente a que Eureka y el Gateway estén listos antes de continuar.
+### `scripts/manage.ps1` — Gestor interactivo de servicios
+
+Dashboard en vivo con estado de los 12 microservicios (UP/DOWN + PID). Permite arrancar, detener y reiniciar servicios individualmente o todos a la vez sin salir de la terminal.
 
 ```powershell
-.\start-all.ps1                                                    # Arrancar todo
-.\start-all.ps1 -Services eureka-server,api-gateway,ms-pagos       # Solo algunos servicios
-.\start-all.ps1 -NoPause                                           # Sin confirmación final
+.\scripts\manage.ps1
+```
+
+**Comandos disponibles desde el prompt `svc>`:**
+
+| Comando | Descripción |
+|---------|-------------|
+| `start <n\|nombre\|all>` | Arranca un servicio o todos (`start all`) |
+| `stop <n\|nombre\|all>` | Detiene un servicio o todos (`stop all`) |
+| `restart <n\|nombre\|all>` | Reinicia un servicio o todos |
+| `db` | Ejecuta `load-db.ps1` — resetea todas las bases de datos |
+| `status` / `s` | Refresca el dashboard |
+| `quit` / `q` | Salir |
+
+El argumento `<n>` acepta número (1–12), nombre exacto o parcial. Ejemplos: `start 4`, `stop ms-pagos`, `restart pag`.
+
+Si Windows Terminal está activo, cada servicio arranca en su propia pestaña con nombre. En caso contrario, se abre una ventana de PowerShell por servicio.
+
+### `scripts/start-all.ps1` — Arrancar todos los servicios
+
+Lanza los 12 microservicios en orden correcto esperando activamente a que Eureka y el Gateway estén listos antes de continuar.
+
+```powershell
+.\scripts\start-all.ps1                                                    # Arrancar todo
+.\scripts\start-all.ps1 -Services eureka-server,api-gateway,ms-pagos       # Solo algunos servicios
+.\scripts\start-all.ps1 -NoPause                                           # Sin confirmación final
+.\scripts\start-all.ps1 -Layout Tabs                                       # Forzar pestañas de WT
+.\scripts\start-all.ps1 -Layout Windows                                    # Forzar ventanas separadas
 ```
 
 **Detección de Maven** (en orden de prioridad):
@@ -236,24 +266,24 @@ Lanza los 12 microservicios en orden correcto, cada uno en su propia ventana de 
 2. `mvn` del sistema — si Maven está instalado y en el PATH
 3. `.\mvnw` — Maven wrapper (requiere internet la primera vez)
 
-### `load-db.ps1` — Cargar esquemas y datos de prueba
+### `scripts/load-db.ps1` — Cargar esquemas y datos de prueba
 
 Crea las 10 bases de datos y carga tablas + datos seed desde un único comando.
 
 ```powershell
-.\load-db.ps1                  # localhost:3306 sin contraseña
-.\load-db.ps1 -Password pass   # Con contraseña
-.\load-db.ps1 -Port 3307       # Puerto alternativo
+.\scripts\load-db.ps1                  # localhost:3306 sin contraseña
+.\scripts\load-db.ps1 -Password pass   # Con contraseña
+.\scripts\load-db.ps1 -Port 3307       # Puerto alternativo (XAMPP por defecto)
 ```
 
-### `set-db-port.ps1` — Cambiar puerto de MySQL en toda la aplicación
+### `scripts/set-db-port.ps1` — Cambiar puerto de MySQL en toda la aplicación
 
 Actualiza `spring.datasource.url` en todos los `application.properties` del proyecto.
 
 ```powershell
-.\set-db-port.ps1              # Establece 3307 en todo
-.\set-db-port.ps1 -Port 3306   # Cambia a 3306
-.\set-db-port.ps1 -DryRun      # Vista previa sin escribir cambios
+.\scripts\set-db-port.ps1              # Establece 3307 en todo
+.\scripts\set-db-port.ps1 -Port 3306   # Cambia a 3306
+.\scripts\set-db-port.ps1 -DryRun      # Vista previa sin escribir cambios
 ```
 
 ---
@@ -376,11 +406,13 @@ FULLSTACK-I/
 ├── ms-reportes/              # Reportes agregados (:8090)
 ├── db/                       # Scripts SQL (00_run_all.sql + 01–09)
 ├── docs/                     # Documentación HTML y Markdown
+├── scripts/                  # Scripts de gestión del proyecto
+│   ├── manage.ps1            #   Dashboard interactivo start/stop/restart
+│   ├── start-all.ps1         #   Arrancar los 12 servicios en orden
+│   ├── load-db.ps1           #   Cargar esquemas y datos de prueba
+│   └── set-db-port.ps1       #   Cambiar puerto MySQL en toda la app
 ├── CONTENIDO_CLASES/         # Material de clases y evaluaciones
 ├── apache-maven-3.9.15/      # Maven local (lab sin internet)
-├── start-all.ps1             # Arrancar todos los servicios
-├── load-db.ps1               # Cargar esquemas y datos de prueba
-├── set-db-port.ps1           # Cambiar puerto MySQL en toda la app
 ├── estacionamientos.postman_collection.json   # Colección Postman (74 requests)
 └── README.md
 ```

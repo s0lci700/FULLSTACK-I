@@ -34,7 +34,9 @@
 
 param(
     [string[]]$Services = @(),
-    [switch]$NoPause
+    [switch]$NoPause,
+    [ValidateSet("Auto","Tabs","Windows")]
+    [string]$Layout = "Auto"
 )
 
 # ── Helpers ────────────────────────────────────────────────────────────────
@@ -74,8 +76,21 @@ function Start-Svc([string]$name) {
         Write-Skip "$name — folder not found, skipping."
         return
     }
-    $cmd = "cd '$path'; Write-Host '' ; Write-Host '  ► $name' -ForegroundColor Cyan; Write-Host ''; $mvnCmd spring-boot:run"
-    Start-Process powershell -ArgumentList "-NoExit", "-Command", $cmd -WindowStyle Normal
+
+    # Inner command runs inside the new terminal — $name/$path/$mvnCmd expand NOW (outer scope).
+    # Backtick-dollar keeps $Host literal so it evaluates in the child process.
+    $innerCmd = "`$Host.UI.RawUI.WindowTitle = '$name'; Set-Location '$path'; Write-Host ''; Write-Host '  ► $name' -ForegroundColor Cyan; Write-Host ''; $mvnCmd spring-boot:run"
+
+    if ($useWT) {
+        # Base64-encode avoids all quoting nightmares when nesting inside wt arguments
+        $encoded = [Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($innerCmd))
+        $color   = if ($infraSet -contains $name) { "--tabColor `"$infraColor`"" } else { "" }
+        Start-Process wt -ArgumentList "-w 0 new-tab --title `"$name`" $color -- powershell -NoExit -EncodedCommand $encoded"
+        Start-Sleep -Milliseconds 400   # give WT time to register the tab before the next one
+    } else {
+        Start-Process powershell -ArgumentList "-NoExit", "-Command", $innerCmd -WindowStyle Normal
+    }
+
     Write-Ok "Launched $name"
 }
 
@@ -84,9 +99,27 @@ function Should-Start([string]$name) {
     return $Services -contains $name
 }
 
+# ── Layout detection ────────────────────────────────────────────────────────
+
+# Windows Terminal is detected via $env:WT_SESSION (set by WT for every child process).
+# "Tabs" mode opens each service as a named tab in the current WT window.
+# "Windows" mode is the classic behaviour: one floating PowerShell window per service.
+
+$wtAvailable = ($null -ne $env:WT_SESSION) -and ($null -ne (Get-Command wt -ErrorAction SilentlyContinue))
+
+$useWT = switch ($Layout) {
+    "Tabs"    { $true  }
+    "Windows" { $false }
+    default   { $wtAvailable }
+}
+
+# Infrastructure services get a steel-blue tab so they stand out from domain services
+$infraColor  = "#0f3460"
+$infraSet    = @("eureka-server", "api-gateway")
+
 # ── Maven detection ─────────────────────────────────────────────────────────
 
-$root = $PSScriptRoot
+$root = Split-Path -Parent $PSScriptRoot
 
 $localMvn = Join-Path $root "apache-maven-3.9.15\bin\mvn.cmd"
 if (Test-Path $localMvn) {
@@ -107,7 +140,9 @@ Write-Host "  ╔═════════════════════
 Write-Host "  ║   Estacionamiento Inteligente — Start All        ║" -ForegroundColor DarkCyan
 Write-Host "  ╚══════════════════════════════════════════════════╝" -ForegroundColor DarkCyan
 Write-Host ""
+$layoutLabel = if ($useWT) { "Windows Terminal tabs (-w 0)" } else { "separate PowerShell windows" }
 Write-Host "  Maven : $mvnSource" -ForegroundColor DarkGray
+Write-Host "  Layout: $layoutLabel" -ForegroundColor DarkGray
 if ($Services.Count -gt 0) {
     Write-Host "  Filter: $($Services -join ', ')" -ForegroundColor DarkGray
 } else {

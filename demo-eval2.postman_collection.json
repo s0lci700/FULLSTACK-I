@@ -1,0 +1,656 @@
+{
+  "info": {
+    "name": "Demo — Evaluación Parcial 2",
+    "_postman_id": "demo-eval2-dsy1103-2026",
+    "description": "Demo guiada para video y defensa — DSY1103 DUOC UC (Sol León & Catalina Aguirre).\n\nNarrativa: María González reserva espacio 3, ingresa, sale y paga.\n18 requests organizados por indicador de rúbrica (IE 2.2.1 – IE 2.2.6).\n\nPREPARACIÓN ANTES DE CORRER:\n  1. .\\load-db.ps1    → restaura seed data\n  2. .\\start-all.ps1  → levanta los 12 servicios\n  3. http://localhost:8761 → todos los servicios en UP\n  4. Limpiar variables token / reservaId / accesoId (Current Value)\n\nEl token JWT se captura automáticamente en #1.\nCorrer de arriba hacia abajo sin pasos manuales adicionales.\n\nIE 2.2.5 (12%) — dos tomas separadas:\n  ANTES: correr #14b (muestra bug: 200 al cancelar reserva FINALIZADA)\n  LIVE:  agregar guardia en ReservaService.cancelar() + reiniciar ms-reservas\n  DESPUÉS: load-db.ps1 + correr #15 (muestra fix: 422 BUSINESS_RULE_VIOLATION)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      { "key": "token", "value": "{{token}}", "type": "string" }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": ["// Intencionalmente vacío — el token se captura en el request #1."]
+      }
+    }
+  ],
+  "variable": [
+    { "key": "base",        "value": "http://localhost:8080", "type": "string" },
+    { "key": "token",       "value": "",                      "type": "string" },
+    { "key": "clienteId",   "value": "",                      "type": "string" },
+    { "key": "vehiculoId",  "value": "",                      "type": "string" },
+    { "key": "espacioDemo", "value": "",                      "type": "string" },
+    { "key": "reservaId",   "value": "",                      "type": "string" },
+    { "key": "accesoId",    "value": "",                      "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "00 — Setup & Autenticación  ·  IE 2.2.6",
+      "description": "Login correcto captura el JWT. Login inválido demuestra error handling. Los logs SLF4J de auth-service (INFO / WARN) son visibles en la consola al ejecutar estos requests — narrar eso en video para cubrir IE 2.2.6.",
+      "item": [
+        {
+          "name": "#1 — Login admin — captura token JWT",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Setup único: variables seed fijas para toda la demo",
+                  "pm.collectionVariables.set('clienteId',   '1');",
+                  "pm.collectionVariables.set('vehiculoId',  '1');",
+                  "pm.collectionVariables.set('espacioDemo', '3');"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK — login correcto', () => pm.response.to.have.status(200));",
+                  "pm.test('Devuelve token JWT (IE 2.2.6: ver log en consola auth-service)', () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.token).to.be.a('string').and.not.empty;",
+                  "  pm.collectionVariables.set('token', j.token);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "description": "Autentica al administrador con email y contraseña. El script de test captura el token JWT en la variable de colección `token`, reutilizado como Bearer token por todos los requests siguientes. El pre-request establece variables de seed: `clienteId=1` (María González), `vehiculoId=1` (BBBB11), `espacioDemo=3`. Los logs SLF4J de auth-service son visibles en consola — evidencia para IE 2.2.6.",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@parking.cl\",\n  \"password\": \"Test1234!\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base}}/api/auth/login",
+              "host": ["{{base}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "#2 — Login inválido → 401  (error handling)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('401 Unauthorized — credenciales inválidas', () => pm.response.to.have.status(401));",
+                  "pm.test('Cuerpo de error presente', () => {",
+                  "  pm.expect(pm.response.json()).to.have.property('mensaje');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "description": "Intenta autenticar con credenciales inexistentes. Demuestra el manejo de error 401 en auth-service. Log de advertencia visible en consola del servicio. IE 2.2.3 + IE 2.2.6.",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"noexiste@x.cl\",\n  \"password\": \"malita\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base}}/api/auth/login",
+              "host": ["{{base}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "01 — Lectura (patrón CSR)  ·  IE 2.2.1",
+      "description": "Ejemplo limpio del patrón Controller → Service → Repository. Narrar en video: EspacioController.getDisponibles() llama a EspacioService que llama a EspacioRepository.findByDisponibleTrue(). Las 3 capas son visibles en el código.",
+      "item": [
+        {
+          "name": "#3 — GET espacios disponibles (Repository → Service → Controller)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Lista de espacios disponibles — patrón CSR completo (IE 2.2.1)', () => {",
+                  "  const d = pm.response.json();",
+                  "  pm.expect(Array.isArray(d)).to.be.true;",
+                  "  pm.expect(d.length).to.be.above(0);",
+                  "  d.forEach(e => pm.expect(e.disponible).to.eql(true));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "description": "Lee todos los espacios con `disponible=true` desde ms-espacios. Ejemplo limpio del patrón CSR: `EspacioController.getDisponibles()` → `EspacioService` → `EspacioRepository.findByDisponibleTrue()`. Narrar las tres capas en el video para demostrar IE 2.2.1.",
+            "header": [],
+            "url": {
+              "raw": "{{base}}/api/espacios/disponibles",
+              "host": ["{{base}}"],
+              "path": ["api", "espacios", "disponibles"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 — Flujo de Reserva  ·  IE 2.2.2 + IE 2.2.4",
+      "description": "Creación de reserva (PENDIENTE), lectura, confirmación (CONFIRMADA). En #4 narrar las 3 llamadas Feign que ms-reservas hace antes de guardar: valida cliente activo, vehículo activo, espacio activo+disponible.",
+      "item": [
+        {
+          "name": "#4 — POST crear reserva espacio 3  (Feign: cliente + vehículo + espacio)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', () => pm.response.to.have.status(201));",
+                  "pm.test('Estado inicial PENDIENTE — 3 Feign validados (IE 2.2.4)', () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.estado).to.eql('PENDIENTE');",
+                  "  pm.expect(j.idEspacio).to.eql(3);",
+                  "  pm.expect(j.id).to.be.a('number');",
+                  "  pm.collectionVariables.set('reservaId', String(j.id));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "description": "Crea una reserva en estado PENDIENTE para María González (cliente 1), vehículo BBBB11 (id 1), espacio 3. Antes de persistir, `ReservaService.create()` realiza 3 llamadas Feign: valida cliente activo (→ user-service), vehículo activo (→ ms-vehiculos), y espacio activo+disponible (→ ms-espacios). Si cualquiera falla, lanza NotFoundException. Captura `reservaId` para los requests siguientes. IE 2.2.2 + IE 2.2.4.",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCliente\": 1,\n  \"idVehiculo\": 1,\n  \"idEspacio\": 3,\n  \"fechaInicio\": \"2026-05-22T10:00:00\",\n  \"fechaFin\": \"2026-05-22T12:00:00\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base}}/api/reservas",
+              "host": ["{{base}}"],
+              "path": ["api", "reservas"]
+            }
+          }
+        },
+        {
+          "name": "#5 — GET reserva creada  (persistencia JPA verificada)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Datos persistidos correctamente en BD (IE 2.2.2)', () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(String(j.id)).to.eql(pm.collectionVariables.get('reservaId'));",
+                  "  pm.expect(j.idEspacio).to.eql(3);",
+                  "  pm.expect(j.estado).to.eql('PENDIENTE');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "description": "Lee la reserva recién creada usando `{{reservaId}}`. Verifica que JPA persistió correctamente el registro en `db_reservas`: id, idEspacio=3, estado=PENDIENTE. Demuestra el Repository leyendo desde la base de datos. IE 2.2.2.",
+            "header": [],
+            "url": {
+              "raw": "{{base}}/api/reservas/{{reservaId}}",
+              "host": ["{{base}}"],
+              "path": ["api", "reservas", "{{reservaId}}"]
+            }
+          }
+        },
+        {
+          "name": "#6 — PUT confirmar reserva  (PENDIENTE → CONFIRMADA)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Transición de estado PENDIENTE → CONFIRMADA (IE 2.2.2)', () => {",
+                  "  pm.expect(pm.response.json().estado).to.eql('CONFIRMADA');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "description": "Transiciona la reserva de PENDIENTE a CONFIRMADA usando `@PutMapping` (nunca `@PatchMapping` — Feign no soporta PATCH). La máquina de estados `EstadoEnums` solo permite esta transición desde PENDIENTE. El estado CONFIRMADA es condición obligatoria para que ms-accesos acepte la entrada. IE 2.2.2.",
+            "header": [],
+            "url": {
+              "raw": "{{base}}/api/reservas/{{reservaId}}/confirmar",
+              "host": ["{{base}}"],
+              "path": ["api", "reservas", "{{reservaId}}", "confirmar"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 — Acceso (entrada / salida)  ·  IE 2.2.4 + IE 2.2.2",
+      "description": "Entrada: ms-accesos llama vía Feign a ms-reservas (valida estado CONFIRMADA) y a ms-espacios (marca espacio como NO disponible).\nSalida: calcula minutos, estado COMPLETADO, llama Feign a ms-espacios para liberar el espacio.\n\nNOTA: el body de entrada NO incluye idEspacio — ese campo no existe en AccesoCreateDTO (se obtiene desde la reserva vía Feign internamente).",
+      "item": [
+        {
+          "name": "#7 — POST registrar entrada  (Feign → ms-reservas + ms-espacios)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', () => pm.response.to.have.status(201));",
+                  "pm.test('Acceso ACTIVO — espacio marcado ocupado vía Feign (IE 2.2.4)', () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.estado).to.eql('ACTIVO');",
+                  "  pm.expect(j.fechaHoraEntrada).to.not.be.null;",
+                  "  pm.expect(j.fechaHoraSalida).to.be.null;",
+                  "  pm.collectionVariables.set('accesoId', String(j.id));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "description": "Registra la entrada del vehículo BBBB11. El body envía los 3 campos de `AccesoCreateDTO` (`idReserva`, `idVehiculo`, `patenteEscaneada`) — no incluye `idEspacio` porque ese campo no existe en el DTO; se resuelve internamente desde la reserva vía Feign. ms-accesos llama a ms-reservas para validar estado CONFIRMADA, y a ms-espacios para marcar el espacio como no disponible. Captura `accesoId`. IE 2.2.4.",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idReserva\": {{reservaId}},\n  \"idVehiculo\": 1,\n  \"patenteEscaneada\": \"BBBB11\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base}}/api/accesos/entrada",
+              "host": ["{{base}}"],
+              "path": ["api", "accesos", "entrada"]
+            }
+          }
+        },
+        {
+          "name": "#8 — PUT registrar salida  (calcula minutos, libera espacio)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Salida registrada — minutos calculados, espacio liberado vía Feign (IE 2.2.2 + IE 2.2.4)', () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.estado).to.eql('COMPLETADO');",
+                  "  pm.expect(j.fechaHoraSalida).to.not.be.null;",
+                  "  pm.expect(j.minutos).to.be.a('number').and.to.be.at.least(0);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "description": "Registra la salida del vehículo: llena `fechaHoraSalida`, calcula `minutos` entre entrada y salida, cambia estado a COMPLETADO, y libera el espacio vía Feign a ms-espacios (`disponible=true`). El campo `minutos` calculado es el insumo principal de la fórmula de cobro. IE 2.2.2 + IE 2.2.4.",
+            "header": [],
+            "url": {
+              "raw": "{{base}}/api/accesos/{{accesoId}}/salida",
+              "host": ["{{base}}"],
+              "path": ["api", "accesos", "{{accesoId}}", "salida"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 — Cobro (fórmula BigDecimal)  ·  IE 2.2.2 + IE 2.2.4 + IE 2.2.3",
+      "description": "ms-pagos realiza 7 llamadas Feign (acceso, tarifa, horario, tipoVehículo, cliente, espacio, vehículo) y aplica:\n  monto_final = precio_base × multiplicador_horario × factor_tipoVehículo × factor_tipoEspacio × (minutos/60)\n              × (1 - desc_tipoCliente/100) × (1 - desc_suscripcion/100) × (1 - desc_banco/100)\nBigDecimal con RoundingMode.HALF_UP. El cobro seed (#10) siempre da 3562.50 — prueba determinista de la fórmula.",
+      "item": [
+        {
+          "name": "#9 — POST crear cobro  (7 Feign + fórmula BigDecimal visible)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', () => pm.response.to.have.status(201));",
+                  "pm.test('Cobro generado — montoFinal calculado con BigDecimal (IE 2.2.2 + IE 2.2.4)', () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.montoBase).to.be.a('number');",
+                  "  pm.expect(j.montoFinal).to.be.a('number').and.to.be.at.least(0);",
+                  "  pm.expect(j).to.have.property('metodoPago');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "description": "Genera el cobro del acceso recién completado. ms-pagos ejecuta 7 llamadas Feign para resolver los factores de la fórmula: acceso, tarifa vigente, horario, tipoVehículo, cliente, espacio, vehículo. Resultado: `montoBase` y `montoFinal` visibles en la respuesta, calculados con BigDecimal y RoundingMode.HALF_UP. Narrar las 7 Feign en cámara para IE 2.2.4.",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idAcceso\": {{accesoId}},\n  \"idMetodoPago\": 1,\n  \"idCliente\": 1\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base}}/api/cobros",
+              "host": ["{{base}}"],
+              "path": ["api", "cobros"]
+            }
+          }
+        },
+        {
+          "name": "#10 — GET cobro seed  (montoFinal = 3562.50 — fórmula verificada)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('montoFinal = 3562.50 — 150 min × fórmula completa (IE 2.2.2)', () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(Number(j.montoFinal)).to.eql(3562.50);",
+                  "  pm.expect(j.minutos).to.eql(150);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "description": "Lee el cobro de seed (id=1, María González, 150 minutos, tarifa ESTANDAR). `montoFinal` esperado: 3562.50. Cálculo: 1500 × 1.0 × 1.0 × 1.0 × (150/60) = 3750 − 5% descuento Banco Estado = 3562.50. Prueba determinista de la fórmula BigDecimal: resultado siempre idéntico después de `load-db.ps1`. IE 2.2.2.",
+            "header": [],
+            "url": {
+              "raw": "{{base}}/api/cobros/1",
+              "host": ["{{base}}"],
+              "path": ["api", "cobros", "1"]
+            }
+          }
+        },
+        {
+          "name": "#11 — POST cobro duplicado → 422  (UNIQUE constraint + GlobalExceptionHandler)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('422 Unprocessable Entity', () => pm.response.to.have.status(422));",
+                  "pm.test('GlobalExceptionHandler → BUSINESS_RULE_VIOLATION (IE 2.2.3)', () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.error).to.eql('BUSINESS_RULE_VIOLATION');",
+                  "  pm.expect(j).to.have.property('mensaje');",
+                  "  pm.expect(j).to.have.property('timestamp');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "description": "Intenta cobrar el mismo acceso por segunda vez. La restricción UNIQUE en `id_acceso_ref` (1 cobro por acceso) dispara `BusinessException` en la capa Service → GlobalExceptionHandler → 422 con cuerpo estándar `{error, mensaje, timestamp}`. Demuestra que las reglas de negocio se aplican en el Service, no en el Controller. IE 2.2.3.",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idAcceso\": {{accesoId}},\n  \"idMetodoPago\": 1,\n  \"idCliente\": 1\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base}}/api/cobros",
+              "host": ["{{base}}"],
+              "path": ["api", "cobros"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 — Manejo de errores  ·  IE 2.2.3",
+      "description": "Demuestra Bean Validation (@Valid + @NotNull/@NotBlank) → 400 con mapa 'campos', GlobalExceptionHandler → 404, y la preparación para IE 2.2.5 (cancelar reserva FINALIZADA antes del fix).\n\nEl cuerpo de error es SIEMPRE {error, mensaje, timestamp} — mismo formato en los 12 servicios.",
+      "item": [
+        {
+          "name": "#12 — POST reserva sin campos → 400  (Bean Validation)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('400 Bad Request', () => pm.response.to.have.status(400));",
+                  "pm.test('VALIDATION_FAILED con mapa de campos inválidos (IE 2.2.3)', () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.error).to.eql('VALIDATION_FAILED');",
+                  "  pm.expect(j.campos).to.be.an('object');",
+                  "  pm.expect(Object.keys(j.campos).length).to.be.above(0);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "description": "Envía solo `idCliente` en el body, omitiendo todos los campos obligatorios (`idVehiculo`, `idEspacio`, fechas). El `@Valid` en el Controller activa Bean Validation → `MethodArgumentNotValidException` → GlobalExceptionHandler → 400 con el mapa `campos` indicando exactamente qué falló en cada campo. IE 2.2.3.",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCliente\": 1\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base}}/api/reservas",
+              "host": ["{{base}}"],
+              "path": ["api", "reservas"]
+            }
+          }
+        },
+        {
+          "name": "#13 — GET cliente 999 → 404  (GlobalExceptionHandler)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('404 Not Found', () => pm.response.to.have.status(404));",
+                  "pm.test('GlobalExceptionHandler → NOT_FOUND (IE 2.2.3)', () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.error).to.eql('NOT_FOUND');",
+                  "  pm.expect(j).to.have.property('mensaje');",
+                  "  pm.expect(j).to.have.property('timestamp');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "description": "`ClienteRepository.findById(999)` retorna vacío → `NotFoundException` en el Service → GlobalExceptionHandler → 404. El cuerpo `{error: 'NOT_FOUND', mensaje, timestamp}` es idéntico en los 12 servicios: patrón de manejo de errores centralizado. IE 2.2.3.",
+            "header": [],
+            "url": {
+              "raw": "{{base}}/api/clientes/999",
+              "host": ["{{base}}"],
+              "path": ["api", "clientes", "999"]
+            }
+          }
+        },
+        {
+          "name": "#14a — PUT finalizar reserva demo  (prep IE 2.2.5)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK — reserva FINALIZADA (prep para IE 2.2.5)', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.json().estado).to.eql('FINALIZADA');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "description": "Transiciona la reserva demo a estado FINALIZADA (CONFIRMADA → FINALIZADA). Este es el estado terminal de la máquina de estados. Solo se ejecuta en el segmento IE 2.2.5 del video para demostrar que el sistema actualmente permite cancelar desde FINALIZADA (bug), y luego que la guardia lo previene (fix).",
+            "header": [],
+            "url": {
+              "raw": "{{base}}/api/reservas/{{reservaId}}/finalizar",
+              "host": ["{{base}}"],
+              "path": ["api", "reservas", "{{reservaId}}", "finalizar"]
+            }
+          }
+        },
+        {
+          "name": "#14b — PUT cancelar reserva FINALIZADA → BUG: 200  (ANTES del fix IE 2.2.5)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// ANTES del live coding: cancelar() no valida estado → devuelve 200 (incorrecto).",
+                  "// Usa reserva 1 del seed (FINALIZADA). Restaurar con .\\load-db.ps1 antes de correr.",
+                  "pm.test('BUG VISIBLE: 200 al cancelar reserva FINALIZADA (debería ser 422)', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "description": "Intenta cancelar la reserva 1 del seed, que siempre está en estado FINALIZADA después de `load-db.ps1`. ANTES del live coding, `ReservaService.cancelar()` no tiene guardia de estado → la operación se ejecuta incorrectamente y retorna 200. Narrar: 'esto no debería estar permitido — lo corregimos en vivo.' IE 2.2.5.",
+            "header": [],
+            "url": {
+              "raw": "{{base}}/api/reservas/1/cancelar",
+              "host": ["{{base}}"],
+              "path": ["api", "reservas", "1", "cancelar"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 — Live Coding IE 2.2.5 (12%)  ·  DESPUÉS del fix",
+      "description": "Este folder se corre DESPUÉS de agregar la guardia en ReservaService.cancelar() y reiniciar ms-reservas.\n\nCambio a agregar en ms-reservas/.../Service/ReservaService.java, método cancelar(Long id):\n\n  if (reserva.getEstado() == EstadoEnums.FINALIZADA) {\n      throw new BusinessException(\"No se puede cancelar una reserva ya finalizada\");\n  }\n\nEl mismo request que antes daba 200 ahora da 422.\n\nPREPARACIÓN: correr .\\load-db.ps1 para restaurar reserva 1 a estado FINALIZADA.",
+      "item": [
+        {
+          "name": "#15 — PUT cancelar reserva FINALIZADA → FIX: 422  (DESPUÉS del fix IE 2.2.5)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// DESPUÉS del live coding: el mismo request ahora retorna 422.",
+                  "pm.test('FIX APLICADO: 422 al intentar cancelar reserva FINALIZADA (IE 2.2.5)', () => {",
+                  "  pm.response.to.have.status(422);",
+                  "});",
+                  "pm.test('GlobalExceptionHandler → BUSINESS_RULE_VIOLATION con mensaje', () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.error).to.eql('BUSINESS_RULE_VIOLATION');",
+                  "  pm.expect(j.mensaje.toLowerCase()).to.include('finalizada');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "description": "El mismo request que en #14b devolvía 200, ahora retorna 422 BUSINESS_RULE_VIOLATION tras agregar `if (reserva.getEstado() == EstadoEnums.FINALIZADA) throw new BusinessException(...)` en `ReservaService.cancelar()` y reiniciar ms-reservas. El par #14b → #15 es la demostración completa de IE 2.2.5 (12% de la nota). PREPARACIÓN: `load-db.ps1` restaura reserva 1 a FINALIZADA.",
+            "header": [],
+            "url": {
+              "raw": "{{base}}/api/reservas/1/cancelar",
+              "host": ["{{base}}"],
+              "path": ["api", "reservas", "1", "cancelar"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "07 — Reportes (Feign agregador)  ·  IE 2.2.4",
+      "description": "ms-reportes NO tiene base de datos propia — todo se arma mediante Feign a ms-accesos, ms-pagos, ms-espacios y ms-vehiculos. Demuestra una arquitectura de microservicio de solo lectura basado puramente en llamadas entre servicios.",
+      "item": [
+        {
+          "name": "#16 — GET reporte de ocupación  (ms-reportes sin BD propia)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Reporte agregado vía Feign — ms-reportes no tiene @Entity ni BD (IE 2.2.4)', () => {",
+                  "  pm.expect(pm.response.json()).to.be.an('object');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "description": "Consulta el reporte de ocupación desde ms-reportes. Este servicio no tiene base de datos ni entidades JPA propias — todo el contenido se obtiene mediante llamadas Feign a ms-accesos, ms-espacios y ms-vehiculos. Ejemplo de microservicio de solo lectura y agregación. IE 2.2.4.",
+            "header": [],
+            "url": {
+              "raw": "{{base}}/api/reportes/ocupacion",
+              "host": ["{{base}}"],
+              "path": ["api", "reportes", "ocupacion"]
+            }
+          }
+        },
+        {
+          "name": "#17 — GET cobros por cliente 1  (reporte Feign → ms-pagos)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Historial de cobros de María González — Feign a ms-pagos (IE 2.2.4)', () => {",
+                  "  pm.expect(pm.response.json()).to.not.be.undefined;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "description": "Consulta el historial de cobros de María González (id=1) desde ms-reportes. Los datos se obtienen vía Feign a ms-pagos. Cierre de la narrativa: desde el login hasta el reporte histórico, el sistema funciona de extremo a extremo pasando por los 12 microservicios. IE 2.2.4.",
+            "header": [],
+            "url": {
+              "raw": "{{base}}/api/reportes/cobros/cliente/1",
+              "host": ["{{base}}"],
+              "path": ["api", "reportes", "cobros", "cliente", "1"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
