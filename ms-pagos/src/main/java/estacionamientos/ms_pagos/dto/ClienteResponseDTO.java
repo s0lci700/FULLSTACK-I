@@ -16,4 +16,5 @@ public class ClienteResponseDTO {
     private String telefono;
     private TipoClienteResponseDTO tipoCliente;
     private Boolean activo;
+    private SuscripcionResponseDTO suscripcion;
 }
