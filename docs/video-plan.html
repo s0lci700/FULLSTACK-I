@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Plan del Video — Estacionamiento Inteligente</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0f1117;
+      --bg2:      #1a1f2e;
+      --bg3:      #1e2330;
+      --border:   #2d3748;
+      --text:     #e2e8f0;
+      --text2:    #94a3b8;
+      --text3:    #7b8ea6;
+      --blue:     #93c5fd;
+      --blue-bg:  #1e3a5f;
+      --green:    #22c55e;
+      --green-bg: #14532d;
+      --yellow:   #f59e0b;
+      --yellow-bg:#3b2700;
+      --red:      #ef4444;
+      --red-bg:   #450a0a;
+      --purple:   #c4b5fd;
+      --purple-bg:#2d1b4e;
+      --cyan:     #67e8f9;
+      --cyan-bg:  #164e63;
+      --orange:   #fb923c;
+      --orange-bg:#431407;
+      --sidebar-w: 240px;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .layout { display: flex; min-height: 100vh; }
+
+    /* ── Sidebar ── */
+    nav {
+      width: var(--sidebar-w);
+      min-width: var(--sidebar-w);
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      padding: 1.5rem 1rem;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    nav .back {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.75rem; color: var(--text3);
+      text-decoration: none; margin-bottom: 1.5rem;
+      padding: 0.3rem 0.6rem; border-radius: 4px;
+      transition: color 0.12s;
+    }
+    nav .back:hover { color: var(--text2); }
+
+    nav h2 {
+      font-size: 0.68rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--text3); margin-bottom: 0.8rem;
+    }
+
+    .section-label {
+      font-size: 0.63rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text3);
+      margin: 1rem 0 0.3rem 0.6rem;
+    }
+
+    nav ul { list-style: none; }
+    nav ul li { margin-bottom: 0.1rem; }
+    nav ul li a {
+      display: block; padding: 0.28rem 0.6rem; border-radius: 4px;
+      color: var(--text2); text-decoration: none; font-size: 0.8rem;
+      transition: background 0.12s, color 0.12s;
+    }
+    nav ul li a:hover { background: var(--bg3); color: var(--text); }
+
+    /* ── Main ── */
+    main { flex: 1; padding: 2rem 2.5rem; max-width: 900px; }
+
+    h1 { font-size: 1.6rem; color: var(--text); margin-bottom: 0.3rem; }
+    h2 {
+      font-size: 1.05rem; color: var(--blue);
+      margin: 2.5rem 0 0.8rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border);
+    }
+    h3 { font-size: 0.9rem; color: var(--purple); margin: 1.4rem 0 0.5rem; }
+    p  { color: var(--text2); margin-bottom: 0.7rem; font-size: 0.88rem; }
+    ul, ol { color: var(--text2); font-size: 0.87rem; padding-left: 1.4rem; margin-bottom: 0.8rem; }
+    li { margin-bottom: 0.25rem; }
+    code {
+      font-family: 'Cascadia Code','Fira Code',monospace;
+      font-size: 0.82rem; background: var(--bg3);
+      color: var(--cyan); padding: 0.1rem 0.4rem; border-radius: 3px;
+    }
+    .subtitle { color: var(--text3); font-size: 0.82rem; margin-bottom: 1.5rem; }
+    hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+    /* ── Callouts ── */
+    .callout {
+      border-radius: 6px; padding: 0.75rem 1rem;
+      margin: 0.9rem 0; font-size: 0.84rem; border-left: 3px solid;
+    }
+    .callout strong { display: block; margin-bottom: 0.25rem; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; }
+    .callout p, .callout ul { color: inherit; font-size: 0.83rem; margin-bottom: 0; }
+    .callout ul { margin-top: 0.3rem; }
+    .callout-red    { background: var(--red-bg);    border-color: var(--red);    color: var(--red);    }
+    .callout-yellow { background: var(--yellow-bg); border-color: var(--yellow); color: var(--yellow); }
+    .callout-green  { background: var(--green-bg);  border-color: var(--green);  color: var(--green);  }
+    .callout-blue   { background: var(--blue-bg);   border-color: var(--blue);   color: var(--blue);   }
+    .callout-cyan   { background: var(--cyan-bg);   border-color: var(--cyan);   color: var(--cyan);   }
+
+    /* ── Badge ── */
+    .badge {
+      display: inline-block; font-size: 0.64rem; font-weight: 700;
+      padding: 0.1rem 0.5rem; border-radius: 9999px; vertical-align: middle;
+      font-family: 'Cascadia Code','Fira Code',monospace;
+    }
+    .badge-blue   { background: var(--blue-bg);   color: var(--blue);   }
+    .badge-green  { background: var(--green-bg);  color: var(--green);  }
+    .badge-yellow { background: var(--yellow-bg); color: var(--yellow); }
+    .badge-red    { background: var(--red-bg);    color: var(--red);    }
+    .badge-purple { background: var(--purple-bg); color: var(--purple); }
+    .badge-cyan   { background: var(--cyan-bg);   color: var(--cyan);   }
+
+    /* ── Timeline sections ── */
+    .tl-section {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 1.2rem;
+      overflow: hidden;
+    }
+
+    .tl-header {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 0.9rem 1.2rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg3);
+    }
+
+    .tl-num {
+      width: 2rem; height: 2rem; border-radius: 50%;
+      background: var(--blue-bg); color: var(--blue);
+      font-size: 0.85rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .tl-title { font-size: 0.97rem; font-weight: 600; color: var(--text); flex: 1; }
+
+    .tl-time {
+      font-size: 0.72rem; color: var(--text3);
+      font-family: 'Cascadia Code','Fira Code',monospace;
+      white-space: nowrap;
+    }
+
+    .tl-body { padding: 1rem 1.2rem; }
+
+    .tl-body ul { margin-bottom: 0.6rem; }
+    .tl-body li { color: var(--text2); font-size: 0.87rem; margin-bottom: 0.3rem; }
+    .tl-body li strong { color: var(--text); }
+
+    .tl-ie {
+      margin-top: 0.6rem;
+      font-size: 0.75rem; color: var(--cyan);
+      font-family: 'Cascadia Code','Fira Code',monospace;
+      background: var(--cyan-bg); border-radius: 4px;
+      padding: 0.2rem 0.6rem; display: inline-block;
+    }
+
+    /* ── Script block ── */
+    .script-block {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--purple);
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      margin: 0.7rem 0;
+      font-size: 0.84rem;
+      color: var(--text2);
+      font-style: italic;
+    }
+    .script-block .speaker {
+      font-style: normal; font-size: 0.65rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--purple); margin-bottom: 0.3rem; display: block;
+    }
+
+    /* ── Demo table ── */
+    .demo-table {
+      width: 100%; border-collapse: collapse;
+      font-size: 0.82rem; margin: 0.6rem 0 1rem;
+    }
+    .demo-table th {
+      background: var(--bg3); color: var(--text3);
+      font-size: 0.67rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      padding: 0.4rem 0.75rem; text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .demo-table td {
+      padding: 0.45rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text2); vertical-align: top;
+    }
+    .demo-table tr:last-child td { border-bottom: none; }
+    .demo-table tr:hover td { background: var(--bg3); }
+    .demo-table .req-num { font-family: 'Cascadia Code','Fira Code',monospace; color: var(--yellow); font-size: 0.78rem; }
+    .demo-table .method  { font-family: 'Cascadia Code','Fira Code',monospace; font-size: 0.75rem; }
+    .method-get    { color: #4ade80; }
+    .method-post   { color: #60a5fa; }
+    .method-put    { color: #fbbf24; }
+    .method-delete { color: #f87171; }
+
+    /* ── Checklist ── */
+    .checklist { list-style: none; margin: 0.5rem 0 1.2rem; padding: 0; }
+    .checklist li {
+      display: flex; align-items: flex-start; gap: 0.7rem;
+      padding: 0.5rem 0.75rem; border-radius: 5px;
+      font-size: 0.86rem; color: var(--text2);
+      border: 1px solid transparent; margin-bottom: 0.3rem;
+    }
+    .checklist li:hover { background: var(--bg2); }
+    .checklist li.crit { border-color: var(--red-bg); background: var(--red-bg); color: var(--red); }
+    .checklist li.warn { border-color: var(--yellow-bg); background: var(--yellow-bg); color: var(--yellow); }
+    .checklist li input[type="checkbox"] { margin-top: 0.2rem; flex-shrink: 0; accent-color: var(--green); width: 15px; height: 15px; cursor: pointer; }
+    .checklist li label { cursor: pointer; }
+
+    /* ── Code block ── */
+    pre {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 6px; padding: 0.9rem 1rem;
+      font-family: 'Cascadia Code','Fira Code',monospace;
+      font-size: 0.8rem; color: var(--cyan); overflow-x: auto;
+      margin: 0.5rem 0 1rem;
+    }
+
+    /* ── Person cards ── */
+    .person-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 0.8rem 0 1.2rem; }
+    .person-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 1rem;
+    }
+    .person-card .pc-name { font-size: 0.9rem; font-weight: 700; color: var(--text); margin-bottom: 0.15rem; }
+    .person-card .pc-role { font-size: 0.72rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.7rem; }
+    .person-card ul { padding-left: 1.1rem; }
+    .person-card li { font-size: 0.83rem; color: var(--text2); margin-bottom: 0.25rem; }
+    .person-card li strong { color: var(--cyan); }
+
+    footer {
+      margin-top: 3rem; padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.75rem; color: var(--text3); text-align: center;
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- ── Sidebar ── -->
+  <nav>
+    <a class="back" href="index.html">← Inicio</a>
+
+    <h2>Plan del Video</h2>
+    <ul>
+      <li><a href="#resumen">Resumen</a></li>
+      <li><a href="#setup">Setup antes de grabar</a></li>
+    </ul>
+
+    <div class="section-label">Secciones</div>
+    <ul>
+      <li><a href="#s1">1 — Presentación</a></li>
+      <li><a href="#s2">2 — Arquitectura</a></li>
+      <li><a href="#s3">3 — Levantamiento</a></li>
+      <li><a href="#s4">4 — Demo Postman</a></li>
+      <li><a href="#s5">5 — Explicación técnica</a></li>
+      <li><a href="#s6">6 — Cierre</a></li>
+    </ul>
+
+    <div class="section-label">Entrega</div>
+    <ul>
+      <li><a href="#checklist">Checklist final</a></li>
+      <li><a href="#restricciones">Restricciones críticas</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── Main ── -->
+  <main>
+
+    <h1>Plan del Video</h1>
+    <p class="subtitle">Evaluación Parcial 2 — DSY1103 Desarrollo FullStack I · Sol León &amp; Catalina Aguirre</p>
+
+    <!-- ── Resumen ── -->
+    <section id="resumen">
+      <h2>Resumen</h2>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:0.75rem;margin:0.8rem 0 1.2rem">
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:0.9rem 1rem">
+          <div style="font-size:1.5rem;font-weight:700;color:var(--text)">5–7</div>
+          <div style="font-size:0.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">minutos totales</div>
+        </div>
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:0.9rem 1rem">
+          <div style="font-size:1.5rem;font-weight:700;color:var(--text)">6</div>
+          <div style="font-size:0.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">secciones obligatorias</div>
+        </div>
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:0.9rem 1rem">
+          <div style="font-size:1.5rem;font-weight:700;color:var(--yellow)">19/05</div>
+          <div style="font-size:0.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">entrega máxima</div>
+        </div>
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:0.9rem 1rem">
+          <div style="font-size:1.5rem;font-weight:700;color:var(--green)">74/74</div>
+          <div style="font-size:0.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">Newman tests ✓</div>
+        </div>
+      </div>
+
+      <table class="demo-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Sección</th>
+            <th>Duración</th>
+            <th>Tiempo acumulado</th>
+            <th>Indicadores</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="req-num">1</td>
+            <td>Presentación general</td>
+            <td>30–45 seg</td>
+            <td>0:00 → 0:40</td>
+            <td><span class="badge badge-cyan">IE1.1.1</span> <span class="badge badge-cyan">IE1.1.2</span></td>
+          </tr>
+          <tr>
+            <td class="req-num">2</td>
+            <td>Arquitectura del sistema</td>
+            <td>45–60 seg</td>
+            <td>0:40 → 1:40</td>
+            <td><span class="badge badge-cyan">IE1.3.1</span> <span class="badge badge-cyan">IE2.1.1</span> <span class="badge badge-cyan">IE2.1.2</span></td>
+          </tr>
+          <tr>
+            <td class="req-num">3</td>
+            <td>Levantamiento del proyecto</td>
+            <td>45–60 seg</td>
+            <td>1:40 → 2:40</td>
+            <td><span class="badge badge-cyan">IE2.2.1</span> <span class="badge badge-cyan">IE2.2.2</span></td>
+          </tr>
+          <tr>
+            <td class="req-num">4</td>
+            <td>Demostración funcional (Postman)</td>
+            <td>2–3 min</td>
+            <td>2:40 → 5:40</td>
+            <td><span class="badge badge-cyan">IE2.3.1</span> <span class="badge badge-cyan">IE2.3.2</span> <span class="badge badge-cyan">IE2.3.3</span> <span class="badge badge-cyan">IE3.1.1</span></td>
+          </tr>
+          <tr>
+            <td class="req-num">5</td>
+            <td>Explicación técnica (c/u)</td>
+            <td>1–2 min c/u</td>
+            <td>5:40 → 6:40</td>
+            <td><span class="badge badge-cyan">IE3.2.1</span> <span class="badge badge-cyan">IE3.2.2</span> <span class="badge badge-cyan">IE3.2.3</span></td>
+          </tr>
+          <tr>
+            <td class="req-num">6</td>
+            <td>Cierre</td>
+            <td>15–30 seg</td>
+            <td>6:40 → 7:00</td>
+            <td>—</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <hr/>
+
+    <!-- ── Setup ── -->
+    <section id="setup">
+      <h2>Setup antes de grabar</h2>
+      <p>Ejecutar estos comandos en orden antes de iniciar la grabación. El orden importa.</p>
+
+      <pre>
+# 1. Resetear bases de datos con seed data limpio
+.\load-db.ps1
+
+# 2. Levantar todos los servicios en orden correcto
+.\start-all.ps1
+
+# 3. Verificar que Eureka muestre todos los servicios en UP
+#    http://localhost:8761
+
+# 4. Abrir Postman y borrar variables: token, reservaId2, accesoId
+#    (Edit Collection → Variables → limpiar valores)
+
+# 5. Verificar Newman antes de grabar (opcional pero recomendado)
+npx newman run estacionamiento.postman_collection.json --env-var "base=http://localhost:8080"
+      </pre>
+
+      <div class="callout callout-yellow">
+        <strong>Tip de grabación</strong>
+        <p>Organiza la pantalla con Postman en el lado izquierdo y una consola de logs (uno de los servicios) en el lado derecho. En la sección 4 se ven ambos simultáneamente.</p>
+      </div>
+    </section>
+
+    <hr/>
+
+    <!-- ── Sección 1 ── -->
+    <section id="s1">
+      <div class="tl-section">
+        <div class="tl-header">
+          <div class="tl-num">1</div>
+          <div class="tl-title">Presentación General</div>
+          <div class="tl-time">0:00 → 0:40 · 30–45 seg</div>
+        </div>
+        <div class="tl-body">
+          <p>Cualquiera de las dos — o ambas se presentan.</p>
+
+          <div class="script-block">
+            <span class="speaker">Guión sugerido</span>
+            "Hola, presentamos el proyecto <strong>Estacionamiento Inteligente</strong>, desarrollado por Sol León y Catalina Aguirre para DSY1103 Desarrollo FullStack I en DUOC UC."<br/><br/>
+            "El sistema automatiza la gestión completa de un estacionamiento: desde que un cliente reserva un espacio, entra con su vehículo, hasta que se calcula y registra el cobro automáticamente. Reemplaza los controles manuales con un backend distribuido que valida disponibilidad en tiempo real y aplica tarifas diferenciadas."
+          </div>
+
+          <div class="tl-ie">Indicadores: IE1.1.1 · IE1.1.2</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Sección 2 ── -->
+    <section id="s2">
+      <div class="tl-section">
+        <div class="tl-header">
+          <div class="tl-num">2</div>
+          <div class="tl-title">Arquitectura del Sistema</div>
+          <div class="tl-time">0:40 → 1:40 · 45–60 seg</div>
+        </div>
+        <div class="tl-body">
+          <p>Abrir <code>docs/ARQUITECTURA.html</code> o mostrar el diagrama de microservicios mientras se explica.</p>
+
+          <div class="script-block">
+            <span class="speaker">Guión sugerido</span>
+            "El sistema implementa arquitectura de microservicios con Spring Boot 3.5 y Java 21. Tenemos <strong>12 servicios independientes</strong>: Eureka Server en el puerto 8761 actúa como registro de servicios, el API Gateway en 8080 es el único punto de entrada y valida los tokens JWT, y los 10 microservicios de dominio tienen cada uno su propia base de datos MySQL — no hay tablas compartidas."<br/><br/>
+            "La comunicación entre servicios usa Feign Client. Por ejemplo, cuando ms-pagos calcula un cobro, llama a ms-accesos para obtener los minutos, a ms-tarifas para el precio base, a ms-espacios para el factor de tipo espacio, y a user-service para el descuento del cliente — todo en una sola operación."
+          </div>
+
+          <ul>
+            <li>12 microservicios implementados y su responsabilidad</li>
+            <li><strong>API Gateway</strong> (puerto 8080) — punto de entrada único, valida JWT</li>
+            <li><strong>Eureka Server</strong> (puerto 8761) — service discovery</li>
+            <li>Comunicación Feign Client (sincrónica) entre servicios</li>
+            <li>10 bases de datos separadas, una por microservicio de dominio</li>
+          </ul>
+
+          <div class="tl-ie">Indicadores: IE1.3.1 · IE2.1.1 · IE2.1.2</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Sección 3 ── -->
+    <section id="s3">
+      <div class="tl-section">
+        <div class="tl-header">
+          <div class="tl-num">3</div>
+          <div class="tl-title">Levantamiento del Proyecto</div>
+          <div class="tl-time">1:40 → 2:40 · 45–60 seg</div>
+        </div>
+        <div class="tl-body">
+          <p>Mostrar pantalla con Eureka en el navegador y una consola con logs de arranque.</p>
+
+          <div class="script-block">
+            <span class="speaker">Guión sugerido</span>
+            "Aquí vemos el panel de Eureka en <code>localhost:8761</code> con todos los servicios registrados y en estado UP. Los servicios se levantan en orden: primero Eureka, luego el Gateway, y finalmente los microservicios de dominio."<br/><br/>
+            "En la consola pueden ver los logs de arranque de Spring Boot con el puerto asignado y la confirmación del registro en Eureka."
+          </div>
+
+          <ul>
+            <li>Mostrar <code>http://localhost:8761</code> — todos los servicios en <strong>UP</strong></li>
+            <li>Mencionar el orden de arranque (Eureka → Gateway → dominio)</li>
+            <li>Mostrar al menos una consola con logs de Spring Boot</li>
+            <li>Mencionar que <code>start-all.ps1</code> automatiza el levantamiento</li>
+          </ul>
+
+          <div class="tl-ie">Indicadores: IE2.2.1 · IE2.2.2</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Sección 4 ── -->
+    <section id="s4">
+      <div class="tl-section">
+        <div class="tl-header">
+          <div class="tl-num">4</div>
+          <div class="tl-title">Demostración Funcional en Postman</div>
+          <div class="tl-time">2:40 → 5:40 · ~3 min</div>
+        </div>
+        <div class="tl-body">
+
+          <h3>Parte A — Happy path (~90 seg)</h3>
+          <p>Ejecutar en orden. Mantener la consola de logs visible a la derecha para que se vean los logs SLF4J al hacer el cobro.</p>
+
+          <table class="demo-table">
+            <thead>
+              <tr><th>Request</th><th>Método + Endpoint</th><th>Qué mostrar / decir</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="req-num">#1</td>
+                <td><span class="method method-post">POST</span> <code>/api/auth/login</code></td>
+                <td>Token JWT en el body de respuesta — se guarda en la variable <code>token</code> automáticamente</td>
+              </tr>
+              <tr>
+                <td class="req-num">#44</td>
+                <td><span class="method method-post">POST</span> <code>/api/reservas</code></td>
+                <td>201 Created, el sistema valida cliente activo + vehículo + espacio disponible vía Feign</td>
+              </tr>
+              <tr>
+                <td class="req-num">#47b</td>
+                <td><span class="method method-put">PUT</span> <code>/api/reservas/{id}/confirmar</code></td>
+                <td>Estado PENDIENTE → CONFIRMADA (máquina de estados)</td>
+              </tr>
+              <tr>
+                <td class="req-num">#51</td>
+                <td><span class="method method-post">POST</span> <code>/api/accesos/entrada</code></td>
+                <td>201 — ver en logs cómo ms-accesos llama a ms-espacios para marcar el espacio ocupado</td>
+              </tr>
+              <tr>
+                <td class="req-num">#52</td>
+                <td><span class="method method-put">PUT</span> <code>/api/accesos/{id}/salida</code></td>
+                <td>200 — campo <code>minutos</code> calculado, espacio liberado, estado COMPLETADO</td>
+              </tr>
+              <tr>
+                <td class="req-num">#56</td>
+                <td><span class="method method-post">POST</span> <code>/api/cobros</code></td>
+                <td>201 — <code>montoFinal</code> calculado con BigDecimal. ms-pagos llama a 4 servicios vía Feign para obtener todos los factores de la fórmula</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="callout callout-blue">
+            <strong>Qué decir en el cobro</strong>
+            <p>Mostrar el <code>montoFinal</code> en el response y explicar: "ms-pagos consulta el precio base a ms-tarifas, el multiplicador horario, el factor de tipo de vehículo, el factor de tipo de espacio, y los descuentos del cliente y banco — todo desde microservicios independientes. El cálculo se hace con BigDecimal para precisión monetaria."</p>
+          </div>
+
+          <h3>Parte B — Casos de error (~60 seg)</h3>
+
+          <table class="demo-table">
+            <thead>
+              <tr><th>Caso</th><th>Cómo provocarlo</th><th>Respuesta esperada</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Validación fallida</strong></td>
+                <td><span class="method method-post">POST</span> <code>/api/clientes</code> — eliminar el campo <code>rut</code> del body antes de enviar</td>
+                <td><code>400</code> con <code>{"campos": {"rut": "no debe estar vacío"}}</code></td>
+              </tr>
+              <tr>
+                <td><strong>Recurso no existe</strong></td>
+                <td><span class="method method-get">GET</span> <code>/api/clientes/999</code></td>
+                <td><code>404 Not Found</code> — GlobalExceptionHandler, body estándar con <code>error</code>, <code>mensaje</code>, <code>timestamp</code></td>
+              </tr>
+              <tr>
+                <td><strong>Regla de negocio</strong></td>
+                <td><span class="method method-post">POST</span> <code>/api/cobros</code> — mismo <code>accesoId</code> por segunda vez (request #57)</td>
+                <td><code>422 Unprocessable Entity</code> — UNIQUE constraint en <code>id_acceso_ref</code>, un acceso solo puede tener un cobro</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="script-block">
+            <span class="speaker">Qué decir en los errores</span>
+            "Todos los errores pasan por GlobalExceptionHandler. El formato de respuesta es siempre el mismo en los 12 servicios: código HTTP correcto, campo <code>error</code>, campo <code>mensaje</code> legible, y <code>timestamp</code>. Los errores de validación incluyen además un mapa <code>campos</code> con el nombre del campo y por qué falló."
+          </div>
+
+          <div class="tl-ie">Indicadores: IE2.3.1 · IE2.3.2 · IE2.3.3 · IE3.1.1</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Sección 5 ── -->
+    <section id="s5">
+      <div class="tl-section">
+        <div class="tl-header">
+          <div class="tl-num">5</div>
+          <div class="tl-title">Explicación Técnica — cada integrante</div>
+          <div class="tl-time">5:40 → 6:40 · 1–2 min c/u</div>
+        </div>
+        <div class="tl-body">
+
+          <div class="callout callout-yellow">
+            <strong>Importante</strong>
+            <p>No basta decir "ayudé en backend". Debe nombrarse qué clase, qué endpoint, qué lógica y por qué se tomó esa decisión técnica. El docente puede preguntar sobre cualquier cosa que se mencione aquí en la defensa del viernes.</p>
+          </div>
+
+          <div class="person-grid">
+            <div class="person-card">
+              <div class="pc-name">Sol León</div>
+              <div class="pc-role">Servicios sugeridos a mencionar</div>
+              <ul>
+                <li><strong>auth-service</strong>: AuthController, AuthService, JwtUtil, SecurityConfig, BCrypt</li>
+                <li><strong>ms-accesos</strong>: registrarEntrada / registrarSalida, lógica de minutos, llamada Feign a EspacioClient</li>
+                <li><strong>ms-espacios</strong>: endpoint <code>PUT /disponibilidad</code>, por qué PUT en vez de PATCH</li>
+                <li><strong>api-gateway</strong>: JwtAuthFilter, rutas en YAML</li>
+              </ul>
+            </div>
+            <div class="person-card">
+              <div class="pc-name">Catalina Aguirre</div>
+              <div class="pc-role">Servicios sugeridos a mencionar</div>
+              <ul>
+                <li><strong>user-service</strong>: Cliente, TipoCliente, Suscripcion, ClienteSuscripcion</li>
+                <li>Endpoint <code>GET /clientes/{id}/suscripciones</code></li>
+                <li>Por qué cada servicio tiene su propia base de datos</li>
+                <li>Validaciones con Bean Validation en los DTOs</li>
+                <li>Relaciones JPA dentro del mismo servicio (Cliente → TipoCliente)</li>
+              </ul>
+            </div>
+          </div>
+
+          <p>Mostrar el código fuente mientras se habla — no solo decirlo, <em>mostrarlo</em> en el IDE o en el navegador.</p>
+
+          <div class="tl-ie">Indicadores: IE3.2.1 · IE3.2.2 · IE3.2.3</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Sección 6 ── -->
+    <section id="s6">
+      <div class="tl-section">
+        <div class="tl-header">
+          <div class="tl-num">6</div>
+          <div class="tl-title">Cierre</div>
+          <div class="tl-time">6:40 → 7:00 · 15–30 seg</div>
+        </div>
+        <div class="tl-body">
+          <div class="script-block">
+            <span class="speaker">Guión sugerido</span>
+            "El proyecto está completo: 12 microservicios, 74 tests Newman pasando, colección Postman idempotente y documentación técnica en el repositorio. Como mejoras futuras contemplamos un frontend SPA para visualización en tiempo real de los espacios, mensajería asíncrona con Kafka para notificaciones, y despliegue en contenedores Docker. Gracias."
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr/>
+
+    <!-- ── Checklist ── -->
+    <section id="checklist">
+      <h2>Checklist antes de subir el video</h2>
+      <p>Marcar cada ítem antes de hacer upload. Los ítems en rojo son bloqueantes para la nota.</p>
+
+      <ul class="checklist">
+        <li><input type="checkbox" id="c1"/><label for="c1">Duración entre 5 y 7 minutos</label></li>
+        <li><input type="checkbox" id="c2"/><label for="c2">Ambos nombres mencionados en la sección 1</label></li>
+        <li><input type="checkbox" id="c3"/><label for="c3">Eureka en <code>:8761</code> visible con todos los servicios en UP</label></li>
+        <li><input type="checkbox" id="c4"/><label for="c4">Token JWT visible en la respuesta del login</label></li>
+        <li><input type="checkbox" id="c5"/><label for="c5">Flujo completo: reserva → entrada → salida → cobro mostrado en Postman</label></li>
+        <li><input type="checkbox" id="c6"/><label for="c6"><code>montoFinal</code> calculado visible en el cobro</label></li>
+        <li><input type="checkbox" id="c7"/><label for="c7">Al menos un error de validación (400) con campo <code>campos</code></label></li>
+        <li><input type="checkbox" id="c8"/><label for="c8">Al menos un 404 o 422 de regla de negocio</label></li>
+        <li><input type="checkbox" id="c9"/><label for="c9">Logs de consola SLF4J visibles durante la demo</label></li>
+        <li><input type="checkbox" id="c10"/><label for="c10">Cada integrante explica su servicio mostrando el código</label></li>
+        <li class="crit"><input type="checkbox" id="c11"/><label for="c11">⚠ Video subido a GitHub (release o carpeta <code>video/</code>)</label></li>
+        <li class="crit"><input type="checkbox" id="c12"/><label for="c12">⚠ Cada integrante sube el video al AVA individualmente</label></li>
+        <li class="crit"><input type="checkbox" id="c13"/><label for="c13">⚠ Subir también el ZIP del proyecto al AVA (entrega grupal)</label></li>
+      </ul>
+    </section>
+
+    <hr/>
+
+    <!-- ── Restricciones ── -->
+    <section id="restricciones">
+      <h2>Restricciones críticas</h2>
+
+      <div class="callout callout-red">
+        <strong>Sin commits después de entregar</strong>
+        <p>Cualquier commit en GitHub detectado después de la entrega del martes 19/05 y antes de la defensa del viernes 22/05 resulta en <strong>nota 1.0 automática, grupal e individual</strong>. Una vez subido el video, no hacer ningún commit hasta después del viernes.</p>
+      </div>
+
+      <div class="callout callout-yellow">
+        <strong>Puerto de MySQL en el laboratorio</strong>
+        <p>Las máquinas del laboratorio usan MySQL en el puerto <strong>3307</strong>, no 3306. Antes de la defensa del viernes, ejecutar:</p>
+        <pre style="margin-top:0.4rem">.\set-db-port.ps1 -Port 3307</pre>
+      </div>
+
+      <div class="callout callout-blue">
+        <strong>Postman debe estar listo para la defensa</strong>
+        <p>La colección ya está importada en la nube. Para la defensa presencial del viernes: importar el archivo local <code>estacionamiento.postman_collection.json</code> en Postman sin conexión a internet.</p>
+      </div>
+    </section>
+
+    <footer>Sol León &amp; Catalina Aguirre · DSY1103 Desarrollo FullStack I · DUOC UC · Mayo 2026</footer>
+
+  </main>
+</div>
+</body>
+</html>
