@@ -13,6 +13,7 @@ import estacionamientos.ms_reservas.dto.EspacioResponseDTO;
 import estacionamientos.ms_reservas.dto.ReservaCreateDTO;
 import estacionamientos.ms_reservas.dto.ReservaResponseDTO;
 import estacionamientos.ms_reservas.dto.VehiculoResponseDTO;
+import estacionamientos.ms_reservas.exception.ConflictException;
 import estacionamientos.ms_reservas.exception.NotFoundException;
 import estacionamientos.ms_reservas.model.EstadoEnums;
 import estacionamientos.ms_reservas.model.Reserva;
@@ -120,33 +121,43 @@ public class ReservaService {
     }
 
     @Transactional
-    public ReservaResponseDTO cancelar(Long id) {
-        Reserva reserva = reservasRepository
-                .findById(id)
-                .orElseThrow(() -> new NotFoundException("Reserva no encontrada"));
-        reserva.setEstado(EstadoEnums.CANCELADA);
-        return toDTO(reservasRepository.save(reserva));
-    }
-
-    @Transactional
     public ReservaResponseDTO confirmar(Long id) {
         Reserva reserva = reservasRepository
                 .findById(id)
                 .orElseThrow(() -> new NotFoundException("Reserva no encontrada"));
-        if (reserva.getEstado() != EstadoEnums.CONFIRMADA) {
-            reserva.setEstado(EstadoEnums.CONFIRMADA);
+        if (reserva.getEstado() == EstadoEnums.CONFIRMADA || reserva.getEstado() == EstadoEnums.FINALIZADA || reserva.getEstado() == EstadoEnums.CANCELADA) {
+            throw new ConflictException("No se puede confirmar, la reserva ya ha sido confirmada, finalizada o cancelada.");
         }
+        reserva.setEstado(EstadoEnums.CONFIRMADA);
+        EspacioResponseDTO espacio = espacioClient.findById(reserva.getIdEspacio());
+        espacioClient.updateDisponibilidad(espacio.getId(), false);
+        log.info("Reserva id={} confirmada, espacio id={} marcado como no disponible", reserva.getId(), espacio.getId());
+        return toDTO(reservasRepository.save(reserva));
+    }
+    
+    @Transactional
+    public ReservaResponseDTO finalizar(Long id) {
+        Reserva reserva = reservasRepository
+        .findById(id)
+        .orElseThrow(() -> new NotFoundException("Reserva no encontrada"));
+        if (reserva.getEstado() == EstadoEnums.FINALIZADA || reserva.getEstado() == EstadoEnums.CANCELADA) {
+            throw new ConflictException("No se puede finalizar, la reserva ya ha sido finalizada o cancelada.");
+        }
+        reserva.setEstado(EstadoEnums.FINALIZADA);
+        log.info("Reserva id={} finalizada", reserva.getId());
         return toDTO(reservasRepository.save(reserva));
     }
 
     @Transactional
-    public ReservaResponseDTO finalizar(Long id) {
+    public ReservaResponseDTO cancelar(Long id) {
         Reserva reserva = reservasRepository
                 .findById(id)
                 .orElseThrow(() -> new NotFoundException("Reserva no encontrada"));
-        if (reserva.getEstado() != EstadoEnums.FINALIZADA) {
-            reserva.setEstado(EstadoEnums.FINALIZADA);
+        if (reserva.getEstado() == EstadoEnums.FINALIZADA || reserva.getEstado() == EstadoEnums.CANCELADA) {
+            throw new ConflictException("No se puede cancelar, la reserva ya ha sido finalizada o cancelada.");
         }
+        reserva.setEstado(EstadoEnums.CANCELADA);
+        log.info("Reserva id={} cancelada", reserva.getId());
         return toDTO(reservasRepository.save(reserva));
     }
 

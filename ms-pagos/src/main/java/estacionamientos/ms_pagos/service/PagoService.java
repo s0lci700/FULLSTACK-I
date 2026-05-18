@@ -22,6 +22,7 @@ import estacionamientos.ms_pagos.dto.CobroCreateDTO;
 import estacionamientos.ms_pagos.dto.CobroResponseDTO;
 import estacionamientos.ms_pagos.dto.EspacioResponseDTO;
 import estacionamientos.ms_pagos.dto.HorarioTarifaResponseDTO;
+import estacionamientos.ms_pagos.dto.SuscripcionResponseDTO;
 import estacionamientos.ms_pagos.dto.TarifaResponseDTO;
 import estacionamientos.ms_pagos.dto.VehiculoResponseDTO;
 import estacionamientos.ms_pagos.exception.BusinessException;
@@ -76,9 +77,8 @@ public class PagoService {
 
         BigDecimal descBanco = resolverDescuentoBanco(metodoPago);
         BigDecimal descCliente = resolverDescuentoCliente(cliente);
-        BigDecimal descSuscripcion = BigDecimal.ZERO; // pendiente endpoint ClienteSuscripcion
-
-        int minutos = acceso.getMinutos() != null ? acceso.getMinutos() : 0;
+        BigDecimal descSuscripcion = cliente.getSuscripcion() != null ? cliente.getSuscripcion().getDescuentoPct() : BigDecimal.ZERO;
+        Integer minutos = acceso.getMinutos() != null ? acceso.getMinutos() : 0;
         BigDecimal montoBase = calcularMontoBase(tarifa, factorVehiculo, factorEspacio, multiplicadorHorario, minutos);
         BigDecimal montoFinal = calcularMontoFinal(montoBase, descCliente, descSuscripcion, descBanco);
 
@@ -87,8 +87,16 @@ public class PagoService {
                 minutos, factorVehiculo, factorEspacio, multiplicadorHorario, montoBase, montoFinal);
 
         Cobro guardado = cobroRepository.save(
-                buildCobro(dto, tarifa, metodoPago, minutos, montoBase, descCliente, descSuscripcion, descBanco,
-                        montoFinal));
+                buildCobro(
+                    dto, 
+                    tarifa, 
+                    metodoPago, 
+                    minutos, 
+                    montoBase, 
+                    descCliente, 
+                    descSuscripcion, 
+                    descBanco,
+                    montoFinal));
         log.info("Cobro guardado id={}", guardado.getId());
         return toResponse(guardado);
     }
@@ -194,6 +202,32 @@ public class PagoService {
         BigDecimal desc = cliente.getTipoCliente().getDescuentoPct();
         log.info("Descuento tipo cliente aplicado: {}%", desc);
         return desc;
+    }
+    
+    private BigDecimal resolverDescuentoSuscripcion(Long idCliente) {
+        try {
+            ClienteResponseDTO cliente = clienteClient.getById(idCliente);
+            if (cliente == null) {
+                log.info("Cliente no encontrado para id {}, no se aplica descuento por suscripción", idCliente);
+                return BigDecimal.ZERO;
+            }
+            if (cliente.getActivo() == null || !cliente.getActivo()) {
+                log.info("Cliente inactivo para id {}, no se aplica descuento por suscripción", idCliente);
+                return BigDecimal.ZERO;
+            }
+            SuscripcionResponseDTO suscripcion = cliente.getSuscripcion();
+            if (suscripcion != null && suscripcion.getDescuentoPct() != null) {
+                BigDecimal desc = suscripcion.getDescuentoPct();
+                log.info("Descuento suscripción aplicado: {}%", desc);
+                return desc;
+            }
+            log.info("Cliente sin suscripción vigente, no se aplica descuento por suscripción");
+        } catch (FeignException.NotFound e) {
+            log.info("Cliente sin suscripción vigente, no se aplica descuento por suscripción");
+        } catch (FeignException e) {
+            log.error("Error de comunicacion con ms-clientes para obtener suscripción (status {}): {}", e.status(), e.getMessage());
+        }
+        return BigDecimal.ZERO;
     }
 
     // ── Billing formula ──────────────────────────────────────────────────────
