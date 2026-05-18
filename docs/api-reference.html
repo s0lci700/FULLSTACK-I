@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>API Reference — Estacionamiento Inteligente</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:#0f1117; --bg2:#1a1f2e; --bg3:#1e2330; --border:#2d3748;
+      --text:#e2e8f0; --text2:#94a3b8; --text3:#7b8ea6;
+      --blue:#93c5fd; --blue-bg:#1e3a5f;
+      --green:#22c55e; --green-bg:#14532d;
+      --purple:#c4b5fd; --purple-bg:#2d1b4e;
+      --yellow:#f59e0b; --yellow-bg:#3b2700;
+      --red:#f87171; --red-bg:#450a0a;
+      --cyan:#67e8f9; --cyan-bg:#083344;
+    }
+    body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--text); line-height:1.6; }
+    .layout { display:flex; min-height:100vh; }
+
+    /* ── Sidebar ── */
+    .sidebar { width:210px; flex-shrink:0; background:var(--bg2); border-right:1px solid var(--border);
+      position:sticky; top:0; height:100vh; overflow-y:auto; padding-bottom:2rem; }
+    .sb-back { padding:1rem 1rem 0.75rem; border-bottom:1px solid var(--border); }
+    .sb-back a { font-size:0.75rem; color:var(--text3); text-decoration:none; }
+    .sb-back a:hover { color:var(--blue); }
+    .sb-title { font-size:0.62rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em;
+      color:var(--text3); padding:0.9rem 1rem 0.4rem; }
+    .sidebar a.nav { display:block; padding:0.3rem 1rem; font-size:0.78rem; color:var(--text2);
+      text-decoration:none; border-left:2px solid transparent; }
+    .sidebar a.nav:hover { color:var(--blue); border-left-color:var(--blue); background:rgba(147,197,253,.05); }
+
+    /* ── Content ── */
+    .content { flex:1; max-width:870px; padding:2.5rem 2rem; }
+    .hdr { margin-bottom:2.5rem; padding-bottom:2rem; border-bottom:1px solid var(--border); }
+    .badge { display:inline-block; font-size:0.7rem; font-weight:700; letter-spacing:0.12em;
+      text-transform:uppercase; color:var(--blue); background:var(--blue-bg);
+      padding:0.25rem 0.75rem; border-radius:20px; margin-bottom:0.75rem; }
+    h1 { font-size:1.8rem; font-weight:700; color:#f8fafc; margin-bottom:0.4rem; }
+    .sub { color:var(--text2); font-size:0.88rem; }
+    code.inline { background:var(--bg2); padding:0.1rem 0.4rem; border-radius:4px; font-size:0.84em; }
+
+    /* ── Callout ── */
+    .callout { background:var(--yellow-bg); border:1px solid #78350f; border-radius:8px;
+      padding:0.85rem 1rem; margin-bottom:2rem; font-size:0.82rem; color:#fde68a; }
+    .callout strong { color:var(--yellow); }
+    .callout code { background:rgba(0,0,0,.35); padding:0.1rem 0.3rem; border-radius:3px; font-size:0.88em; }
+
+    /* ── Variables table ── */
+    .vars-wrap { margin-bottom:2.5rem; }
+    .vars-label { font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em;
+      color:var(--text3); margin-bottom:0.6rem; padding-left:0.6rem; border-left:3px solid #334155; }
+    table { width:100%; border-collapse:collapse; font-size:0.79rem; }
+    th { text-align:left; padding:0.4rem 0.75rem; background:var(--bg2); color:var(--text3);
+      font-size:0.68rem; text-transform:uppercase; letter-spacing:0.08em; border-bottom:1px solid var(--border); }
+    td { padding:0.42rem 0.75rem; border-bottom:1px solid #1a1f2a; color:var(--text2); font-family:monospace; }
+    td:first-child { color:var(--cyan); }
+    td:last-child { font-family:'Segoe UI',sans-serif; font-size:0.77rem; }
+
+    /* ── Phase ── */
+    .phase { margin-bottom:3rem; }
+    .phase-hdr { font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em;
+      color:var(--text3); margin-bottom:0.75rem; padding-left:0.6rem; border-left:3px solid #334155; }
+    .phase-hdr span { color:var(--text2); font-weight:400; font-size:0.65rem; margin-left:0.4rem; }
+
+    /* ── Request card ── */
+    .req { background:var(--bg2); border:1px solid var(--border); border-radius:8px; margin-bottom:0.5rem; }
+    .req-top { display:flex; align-items:center; gap:0.65rem; padding:0.65rem 1rem; }
+    .rn { font-size:0.63rem; color:var(--text3); width:2.2rem; text-align:right; flex-shrink:0; }
+    .m { font-size:0.63rem; font-weight:700; padding:0.18rem 0.45rem; border-radius:4px;
+      width:3.6rem; text-align:center; letter-spacing:0.04em; flex-shrink:0; }
+    .m-GET { background:var(--green-bg); color:var(--green); }
+    .m-POST { background:var(--blue-bg); color:var(--blue); }
+    .m-PUT { background:var(--yellow-bg); color:var(--yellow); }
+    .m-DELETE { background:var(--red-bg); color:var(--red); }
+    .url { font-family:monospace; font-size:0.78rem; color:#cbd5e1; flex:1; min-width:0;
+      overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .url .base { color:var(--text3); }
+    .sb { font-size:0.61rem; font-weight:700; padding:0.14rem 0.42rem; border-radius:20px; flex-shrink:0; }
+    .s200 { background:var(--green-bg); color:var(--green); }
+    .s201 { background:var(--blue-bg); color:var(--blue); }
+    .s204 { background:#1c2028; color:var(--text3); }
+    .s401 { background:var(--yellow-bg); color:var(--yellow); }
+    .s404 { background:var(--red-bg); color:var(--red); }
+    .s422 { background:var(--purple-bg); color:var(--purple); }
+    .s2xx { background:#1a2535; color:var(--text3); }
+    .req-desc { font-size:0.79rem; color:var(--text2); padding:0 1rem 0.65rem 6.5rem; }
+    .req-body { padding:0.6rem 1rem 0.7rem 6.5rem; border-top:1px solid var(--border); }
+    .bl { font-size:0.63rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--text3); margin-bottom:0.3rem; }
+    pre { font-family:monospace; font-size:0.73rem; color:#94a3b8; background:#0d1117;
+      border:1px solid #1e2535; border-radius:5px; padding:0.55rem 0.75rem; overflow-x:auto; white-space:pre; }
+
+    footer { text-align:center; padding:2rem; font-size:0.74rem; color:#334155;
+      border-top:1px solid var(--border); margin-top:2rem; }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- ── Sidebar ───────────────────────────────── -->
+  <aside class="sidebar">
+    <div class="sb-back"><a href="index.html">← Documentación</a></div>
+    <div class="sb-title">Fases · 74 requests</div>
+    <a class="nav" href="#f1">1 — Auth</a>
+    <a class="nav" href="#f2">2 — Datos de referencia</a>
+    <a class="nav" href="#f3">3 — Clientes</a>
+    <a class="nav" href="#f4">4 — Vehículos</a>
+    <a class="nav" href="#f5">5 — Espacios</a>
+    <a class="nav" href="#f6">6 — Tarifas CRUD</a>
+    <a class="nav" href="#f7">7 — Reservas</a>
+    <a class="nav" href="#f8">8 — Accesos</a>
+    <a class="nav" href="#f9">9 — Cobros</a>
+    <a class="nav" href="#f10">10 — Métodos de pago</a>
+    <a class="nav" href="#f11">11 — Seguridad</a>
+    <a class="nav" href="#f12">12 — Reportes</a>
+  </aside>
+
+  <!-- ── Content ───────────────────────────────── -->
+  <main class="content">
+
+    <div class="hdr">
+      <div class="badge">DUOC UC · FULLSTACK-I · 74 requests · 12 fases</div>
+      <h1>API Reference</h1>
+      <p class="sub">Estacionamiento Inteligente · Spring Boot 3.5 · Java 21 · Base URL: <code class="inline">http://localhost:8080</code></p>
+    </div>
+
+    <div class="callout">
+      <strong>Autenticación requerida</strong> — Todos los endpoints excepto <code>/api/auth/*</code> requieren
+      <code>Authorization: Bearer {{token}}</code>. Ejecuta el request #1 primero: el token se guarda
+      automáticamente en la variable de colección <code>token</code> mediante el script de post-respuesta.
+    </div>
+
+    <!-- ── Variables ── -->
+    <div class="vars-wrap">
+      <div class="vars-label">Variables de colección</div>
+      <table>
+        <thead><tr><th>Variable</th><th>Descripción</th><th>Configurada por</th></tr></thead>
+        <tbody>
+          <tr><td>base</td><td colspan="2">http://localhost:8080 (fija — API Gateway)</td></tr>
+          <tr><td>token</td><td>JWT Bearer token (24 h)</td><td>#1 Login admin</td></tr>
+          <tr><td>clienteId</td><td>ID del cliente creado en pruebas</td><td>#17 POST crear cliente</td></tr>
+          <tr><td>vehiculoId</td><td>ID del vehículo creado en pruebas</td><td>#26 POST crear vehículo</td></tr>
+          <tr><td>espacioId</td><td>ID del espacio creado en pruebas</td><td>#34 POST crear espacio</td></tr>
+          <tr><td>tarifaId</td><td>ID de la tarifa temporal de prueba</td><td>#36 POST crear tarifa</td></tr>
+          <tr><td>horarioId</td><td>ID del horario temporal de prueba</td><td>#39 POST crear horario</td></tr>
+          <tr><td>reservaId1</td><td>ID de la primera reserva (espacio 3)</td><td>#44 POST crear reserva</td></tr>
+          <tr><td>reservaId2</td><td>ID de la segunda reserva (espacio 4, para accesos)</td><td>#47 POST crear reserva</td></tr>
+          <tr><td>accesoId</td><td>ID del acceso registrado en pruebas</td><td>#51 POST registrar entrada</td></tr>
+          <tr><td>metodoPagoId</td><td>ID del método de pago creado en pruebas</td><td>#60 POST crear método</td></tr>
+          <tr><td>permisoId</td><td>ID del permiso TEST_EXPORT</td><td>#63 POST crear permiso</td></tr>
+          <tr><td>rolPermisoId</td><td>ID de la asignación rol-permiso</td><td>#66 POST asignar permiso</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         FASE 1 — AUTH
+    ═══════════════════════════════════════════ -->
+    <div class="phase" id="f1">
+      <div class="phase-hdr">Fase 1 — Auth <span>auth-service :8081</span></div>
+
+      <div class="req">
+        <div class="req-top">
+          <span class="rn">#1</span><span class="m m-POST">POST</span>
+          <span class="url"><span class="base">{{base}}</span>/api/auth/login</span>
+          <span class="sb s200">200</span>
+        </div>
+        <div class="req-desc">Autentica al administrador del sistema. El script de post-respuesta guarda el JWT en la variable <code class="inline">token</code> para todos los requests siguientes.</div>
+        <div class="req-body"><div class="bl">Request Body</div><pre>{"email": "admin@parking.cl", "password": "Test1234!"}</pre></div>
+      </div>
+
+      <div class="req">
+        <div class="req-top">
+          <span class="rn">#2</span><span class="m m-POST">POST</span>
+          <span class="url"><span class="base">{{base}}</span>/api/auth/login</span>
+          <span class="sb s200">200</span>
+        </div>
+        <div class="req-desc">Autentica a la clienta María González (seed). Útil para verificar acceso con rol CLIENTE.</div>
+        <div class="req-body"><div class="bl">Request Body</div><pre>{"email": "maria@gmail.com", "password": "Test1234!"}</pre></div>
+      </div>
+
+      <div class="req">
+        <div class="req-top">
+          <span class="rn">#3</span><span class="m m-POST">POST</span>
+          <span class="url"><span class="base">{{base}}</span>/api/auth/login</span>
+          <span class="sb s401">401</span>
+        </div>
+        <div class="req-desc">Verifica el manejo de credenciales incorrectas. Espera 401 Unauthorized con mensaje "Credenciales inválidas".</div>
+        <div class="req-body"><div class="bl">Request Body</div><pre>{"email": "noexiste@x.cl", "password": "wrongpassword"}</pre></div>
+      </div>
+
+      <div class="req">
+        <div class="req-top">
+          <span class="rn">#4</span><span class="m m-POST">POST</span>
+          <span class="url"><span class="base">{{base}}</span>/api/auth/register</span>
+          <span class="sb s201">201</span>
+        </div>
+        <div class="req-desc">Registra un nuevo usuario con email dinámico (timestamp en pre-request). Rol: USER. Retorna 201 sin body.</div>
+        <div class="req-body"><div class="bl">Request Body</div><pre>{"email": "{{testEmail}}", "password": "Test1234!", "nombreRol": "USER"}</pre></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         FASE 2 — DATOS DE REFERENCIA
+    ═══════════════════════════════════════════ -->
+    <div class="phase" id="f2">
+      <div class="phase-hdr">Fase 2 — Datos de referencia <span>user-service :8082 · ms-tarifas :8088 · ms-pagos :8089</span></div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#5</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/tipo-cliente</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Lista todos los tipos de cliente disponibles en el sistema (ej. REGULAR, PREMIUM, VIP).</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#6</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/tipos-vehiculo</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Lista todos los tipos de vehículo (AUTOMOVIL, CAMIONETA, MOTO, etc.). Retorna el factor multiplicador de cobro.</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#7</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/tipo-espacio</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Lista todos los tipos de espacio (ESTANDAR, DISCAPACITADO, ELECTRICO, etc.) con su factor de cobro.</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#8</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/tarifas</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Lista todas las tarifas registradas. Solo las tarifas con <code class="inline">activo=true</code> son elegibles para cobros.</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#9</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/tarifas/vigente</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Retorna la tarifa activa actualmente. Llamada internamente por ms-pagos a través de Feign al calcular cobros.</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#10</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/horarios-tarifa</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Lista todos los horarios de tarifa con multiplicadores según tipo de día (LABORAL, FIN_DE_SEMANA, FESTIVO).</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#11</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/horarios-tarifa/vigente</span><span class="sb s2xx">200/404</span></div>
+        <div class="req-desc">Retorna el horario que aplica en este momento según hora del servidor. Puede retornar 404 si no hay horario configurado para la hora actual.</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#12</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/bancos</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Lista los bancos disponibles para métodos de pago. Seed: BancoEstado (5%), Santander (3%), BCI (2%), Itaú (4%).</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#13</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/tipo-tarjetas</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Lista los tipos de tarjeta disponibles. Seed: DEBITO, CREDITO.</div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         FASE 3 — CLIENTES
+    ═══════════════════════════════════════════ -->
+    <div class="phase" id="f3">
+      <div class="phase-hdr">Fase 3 — Clientes <span>user-service :8082</span></div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#14</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/clientes</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Lista todos los clientes registrados con su tipo y suscripciones activas.</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#15</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/clientes/1</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Obtiene el detalle de María González (seed, id=1). Verifica que el cliente seed está disponible.</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#16</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/clientes/999</span><span class="sb s404">404</span></div>
+        <div class="req-desc">Verifica el manejo de cliente inexistente. Espera 404 Not Found con body de error estructurado.</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#17</span><span class="m m-POST">POST</span>
+          <span class="url"><span class="base">{{base}}</span>/api/clientes</span><span class="sb s201">201</span></div>
+        <div class="req-desc">Crea la clienta Ana Soto con email y RUT dinámicos (generados en pre-request). Guarda el id retornado en <code class="inline">clienteId</code>.</div>
+        <div class="req-body"><div class="bl">Request Body</div><pre>{
+  "rut": "{{anaRut}}",
+  "nombre": "Ana",
+  "apellido": "Soto",
+  "email": "{{anaEmail}}",
+  "telefono": "+56911111111",
+  "idTipoCliente": 1
+}</pre></div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#18</span><span class="m m-PUT">PUT</span>
+          <span class="url"><span class="base">{{base}}</span>/api/clientes/{{clienteId}}</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Actualiza el apellido compuesto y el tipo de cliente de Ana. Usa la variable <code class="inline">clienteId</code> guardada en #17.</div>
+        <div class="req-body"><div class="bl">Request Body</div><pre>{
+  "rut": "11111111-1",
+  "nombre": "Ana",
+  "apellido": "Soto Vega",
+  "email": "ana@test.cl",
+  "telefono": "+56911111111",
+  "idTipoCliente": 2
+}</pre></div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#19</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/clientes/1/suscripciones</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Lista las suscripciones activas de María González. Retorna lista vacía según seed inicial.</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#20</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/clientes/2/suscripciones</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Lista las suscripciones de Carlos Pérez. El seed incluye una suscripción PREMIUM activa con descuento.</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#21</span><span class="m m-DELETE">DELETE</span>
+          <span class="url"><span class="base">{{base}}</span>/api/clientes/{{clienteId}}</span><span class="sb s204">204</span></div>
+        <div class="req-desc">Elimina el cliente Ana creado en #17. Limpieza de datos de prueba. Espera 204 sin body.</div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         FASE 4 — VEHÍCULOS
+    ═══════════════════════════════════════════ -->
+    <div class="phase" id="f4">
+      <div class="phase-hdr">Fase 4 — Vehículos <span>ms-vehiculos :8084</span></div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#22</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/vehiculos</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Lista todos los vehículos registrados incluyendo los inactivos (soft-deleted).</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#23</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/vehiculos/cliente/1</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Lista los vehículos pertenecientes al cliente 1 (María González). Seed incluye BBBB11.</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#24</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/vehiculos/validar/BBBB11</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Valida si la patente BBBB11 está registrada. Retorna 200 con datos del vehículo. Usado por ms-accesos en registrarEntrada.</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#25</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/vehiculos/validar/ZZZZ99</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Valida que la patente ZZZZ99 no existe. Retorna 200 con indicador de ausencia (no lanza 404).</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#26</span><span class="m m-POST">POST</span>
+          <span class="url"><span class="base">{{base}}</span>/api/vehiculos</span><span class="sb s201">201</span></div>
+        <div class="req-desc">Crea un vehículo Kia Picanto con patente aleatoria (generada en pre-request). Guarda el id en <code class="inline">vehiculoId</code>.</div>
+        <div class="req-body"><div class="bl">Request Body</div><pre>{
+  "patente": "{{patentePrueba}}",
+  "marca": "Kia",
+  "modelo": "Picanto",
+  "color": "Azul",
+  "anio": 2023,
+  "idTipoVehiculo": 1,
+  "idClienteRef": 1
+}</pre></div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#27</span><span class="m m-PUT">PUT</span>
+          <span class="url"><span class="base">{{base}}</span>/api/vehiculos/{{vehiculoId}}</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Actualiza el color del vehículo creado en #26. La patente no puede cambiarse (campo inmutable en UpdateDTO).</div>
+        <div class="req-body"><div class="bl">Request Body</div><pre>{
+  "marca": "Kia",
+  "modelo": "Picanto",
+  "color": "Rojo",
+  "anio": 2023,
+  "idTipoVehiculo": 1,
+  "idClienteRef": 1
+}</pre></div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#28</span><span class="m m-DELETE">DELETE</span>
+          <span class="url"><span class="base">{{base}}</span>/api/vehiculos/{{vehiculoId}}</span><span class="sb s204">204</span></div>
+        <div class="req-desc">Soft-delete del vehículo: establece <code class="inline">activo=false</code> en lugar de eliminar el registro. Espera 204 sin body.</div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         FASE 5 — ESPACIOS
+    ═══════════════════════════════════════════ -->
+    <div class="phase" id="f5">
+      <div class="phase-hdr">Fase 5 — Espacios <span>ms-espacios :8085</span></div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#29</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/espacios</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Lista todos los espacios de estacionamiento (activos e inactivos), con su tipo y estado de disponibilidad.</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#30</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/espacios/disponibles</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Lista solo los espacios con <code class="inline">disponible=true</code> y <code class="inline">activo=true</code>. Usado al crear reservas.</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#31</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/espacios/1</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Obtiene el detalle del espacio A-01 (seed). Incluye tipo de espacio y estado actual.</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#32</span><span class="m m-PUT">PUT</span>
+          <span class="url"><span class="base">{{base}}</span>/api/espacios/1/disponibilidad?disponible=false</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Marca el espacio 1 como ocupado. Llamado internamente por ms-accesos en <code class="inline">registrarEntrada</code> via Feign.</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#33</span><span class="m m-PUT">PUT</span>
+          <span class="url"><span class="base">{{base}}</span>/api/espacios/1/disponibilidad?disponible=true</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Libera el espacio 1. Llamado internamente por ms-accesos en <code class="inline">registrarSalida</code> via Feign.</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#34</span><span class="m m-POST">POST</span>
+          <span class="url"><span class="base">{{base}}</span>/api/espacios</span><span class="sb s201">201</span></div>
+        <div class="req-desc">Crea un espacio nuevo en zona Z con número aleatorio (pre-request). Guarda el id en <code class="inline">espacioId</code>.</div>
+        <div class="req-body"><div class="bl">Request Body</div><pre>{
+  "numero": "{{espacioNumero}}",
+  "zona": "Z",
+  "piso": 1,
+  "idTipoEspacio": 1,
+  "disponible": true,
+  "activo": true
+}</pre></div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#35</span><span class="m m-DELETE">DELETE</span>
+          <span class="url"><span class="base">{{base}}</span>/api/espacios/{{espacioId}}</span><span class="sb s204">204</span></div>
+        <div class="req-desc">Elimina el espacio creado en #34. Limpieza de datos de prueba. Espera 204 sin body.</div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         FASE 6 — TARIFAS CRUD
+    ═══════════════════════════════════════════ -->
+    <div class="phase" id="f6">
+      <div class="phase-hdr">Fase 6 — Tarifas CRUD <span>ms-tarifas :8088</span></div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#36</span><span class="m m-POST">POST</span>
+          <span class="url"><span class="base">{{base}}</span>/api/tarifas</span><span class="sb s201">201</span></div>
+        <div class="req-desc">Crea una tarifa de prueba inactiva (<code class="inline">activo=false</code>) con nombre único por timestamp. Guarda id en <code class="inline">tarifaId</code>.</div>
+        <div class="req-body"><div class="bl">Request Body</div><pre>{
+  "nombre": "{{tarifaTestNombre}}",
+  "descripcion": "Tarifa temporal de prueba",
+  "precioBaseHora": 2000,
+  "activo": false
+}</pre></div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#37</span><span class="m m-PUT">PUT</span>
+          <span class="url"><span class="base">{{base}}</span>/api/tarifas/{{tarifaId}}</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Actualiza el precio base y descripción de la tarifa de prueba creada en #36.</div>
+        <div class="req-body"><div class="bl">Request Body</div><pre>{
+  "nombre": "{{tarifaTestNombre}}",
+  "descripcion": "Tarifa actualizada",
+  "precioBaseHora": 2500,
+  "activo": false
+}</pre></div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#38</span><span class="m m-DELETE">DELETE</span>
+          <span class="url"><span class="base">{{base}}</span>/api/tarifas/{{tarifaId}}</span><span class="sb s204">204</span></div>
+        <div class="req-desc">Elimina la tarifa de prueba (desactivación). Espera 204 sin body.</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#39</span><span class="m m-POST">POST</span>
+          <span class="url"><span class="base">{{base}}</span>/api/horarios-tarifa</span><span class="sb s201">201</span></div>
+        <div class="req-desc">Crea un horario LABORAL mañana (06:00–08:00) con multiplicador 0.80 (descuento). Guarda id en <code class="inline">horarioId</code>.</div>
+        <div class="req-body"><div class="bl">Request Body</div><pre>{
+  "idTarifa": 1,
+  "diaTipo": "LABORAL",
+  "horaInicio": "2000-01-01T06:00:00",
+  "horaFin": "2000-01-01T08:00:00",
+  "multiplicador": 0.80
+}</pre></div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#40</span><span class="m m-DELETE">DELETE</span>
+          <span class="url"><span class="base">{{base}}</span>/api/horarios-tarifa/{{horarioId}}</span><span class="sb s204">204</span></div>
+        <div class="req-desc">Elimina el horario creado en #39. Limpieza de datos de prueba. Espera 204 sin body.</div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         FASE 7 — RESERVAS
+    ═══════════════════════════════════════════ -->
+    <div class="phase" id="f7">
+      <div class="phase-hdr">Fase 7 — Reservas <span>ms-reservas :8086</span></div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#41</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/reservas</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Lista todas las reservas del sistema con su estado actual (PENDIENTE, CONFIRMADA, CANCELADA, FINALIZADA).</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#42</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/reservas/1</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Obtiene la reserva 1 de María González. Estado FINALIZADA según seed (flujo completo: entrada + salida + cobro).</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#43</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/reservas/cliente/2</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Lista las reservas de Carlos Pérez (id=2). El seed incluye una reserva CONFIRMADA con espacio asignado.</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#44</span><span class="m m-POST">POST</span>
+          <span class="url"><span class="base">{{base}}</span>/api/reservas</span><span class="sb s201">201</span></div>
+        <div class="req-desc">Crea una reserva para el espacio 3. Valida vía Feign que cliente, vehículo y espacio existan y estén activos. Estado inicial: PENDIENTE. Guarda id en <code class="inline">reservaId1</code>.</div>
+        <div class="req-body"><div class="bl">Request Body</div><pre>{
+  "idCliente": 1,
+  "idVehiculo": 1,
+  "idEspacio": 3,
+  "fechaInicio": "2026-05-20T10:00:00",
+  "fechaFin": "2026-05-20T12:00:00"
+}</pre></div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#45</span><span class="m m-PUT">PUT</span>
+          <span class="url"><span class="base">{{base}}</span>/api/reservas/{{reservaId1}}/confirmar</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Cambia el estado de la reserva de PENDIENTE → CONFIRMADA. La transición inversa (CONFIRMADA → PENDIENTE) no está permitida.</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#46</span><span class="m m-PUT">PUT</span>
+          <span class="url"><span class="base">{{base}}</span>/api/reservas/{{reservaId1}}/cancelar</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Cancela la reserva (CANCELADA). No notifica a ms-espacios porque la reserva no bloquea físicamente el espacio al crearse.</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#47</span><span class="m m-POST">POST</span>
+          <span class="url"><span class="base">{{base}}</span>/api/reservas</span><span class="sb s201">201</span></div>
+        <div class="req-desc">Crea una segunda reserva en el espacio 4, preparada para la Fase 8 (accesos). Guarda id en <code class="inline">reservaId2</code>.</div>
+        <div class="req-body"><div class="bl">Request Body</div><pre>{
+  "idCliente": 1,
+  "idVehiculo": 1,
+  "idEspacio": 4,
+  "fechaInicio": "2026-05-20T14:00:00",
+  "fechaFin": "2026-05-20T16:30:00"
+}</pre></div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#47b</span><span class="m m-PUT">PUT</span>
+          <span class="url"><span class="base">{{base}}</span>/api/reservas/{{reservaId2}}/confirmar</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Confirma la segunda reserva antes de registrar entrada. El acceso físico requiere que la reserva esté en estado CONFIRMADA.</div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         FASE 8 — ACCESOS
+    ═══════════════════════════════════════════ -->
+    <div class="phase" id="f8">
+      <div class="phase-hdr">Fase 8 — Accesos <span>ms-accesos :8087</span></div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#48</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/accesos/1</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Obtiene el acceso 1 (seed): vehículo BBBB11, estado COMPLETADO, 150 minutos de permanencia registrados.</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#49</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/accesos/2</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Obtiene el acceso 2 (seed): vehículo DDDD33, estado ACTIVO (vehículo aún dentro del estacionamiento).</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#50</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/accesos/reserva/1</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Busca el acceso físico asociado a la reserva 1. Útil para vincular cobros con reservas.</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#51</span><span class="m m-POST">POST</span>
+          <span class="url"><span class="base">{{base}}</span>/api/accesos/entrada</span><span class="sb s201">201</span></div>
+        <div class="req-desc">Registra la entrada del vehículo: crea Acceso con estado ACTIVO, llama a ms-espacios via Feign para marcar el espacio como no disponible. Guarda id en <code class="inline">accesoId</code>.</div>
+        <div class="req-body"><div class="bl">Request Body</div><pre>{
+  "idVehiculo": 1,
+  "idEspacio": 4,
+  "idReserva": {{reservaId2}},
+  "patenteEscaneada": "BBBB11"
+}</pre></div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#52</span><span class="m m-PUT">PUT</span>
+          <span class="url"><span class="base">{{base}}</span>/api/accesos/{{accesoId}}/salida</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Registra la salida: calcula minutos de permanencia, cambia estado a COMPLETADO, libera el espacio via Feign a ms-espacios.</div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         FASE 9 — COBROS
+    ═══════════════════════════════════════════ -->
+    <div class="phase" id="f9">
+      <div class="phase-hdr">Fase 9 — Cobros <span>ms-pagos :8089</span></div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#53</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/cobros/1</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Obtiene el cobro 1 (seed). El <code class="inline">montoFinal</code> debe ser $3.562,50 según la fórmula completa aplicada al acceso de 150 minutos de BBBB11.</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#54</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/cobros/acceso/1</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Busca el cobro asociado al acceso 1. Relación 1:1 garantizada por constraint UNIQUE en <code class="inline">id_acceso_ref</code>.</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#55</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/cobros/cliente/1</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Lista todos los cobros históricos de María González (id=1). Incluye montos base y finales.</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#56</span><span class="m m-POST">POST</span>
+          <span class="url"><span class="base">{{base}}</span>/api/cobros</span><span class="sb s201">201</span></div>
+        <div class="req-desc">Genera el cobro para el acceso creado en #51. ms-pagos llama a 7 microservicios via Feign para aplicar la fórmula completa: precio × multiplicador horario × factor vehículo × factor espacio × (minutos/60) × descuentos.</div>
+        <div class="req-body"><div class="bl">Request Body</div><pre>{
+  "idAcceso": {{accesoId}},
+  "idMetodoPago": 1,
+  "idCliente": 1
+}</pre></div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#57</span><span class="m m-POST">POST</span>
+          <span class="url"><span class="base">{{base}}</span>/api/cobros</span><span class="sb s422">422</span></div>
+        <div class="req-desc">Intenta cobrar dos veces el mismo acceso. Espera 422 Business Rule Violation — la constraint UNIQUE en <code class="inline">id_acceso_ref</code> impide cobros duplicados.</div>
+        <div class="req-body"><div class="bl">Request Body (mismo que #56)</div><pre>{
+  "idAcceso": {{accesoId}},
+  "idMetodoPago": 1,
+  "idCliente": 1
+}</pre></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         FASE 10 — MÉTODOS DE PAGO
+    ═══════════════════════════════════════════ -->
+    <div class="phase" id="f10">
+      <div class="phase-hdr">Fase 10 — Métodos de pago <span>ms-pagos :8089</span></div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#58</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/metodos-pago</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Lista todos los métodos de pago registrados con banco, tipo de tarjeta y últimos 4 dígitos.</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#59</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/metodos-pago/1</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Obtiene el método de pago 1 (seed): Visa Débito Banco Estado. Incluye el descuento bancario aplicable.</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#60</span><span class="m m-POST">POST</span>
+          <span class="url"><span class="base">{{base}}</span>/api/metodos-pago</span><span class="sb s201">201</span></div>
+        <div class="req-desc">Crea un nuevo método de pago Visa Crédito para el cliente 1. Guarda id en <code class="inline">metodoPagoId</code>.</div>
+        <div class="req-body"><div class="bl">Request Body</div><pre>{
+  "nombre": "Visa Crédito de Ana",
+  "idClienteRef": 1,
+  "idBanco": 1,
+  "idTipoTarjeta": 1,
+  "ultimos4": "1234",
+  "mesVencimiento": 6,
+  "anioVencimiento": 2028
+}</pre></div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#61</span><span class="m m-DELETE">DELETE</span>
+          <span class="url"><span class="base">{{base}}</span>/api/metodos-pago/{{metodoPagoId}}</span><span class="sb s204">204</span></div>
+        <div class="req-desc">Elimina el método de pago creado en #60. Limpieza de datos de prueba. Espera 204 sin body.</div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         FASE 11 — SEGURIDAD
+    ═══════════════════════════════════════════ -->
+    <div class="phase" id="f11">
+      <div class="phase-hdr">Fase 11 — Seguridad <span>security-service :8083</span></div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#62</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/permisos</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Lista todos los permisos del sistema (recurso + acción). Base para la gestión de autorización por roles.</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#63</span><span class="m m-POST">POST</span>
+          <span class="url"><span class="base">{{base}}</span>/api/permisos</span><span class="sb s201">201</span></div>
+        <div class="req-desc">Crea el permiso TEST_EXPORT. El pre-request elimina el permiso si ya existe (idempotencia del suite). Guarda id en <code class="inline">permisoId</code>.</div>
+        <div class="req-body"><div class="bl">Request Body</div><pre>{
+  "nombre": "TEST_EXPORT",
+  "recurso": "exportar",
+  "accion": "POST"
+}</pre></div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#64</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/permisos/{{permisoId}}</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Obtiene el permiso recién creado por id para verificar que se persistió correctamente.</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#65</span><span class="m m-PUT">PUT</span>
+          <span class="url"><span class="base">{{base}}</span>/api/permisos/{{permisoId}}</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Actualiza la acción del permiso TEST_EXPORT de POST a GET. Verifica que el update funciona correctamente.</div>
+        <div class="req-body"><div class="bl">Request Body</div><pre>{
+  "nombre": "TEST_EXPORT",
+  "recurso": "exportar",
+  "accion": "GET"
+}</pre></div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#66</span><span class="m m-POST">POST</span>
+          <span class="url"><span class="base">{{base}}</span>/api/roles-permisos</span><span class="sb s201">201</span></div>
+        <div class="req-desc">Asigna el permiso TEST_EXPORT al rol 1 (ADMIN). Guarda id en <code class="inline">rolPermisoId</code>.</div>
+        <div class="req-body"><div class="bl">Request Body</div><pre>{"idRol": 1, "idPermiso": {{permisoId}}}</pre></div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#67</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/roles-permisos/rol/1</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Lista todos los permisos asignados al rol 1 (ADMIN). Debe incluir el TEST_EXPORT asignado en #66.</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#68</span><span class="m m-DELETE">DELETE</span>
+          <span class="url"><span class="base">{{base}}</span>/api/permisos/{{permisoId}}</span><span class="sb s204">204</span></div>
+        <div class="req-desc">Elimina el permiso TEST_EXPORT. El cascade elimina automáticamente el RolPermiso asociado creado en #66. Limpieza final de la fase.</div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         FASE 12 — REPORTES
+    ═══════════════════════════════════════════ -->
+    <div class="phase" id="f12">
+      <div class="phase-hdr">Fase 12 — Reportes <span>ms-reportes :8090 · sin base de datos propia · datos via Feign</span></div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#69</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/reportes/ocupacion</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Reporte de ocupación del estacionamiento: total de espacios, espacios activos, espacios disponibles y tasa de ocupación actual (%). Datos obtenidos via Feign de ms-espacios.</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#70</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/reportes/accesos/reserva/1</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Reporte del acceso físico asociado a la reserva 1. Combina datos de ms-accesos y ms-reservas via Feign.</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#71</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/reportes/cobros/cliente/1</span><span class="sb s200">200</span></div>
+        <div class="req-desc">Reporte de cobros históricos de María González. Agrega datos de ms-pagos y ms-accesos via Feign. Read-only — no produce side-effects.</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#72</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/reportes/accesos/reserva/999</span><span class="sb s404">404</span></div>
+        <div class="req-desc">Verifica el manejo de reserva inexistente en el módulo de reportes. Espera 404 Not Found.</div>
+      </div>
+
+      <div class="req">
+        <div class="req-top"><span class="rn">#73</span><span class="m m-GET">GET</span>
+          <span class="url"><span class="base">{{base}}</span>/api/reportes/cobros/cliente/999</span><span class="sb s2xx">200/404</span></div>
+        <div class="req-desc">Verifica el manejo de cliente sin cobros registrados. Puede retornar 200 con lista vacía o 404 según implementación.</div>
+      </div>
+    </div>
+
+  </main>
+</div>
+<footer>Estacionamiento Inteligente · DUOC UC · FULLSTACK-I · Sol León &amp; Catalina Aguirre</footer>
+</body>
+</html>

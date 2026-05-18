@@ -28,7 +28,7 @@ public class AuthController {
             @Valid @RequestBody LoginRequestDTO dto) {
         log.info("POST /api/auth/login — email: {}", dto.getEmail());
         String token = authService.login(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new LoginResponseDTO(token));
+        return ResponseEntity.ok(new LoginResponseDTO(token));
     }
 
     @PostMapping("/register")
