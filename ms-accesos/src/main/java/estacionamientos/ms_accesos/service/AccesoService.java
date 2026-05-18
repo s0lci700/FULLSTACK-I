@@ -2,6 +2,7 @@ package estacionamientos.ms_accesos.service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -93,6 +94,13 @@ public AccesoResponseDTO registrarEntrada(AccesoCreateDTO dto) {
         reservaClient.finalizarReserva(acceso.getIdReserva());
 
         return toDTO(accesoRepository.save(acceso));
+    }
+
+    public List<AccesoResponseDTO> findAll() {
+        log.info("Obteniendo todos los accesos");
+        return accesoRepository.findAll().stream()
+                .map(this::toDTO)
+                .toList();
     }
 
     public AccesoResponseDTO findById(Long id) {

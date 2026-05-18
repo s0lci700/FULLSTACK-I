@@ -1,192 +1,390 @@
-# FULLSTACK-I — Proyecto Semestral
+# Estacionamiento Inteligente — FULLSTACK-I
 
-> **Docente:** Mauricio González V. | **Institución:** DUOC UC
+> **Asignatura:** DSY1103 Desarrollo FullStack I · **Docente:** Mauricio González V. · **Institución:** DUOC UC
 
-Sistema de aplicación basado en **microservicios** desarrollado con Spring Boot, que implementa múltiples operaciones CRUD, reglas de negocio, seguridad y comunicación entre servicios.
+Sistema de gestión de estacionamiento construido con arquitectura de **12 microservicios** independientes en Spring Boot 3. Cubre el ciclo completo de un estacionamiento inteligente: registro de clientes y vehículos, reserva de espacios, control de accesos (entrada/salida), tarifas dinámicas, cobros con descuentos y reportes agregados.
 
----
-
-## 📑 Documentación del Proyecto
-
-| Documento | Descripción |
-|-----------|-------------|
-| [Índice de Documentación](docs/index.html) | Navegación central de la documentación del proyecto |
-| [Índice HTML Completo](docs/html-index.html) | Catálogo de todos los archivos HTML del repositorio |
-| [Índice API](docs/api/index.html) | Acceso centralizado a la documentación de endpoints por microservicio |
-| [Arquitectura](docs/ARQUITECTURA.html) | Diseño general del sistema, microservicios y patrones usados |
-| [Base de Datos](docs/BASE_DE_DATOS.html) | Modelado entidad-relación y reglas de integridad |
-| [Roles de Usuario](docs/ROLES_USUARIO.html) | Definición de roles, permisos y privilegios |
-| [Funcionalidades](docs/FUNCIONALIDADES.html) | Módulos, operaciones CRUD y reglas de negocio |
-| [Seguridad](docs/SEGURIDAD.html) | Autenticación, autorización y tokens JWT |
-| [Herramientas](docs/HERRAMIENTAS.html) | Stack tecnológico y metodologías utilizadas |
-| [Pruebas](docs/PRUEBAS.html) | Estrategia de pruebas unitarias e integración |
-| [Despliegue](docs/DESPLIEGUE.html) | Instrucciones de instalación y despliegue |
+**Integrantes:**
+- Sol León
+- Catalina Aguirre
 
 ---
 
-## 🚀 Inicio Rápido
+## Índice
 
-### Requisitos Previos
+- [Stack tecnológico](#stack-tecnológico)
+- [Arquitectura](#arquitectura)
+- [Servicios y puertos](#servicios-y-puertos)
+- [Funcionalidades implementadas](#funcionalidades-implementadas)
+- [Inicio rápido](#inicio-rápido)
+- [Scripts de utilidad](#scripts-de-utilidad)
+- [Base de datos](#base-de-datos)
+- [Seguridad](#seguridad)
+- [Pruebas](#pruebas)
+- [Documentación](#documentación)
+
+---
+
+## Stack tecnológico
+
+| Capa | Tecnología |
+|------|-----------|
+| Framework | Spring Boot 3.5.14 |
+| Lenguaje | Java 21 |
+| Base de datos | MySQL 8 (10 DBs independientes) |
+| Service discovery | Spring Cloud Netflix Eureka |
+| API Gateway | Spring Cloud Gateway |
+| Comunicación inter-servicio | OpenFeign |
+| Seguridad | Spring Security · JWT (JJWT 0.11.5) · BCrypt |
+| Validaciones | Bean Validation (JSR 380) |
+| Logs | SLF4J + Logback |
+| Documentación API | SpringDoc OpenAPI / Swagger UI |
+| Pruebas | JUnit 5 · Mockito · H2 (tests) · Postman / Newman |
+
+---
+
+## Arquitectura
+
+```
+                    ┌──────────────────────────────┐
+                    │        API Gateway :8080       │  ← Punto de entrada único
+                    │   (Spring Cloud Gateway)       │
+                    └──────────────┬───────────────┘
+                                   │ JWT validation
+          ┌──────────────────────────────────────────────────────┐
+          │                  Eureka Server :8761                   │  ← Service Discovery
+          └──────────────────────────────────────────────────────┘
+                                   │ (todos los servicios se registran aquí)
+     ┌─────────┬──────────┬────────┬─────────┬────────┬──────────┬──────────┬──────────┐
+     │         │          │        │         │        │          │          │          │
+  :8081     :8082      :8083    :8084     :8085    :8086      :8087      :8088     :8089-90
+ auth-svc  user-svc  sec-svc  vehiculos espacios reservas  accesos   tarifas  pagos/reportes
+ db_auth  db_usuarios db_seg  db_veh   db_esp   db_res    db_acc   db_tar    db_pagos
+```
+
+**Patrones de comunicación:**
+- **Sincrónico (Feign):** ms-reservas, ms-accesos, ms-pagos y ms-reportes consultan a los demás servicios via Feign Client usando los nombres registrados en Eureka
+- **BD por servicio:** 10 bases de datos MySQL independientes — sin tablas compartidas, sin FK a nivel de BD entre servicios
+- **FK lógicas:** las referencias cross-BD se almacenan como `Long` (ej: `idClienteRef`, `idEspacioRef`)
+
+**Flujo de negocio principal:**
+```
+Login (auth-service)
+  → Crear reserva (ms-reservas) valida cliente + vehículo + espacio via Feign
+    → Registrar entrada (ms-accesos) marca espacio no disponible via Feign
+      → Registrar salida (ms-accesos) calcula minutos, libera espacio
+        → Crear cobro (ms-pagos) aplica tarifa + multiplicadores + descuentos via Feign
+          → Consultar reporte (ms-reportes) agrega datos de todos los servicios
+```
+
+---
+
+## Servicios y puertos
+
+| Servicio | Puerto | Base de datos | Descripción |
+|----------|--------|---------------|-------------|
+| `eureka-server` | 8761 | — | Service registry · dashboard en `:8761` |
+| `api-gateway` | 8080 | — | Punto de entrada único · enruta y valida JWT |
+| `auth-service` | 8081 | `db_auth` | Login · generación JWT · registro de usuarios |
+| `user-service` | 8082 | `db_usuarios` | Clientes · tipos de cliente · suscripciones |
+| `security-service` | 8083 | `db_seguridad` | Permisos · mapeo rol-permiso |
+| `ms-vehiculos` | 8084 | `db_vehiculos` | Vehículos · tipos de vehículo · soft delete |
+| `ms-espacios` | 8085 | `db_espacios` | Espacios · tipos · disponibilidad |
+| `ms-reservas` | 8086 | `db_reservas` | Reservas · ciclo de estados |
+| `ms-accesos` | 8087 | `db_accesos` | Entradas/salidas · cálculo de minutos |
+| `ms-tarifas` | 8088 | `db_tarifas` | Tarifas base · horarios con multiplicadores |
+| `ms-pagos` | 8089 | `db_pagos` | Cobros · bancos · métodos de pago · tarjetas |
+| `ms-reportes` | 8090 | — (solo Feign) | Reportes agregados · solo lectura |
+
+---
+
+## Funcionalidades implementadas
+
+### Autenticación y seguridad
+- Login con email + contraseña → JWT con 24h de vigencia
+- Registro de usuarios con rol asignado
+- BCrypt strength 12 para contraseñas
+- Validación de token en el API Gateway
+
+### Gestión de clientes y vehículos
+- CRUD completo de clientes con tipos (ESTANDAR, FRECUENTE, VIP)
+- Suscripciones de clientes con descuentos aplicables al cobro
+- CRUD de vehículos con tipo (AUTO, MOTO, CAMIONETA, BUS)
+- Validación de patente única · soft delete en ambas entidades
+
+### Gestión de espacios y tarifas
+- CRUD de espacios con disponibilidad en tiempo real
+- Toggle de disponibilidad activado automáticamente al registrar entrada/salida
+- Tarifas base por hora + horarios con multiplicadores (LABORAL / FIN_DE_SEMANA / FESTIVO)
+- Endpoint `/api/tarifas/vigente` consumido por ms-pagos via Feign
+
+### Reservas
+- Ciclo de estados: `PENDIENTE → CONFIRMADA → FINALIZADA` · `PENDIENTE → CANCELADA`
+- Validación cruzada al crear: cliente activo + vehículo activo + espacio activo y disponible
+- Cancelar no requiere desbloquear espacio (reserva no bloquea físicamente)
+
+### Accesos (entrada/salida)
+- Registro de entrada: crea acceso ACTIVO, marca espacio no disponible
+- Registro de salida: calcula minutos, cambia estado a COMPLETADO, libera espacio
+- Permite accesos sin reserva previa (campo `idReserva` nullable)
+
+### Cobros
+- Fórmula de cobro completa con 4 factores multiplicativos + 3 descuentos:
+
+```
+monto_base  = precio_base_hora × multiplicador_horario
+              × factor_tipo_vehiculo × factor_tipo_espacio × (minutos / 60)
+
+monto_final = monto_base
+              × (1 − desc_tipo_cliente / 100)
+              × (1 − desc_suscripcion  / 100)
+              × (1 − desc_banco        / 100)
+```
+
+- CRUD de bancos (con descuento por banco), tipos de tarjeta, métodos de pago
+- `BigDecimal` con `RoundingMode.HALF_UP` para precisión financiera
+- Relación 1:1 entre acceso y cobro (constraint UNIQUE en `id_acceso_ref`)
+
+### Reportes
+- Ocupación: espacios disponibles vs. total
+- Accesos por reserva
+- Cobros por cliente
+
+---
+
+## Inicio rápido
+
+### Requisitos previos
 
 - Java 21+
-- Maven 3.8+
-- MySQL 8+ (o Docker con `docker-compose`)
-- Docker & Docker Compose *(opcional pero recomendado)*
+- MySQL 8 en `localhost:3307` (XAMPP recomendado) o `localhost:3306`
+- Maven 3.8+ — o usar el wrapper `.\mvnw.cmd` incluido en cada servicio
 
-### Clonar el Repositorio
+### 1. Clonar el repositorio
 
 ```bash
 git clone https://github.com/s0lci700/FULLSTACK-I.git
 cd FULLSTACK-I
 ```
 
-### Levantar con Docker Compose
+### 2. Crear bases de datos y cargar datos de prueba
 
-```bash
-docker-compose up --build
-```
-
-### Levantar en Local (sin Docker)
-
-1. Crear las bases de datos indicadas en [Base de Datos](docs/BASE_DE_DATOS.html).
-2. Configurar `application.properties` de cada microservicio (ver tabla de puertos abajo).
-3. Ejecutar cada servicio respetando el orden de arranque:
-
-```bash
-cd <nombre-servicio> && mvn spring-boot:run
-```
-
-### Orden de Arranque
-
-Los servicios deben iniciarse en este orden — cada capa depende de la anterior:
-
-1. `eureka-server` — registro de servicios (debe estar listo antes que cualquier otro)
-2. `api-gateway` — punto de entrada único
-3. Servicios de dominio en cualquier orden: `auth-service`, `user-service`, `ms-vehiculos`, `ms-espacios`, `ms-tarifas`, `security-service`
-4. Servicios de orquestación (dependen de los anteriores): `ms-reservas`, `ms-accesos`, `ms-pagos`
-5. `ms-reportes` — último (consulta todos los demás vía Feign)
-
-### Puertos y Bases de Datos
-
-| Servicio | Puerto | Base de datos |
-|----------|--------|---------------|
-| `eureka-server` | 8761 | — |
-| `api-gateway` | 8080 | — |
-| `auth-service` | 8081 | `db_auth` |
-| `user-service` | 8082 | `db_usuarios` |
-| `security-service` | 8083 | `db_seguridad` |
-| `ms-vehiculos` | 8084 | `db_vehiculos` |
-| `ms-espacios` | 8085 | `db_espacios` |
-| `ms-tarifas` | 8088 | `db_tarifas` |
-| `ms-reservas` | 8086 | `db_reservas` |
-| `ms-accesos` | 8087 | `db_accesos` |
-| `ms-pagos` | 8089 | `db_pagos` |
-| `ms-reportes` | 8090 | — |
-
-> Todos los servicios se registran automáticamente en Eureka. El acceso externo va siempre a través del API Gateway en `http://localhost:8080`.
-
----
-
-## 🛠️ Scripts de Utilidad
-
-### `start-all.ps1` — Arrancar todos los servicios
-
-Lanza los 12 microservicios en el orden correcto desde una sola terminal.
-Cada servicio abre en su propia ventana de PowerShell y el script espera que Eureka y el Gateway estén listos antes de continuar.
-
-> **Requiere PowerShell.** Ejecutar desde la raíz del repositorio.
-
-| Comando | Efecto |
-|---------|--------|
-| `.\start-all.ps1` | Arranca los 12 servicios en orden |
-| `.\start-all.ps1 -Services eureka-server,api-gateway,ms-accesos` | Arranca solo los servicios indicados |
-| `.\start-all.ps1 -NoPause` | No espera confirmación al finalizar (útil en pipelines) |
-
-**Maven se detecta automáticamente** en este orden de prioridad:
-1. `.\apache-maven-3.9.15\bin\mvn.cmd` — instalación local del repositorio (laboratorio sin internet)
-2. `mvn` del sistema — si Maven está instalado y en el `PATH`
-3. `.\mvnw` — wrapper del proyecto (requiere internet la primera vez)
-
-**Para detener todos los servicios:**
 ```powershell
-Stop-Process -Name java -Force
-```
+# Opción A — script automático (requiere mysql en el PATH)
+.\load-db.ps1                    # MySQL en localhost:3306 sin contraseña
+.\load-db.ps1 -Port 3307         # MySQL en localhost:3307 (Docker/XAMPP alternativo)
+.\load-db.ps1 -Password mipass   # Con contraseña de root
 
----
-
-### `load-db.ps1` — Cargar esquemas y datos de prueba
-
-Crea todas las bases de datos y carga las tablas y datos de prueba en MySQL desde un único comando.
-Equivale a importar los 9 scripts `db/01`–`db/09` en orden, pero sin salir de la terminal.
-
-> **Requiere PowerShell** y `mysql` en el `PATH` (agregar `C:\xampp\mysql\bin`). Ejecutar desde la raíz del repositorio.
-
-| Comando | Efecto |
-|---------|--------|
-| `.\load-db.ps1` | Carga todo en `localhost:3306` sin contraseña (XAMPP por defecto) |
-| `.\load-db.ps1 -Password mipass` | Igual, con contraseña de root |
-| `.\load-db.ps1 -Port 3307` | Apunta a Docker MySQL en puerto 3307 |
-
-También es posible importar `db/00_run_all.sql` directamente desde **phpMyAdmin** (pestaña Importar) o desde la terminal con:
-```powershell
+# Opción B — desde phpMyAdmin o mysql CLI
 Get-Content db\00_run_all.sql | mysql -u root
 ```
 
----
+### 3. Ajustar el puerto de MySQL (si es necesario)
 
-### `set-db-port.ps1` — Puerto de base de datos
-
-Actualiza el puerto MySQL en **todos** los `application.properties` del proyecto desde un único lugar.
-Útil cuando se cambia entre una instalación local de MySQL en el puerto 3306 y Docker en 3307.
-
-> **Requiere PowerShell.** Ejecutar desde la raíz del repositorio.
-
-| Comando | Efecto |
-|---------|--------|
-| `.\set-db-port.ps1` | Establece el puerto **3307** en todos los servicios (valor por defecto) |
-| `.\set-db-port.ps1 -Port 3306` | Cambia todos los servicios al puerto **3306** |
-| `.\set-db-port.ps1 -DryRun` | **Vista previa** — muestra qué cambiaría sin escribir ningún archivo |
-| `.\set-db-port.ps1 -Port 3306 -DryRun` | Vista previa de un cambio a 3306 |
-
-Los servicios sin base de datos propia (Eureka, API Gateway, ms-reportes) y los scaffolds sin `datasource.url` se omiten automáticamente.
-
----
-
-## 🏗️ Arquitectura General
-
-```
-┌─────────────┐
-│  API Gateway │  ← Punto de entrada único
-└──────┬──────┘
-       │
-  ┌────┴─────────────────────┐
-  │                          │
-  ▼                          ▼
-[Servicio A]           [Servicio B]   ...
- (BD propia)            (BD propia)
+```powershell
+.\set-db-port.ps1             # Establece 3307 en todos los application.properties
+.\set-db-port.ps1 -Port 3306  # O cambia a 3306
+.\set-db-port.ps1 -DryRun     # Ver qué cambiaría sin escribir
 ```
 
-> Cada microservicio tiene su **propia base de datos**. La comunicación sincrónica se realiza mediante **Feign Client** y la asincrónica mediante **Apache Kafka**.
+### 4. Arrancar todos los servicios
+
+```powershell
+# Opción A — script automático (abre cada servicio en su propia ventana)
+.\start-all.ps1
+
+# Opción B — arrancar individualmente respetando el orden
+cd eureka-server     && .\mvnw.cmd spring-boot:run  # 1° Eureka
+cd api-gateway       && .\mvnw.cmd spring-boot:run  # 2° Gateway
+cd auth-service      && .\mvnw.cmd spring-boot:run  # 3° Auth
+# ... resto en cualquier orden
+```
+
+**Orden de arranque obligatorio:**
+
+| Fase | Servicios |
+|------|-----------|
+| 1 | `eureka-server` — debe estar listo antes que cualquier otro |
+| 2 | `api-gateway` — punto de entrada |
+| 3 | `auth-service`, `user-service`, `security-service`, `ms-vehiculos`, `ms-espacios`, `ms-tarifas` |
+| 4 | `ms-reservas`, `ms-accesos` — dependen de fase 3 |
+| 5 | `ms-pagos` — depende de ms-accesos, ms-tarifas, user-service |
+| 6 | `ms-reportes` — último, consume todos los demás |
+
+### 5. Verificar que todo está levantado
+
+- **Eureka dashboard:** http://localhost:8761 — los 12 servicios deben aparecer registrados
+- **API Gateway:** http://localhost:8080
+- **Detener todos:** `Stop-Process -Name java -Force`
 
 ---
 
-## 🔐 Seguridad
+## Scripts de utilidad
 
-- Contraseñas cifradas con **BCrypt**
-- Autenticación con **JWT (JJWT)**
-- Control de acceso basado en roles (**RBAC**)
-- Validación de tokens en el API Gateway
+### `start-all.ps1` — Arrancar todos los servicios
+
+Lanza los 12 microservicios en orden correcto, cada uno en su propia ventana de PowerShell. Espera activamente a que Eureka y el Gateway estén listos antes de continuar.
+
+```powershell
+.\start-all.ps1                                                    # Arrancar todo
+.\start-all.ps1 -Services eureka-server,api-gateway,ms-pagos       # Solo algunos servicios
+.\start-all.ps1 -NoPause                                           # Sin confirmación final
+```
+
+**Detección de Maven** (en orden de prioridad):
+1. `.\apache-maven-3.9.15\bin\mvn.cmd` — instalación local del repo (sin internet)
+2. `mvn` del sistema — si Maven está instalado y en el PATH
+3. `.\mvnw` — Maven wrapper (requiere internet la primera vez)
+
+### `load-db.ps1` — Cargar esquemas y datos de prueba
+
+Crea las 10 bases de datos y carga tablas + datos seed desde un único comando.
+
+```powershell
+.\load-db.ps1                  # localhost:3306 sin contraseña
+.\load-db.ps1 -Password pass   # Con contraseña
+.\load-db.ps1 -Port 3307       # Puerto alternativo
+```
+
+### `set-db-port.ps1` — Cambiar puerto de MySQL en toda la aplicación
+
+Actualiza `spring.datasource.url` en todos los `application.properties` del proyecto.
+
+```powershell
+.\set-db-port.ps1              # Establece 3307 en todo
+.\set-db-port.ps1 -Port 3306   # Cambia a 3306
+.\set-db-port.ps1 -DryRun      # Vista previa sin escribir cambios
+```
 
 ---
 
-## 📦 Control de Versiones
+## Base de datos
 
-- Repositorio en **GitHub** (obligatorio)
-- Trabajo con **ramas de desarrollo** (`feature/`, `fix/`, `release/`)
-- **Commits frecuentes** para evidenciar avance progresivo
+10 bases de datos MySQL independientes. Sin FK a nivel de BD entre servicios — las referencias cross-BD son lógicas (campos `Long`).
+
+| BD | Servicio | Tablas principales |
+|----|----------|--------------------|
+| `db_auth` | auth-service | `rol`, `user_credential` |
+| `db_seguridad` | security-service | `permiso`, `rol_permiso` |
+| `db_usuarios` | user-service | `tipo_cliente`, `cliente`, `suscripcion`, `cliente_suscripcion` |
+| `db_vehiculos` | ms-vehiculos | `tipo_vehiculo`, `vehiculo` |
+| `db_espacios` | ms-espacios | `tipo_espacio`, `espacio` |
+| `db_tarifas` | ms-tarifas | `tarifa`, `horario_tarifa` |
+| `db_reservas` | ms-reservas | `reserva` |
+| `db_accesos` | ms-accesos | `acceso` |
+| `db_pagos` | ms-pagos | `banco`, `tipo_tarjeta`, `metodo_pago`, `cobro` |
+
+Los scripts SQL están en `db/` — el archivo maestro es `db/00_run_all.sql`.
+
+**Datos de prueba incluidos:**
+- 2 clientes (María González, Carlos Pérez) — contraseña: `Test1234!`
+- 4 tipos de vehículo, 4 tipos de espacio
+- 2 tarifas, 6 horarios con multiplicadores
+- 4 bancos con descuentos (Banco Estado 5%, BCI 3%, BCH 2%, Santander 0%)
+- 4 tipos de tarjeta
 
 ---
 
-## 📄 Licencia
+## Seguridad
 
-Proyecto académico — DUOC UC · FULLSTACK-I
+- **JWT** emitido exclusivamente por `auth-service`
+- **BCrypt strength 12** para contraseñas
+- **JJWT 0.11.5** (`jjwt-api`, `jjwt-impl`, `jjwt-jackson`)
+- **Sesiones stateless** (`SessionCreationPolicy.STATELESS`)
+- **Rutas públicas:** `/api/auth/**`, `/swagger-ui/**`, `/v3/api-docs/**`
+- `jwt.secret` mínimo 256-bit Base64 — configurable via variable de entorno
+
+---
+
+## Pruebas
+
+### Newman (Postman CLI) — Suite completa
+
+```powershell
+newman run estacionamientos.postman_collection.json --env-var "base=http://localhost:8080"
+```
+
+- **74 requests** organizados en 12 fases por servicio
+- Suite **idempotente** — safe to re-run, incluye cleanup scripts
+- Captura el token de auth en fase 1 y lo reutiliza en todas las fases siguientes
+- Resultado esperado: 74/74 passed
+
+### Pruebas unitarias por servicio
+
+```powershell
+cd <nombre-servicio>
+.\mvnw.cmd test                           # Todos los tests
+.\mvnw.cmd test -Dtest=NombreServiceTest  # Test específico
+.\mvnw.cmd verify                         # Con reporte JaCoCo en target/site/jacoco/
+```
+
+Cada servicio tiene `src/test/resources/application-test.properties` con H2 en memoria y Eureka deshabilitado.
+
+### Swagger UI
+
+Disponible directamente en cada servicio (no por el gateway):
+
+| Servicio | Swagger UI |
+|----------|-----------|
+| auth-service | http://localhost:8081/swagger-ui/index.html |
+| user-service | http://localhost:8082/swagger-ui/index.html |
+| security-service | http://localhost:8083/swagger-ui/index.html |
+| ms-vehiculos | http://localhost:8084/swagger-ui/index.html |
+| ms-espacios | http://localhost:8085/swagger-ui/index.html |
+| ms-reservas | http://localhost:8086/swagger-ui/index.html |
+| ms-accesos | http://localhost:8087/swagger-ui/index.html |
+| ms-tarifas | http://localhost:8088/swagger-ui/index.html |
+| ms-pagos | http://localhost:8089/swagger-ui/index.html |
+| ms-reportes | http://localhost:8090/swagger-ui/index.html |
+
+---
+
+## Documentación
+
+Toda la documentación técnica está en `docs/`. Acceso principal:
+
+| Documento | Enlace |
+|-----------|--------|
+| Índice principal | [docs/index.html](docs/index.html) |
+| Estado de implementación | [docs/estado.html](docs/estado.html) |
+| Evaluación Parcial 2 | [docs/evaluacion-parcial2.html](docs/evaluacion-parcial2.html) |
+| API por servicio | [docs/api/index.html](docs/api/index.html) |
+| Arquitectura | [docs/ARQUITECTURA.html](docs/ARQUITECTURA.html) |
+| Base de datos | [docs/BASE_DE_DATOS.html](docs/BASE_DE_DATOS.html) |
+| Seguridad | [docs/SEGURIDAD.html](docs/SEGURIDAD.html) |
+| Pruebas Postman | [docs/postman-tests.html](docs/postman-tests.html) |
+| Roles y permisos | [docs/ROLES_USUARIO.html](docs/ROLES_USUARIO.html) |
+| Despliegue | [docs/DESPLIEGUE.html](docs/DESPLIEGUE.html) |
+
+---
+
+## Estructura del repositorio
+
+```
+FULLSTACK-I/
+├── api-gateway/              # Spring Cloud Gateway (:8080)
+├── eureka-server/            # Service registry (:8761)
+├── auth-service/             # JWT + BCrypt (:8081)
+├── user-service/             # Clientes + suscripciones (:8082)
+├── security-service/         # Permisos + roles (:8083)
+├── ms-vehiculos/             # Vehículos (:8084)
+├── ms-espacios/              # Espacios de estacionamiento (:8085)
+├── ms-reservas/              # Reservas (:8086)
+├── ms-accesos/               # Entradas/salidas (:8087)
+├── ms-tarifas/               # Tarifas y horarios (:8088)
+├── ms-pagos/                 # Cobros y pagos (:8089)
+├── ms-reportes/              # Reportes agregados (:8090)
+├── db/                       # Scripts SQL (00_run_all.sql + 01–09)
+├── docs/                     # Documentación HTML y Markdown
+├── CONTENIDO_CLASES/         # Material de clases y evaluaciones
+├── apache-maven-3.9.15/      # Maven local (lab sin internet)
+├── start-all.ps1             # Arrancar todos los servicios
+├── load-db.ps1               # Cargar esquemas y datos de prueba
+├── set-db-port.ps1           # Cambiar puerto MySQL en toda la app
+├── estacionamientos.postman_collection.json   # Colección Postman (74 requests)
+└── README.md
+```
+
+---
+
+*Proyecto académico — DUOC UC · DSY1103 Desarrollo FullStack I · 2025*

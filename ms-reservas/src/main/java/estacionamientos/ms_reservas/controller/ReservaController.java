@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import estacionamientos.ms_reservas.dto.ReservaCreateDTO;
 import estacionamientos.ms_reservas.dto.ReservaResponseDTO;
+import estacionamientos.ms_reservas.model.EstadoEnums;
 import estacionamientos.ms_reservas.service.ReservaService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +44,12 @@ public class ReservaController {
     public ResponseEntity<List<ReservaResponseDTO>> findByIdCliente(@PathVariable Long id) {
         log.info("GET /api/reservas/cliente/{}", id);
         return ResponseEntity.ok(reservasService.findByIdCliente(id));
+    }
+
+    @GetMapping("/estado/{estado}")
+    public ResponseEntity<List<ReservaResponseDTO>> findByEstado(@PathVariable EstadoEnums estado) {
+        log.info("GET /api/reservas/estado/{}", estado);
+        return ResponseEntity.ok(reservasService.findByEstado(estado));
     }
 
     @PostMapping

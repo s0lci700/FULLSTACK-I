@@ -47,6 +47,12 @@ public class EspacioController {
         log.info("GET /api/espacios/{}", id);
         return ResponseEntity.ok(espaciosService.findById(id));
     }
+    // Retorna espacios que pertenecen a una zona específica
+    @GetMapping("/zona/{zona}")
+    public ResponseEntity<List<EspacioResponseDTO>> getByZona(@PathVariable String zona) {
+        log.info("GET /api/espacios/zona/{}", zona);
+        return ResponseEntity.ok(espaciosService.findByZona(zona));
+    }
     // Retorna solo los espacios que tienen disponible=true
     // Lo usa ms-reservas para saber dónde puede hacer una reserva
     @GetMapping("/disponibles")

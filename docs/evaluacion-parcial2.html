@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Evaluación Parcial 2 — Estacionamiento Inteligente</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0f1117;
+      --bg2:       #1a1f2e;
+      --bg3:       #1e2330;
+      --border:    #2d3748;
+      --text:      #e2e8f0;
+      --text2:     #94a3b8;
+      --text3:     #7b8ea6;
+      --green:     #22c55e;
+      --green-bg:  #14532d;
+      --blue:      #93c5fd;
+      --blue-bg:   #1e3a5f;
+      --yellow:    #f59e0b;
+      --yellow-bg: #3b2700;
+      --orange:    #fb923c;
+      --orange-bg: #431407;
+      --purple:    #c4b5fd;
+      --purple-bg: #2d1b4e;
+      --red:       #ef4444;
+      --red-bg:    #450a0a;
+      --cyan:      #67e8f9;
+      --cyan-bg:   #164e63;
+      --sidebar-w: 270px;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .layout { display: flex; min-height: 100vh; }
+
+    /* ── Sidebar ── */
+    nav {
+      width: var(--sidebar-w);
+      min-width: var(--sidebar-w);
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      padding: 1.5rem 1rem;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    nav .back {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.75rem; color: var(--text3);
+      text-decoration: none; margin-bottom: 1.5rem;
+      padding: 0.3rem 0.6rem; border-radius: 4px;
+      transition: color 0.12s;
+    }
+    nav .back:hover { color: var(--text2); }
+
+    nav h2 {
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-bottom: 0.8rem;
+    }
+
+    .section-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text3);
+      margin: 1.1rem 0 0.3rem 0.6rem;
+    }
+
+    nav ul { list-style: none; }
+    nav ul li { margin-bottom: 0.1rem; }
+    nav ul li a {
+      display: block;
+      padding: 0.28rem 0.6rem;
+      border-radius: 4px;
+      color: var(--text2);
+      text-decoration: none;
+      font-size: 0.8rem;
+      transition: background 0.12s, color 0.12s;
+    }
+    nav ul li a:hover { background: var(--bg3); color: var(--text); }
+    nav ul li a.active { background: var(--blue-bg); color: var(--blue); }
+
+    /* ── Main ── */
+    main { flex: 1; padding: 2rem 2.5rem; max-width: 960px; }
+
+    h1 { font-size: 1.6rem; color: var(--text); margin-bottom: 0.3rem; }
+    h2 { font-size: 1.05rem; color: var(--blue); margin: 2.5rem 0 0.8rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--border); }
+    h3 { font-size: 0.9rem; color: var(--purple); margin: 1.4rem 0 0.5rem; }
+    p  { color: var(--text2); margin-bottom: 0.7rem; font-size: 0.88rem; }
+
+    .subtitle { color: var(--text3); font-size: 0.82rem; margin-bottom: 1.5rem; }
+    .divider  { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+    /* ── Callouts ── */
+    .callout {
+      border-radius: 6px; padding: 0.75rem 1rem;
+      margin: 0.8rem 0; font-size: 0.84rem; border-left: 3px solid;
+    }
+    .callout strong { display: block; margin-bottom: 0.25rem; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; }
+    .callout p { color: inherit; font-size: 0.83rem; margin-bottom: 0; }
+    .callout ul { margin: 0.35rem 0 0 1rem; }
+    .callout ul li { font-size: 0.82rem; margin-bottom: 0.15rem; }
+    .callout-red    { background: var(--red-bg);    border-color: var(--red);    color: var(--red);    }
+    .callout-yellow { background: var(--yellow-bg); border-color: var(--yellow); color: var(--yellow); }
+    .callout-green  { background: var(--green-bg);  border-color: var(--green);  color: var(--green);  }
+    .callout-blue   { background: var(--blue-bg);   border-color: var(--blue);   color: var(--blue);   }
+    .callout-purple { background: var(--purple-bg); border-color: var(--purple); color: var(--purple); }
+
+    /* ── Badges ── */
+    .badge {
+      display: inline-block; font-size: 0.65rem; font-weight: 700;
+      padding: 0.12rem 0.55rem; border-radius: 9999px;
+      font-family: 'Cascadia Code', 'Fira Code', monospace; vertical-align: middle;
+    }
+    .badge-green  { background: var(--green-bg);  color: var(--green);  }
+    .badge-red    { background: var(--red-bg);    color: var(--red);    }
+    .badge-yellow { background: var(--yellow-bg); color: var(--yellow); }
+    .badge-blue   { background: var(--blue-bg);   color: var(--blue);   }
+    .badge-purple { background: var(--purple-bg); color: var(--purple); }
+    .badge-orange { background: var(--orange-bg); color: var(--orange); }
+
+    /* ── Date cards ── */
+    .date-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.75rem;
+      margin: 1rem 0 1.5rem;
+    }
+    .date-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    .date-card.urgent { border-color: var(--red); }
+    .date-card.soon   { border-color: var(--yellow); }
+    .date-card.ok     { border-color: var(--green); }
+    .date-card .dc-label { font-size: 0.68rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.3rem; }
+    .date-card .dc-date  { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 0.2rem; }
+    .date-card .dc-desc  { font-size: 0.78rem; color: var(--text2); }
+    .date-card.urgent .dc-date { color: var(--red); }
+    .date-card.soon   .dc-date { color: var(--yellow); }
+    .date-card.ok     .dc-date { color: var(--green); }
+
+    /* ── Stat row ── */
+    .stat-row {
+      display: flex; gap: 0.75rem; flex-wrap: wrap; margin: 1rem 0 1.5rem;
+    }
+    .stat {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 0.9rem 1.2rem;
+      display: flex; flex-direction: column; gap: 0.15rem;
+      min-width: 120px;
+    }
+    .stat .s-val  { font-size: 1.6rem; font-weight: 700; color: var(--text); }
+    .stat .s-label{ font-size: 0.72rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; }
+
+    /* ── Tables ── */
+    .rubric-table {
+      width: 100%; border-collapse: collapse;
+      font-size: 0.8rem; margin: 0.5rem 0 1.5rem;
+    }
+    .rubric-table th {
+      background: var(--bg3); color: var(--text3);
+      font-size: 0.67rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      padding: 0.45rem 0.75rem; text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .rubric-table td {
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text2); vertical-align: top;
+    }
+    .rubric-table tr:last-child td { border-bottom: none; }
+    .rubric-table tr:hover td { background: var(--bg3); }
+    .rubric-table .ie   { font-family: 'Cascadia Code','Fira Code',monospace; font-size: 0.75rem; color: var(--cyan); white-space: nowrap; }
+    .rubric-table .pct  { font-weight: 700; color: var(--text); text-align: right; white-space: nowrap; }
+    .rubric-table .status-ok  { color: var(--green); font-size: 0.8rem; }
+    .rubric-table .status-warn{ color: var(--yellow); font-size: 0.8rem; }
+    .rubric-table .status-na  { color: var(--text3);  font-size: 0.8rem; }
+
+    /* ── Checklist ── */
+    .checklist { list-style: none; margin: 0.5rem 0 1.2rem; }
+    .checklist li {
+      display: flex; align-items: flex-start; gap: 0.6rem;
+      padding: 0.5rem 0.75rem; border-radius: 5px;
+      border: 1px solid var(--border); margin-bottom: 0.4rem;
+      background: var(--bg2); font-size: 0.85rem; color: var(--text2);
+    }
+    .checklist li .ck-icon { font-size: 1rem; flex-shrink: 0; margin-top: 0.05rem; }
+    .checklist li .ck-text { display: flex; flex-direction: column; gap: 0.1rem; }
+    .checklist li .ck-title { color: var(--text); font-size: 0.85rem; font-weight: 500; }
+    .checklist li .ck-sub   { color: var(--text3); font-size: 0.76rem; }
+    .checklist li.done  { border-color: var(--green-bg);  }
+    .checklist li.warn  { border-color: var(--yellow-bg); }
+    .checklist li.crit  { border-color: var(--red-bg);    }
+
+    /* ── Video timeline ── */
+    .timeline { margin: 0.5rem 0 1.5rem; }
+    .tl-item {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      gap: 0 1rem;
+      margin-bottom: 0;
+      position: relative;
+    }
+    .tl-item:not(:last-child) .tl-content { border-bottom: 1px solid var(--border); }
+    .tl-time {
+      display: flex; flex-direction: column; align-items: flex-end;
+      padding: 0.75rem 0;
+      gap: 0.15rem;
+    }
+    .tl-time .tt-num { font-size: 0.78rem; color: var(--text); font-weight: 600; }
+    .tl-time .tt-dur { font-size: 0.68rem; color: var(--text3); }
+    .tl-content { padding: 0.75rem 0; }
+    .tl-content .tc-title { font-size: 0.88rem; color: var(--text); font-weight: 600; margin-bottom: 0.3rem; }
+    .tl-content ul { margin: 0 0 0 1rem; }
+    .tl-content ul li { font-size: 0.8rem; color: var(--text2); margin-bottom: 0.1rem; }
+    .tl-content .tc-evidenciar {
+      margin-top: 0.4rem;
+      background: var(--bg3);
+      border-left: 2px solid var(--purple);
+      padding: 0.4rem 0.6rem;
+      border-radius: 0 4px 4px 0;
+      font-size: 0.77rem; color: var(--purple);
+    }
+    .tl-content .tc-evidenciar strong { color: var(--purple); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.2rem; }
+
+    /* ── Defense tips ── */
+    .tip-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 0.75rem;
+      margin: 0.75rem 0 1.5rem;
+    }
+    .tip-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.9rem 1rem;
+    }
+    .tip-card .tc-ie    { font-size: 0.68rem; font-family: 'Cascadia Code','Fira Code',monospace; color: var(--cyan); margin-bottom: 0.3rem; }
+    .tip-card .tc-pct   { float: right; font-size: 0.9rem; font-weight: 700; }
+    .tip-card .tc-title { font-size: 0.85rem; font-weight: 600; color: var(--text); margin-bottom: 0.4rem; }
+    .tip-card .tc-desc  { font-size: 0.79rem; color: var(--text2); margin-bottom: 0.5rem; }
+    .tip-card .tc-practice {
+      background: var(--bg3);
+      border-radius: 4px;
+      padding: 0.4rem 0.6rem;
+      font-size: 0.76rem; color: var(--text3);
+      border-left: 2px solid var(--border);
+    }
+    .tip-card .tc-practice strong { color: var(--yellow); display: block; font-size: 0.68rem; text-transform: uppercase; margin-bottom: 0.15rem; }
+    .tip-card.high { border-color: var(--orange); }
+    .tip-card.high .tc-pct { color: var(--orange); }
+    .tip-card.med  { border-color: var(--yellow-bg); }
+    .tip-card.med  .tc-pct { color: var(--yellow); }
+
+    /* ── Code snippet ── */
+    .code-block {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      overflow: hidden;
+      margin: 0.5rem 0;
+    }
+    .code-label {
+      background: var(--bg3);
+      padding: 0.2rem 0.6rem;
+      font-size: 0.63rem; color: var(--text3);
+      text-transform: uppercase; letter-spacing: 0.06em;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .code-block pre {
+      padding: 0.6rem 0.9rem;
+      font-family: 'Cascadia Code','Fira Code',monospace;
+      font-size: 0.76rem; color: var(--text2);
+      overflow-x: auto; line-height: 1.55;
+    }
+    .copy-btn {
+      font-size: 0.63rem; color: var(--text3); background: none;
+      border: 1px solid var(--border); border-radius: 3px;
+      padding: 0.1rem 0.4rem; cursor: pointer;
+    }
+    .copy-btn:hover { color: var(--text2); }
+
+    /* ── Total bar ── */
+    .total-bar {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.7rem 1rem;
+      display: flex; align-items: center;
+      justify-content: space-between;
+      margin: 0.5rem 0 1.5rem;
+      font-size: 0.85rem;
+    }
+    .total-bar .tb-label { color: var(--text2); }
+    .total-bar .tb-val   { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+<!-- ══════ SIDEBAR ══════ -->
+<nav>
+  <a href="index.html" class="back">← índice docs</a>
+
+  <h2>Evaluación Parcial 2</h2>
+  <ul>
+    <li><a href="#resumen">Resumen</a></li>
+    <li><a href="#fechas">Fechas clave</a></li>
+    <li><a href="#entregables">Entregables</a></li>
+  </ul>
+
+  <div class="section-label">Rúbrica</div>
+  <ul>
+    <li><a href="#rubrica-grupal">Grupal — 30%</a></li>
+    <li><a href="#rubrica-defensa">Defensa — 70%</a></li>
+    <li><a href="#estado">Estado del proyecto</a></li>
+  </ul>
+
+  <div class="section-label">Video</div>
+  <ul>
+    <li><a href="#video-requisitos">Requisitos</a></li>
+    <li><a href="#video-guion">Guión (estructura)</a></li>
+    <li><a href="#video-entrega">Entrega</a></li>
+  </ul>
+
+  <div class="section-label">Defensa técnica</div>
+  <ul>
+    <li><a href="#defensa-modalidad">Modalidad</a></li>
+    <li><a href="#defensa-prep">Preparación</a></li>
+    <li><a href="#defensa-ejemplos">Ejemplos en vivo</a></li>
+  </ul>
+
+  <div class="section-label">Frontend</div>
+  <ul>
+    <li><a href="#frontend-demo">Dashboard demo</a></li>
+  </ul>
+
+  <div class="section-label">Alertas</div>
+  <ul>
+    <li><a href="#alertas">Alertas críticas</a></li>
+  </ul>
+</nav>
+
+<!-- ══════ MAIN ══════ -->
+<main>
+
+  <h1>Evaluación Parcial 2</h1>
+  <p class="subtitle">DSY1103 · Desarrollo FullStack I · Docente: Mauricio González V. · Ponderación: <strong style="color:var(--text)">45%</strong> de la nota final</p>
+
+  <hr class="divider"/>
+
+  <!-- ── Resumen ── -->
+  <section id="resumen">
+    <h2>Resumen general</h2>
+
+    <div class="stat-row">
+      <div class="stat">
+        <span class="s-val">45%</span>
+        <span class="s-label">Peso en nota final</span>
+      </div>
+      <div class="stat">
+        <span class="s-val">30%</span>
+        <span class="s-label">Grupal (encargo)</span>
+      </div>
+      <div class="stat">
+        <span class="s-val">70%</span>
+        <span class="s-label">Individual (defensa)</span>
+      </div>
+      <div class="stat">
+        <span class="s-val">12</span>
+        <span class="s-label">Microservicios</span>
+      </div>
+      <div class="stat">
+        <span class="s-val">15 min</span>
+        <span class="s-label">Tiempo defensa</span>
+      </div>
+    </div>
+
+    <p>La Evaluación Parcial 2 evalúa el primer avance técnico formal del proyecto semestral de arquitectura de microservicios. La nota final depende principalmente de la <strong style="color:var(--text)">defensa técnica individual</strong> (70%) — el proyecto puede estar perfecto, pero si no puedes explicarlo y modificarlo en vivo, la nota baja.</p>
+
+    <div class="callout callout-yellow">
+      <strong>Defensa individual</strong>
+      <p>Aunque el proyecto se trabaja en equipo, la nota es personal. El docente evalúa tu desempeño, claridad y dominio. Si no puedes explicar el proyecto, ejecutarlo o modificar el código en vivo, se asumirá que no participaste activamente en el desarrollo.</p>
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ── Fechas ── -->
+  <section id="fechas">
+    <h2>Fechas clave</h2>
+
+    <div class="date-grid">
+      <div class="date-card urgent">
+        <div class="dc-label">Entrega video + código</div>
+        <div class="dc-date">Martes 20/05/2025</div>
+        <div class="dc-desc">Primera clase de la semana · GitHub + AVA individual + AVA grupal</div>
+      </div>
+      <div class="date-card soon">
+        <div class="dc-label">Revisión docente</div>
+        <div class="dc-date">Miércoles 21/05/2025</div>
+        <div class="dc-desc">Docente revisa videos, descarga proyectos, genera preguntas personalizadas — <em>no asistir al laboratorio</em></div>
+      </div>
+      <div class="date-card ok">
+        <div class="dc-label">Defensa técnica individual</div>
+        <div class="dc-date">Viernes 22/05/2025</div>
+        <div class="dc-desc">Presencial · horario normal · con proyecto corriendo + Postman listo</div>
+      </div>
+    </div>
+
+    <div class="callout callout-red">
+      <strong>Freeze de repositorio — leer antes de entregar</strong>
+      <p>Cualquier cambio en GitHub después de la fecha de entrega y antes de la defensa técnica resulta en <strong>nota 1.0 automática, grupal e individual</strong>. Una vez que suban el video el martes, no hagan ningún commit hasta después del viernes.</p>
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ── Entregables ── -->
+  <section id="entregables">
+    <h2>Entregables</h2>
+    <p>Todo debe estar listo antes de la primera clase de la semana. Revisad cada ítem:</p>
+
+    <ul class="checklist">
+      <li class="done">
+        <span class="ck-icon">✅</span>
+        <div class="ck-text">
+          <span class="ck-title">Video de demostración (5–7 min)</span>
+          <span class="ck-sub">Subir al repositorio GitHub del proyecto</span>
+        </div>
+      </li>
+      <li class="crit">
+        <span class="ck-icon">⚠️</span>
+        <div class="ck-text">
+          <span class="ck-title">Video subido al AVA — cada integrante individualmente</span>
+          <span class="ck-sub">Activar el enlace escribiendo nombre + apellido + número de equipo. Sin esto → nota 1.0 individual automática.</span>
+        </div>
+      </li>
+      <li class="crit">
+        <span class="ck-icon">⚠️</span>
+        <div class="ck-text">
+          <span class="ck-title">Código fuente subido al AVA — un integrante sube por el equipo</span>
+          <span class="ck-sub">ZIP con el mismo contenido del repositorio. Sin esto → nota 1.0 grupal automática.</span>
+        </div>
+      </li>
+      <li class="done">
+        <span class="ck-icon">✅</span>
+        <div class="ck-text">
+          <span class="ck-title">Repositorio GitHub público y actualizado</span>
+          <span class="ck-sub">Con historial de commits distribuidos entre integrantes</span>
+        </div>
+      </li>
+      <li class="warn">
+        <span class="ck-icon">🔧</span>
+        <div class="ck-text">
+          <span class="ck-title">README.md con nombres de los integrantes</span>
+          <span class="ck-sub">El README existe pero no lista explícitamente a Sol León y Catalina Aguirre. Agregar antes de entregar.</span>
+        </div>
+      </li>
+      <li class="warn">
+        <span class="ck-icon">🔧</span>
+        <div class="ck-text">
+          <span class="ck-title">Tablero Trello u herramienta colaborativa (IE 2.5.2 — 1%)</span>
+          <span class="ck-sub">No evidenciado en el repositorio. Crear y enlazar en el README si corresponde.</span>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ── Rúbrica grupal ── -->
+  <section id="rubrica-grupal">
+    <h2>Rúbrica — Dimensión Grupal (30%)</h2>
+    <p>Evaluado sobre el código entregado. Todos los indicadores se califican con: <span class="badge badge-green">100%</span> Muy bueno · <span class="badge badge-blue">60%</span> Aceptable · <span class="badge badge-yellow">30%</span> Incipiente · <span class="badge badge-red">0%</span> No logrado.</p>
+
+    <table class="rubric-table">
+      <thead>
+        <tr>
+          <th>Indicador</th>
+          <th>Descripción</th>
+          <th>Peso</th>
+          <th>Estado proyecto</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="ie">IE 1.2.1</td>
+          <td>Patrón CSR — Controller solo orquesta, Service concentra lógica, Repository gestiona datos</td>
+          <td class="pct">3%</td>
+          <td class="status-ok">✅ Implementado</td>
+        </tr>
+        <tr>
+          <td class="ie">IE 2.1.1</td>
+          <td>Modela esquemas de BD normalizados con entidades JPA, claves primarias/foráneas y relaciones consistentes. BD propia por microservicio.</td>
+          <td class="pct">2%</td>
+          <td class="status-ok">✅ 10 BDs separadas</td>
+        </tr>
+        <tr>
+          <td class="ie">IE 2.1.2</td>
+          <td>CRUD completo en todos los microservicios — endpoints REST funcionales, retornan JSON válido y reflejan cambios reales en BD</td>
+          <td class="pct">3%</td>
+          <td class="status-ok">✅ 74/74 tests</td>
+        </tr>
+        <tr>
+          <td class="ie">IE 2.2.1</td>
+          <td>Reglas de negocio del dominio — lógica sólida, responde correctamente a casos reales (fórmula de cobros, disponibilidad, cascadas)</td>
+          <td class="pct">4%</td>
+          <td class="status-ok">✅ Implementado</td>
+        </tr>
+        <tr>
+          <td class="ie">IE 2.2.2</td>
+          <td>Bean Validation con DTOs — valida entradas, controla errores con mensajes claros</td>
+          <td class="pct">3%</td>
+          <td class="status-ok">✅ Implementado</td>
+        </tr>
+        <tr>
+          <td class="ie">IE 2.2.3</td>
+          <td>Relaciones entre entidades con integridad referencial, cascadas apropiadas y consultas coherentes</td>
+          <td class="pct">2%</td>
+          <td class="status-ok">✅ Implementado</td>
+        </tr>
+        <tr>
+          <td class="ie">IE 2.3.1</td>
+          <td>Manejo de excepciones en todos los endpoints — códigos HTTP correctos y mensajes estructurados</td>
+          <td class="pct">3%</td>
+          <td class="status-ok">✅ GlobalExceptionHandler</td>
+        </tr>
+        <tr>
+          <td class="ie">IE 2.3.2</td>
+          <td>Logs estructurados SLF4J en puntos clave — estratégicos, consistentes y bien ubicados</td>
+          <td class="pct">2%</td>
+          <td class="status-ok">✅ @Slf4j en todos</td>
+        </tr>
+        <tr>
+          <td class="ie">IE 2.4.1</td>
+          <td>Comunicación entre microservicios mediante Feign Client — funcional y alineada al dominio</td>
+          <td class="pct">3%</td>
+          <td class="status-ok">✅ 7 Feign clients</td>
+        </tr>
+        <tr>
+          <td class="ie">IE 2.4.2</td>
+          <td>Endpoints REST correctos, semánticos y consistentes con respuestas remotas coherentes</td>
+          <td class="pct">2%</td>
+          <td class="status-ok">✅ ResponseEntity en todos</td>
+        </tr>
+        <tr>
+          <td class="ie">IE 2.5.1</td>
+          <td>Repositorio GitHub con commits técnicos, frecuentes y distribuidos equitativamente entre integrantes</td>
+          <td class="pct">2%</td>
+          <td class="status-ok">✅ Sol: 38 · Catalina: ~44</td>
+        </tr>
+        <tr>
+          <td class="ie">IE 2.5.2</td>
+          <td>Trello u otra herramienta colaborativa con tareas claras, asignaciones y avance visible</td>
+          <td class="pct">1%</td>
+          <td class="status-warn">⚠️ No evidenciado</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="total-bar">
+      <span class="tb-label">Subtotal Grupal</span>
+      <span class="tb-val">30%</span>
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ── Rúbrica defensa ── -->
+  <section id="rubrica-defensa">
+    <h2>Rúbrica — Dimensión Defensa Individual (70%)</h2>
+    <p>Evaluado en la sesión presencial del viernes 22/05. El docente genera preguntas personalizadas basadas en el video y el código entregado.</p>
+
+    <div class="tip-grid">
+
+      <div class="tip-card high">
+        <div class="tc-ie">IE 2.2.5 <span class="tc-pct">12%</span></div>
+        <div class="tc-title">Cambios en código en vivo</div>
+        <div class="tc-desc">Agregar validaciones o reglas en el código, compilar sin errores y demostrar el efecto en la API mediante pruebas REST.</div>
+        <div class="tc-practice">
+          <strong>Practicar:</strong>
+          Agregar <code>@NotNull</code> o <code>@Min</code> a un DTO → compilar → probar en Postman que devuelve 400 con mensaje de error.
+        </div>
+      </div>
+
+      <div class="tip-card med">
+        <div class="tc-ie">IE 2.3.3 <span class="tc-pct" style="color:var(--yellow)">7%</span></div>
+        <div class="tc-title">Interpretar logs y excepciones</div>
+        <div class="tc-desc">Leer la consola del microservicio, identificar el origen de un error y proponer solución.</div>
+        <div class="tc-practice">
+          <strong>Practicar:</strong>
+          Revisar los logs de consola al hacer una request fallida. Localizar el stack trace y explicar qué clase lanzó la excepción y por qué.
+        </div>
+      </div>
+
+      <div class="tip-card med">
+        <div class="tc-ie">IE 2.2.4 <span class="tc-pct" style="color:var(--yellow)">6%</span></div>
+        <div class="tc-title">Justificar lógica de negocio</div>
+        <div class="tc-desc">Explicar claramente la lógica de la capa de servicio, flujo de decisiones y su impacto en la integridad del microservicio.</div>
+        <div class="tc-practice">
+          <strong>Practicar:</strong>
+          Explicar en voz alta cómo funciona un método de servicio: qué valida, qué llama, qué devuelve y por qué.
+        </div>
+      </div>
+
+      <div class="tip-card med">
+        <div class="tc-ie">IE 2.1.4 <span class="tc-pct" style="color:var(--yellow)">6%</span></div>
+        <div class="tc-title">Modificaciones en vivo</div>
+        <div class="tc-desc">Realizar cambios en entidades, relaciones o CRUD, compilar sin errores y demostrar persistencia correcta en pruebas REST.</div>
+        <div class="tc-practice">
+          <strong>Practicar:</strong>
+          Agregar un campo opcional a una entidad + DTO + actualizar la lógica del servicio → compilar → probar en Postman.
+        </div>
+      </div>
+
+      <div class="tip-card">
+        <div class="tc-ie">IE 2.1.3 <span class="tc-pct" style="color:var(--text2)">4%</span></div>
+        <div class="tc-title">Justificar decisiones de modelado</div>
+        <div class="tc-desc">Explicar relaciones, normalización, atributos y decisiones de diseño del modelo de datos del microservicio trabajado.</div>
+        <div class="tc-practice">
+          <strong>Practicar:</strong>
+          Explicar por qué una entidad tiene ciertos campos, por qué hay una relación @ManyToOne y qué significa cada FK en el contexto del negocio.
+        </div>
+      </div>
+
+      <div class="tip-card">
+        <div class="tc-ie">IE 1.1.1 · IE 1.1.2 <span class="tc-pct" style="color:var(--text2)">—</span></div>
+        <div class="tc-title">Presentación del sistema</div>
+        <div class="tc-desc">Explicar el objetivo del sistema, el problema que resuelve y la arquitectura implementada (en el video).</div>
+        <div class="tc-practice">
+          <strong>Para el video:</strong>
+          Sección 1 y 2 del guión. Presentación + arquitectura.
+        </div>
+      </div>
+
+    </div>
+
+    <div class="total-bar">
+      <span class="tb-label">Subtotal Defensa Individual</span>
+      <span class="tb-val">70%</span>
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ── Estado del proyecto ── -->
+  <section id="estado">
+    <h2>Estado actual del proyecto vs. rúbrica</h2>
+    <p>Resumen rápido de lo que está listo y lo que falta hacer antes del martes.</p>
+
+    <h3>Listo — no tocar</h3>
+    <ul class="checklist">
+      <li class="done"><span class="ck-icon">✅</span><div class="ck-text"><span class="ck-title">12 microservicios completos y funcionales</span><span class="ck-sub">eureka-server · api-gateway · auth-service · user-service · security-service · ms-vehiculos · ms-espacios · ms-tarifas · ms-reservas · ms-accesos · ms-pagos · ms-reportes</span></div></li>
+      <li class="done"><span class="ck-icon">✅</span><div class="ck-text"><span class="ck-title">74/74 tests Postman (Newman) pasando</span><span class="ck-sub">Colección idempotente — safe to re-run antes del video</span></div></li>
+      <li class="done"><span class="ck-icon">✅</span><div class="ck-text"><span class="ck-title">Patrón CSR en todos los servicios</span><span class="ck-sub">Controller / Service / Repository / model / dto / security</span></div></li>
+      <li class="done"><span class="ck-icon">✅</span><div class="ck-text"><span class="ck-title">GlobalExceptionHandler en todos los servicios</span><span class="ck-sub">404 / 409 / 400 / 422 con body estructurado</span></div></li>
+      <li class="done"><span class="ck-icon">✅</span><div class="ck-text"><span class="ck-title">Feign Client funcional</span><span class="ck-sub">ms-reservas · ms-accesos · ms-pagos · ms-reportes tienen Feign clients activos</span></div></li>
+      <li class="done"><span class="ck-icon">✅</span><div class="ck-text"><span class="ck-title">Swagger en todos los servicios</span><span class="ck-sub">http://localhost:{puerto}/swagger-ui/index.html</span></div></li>
+      <li class="done"><span class="ck-icon">✅</span><div class="ck-text"><span class="ck-title">JWT + BCrypt + auth-service</span><span class="ck-sub">256-bit Base64 secret · 24h expiration · JJWT 0.11.5</span></div></li>
+      <li class="done"><span class="ck-icon">✅</span><div class="ck-text"><span class="ck-title">GitHub con commits distribuidos</span><span class="ck-sub">Sol León: 38 commits · Catalina Aguirre: ~44 commits</span></div></li>
+      <li class="done"><span class="ck-icon">✅</span><div class="ck-text"><span class="ck-title">Frontend demo dashboard (<code>frontend/index.html</code>)</span><span class="ck-sub">HTML/CSS/JS puro — login JWT, grilla de espacios, nueva reserva, cobros y panel de estado de los 12 servicios. Ver sección <a href="#frontend-demo" style="color:var(--blue)">Dashboard demo</a>.</span></div></li>
+    </ul>
+
+    <h3>Pendiente — hacer antes del martes</h3>
+    <ul class="checklist">
+      <li class="warn"><span class="ck-icon">🔧</span><div class="ck-text"><span class="ck-title">Agregar nombres de integrantes al README.md</span><span class="ck-sub">Requisito explícito: "nombres de los/las estudiantes" en el README</span></div></li>
+      <li class="crit"><span class="ck-icon">🎬</span><div class="ck-text"><span class="ck-title">Grabar y subir el video (5–7 minutos)</span><span class="ck-sub">GitHub + AVA cada integrante + AVA grupal (código ZIP)</span></div></li>
+      <li class="warn"><span class="ck-icon">📋</span><div class="ck-text"><span class="ck-title">Crear tablero Trello (IE 2.5.2 — 1%)</span><span class="ck-sub">Opcional pero suma puntos — tablero con tareas y asignaciones visibles</span></div></li>
+    </ul>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ── Frontend demo ── -->
+  <section id="frontend-demo">
+    <h2>Dashboard demo — <code style="font-size:0.85rem">frontend/index.html</code></h2>
+    <p>Interfaz de demostración HTML/CSS/JS puro. Sin servidor, sin build step. Abrir el archivo directamente en el navegador y conecta al API Gateway en <code>localhost:8080</code>.</p>
+
+    <div class="callout callout-yellow">
+      <strong>Requisito previo</strong>
+      <p>Los 12 servicios deben estar corriendo antes de abrir el dashboard. Ejecutar <code>.\start-all.ps1</code> y esperar ~30 s hasta que Eureka en <code>localhost:8761</code> muestre todos en UP.</p>
+    </div>
+
+    <h3>Login</h3>
+    <p>La pantalla de login tiene tres chips de acceso rápido para rellenar email y contraseña en un clic. La contraseña de todos los usuarios seed es <code>Test1234!</code>.</p>
+    <table class="rubric-table">
+      <thead><tr><th>Chip</th><th>Email</th><th>Rol</th><th>Cliente ID</th></tr></thead>
+      <tbody>
+        <tr><td>Admin</td><td><code>admin@parking.cl</code></td><td>Administrador</td><td>—</td></tr>
+        <tr><td>María</td><td><code>maria@gmail.com</code></td><td>Cliente</td><td>1</td></tr>
+        <tr><td>Carlos</td><td><code>carlos@gmail.com</code></td><td>Cliente</td><td>2</td></tr>
+      </tbody>
+    </table>
+    <p>Al hacer login se obtiene un JWT de <code>auth-service</code> que se adjunta automáticamente como <code>Authorization: Bearer …</code> en todos los llamados posteriores.</p>
+
+    <h3>Pestaña Espacios</h3>
+    <p>Muestra los 10 espacios seed agrupados por zona (A, B, D, M) con un punto de estado animado. La tira superior indica ocupación total con una barra de progreso, conteo de disponibles y ocupados.</p>
+    <ul style="font-size:0.84rem;color:var(--text2);margin:0.4rem 0 0.8rem 1.2rem;line-height:1.8">
+      <li><span class="badge badge-green">Verde</span> — disponible. Clic para seleccionar y saltar al formulario.</li>
+      <li><span class="badge badge-red">Rojo</span> — ocupado. No interactuable.</li>
+      <li><span class="badge badge-blue">Azul</span> — seleccionado actualmente.</li>
+    </ul>
+
+    <h3>Pestaña Nueva Reserva</h3>
+    <p>Formulario que hace POST a <code>/api/reservas</code>. Si se llega desde un clic en la grilla, el campo "ID Espacio" ya está rellenado y un callout azul confirma la selección. Los campos de fecha usan <code>datetime-local</code> pre-rellenados con la hora actual y 2 horas después.</p>
+    <div class="code-block">
+      <div class="code-label">Body enviado — ReservaCreateDTO</div>
+      <pre>{ "idCliente": 1, "idVehiculo": 1, "idEspacio": 3,
+  "fechaInicio": "2026-05-20T10:00:00",
+  "fechaFin":    "2026-05-20T12:00:00" }</pre>
+    </div>
+
+    <h3>Pestaña Cobros</h3>
+    <p>Busca cobros por ID de cliente o por ID de acceso. No existe un endpoint <code>GET /api/cobros</code> de lista general, por lo que el filtro es obligatorio. El estado vacío muestra los IDs seed y la ruta del endpoint como guía.</p>
+    <div class="code-block">
+      <div class="code-label">Endpoints disponibles</div>
+      <pre>GET /api/cobros/cliente/{id}   → cobros de un cliente
+GET /api/cobros/acceso/{id}    → cobro de un acceso específico</pre>
+    </div>
+
+    <h3>Pestaña Servicios</h3>
+    <p>Comprueba la conectividad de los 12 servicios en paralelo usando <code>fetch</code> con <code>mode: 'no-cors'</code>. Si el servicio responde (aunque sea con CORS bloqueado por ser <code>file://</code>), el intento no lanza excepción y se marca como <span class="badge badge-green">UP</span>. Si la conexión es rechazada o el timeout de 3 s se agota, se marca como <span class="badge badge-red">DOWN</span>.</p>
+    <table class="rubric-table">
+      <thead><tr><th>Servicio</th><th>Puerto</th><th>Rol</th></tr></thead>
+      <tbody>
+        <tr><td><code>eureka-server</code></td><td>8761</td><td>Service discovery</td></tr>
+        <tr><td><code>api-gateway</code></td><td>8080</td><td>Entry point · JWT filter</td></tr>
+        <tr><td><code>auth-service</code></td><td>8081</td><td>Login · JWT · BCrypt</td></tr>
+        <tr><td><code>user-service</code></td><td>8082</td><td>Clientes · Suscripciones</td></tr>
+        <tr><td><code>security-service</code></td><td>8083</td><td>Permisos · Roles</td></tr>
+        <tr><td><code>ms-vehiculos</code></td><td>8084</td><td>Vehículos · Tipos</td></tr>
+        <tr><td><code>ms-espacios</code></td><td>8085</td><td>Espacios · Disponibilidad</td></tr>
+        <tr><td><code>ms-reservas</code></td><td>8086</td><td>Reservas · Estado</td></tr>
+        <tr><td><code>ms-accesos</code></td><td>8087</td><td>Entrada · Salida · Minutos</td></tr>
+        <tr><td><code>ms-tarifas</code></td><td>8088</td><td>Tarifas · Horarios</td></tr>
+        <tr><td><code>ms-pagos</code></td><td>8089</td><td>Cobros · BigDecimal</td></tr>
+        <tr><td><code>ms-reportes</code></td><td>8090</td><td>Reportes · Feign-only</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Flujo de demo recomendado para el video</h3>
+    <ol style="font-size:0.84rem;color:var(--text2);margin:0.4rem 0 0 1.2rem;line-height:1.9">
+      <li>Abrir <code>frontend/index.html</code> en el navegador.</li>
+      <li>Clic en chip <strong>Admin</strong> y hacer login.</li>
+      <li>Pestaña <strong>Servicios</strong> → clic "Verificar" → mostrar todos en UP.</li>
+      <li>Pestaña <strong>Espacios</strong> → mostrar la grilla con zonas y estado en tiempo real.</li>
+      <li>Clic en espacio A-01 (verde) → salta a <strong>Nueva Reserva</strong> con el espacio pre-seleccionado.</li>
+      <li>Rellenar cliente=1, vehículo=1, confirmar fechas → <strong>Crear reserva</strong> → PENDIENTE.</li>
+      <li>Volver a <strong>Espacios</strong> → la grilla se actualiza sola.</li>
+      <li>Pestaña <strong>Cobros</strong> → ingresar cliente=1 → ver historial de cobros con montos en CLP.</li>
+    </ol>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ── Video requisitos ── -->
+  <section id="video-requisitos">
+    <h2>Video — Requisitos obligatorios</h2>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin:0.75rem 0 1.2rem">
+      <div class="callout callout-green" style="margin:0">
+        <strong>Se acepta</strong>
+        <ul>
+          <li>Sistema funcionando REAL</li>
+          <li>Todos los integrantes participando</li>
+          <li>Ejecución de microservicios visible</li>
+          <li>Pruebas REST en Postman</li>
+          <li>Logs en consola visibles</li>
+          <li>Comunicación entre servicios</li>
+        </ul>
+      </div>
+      <div class="callout callout-red" style="margin:0">
+        <strong>No se acepta</strong>
+        <ul>
+          <li>Solo diapositivas</li>
+          <li>Sin ejecución real</li>
+          <li>Excesivamente editado</li>
+          <li>Generado completamente con IA</li>
+          <li>Sin participación de todos</li>
+          <li>Música de fondo</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout callout-blue">
+      <strong>Duración</strong>
+      <p>Mínimo 5 minutos · Máximo recomendado 7 minutos. Videos excesivamente largos podrán ser revisados parcialmente.</p>
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ── Video guión ── -->
+  <section id="video-guion">
+    <h2>Video — Guión obligatorio</h2>
+    <p>La estructura del video está definida por el docente. Seguirla en orden garantiza cubrir todos los indicadores de la rúbrica.</p>
+
+    <div class="timeline">
+
+      <div class="tl-item">
+        <div class="tl-time">
+          <span class="tt-num">1</span>
+          <span class="tt-dur">30–45 seg</span>
+        </div>
+        <div class="tl-content">
+          <div class="tc-title">Presentación General</div>
+          <ul>
+            <li>Nombre del proyecto: <strong>Estacionamiento Inteligente</strong></li>
+            <li>Integrantes: Sol León y Catalina Aguirre</li>
+            <li>Objetivo del sistema</li>
+            <li>Problema que resuelve</li>
+          </ul>
+          <div class="tc-evidenciar"><strong>Indicadores:</strong> IE1.1.1 · IE1.1.2</div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">
+          <span class="tt-num">2</span>
+          <span class="tt-dur">45–60 seg</span>
+        </div>
+        <div class="tl-content">
+          <div class="tc-title">Arquitectura del Sistema</div>
+          <ul>
+            <li>Mostrar los 12 microservicios implementados y la responsabilidad de cada uno</li>
+            <li>API Gateway (puerto 8080) — punto de entrada único</li>
+            <li>Eureka Server (puerto 8761) — service discovery</li>
+            <li>Comunicación Feign/WebClient entre servicios</li>
+            <li>Explicar cómo se comunican y por qué fueron separados</li>
+          </ul>
+          <div class="tc-evidenciar"><strong>Indicadores:</strong> IE1.3.1 · IE2.1.1 · IE2.1.2</div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">
+          <span class="tt-num">3</span>
+          <span class="tt-dur">45–60 seg</span>
+        </div>
+        <div class="tl-content">
+          <div class="tc-title">Levantamiento del Proyecto</div>
+          <ul>
+            <li>Mostrar todos los microservicios ejecutándose (logs de arranque)</li>
+            <li>Eureka dashboard en <code>http://localhost:8761</code> — todos los servicios registrados</li>
+            <li>API Gateway operativo</li>
+            <li>Mostrar consola/logs y puertos activos</li>
+          </ul>
+          <div class="tc-evidenciar"><strong>Indicadores:</strong> IE2.2.1 · IE2.2.2</div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">
+          <span class="tt-num">4</span>
+          <span class="tt-dur">2–3 min</span>
+        </div>
+        <div class="tl-content">
+          <div class="tc-title">Demostración Funcional en Postman</div>
+          <ul>
+            <li>POST exitoso (crear un recurso)</li>
+            <li>GET (listar/obtener)</li>
+            <li>Validación fallida (campo inválido → 400 con mensaje de error)</li>
+            <li>Flujo completo entre microservicios (ej: login → reserva → acceso → cobro)</li>
+            <li>Error esperado del dominio (ej: recurso no encontrado → 404)</li>
+          </ul>
+          <div class="tc-evidenciar">
+            <strong>Debe evidenciar:</strong>
+            DTOs en request/response · Bean Validation activo · logs en consola · manejo de excepciones (GlobalExceptionHandler) · comunicación Feign entre servicios
+          </div>
+          <div class="tc-evidenciar" style="border-color:var(--cyan);color:var(--cyan);margin-top:0.4rem"><strong>Indicadores:</strong> IE2.3.1 · IE2.3.2 · IE2.3.3 · IE3.1.1</div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">
+          <span class="tt-num">5</span>
+          <span class="tt-dur">1–2 min c/u</span>
+        </div>
+        <div class="tl-content">
+          <div class="tc-title">Explicación Técnica — cada integrante</div>
+          <ul>
+            <li>Microservicio(s) en que trabajó</li>
+            <li>Endpoints implementados (con path y método HTTP)</li>
+            <li>Validaciones realizadas y por qué</li>
+            <li>Dificultades técnicas encontradas</li>
+            <li>Participación específica en el proyecto</li>
+          </ul>
+          <div class="callout callout-yellow" style="margin-top:0.5rem">
+            <strong>Importante</strong>
+            <p>No basta decir "ayudé" o "trabajé en backend". Debe existir explicación técnica concreta — qué clase, qué endpoint, qué lógica.</p>
+          </div>
+          <div class="tc-evidenciar"><strong>Indicadores:</strong> IE3.2.1 · IE3.2.2 · IE3.2.3</div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">
+          <span class="tt-num">6</span>
+          <span class="tt-dur">15–30 seg</span>
+        </div>
+        <div class="tl-content">
+          <div class="tc-title">Cierre</div>
+          <ul>
+            <li>Estado actual del proyecto (12 microservicios completos, 74 tests)</li>
+            <li>Funcionalidades implementadas</li>
+            <li>Mejoras futuras (ej: Kafka, despliegue en nube, frontend)</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ── Video entrega ── -->
+  <section id="video-entrega">
+    <h2>Video — Forma de entrega</h2>
+
+    <h3>Paso a paso</h3>
+    <ul class="checklist">
+      <li class="crit">
+        <span class="ck-icon">1️⃣</span>
+        <div class="ck-text">
+          <span class="ck-title">Subir el video al repositorio GitHub</span>
+          <span class="ck-sub">Puede ser como release o en una carpeta <code>video/</code> del repo, o como enlace en el README a YouTube/Drive sin restricciones.</span>
+        </div>
+      </li>
+      <li class="crit">
+        <span class="ck-icon">2️⃣</span>
+        <div class="ck-text">
+          <span class="ck-title">Subir el código fuente al AVA grupal — un integrante</span>
+          <span class="ck-sub">ZIP con el mismo contenido que el repositorio.</span>
+        </div>
+      </li>
+      <li class="crit">
+        <span class="ck-icon">3️⃣</span>
+        <div class="ck-text">
+          <span class="ck-title">Cada integrante activa su enlace individual en AVA</span>
+          <span class="ck-sub">Escribir nombre + apellido + número de equipo + nombre de la aplicación. Sin esto el docente no puede registrar la nota individual.</span>
+        </div>
+      </li>
+      <li class="crit">
+        <span class="ck-icon">🔒</span>
+        <div class="ck-text">
+          <span class="ck-title">No hacer más commits hasta después del viernes 22/05</span>
+          <span class="ck-sub">Cualquier cambio posterior a la entrega y previo a la defensa → 1.0 automático grupal e individual.</span>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ── Defensa modalidad ── -->
+  <section id="defensa-modalidad">
+    <h2>Defensa técnica — Modalidad</h2>
+
+    <p>La defensa es <strong style="color:var(--text)">presencial, individual</strong> y dura hasta 15 minutos por estudiante. El docente asigna el orden al azar.</p>
+
+    <h3>Qué tener listo el viernes</h3>
+    <ul class="checklist">
+      <li class="done"><span class="ck-icon">💻</span><div class="ck-text"><span class="ck-title">Proyecto abierto en VSCode</span><span class="ck-sub">Con todos los microservicios listos para ejecutar</span></div></li>
+      <li class="done"><span class="ck-icon">▶️</span><div class="ck-text"><span class="ck-title">Todos los microservicios corriendo</span><span class="ck-sub">Eureka + Gateway + los 10 de negocio · verificar que no hay errores de arranque</span></div></li>
+      <li class="done"><span class="ck-icon">📬</span><div class="ck-text"><span class="ck-title">Postman abierto con la colección cargada</span><span class="ck-sub">Token configurado (script en login) y todos los requests listos</span></div></li>
+      <li class="done"><span class="ck-icon">🗄️</span><div class="ck-text"><span class="ck-title">XAMPP/MySQL corriendo en puerto 3307</span><span class="ck-sub">Con los datos seed cargados en las 10 bases de datos</span></div></li>
+      <li class="warn"><span class="ck-icon">📄</span><div class="ck-text"><span class="ck-title">Descargar documento de evaluación individual desde AVA</span><span class="ck-sub">El docente lo sube antes del viernes — contiene preguntas personalizadas basadas en tu video</span></div></li>
+    </ul>
+
+    <div class="callout callout-red">
+      <strong>Sin internet durante la defensa</strong>
+      <p>Solo se habilita acceso a AVA (para descargar/subir el documento de evaluación). No habrá acceso libre a internet, Stack Overflow, ChatGPT ni ninguna IA. El docente monitoreará continuamente.</p>
+    </div>
+
+    <h3>Lo que puede pedirte el docente</h3>
+    <ul class="checklist">
+      <li class="done"><span class="ck-icon">❓</span><div class="ck-text"><span class="ck-title">Preguntas técnicas sobre tu microservicio</span><span class="ck-sub">Por qué tomaste ciertas decisiones de diseño o implementación</span></div></li>
+      <li class="done"><span class="ck-icon">💬</span><div class="ck-text"><span class="ck-title">Explicar un fragmento de código</span><span class="ck-sub">Leer el código en pantalla y describir qué hace y por qué</span></div></li>
+      <li class="done"><span class="ck-icon">📋</span><div class="ck-text"><span class="ck-title">Interpretar logs o excepciones</span><span class="ck-sub">Leer la consola e identificar el origen y causa del error</span></div></li>
+      <li class="done"><span class="ck-icon">✏️</span><div class="ck-text"><span class="ck-title">Modificación simple en vivo</span><span class="ck-sub">Agregar una validación, cambiar un campo, ajustar una regla de negocio</span></div></li>
+      <li class="done"><span class="ck-icon">🧪</span><div class="ck-text"><span class="ck-title">Ejecutar un endpoint en Postman</span><span class="ck-sub">Demostrar que el cambio funciona y que la BD se actualiza</span></div></li>
+    </ul>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ── Defensa prep ── -->
+  <section id="defensa-prep">
+    <h2>Defensa técnica — Preparación</h2>
+    <p>Los indicadores de mayor peso en la defensa son modificaciones en vivo. Practica esto antes del viernes.</p>
+
+    <h3>Lo que más pesa (practica esto)</h3>
+
+    <div class="code-block">
+      <div class="code-label">Ejemplo IE 2.2.5 (12%) — Agregar validación en DTO y testear <button class="copy-btn" onclick="copyBlock(this)">Copiar</button></div>
+      <pre>// 1. Agregar @NotBlank a un campo en el DTO
+public class VehiculoCreateDTO {
+    @NotBlank(message = "La marca es obligatoria")
+    private String marca;
+
+    @Min(value = 1900, message = "El año debe ser mayor a 1900")
+    private int anio;
+}
+
+// 2. Compilar: .\mvnw.cmd clean package -DskipTests
+// 3. Reiniciar el servicio
+// 4. En Postman: POST con marca vacía → esperar 400 con "campos" en el body</pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-label">Ejemplo IE 2.3.3 (7%) — Leer un log de error <button class="copy-btn" onclick="copyBlock(this)">Copiar</button></div>
+      <pre>// En la consola verás algo así:
+2025-05-20 10:30:15 ERROR VehiculoService - Vehículo no encontrado con id: 999
+estacionamientos.ms_vehiculos.Service.VehiculoService.findById(VehiculoService.java:45)
+
+// Lo que debes explicar:
+// 1. Qué clase lanzó el error → VehiculoService
+// 2. En qué método → findById, línea 45
+// 3. Por qué → id 999 no existe en la BD
+// 4. Qué respuesta se envió → 404 NOT_FOUND con GlobalExceptionHandler</pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-label">Ejemplo IE 2.1.4 (6%) — Modificación en vivo de entidad <button class="copy-btn" onclick="copyBlock(this)">Copiar</button></div>
+      <pre>// 1. Agregar campo opcional a la entidad
+@Column(name = "observaciones", nullable = true)
+private String observaciones;
+
+// 2. Agregar al DTO de respuesta
+private String observaciones;
+
+// 3. En application.properties: cambiar ddl-auto a update (SOLO para la defensa)
+spring.jpa.hibernate.ddl-auto=update
+
+// 4. Compilar y reiniciar → verificar que el campo aparece en el JSON de respuesta</pre>
+    </div>
+
+    <div class="callout callout-purple">
+      <strong>Tip para explicar la capa de servicio (IE 2.2.4 — 6%)</strong>
+      <p>Para cada método del servicio que te pregunten, sigue este esquema: <em>"Este método recibe X, valida que Y exista (llama a Feign si es cross-service), lanza Z excepción si no cumple, luego aplica la regla de negocio de [explicar], y finalmente persiste/retorna W."</em></p>
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ── Defensa ejemplos ── -->
+  <section id="defensa-ejemplos">
+    <h2>Defensa técnica — Preguntas probables</h2>
+    <p>Basadas en el tipo de preguntas que suele hacer el docente con este tipo de proyectos. Estudia estas respuestas.</p>
+
+    <h3>Sobre arquitectura</h3>
+    <table class="rubric-table">
+      <thead><tr><th>Pregunta</th><th>Respuesta clave</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>¿Por qué usamos API Gateway?</td>
+          <td>Punto de entrada único — el cliente no conoce los puertos internos. Centraliza routing, puede agregar seguridad y logging. Evita que el cliente deba conocer todos los microservicios.</td>
+        </tr>
+        <tr>
+          <td>¿Para qué sirve Eureka?</td>
+          <td>Service discovery — cada microservicio se registra al arrancar con su nombre y puerto. Feign usa Eureka para resolver <code>ms-vehiculos</code> → <code>localhost:8084</code> automáticamente, sin hardcodear URLs.</td>
+        </tr>
+        <tr>
+          <td>¿Por qué Feign y no RestTemplate?</td>
+          <td>Feign es declarativo — se define solo la interfaz con la firma del método y las anotaciones, sin escribir la lógica de HTTP. Más limpio, integrado con Eureka por nombre de servicio.</td>
+        </tr>
+        <tr>
+          <td>¿Por qué PUT y no PATCH?</td>
+          <td>El HttpURLConnection que usa Feign por defecto no soporta PATCH. Además el docente enseñó con PUT.</td>
+        </tr>
+        <tr>
+          <td>¿Qué pasa si Eureka cae?</td>
+          <td>Los servicios ya registrados tienen caché local y pueden seguir funcionando por un tiempo. Pero los nuevos registros y los que no tienen caché fallarán.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Sobre tu microservicio (ms-pagos como ejemplo)</h3>
+    <table class="rubric-table">
+      <thead><tr><th>Pregunta</th><th>Respuesta clave</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>¿Cómo se calcula el monto?</td>
+          <td>monto_base = precio_base_hora × multiplicador_horario × factor_tipo_vehículo × factor_tipo_espacio × (minutos / 60). Luego se aplican descuentos multiplicativos por tipo de cliente, suscripción y banco.</td>
+        </tr>
+        <tr>
+          <td>¿Por qué BigDecimal y no double?</td>
+          <td>Para evitar errores de punto flotante en operaciones de dinero. BigDecimal usa precisión exacta. Se aplica <code>RoundingMode.HALF_UP</code> en el resultado final.</td>
+        </tr>
+        <tr>
+          <td>¿Qué valida Bean Validation en los DTOs?</td>
+          <td>Campos obligatorios (@NotNull, @NotBlank), rangos numéricos (@Min, @Max), formato de email, etc. Si falla → 400 con mapa de campos y mensajes.</td>
+        </tr>
+        <tr>
+          <td>¿Cómo maneja errores cuando un Feign client falla?</td>
+          <td>Feign lanza FeignException. El servicio lo captura y lanza una excepción de dominio (NotFoundException o BusinessException), que el GlobalExceptionHandler convierte en 404 o 422.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ── Alertas ── -->
+  <section id="alertas">
+    <h2>Alertas críticas</h2>
+
+    <div class="callout callout-red">
+      <strong>🚨 Freeze del repositorio GitHub</strong>
+      <p>Una vez entregado el martes, <strong>ningún integrante puede hacer commit ni push</strong> hasta después de la defensa del viernes. Cualquier cambio detectado = 1.0 automático en nota grupal e individual.</p>
+    </div>
+
+    <div class="callout callout-red">
+      <strong>🚨 AVA individual no activado = 1.0 automático</strong>
+      <p>Cada integrante debe activar su enlace individual en AVA escribiendo su nombre, apellido y número de equipo. Si no lo activa, no tiene derecho a defensa y obtiene 1.0 individual (aunque el equipo entregó bien).</p>
+    </div>
+
+    <div class="callout callout-red">
+      <strong>🚨 AVA grupal no entregado = 1.0 grupal e individual</strong>
+      <p>Un integrante debe subir el ZIP del código fuente al enlace grupal de AVA. Sin esto, ningún integrante puede ser evaluado.</p>
+    </div>
+
+    <div class="callout callout-yellow">
+      <strong>⚠️ Modificar código en la defensa que no compila = 0 en IE 2.1.4 y IE 2.2.5</strong>
+      <p>Si durante la defensa haces un cambio que rompe la compilación o no funciona en Postman, se considera desempeño no logrado en esos indicadores (6% + 12% = 18% de la defensa). Practica el flujo antes del viernes.</p>
+    </div>
+
+    <div class="callout callout-yellow">
+      <strong>⚠️ No se permite IA ni internet durante la defensa</strong>
+      <p>El docente monitoreará continuamente. Solo se permite acceder a AVA para descargar/subir el documento de evaluación.</p>
+    </div>
+
+    <div class="callout callout-blue">
+      <strong>💡 Puedes anotar los pasos que vas a seguir</strong>
+      <p>Durante la defensa puedes anotar los pasos en papel antes de ejecutarlos. También puedes pedir que repitan la pregunta si no la entiendes. El docente evalúa tanto lo que haces como lo que explicas.</p>
+    </div>
+  </section>
+
+</main>
+</div>
+
+<script>
+  function copyBlock(btn) {
+    const pre = btn.closest('.code-block').querySelector('pre');
+    navigator.clipboard.writeText(pre.innerText).then(() => {
+      btn.textContent = 'Copiado';
+      setTimeout(() => btn.textContent = 'Copiar', 2000);
+    });
+  }
+
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('nav a[href^="#"]');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        const a = document.querySelector(`nav a[href="#${e.target.id}"]`);
+        if (a) a.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
