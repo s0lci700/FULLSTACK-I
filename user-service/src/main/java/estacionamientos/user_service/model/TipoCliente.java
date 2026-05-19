@@ -29,6 +29,4 @@ public class TipoCliente {
     @Column(name = "descuento_pct", nullable = false, precision = 5, scale = 2)
     private BigDecimal descuentoPct;
     
-    //@Column(name = "descripcion", nullable = false)
-    //private String descripcion;
 }
