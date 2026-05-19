@@ -4,6 +4,11 @@
 
 Sistema de gestión de estacionamiento construido con arquitectura de **12 microservicios** independientes en Spring Boot 3. Cubre el ciclo completo de un estacionamiento inteligente: registro de clientes y vehículos, reserva de espacios, control de accesos (entrada/salida), tarifas dinámicas, cobros con descuentos y reportes agregados.
 
+
+**link del video**
+https://drive.google.com/file/d/1gMpwnvBKhsdM36QqrgThYKAzZQoNSqQT/view?usp=sharing
+
+
 **Integrantes:**
 
 - Sol León
