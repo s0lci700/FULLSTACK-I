@@ -10,7 +10,7 @@ import estacionamientos.user_service.service.ClienteSuscripcionService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,14 +24,12 @@ public class ClienteController {
 
 
 
-    private final ClienteService clienteService;
-    private final ClienteSuscripcionService clienteSuscripcionService;
+    @Autowired
+    ClienteService clienteService;
+    
+    @Autowired
+    ClienteSuscripcionService clienteSuscripcionService;
 
-    public ClienteController(ClienteService clienteService,
-            ClienteSuscripcionService clienteSuscripcionService) {
-        this.clienteService = clienteService;
-        this.clienteSuscripcionService = clienteSuscripcionService;
-    }
 
     // Retorna todos los clientes registrados
     @GetMapping
