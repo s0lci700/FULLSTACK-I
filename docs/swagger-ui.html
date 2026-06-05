@@ -161,6 +161,7 @@
       display: none;
       position: absolute;
       inset: 0;
+      z-index: 10;          /* must be above the iframe */
       background: var(--bg);
       flex-direction: column;
       align-items: center;
@@ -243,7 +244,6 @@
 
     const tabsEl    = document.getElementById('tabs');
     const frameArea = document.getElementById('frameArea');
-
     let active = 0;
 
     SERVICES.forEach((svc, i) => {
@@ -260,74 +260,83 @@
       tab.addEventListener('click', () => selectTab(i));
       tabsEl.appendChild(tab);
 
-      // ── Panel with iframe + offline overlay ─────────────
+      // ── Panel: iframe + offline overlay ─────────────────
       const panel = document.createElement('div');
       panel.className = 'frame-panel' + (i === 0 ? ' active' : '');
       panel.id = `panel-${i}`;
       panel.innerHTML = `
-        <iframe id="frame-${i}" src="${i === 0 ? url : ''}" data-url="${url}"
-                title="Swagger UI — ${svc.name}" loading="lazy"></iframe>
+        <iframe id="frame-${i}" data-url="${url}" data-loaded="false"
+                title="Swagger UI — ${svc.name}"></iframe>
         <div class="offline-msg" id="offline-${i}">
           <div class="offline-icon">⚠️</div>
           <div class="offline-title">Servicio no disponible</div>
-          <div class="offline-detail">${svc.name} no está corriendo</div>
+          <div class="offline-detail">${svc.name} no está corriendo en el puerto ${svc.port}</div>
           <div class="offline-url">${url}</div>
-          <button class="retry-btn" onclick="retryFrame(${i})">Reintentar</button>
+          <button class="retry-btn" onclick="retryFrame(${i})">↺ Reintentar</button>
         </div>
       `;
       frameArea.appendChild(panel);
 
-      // Detect iframe load error via timeout probe
-      probeService(i, url);
+      // Probe all services on load (dots only, no overlay for inactive tabs)
+      probeService(i, false);
     });
 
+    // Load first tab iframe immediately
+    loadFrame(0);
+
     function selectTab(i) {
-      // Deactivate old
       tabsEl.children[active].classList.remove('active');
       document.getElementById(`panel-${active}`).classList.remove('active');
-
       active = i;
-
-      // Activate new
       tabsEl.children[active].classList.add('active');
       document.getElementById(`panel-${active}`).classList.add('active');
 
-      // Lazy-load iframe on first visit
+      loadFrame(i);           // lazy-load if first visit
+      probeService(i, true);  // always re-probe on tab switch, show overlay
+    }
+
+    function loadFrame(i) {
       const frame = document.getElementById(`frame-${i}`);
-      if (!frame.src || frame.src === 'about:blank' || frame.src === window.location.href) {
+      if (frame.dataset.loaded === 'false') {
+        frame.dataset.loaded = 'true';
         frame.src = frame.dataset.url;
-        probeService(i, frame.dataset.url);
       }
     }
 
-    // Probe service availability via fetch (no-cors so we just check network)
-    function probeService(i, url) {
-      const dot = document.getElementById(`dot-${i}`);
+    // Probe service via fetch no-cors (resolves=up, rejects=down)
+    // showOverlay: true when the user just switched to this tab
+    function probeService(i, showOverlay) {
+      const dot     = document.getElementById(`dot-${i}`);
+      const offline = document.getElementById(`offline-${i}`);
       dot.className = 'dot dot-checking';
 
-      const root = `http://localhost:${SERVICES[i].port}/actuator/health`;
-      // Try fetching the swagger JSON as a proxy for "is service up"
-      const apiDocs = `http://localhost:${SERVICES[i].port}/v3/api-docs`;
+      const ctrl    = new AbortController();
+      const timer   = setTimeout(() => ctrl.abort(), 3000); // 3s timeout
 
-      fetch(apiDocs, { mode: 'no-cors', cache: 'no-store' })
+      fetch(`http://localhost:${SERVICES[i].port}/v3/api-docs`, {
+        mode: 'no-cors',
+        cache: 'no-store',
+        signal: ctrl.signal
+      })
         .then(() => {
+          clearTimeout(timer);
           dot.className = 'dot dot-ok';
-          document.getElementById(`offline-${i}`).classList.remove('visible');
+          offline.classList.remove('visible');
         })
         .catch(() => {
+          clearTimeout(timer);
           dot.className = 'dot dot-error';
-          // Only show overlay if this is the active panel
-          if (active === i) {
-            document.getElementById(`offline-${i}`).classList.add('visible');
-          }
+          if (showOverlay) offline.classList.add('visible');
         });
     }
 
     function retryFrame(i) {
       document.getElementById(`offline-${i}`).classList.remove('visible');
+      // Force iframe reload
       const frame = document.getElementById(`frame-${i}`);
-      frame.src = frame.dataset.url;
-      probeService(i, frame.dataset.url);
+      frame.dataset.loaded = 'false';
+      loadFrame(i);
+      probeService(i, true);
     }
   </script>
 </body>
