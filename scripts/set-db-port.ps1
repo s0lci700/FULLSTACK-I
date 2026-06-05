@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Sets the MySQL port in every microservice's application.properties.
 

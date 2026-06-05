@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Swagger UI — Estacionamiento Inteligente</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0f1117;
+      --bg2:     #1a1f2e;
+      --bg3:     #1e2330;
+      --border:  #2d3748;
+      --text:    #e2e8f0;
+      --text2:   #94a3b8;
+      --text3:   #7b8ea6;
+      --blue:    #93c5fd;
+      --blue-bg: #1e3a5f;
+      --green:   #22c55e;
+      --green-bg:#14532d;
+      --purple:  #c4b5fd;
+      --purple-bg:#2d1b4e;
+      --yellow:  #f59e0b;
+      --red:     #f87171;
+      --red-bg:  #3b0f0f;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── Top bar ──────────────────────────────────────────── */
+    .topbar {
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      padding: 0.6rem 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-shrink: 0;
+    }
+
+    .topbar-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      white-space: nowrap;
+    }
+
+    .topbar-sub {
+      font-size: 0.72rem;
+      color: var(--text3);
+    }
+
+    .topbar-sep { flex: 1; }
+
+    .back-link {
+      font-size: 0.72rem;
+      color: var(--text3);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .back-link:hover { color: var(--blue); }
+
+    /* ── Tab strip ────────────────────────────────────────── */
+    .tabs-wrap {
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+      flex-shrink: 0;
+      scrollbar-width: thin;
+      scrollbar-color: #334155 transparent;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 0;
+      min-width: max-content;
+      padding: 0 0.4rem;
+    }
+
+    .tab {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.55rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text3);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: color 0.15s, border-color 0.15s;
+      user-select: none;
+    }
+
+    .tab:hover { color: var(--text2); }
+
+    .tab.active {
+      color: var(--blue);
+      border-bottom-color: var(--blue);
+    }
+
+    .tab .port {
+      font-size: 0.65rem;
+      font-weight: 400;
+      color: inherit;
+      opacity: 0.7;
+    }
+
+    .tab .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #334155;
+      flex-shrink: 0;
+    }
+
+    /* ── Status indicator per tab ─────────────────────────── */
+    .dot-ok     { background: var(--green) !important; }
+    .dot-error  { background: var(--red)   !important; }
+    .dot-checking { animation: pulse 1s infinite; background: var(--yellow) !important; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.3; }
+    }
+
+    /* ── iframe area ──────────────────────────────────────── */
+    .frame-area {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .frame-panel {
+      display: none;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      inset: 0;
+    }
+
+    .frame-panel.active { display: block; }
+
+    .frame-panel iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* ── Offline overlay ──────────────────────────────────── */
+    .offline-msg {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background: var(--bg);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      color: var(--text2);
+    }
+
+    .offline-msg.visible { display: flex; }
+
+    .offline-icon { font-size: 2.5rem; }
+
+    .offline-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--red);
+    }
+
+    .offline-detail {
+      font-size: 0.8rem;
+      color: var(--text3);
+      text-align: center;
+    }
+
+    .offline-url {
+      font-family: monospace;
+      font-size: 0.78rem;
+      color: var(--blue);
+      background: var(--blue-bg);
+      padding: 0.3rem 0.8rem;
+      border-radius: 6px;
+    }
+
+    .retry-btn {
+      margin-top: 0.4rem;
+      padding: 0.4rem 1.2rem;
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      color: var(--text2);
+      border-radius: 6px;
+      font-size: 0.78rem;
+      cursor: pointer;
+    }
+    .retry-btn:hover { border-color: var(--blue); color: var(--blue); }
+  </style>
+</head>
+<body>
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <div>
+      <div class="topbar-title">Estacionamiento Inteligente — Swagger UI</div>
+      <div class="topbar-sub">10 microservicios · Spring Boot 3 · springdoc-openapi 2.8.6</div>
+    </div>
+    <div class="topbar-sep"></div>
+    <a class="back-link" href="index.html">← Documentación</a>
+  </div>
+
+  <!-- Tab strip -->
+  <div class="tabs-wrap">
+    <div class="tabs" id="tabs"></div>
+  </div>
+
+  <!-- iFrame panels -->
+  <div class="frame-area" id="frameArea"></div>
+
+  <script>
+    const SERVICES = [
+      { name: 'auth-service',     port: 8081, label: 'Auth',       icon: '🔐' },
+      { name: 'user-service',     port: 8082, label: 'Users',      icon: '👤' },
+      { name: 'security-service', port: 8083, label: 'Security',   icon: '🛡️' },
+      { name: 'ms-vehiculos',     port: 8084, label: 'Vehículos',  icon: '🚗' },
+      { name: 'ms-espacios',      port: 8085, label: 'Espacios',   icon: '🅿️' },
+      { name: 'ms-reservas',      port: 8086, label: 'Reservas',   icon: '📅' },
+      { name: 'ms-accesos',       port: 8087, label: 'Accesos',    icon: '🚪' },
+      { name: 'ms-tarifas',       port: 8088, label: 'Tarifas',    icon: '💰' },
+      { name: 'ms-pagos',         port: 8089, label: 'Pagos',      icon: '💳' },
+      { name: 'ms-reportes',      port: 8090, label: 'Reportes',   icon: '📊' },
+    ];
+
+    const tabsEl    = document.getElementById('tabs');
+    const frameArea = document.getElementById('frameArea');
+
+    let active = 0;
+
+    SERVICES.forEach((svc, i) => {
+      const url = `http://localhost:${svc.port}/swagger-ui/index.html`;
+
+      // ── Tab button ──────────────────────────────────────
+      const tab = document.createElement('div');
+      tab.className = 'tab' + (i === 0 ? ' active' : '');
+      tab.innerHTML = `
+        <span class="dot" id="dot-${i}"></span>
+        <span>${svc.icon} ${svc.label}</span>
+        <span class="port">:${svc.port}</span>
+      `;
+      tab.addEventListener('click', () => selectTab(i));
+      tabsEl.appendChild(tab);
+
+      // ── Panel with iframe + offline overlay ─────────────
+      const panel = document.createElement('div');
+      panel.className = 'frame-panel' + (i === 0 ? ' active' : '');
+      panel.id = `panel-${i}`;
+      panel.innerHTML = `
+        <iframe id="frame-${i}" src="${i === 0 ? url : ''}" data-url="${url}"
+                title="Swagger UI — ${svc.name}" loading="lazy"></iframe>
+        <div class="offline-msg" id="offline-${i}">
+          <div class="offline-icon">⚠️</div>
+          <div class="offline-title">Servicio no disponible</div>
+          <div class="offline-detail">${svc.name} no está corriendo</div>
+          <div class="offline-url">${url}</div>
+          <button class="retry-btn" onclick="retryFrame(${i})">Reintentar</button>
+        </div>
+      `;
+      frameArea.appendChild(panel);
+
+      // Detect iframe load error via timeout probe
+      probeService(i, url);
+    });
+
+    function selectTab(i) {
+      // Deactivate old
+      tabsEl.children[active].classList.remove('active');
+      document.getElementById(`panel-${active}`).classList.remove('active');
+
+      active = i;
+
+      // Activate new
+      tabsEl.children[active].classList.add('active');
+      document.getElementById(`panel-${active}`).classList.add('active');
+
+      // Lazy-load iframe on first visit
+      const frame = document.getElementById(`frame-${i}`);
+      if (!frame.src || frame.src === 'about:blank' || frame.src === window.location.href) {
+        frame.src = frame.dataset.url;
+        probeService(i, frame.dataset.url);
+      }
+    }
+
+    // Probe service availability via fetch (no-cors so we just check network)
+    function probeService(i, url) {
+      const dot = document.getElementById(`dot-${i}`);
+      dot.className = 'dot dot-checking';
+
+      const root = `http://localhost:${SERVICES[i].port}/actuator/health`;
+      // Try fetching the swagger JSON as a proxy for "is service up"
+      const apiDocs = `http://localhost:${SERVICES[i].port}/v3/api-docs`;
+
+      fetch(apiDocs, { mode: 'no-cors', cache: 'no-store' })
+        .then(() => {
+          dot.className = 'dot dot-ok';
+          document.getElementById(`offline-${i}`).classList.remove('visible');
+        })
+        .catch(() => {
+          dot.className = 'dot dot-error';
+          // Only show overlay if this is the active panel
+          if (active === i) {
+            document.getElementById(`offline-${i}`).classList.add('visible');
+          }
+        });
+    }
+
+    function retryFrame(i) {
+      document.getElementById(`offline-${i}`).classList.remove('visible');
+      const frame = document.getElementById(`frame-${i}`);
+      frame.src = frame.dataset.url;
+      probeService(i, frame.dataset.url);
+    }
+  </script>
+</body>
+</html>

@@ -3,11 +3,12 @@ package estacionamientos.ms_tarifas.controller;
 import estacionamientos.ms_tarifas.dto.HorarioTarifaCreateDTO;
 import estacionamientos.ms_tarifas.dto.HorarioTarifaResponseDTO;
 import estacionamientos.ms_tarifas.service.HorarioTarifasService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,9 +18,8 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/api/horarios-tarifa")
+@Tag(name = "Horarios de Tarifa", description = "Multiplicadores por horario (LABORAL, FIN_DE_SEMANA, FESTIVO)")
 public class HorarioTarifasController {
-
-
 
     private final HorarioTarifasService horarioTarifasService;
 
@@ -27,36 +27,43 @@ public class HorarioTarifasController {
         this.horarioTarifasService = horarioTarifasService;
     }
 
-    // Retorna el horario vigente para el momento actual (usado por ms-pagos via Feign)
+    @Operation(summary = "Horario vigente", description = "Retorna el horario activo para el momento actual. Consumido por ms-pagos via Feign.")
+    @ApiResponse(responseCode = "200", description = "Horario vigente")
     @GetMapping("/vigente")
     public ResponseEntity<HorarioTarifaResponseDTO> getVigente() {
         log.info("GET /api/horarios-tarifa/vigente");
         return ResponseEntity.ok(horarioTarifasService.findVigente());
     }
 
-    // Retorna todos los horarios de tarifa registrados
+    @Operation(summary = "Listar horarios", description = "Retorna todos los horarios de tarifa registrados")
+    @ApiResponse(responseCode = "200", description = "Listado de horarios")
     @GetMapping
     public ResponseEntity<List<HorarioTarifaResponseDTO>> getAll() {
         log.info("GET /api/horarios-tarifa");
         return ResponseEntity.ok(horarioTarifasService.findAll());
     }
 
-    // Busca un horario por id, retorna 404 si no existe
+    @Operation(summary = "Obtener horario", description = "Busca un horario de tarifa por su ID")
+    @ApiResponse(responseCode = "200", description = "Horario encontrado")
+    @ApiResponse(responseCode = "404", description = "Horario no encontrado")
     @GetMapping("/{id}")
     public ResponseEntity<HorarioTarifaResponseDTO> getById(@PathVariable Long id) {
         log.info("GET /api/horarios-tarifa/{}", id);
         return ResponseEntity.ok(horarioTarifasService.findById(id));
     }
 
-    // Crea un nuevo horario asociado a una tarifa existente
-    // Retorna 201 CREATED con el horario creado
+    @Operation(summary = "Crear horario", description = "Crea un nuevo horario asociado a una tarifa existente")
+    @ApiResponse(responseCode = "201", description = "Horario creado correctamente")
+    @ApiResponse(responseCode = "404", description = "Tarifa asociada no encontrada")
     @PostMapping
     public ResponseEntity<HorarioTarifaResponseDTO> create(@Valid @RequestBody HorarioTarifaCreateDTO dto) {
         log.info("POST /api/horarios-tarifa");
         return ResponseEntity.status(HttpStatus.CREATED).body(horarioTarifasService.create(dto));
     }
 
-    // Elimina un horario de tarifa por id, retorna 204 sin contenido
+    @Operation(summary = "Eliminar horario", description = "Elimina un horario de tarifa por su ID")
+    @ApiResponse(responseCode = "204", description = "Horario eliminado")
+    @ApiResponse(responseCode = "404", description = "Horario no encontrado")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.info("DELETE /api/horarios-tarifa/{}", id);

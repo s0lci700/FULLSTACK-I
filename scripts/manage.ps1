@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Interactive service manager for Estacionamiento Inteligente.
 .DESCRIPTION

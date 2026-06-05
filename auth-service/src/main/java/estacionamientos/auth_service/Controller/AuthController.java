@@ -12,17 +12,24 @@ import estacionamientos.auth_service.service.AuthService;
 import estacionamientos.auth_service.dto.LoginRequestDTO;
 import estacionamientos.auth_service.dto.LoginResponseDTO;
 import estacionamientos.auth_service.dto.RegisterRequestDTO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name = "Autenticación", description = "Login y registro de usuarios del sistema")
 public class AuthController {
 
     @Autowired
     AuthService authService;
 
+    @Operation(summary = "Iniciar sesión", description = "Autentica al usuario y retorna un token JWT válido por 24 horas")
+    @ApiResponse(responseCode = "200", description = "Login exitoso, retorna token JWT")
+    @ApiResponse(responseCode = "401", description = "Credenciales inválidas")
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(
             @Valid @RequestBody LoginRequestDTO dto) {
@@ -31,6 +38,9 @@ public class AuthController {
         return ResponseEntity.ok(new LoginResponseDTO(token));
     }
 
+    @Operation(summary = "Registrar usuario", description = "Crea nuevas credenciales de acceso en el sistema")
+    @ApiResponse(responseCode = "201", description = "Usuario registrado correctamente")
+    @ApiResponse(responseCode = "409", description = "Email ya registrado")
     @PostMapping("/register")
     public ResponseEntity<Void> register(
             @Valid @RequestBody RegisterRequestDTO dto) {

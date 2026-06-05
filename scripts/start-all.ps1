@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Starts all microservices in the correct order for local development.
 
