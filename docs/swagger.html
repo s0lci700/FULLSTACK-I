@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Swagger / OpenAPI — Estacionamiento Inteligente</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:        #0f1117;
+      --bg2:       #1a1f2e;
+      --bg3:       #1e2330;
+      --border:    #2d3748;
+      --text:      #e2e8f0;
+      --text2:     #94a3b8;
+      --text3:     #7b8ea6;
+      --blue:      #93c5fd;
+      --blue-bg:   #1e3a5f;
+      --green:     #22c55e;
+      --green-bg:  #14532d;
+      --purple:    #c4b5fd;
+      --purple-bg: #2d1b4e;
+      --yellow:    #f59e0b;
+      --yellow-bg: #3b2700;
+      --red:       #f87171;
+      --red-bg:    #3b1313;
+      --orange:    #fb923c;
+    }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 2rem;
+      line-height: 1.6;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .back-link {
+      display: inline-flex; align-items: center; gap: .4rem;
+      color: var(--text2); text-decoration: none; font-size: .875rem;
+      margin-bottom: 2rem;
+    }
+    .back-link:hover { color: var(--blue); }
+    h1 { font-size: 1.9rem; font-weight: 700; margin-bottom: .4rem; }
+    .subtitle { color: var(--text2); margin-bottom: 2rem; font-size: .95rem; }
+    h2 { font-size: 1.2rem; font-weight: 600; margin: 2rem 0 .8rem; color: var(--blue); }
+    h3 { font-size: 1rem; font-weight: 600; margin: 1.4rem 0 .5rem; color: var(--purple); }
+    p  { color: var(--text2); margin-bottom: .8rem; font-size: .92rem; }
+
+    /* cards */
+    .card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: .75rem; padding: 1.25rem; margin-bottom: 1.2rem;
+    }
+    .card-title {
+      font-size: 1rem; font-weight: 600; margin-bottom: .6rem;
+      display: flex; align-items: center; gap: .5rem;
+    }
+
+    /* badge */
+    .badge {
+      display: inline-block; border-radius: .4rem; padding: .15rem .55rem;
+      font-size: .72rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+    }
+    .badge-get    { background: var(--green-bg);  color: var(--green);  }
+    .badge-post   { background: var(--blue-bg);   color: var(--blue);   }
+    .badge-put    { background: var(--yellow-bg); color: var(--yellow); }
+    .badge-delete { background: var(--red-bg);    color: var(--red);    }
+    .badge-port   { background: var(--purple-bg); color: var(--purple); }
+    .badge-done   { background: var(--green-bg);  color: var(--green);  }
+    .badge-info   { background: var(--blue-bg);   color: var(--blue);   }
+
+    /* endpoint table */
+    .ep-table { width: 100%; border-collapse: collapse; font-size: .84rem; margin-top: .6rem; }
+    .ep-table th {
+      text-align: left; padding: .45rem .7rem;
+      background: var(--bg3); color: var(--text3);
+      border-bottom: 1px solid var(--border); font-weight: 600;
+    }
+    .ep-table td { padding: .4rem .7rem; border-bottom: 1px solid var(--border); color: var(--text2); }
+    .ep-table tr:last-child td { border-bottom: none; }
+    .ep-table tr:hover td { background: var(--bg3); }
+    .ep-table code {
+      font-family: 'Cascadia Code', 'Fira Code', monospace;
+      color: var(--text); background: var(--bg); padding: .1rem .35rem;
+      border-radius: .25rem; font-size: .82rem;
+    }
+
+    /* task checklist */
+    .task-list { list-style: none; display: flex; flex-direction: column; gap: .55rem; }
+    .task-list li {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: .5rem; padding: .7rem 1rem;
+      display: flex; align-items: flex-start; gap: .7rem; font-size: .9rem;
+    }
+    .task-list li .num {
+      min-width: 1.6rem; height: 1.6rem; border-radius: 50%;
+      background: var(--purple-bg); color: var(--purple);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .75rem; font-weight: 700;
+    }
+    .task-list li .desc { color: var(--text2); font-size: .82rem; margin-top: .2rem; }
+
+    /* swagger url grid */
+    .url-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: .75rem; margin-top: .6rem;
+    }
+    .url-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: .6rem; padding: .9rem 1rem;
+    }
+    .url-card .svc  { font-size: .82rem; color: var(--text3); margin-bottom: .3rem; }
+    .url-card .url  {
+      font-family: 'Cascadia Code', 'Fira Code', monospace;
+      font-size: .78rem; color: var(--blue);
+      word-break: break-all;
+    }
+    .url-card .port { font-size: .75rem; color: var(--purple); margin-top: .2rem; }
+
+    /* service summary table */
+    .svc-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+    .svc-table th {
+      text-align: left; padding: .5rem .8rem;
+      background: var(--bg3); color: var(--text3);
+      border-bottom: 1px solid var(--border); font-weight: 600;
+    }
+    .svc-table td { padding: .45rem .8rem; border-bottom: 1px solid var(--border); color: var(--text2); }
+    .svc-table tr:hover td { background: var(--bg3); }
+
+    /* code block */
+    pre {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: .6rem; padding: 1rem 1.2rem;
+      font-family: 'Cascadia Code', 'Fira Code', monospace;
+      font-size: .8rem; color: var(--text); overflow-x: auto;
+      margin: .6rem 0 1rem;
+    }
+    pre .kw  { color: #7dd3fc; }
+    pre .ann { color: #c4b5fd; }
+    pre .str { color: #86efac; }
+    pre .cmt { color: #4b5563; font-style: italic; }
+
+    .toc { display: flex; flex-direction: column; gap: .4rem; margin-bottom: 2rem; }
+    .toc a { color: var(--blue); text-decoration: none; font-size: .9rem; }
+    .toc a:hover { text-decoration: underline; }
+    hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+    .tag-pill {
+      display: inline-block; background: var(--purple-bg); color: var(--purple);
+      border-radius: 999px; padding: .1rem .6rem; font-size: .74rem; font-weight: 600;
+      margin-right: .3rem;
+    }
+  </style>
+</head>
+<body>
+
+<a href="index.html" class="back-link">← Volver al índice</a>
+
+<h1>Documentación Swagger / OpenAPI</h1>
+<p class="subtitle">Integración de springdoc-openapi en los 10 microservicios — Unidad 3, DSY1103</p>
+
+<nav class="toc">
+  <a href="#tarea">1. Descripción de la tarea</a>
+  <a href="#patron">2. Patrón aplicado</a>
+  <a href="#resumen">3. Resumen por servicio</a>
+  <a href="#urls">4. URLs de Swagger UI</a>
+  <a href="#endpoints">5. Endpoints documentados</a>
+</nav>
+
+<hr id="tarea"/>
+<h2>1. Descripción de la tarea</h2>
+
+<p>El objetivo de esta unidad es integrar <strong>Swagger / OpenAPI 3</strong> en cada microservicio para que los endpoints queden documentados de forma automática e interactiva.</p>
+
+<ul class="task-list">
+  <li>
+    <span class="num">1</span>
+    <div>
+      <strong>Dependencia ya presente</strong>
+      <div class="desc"><code>springdoc-openapi-starter-webmvc-ui:2.8.6</code> en los 10 servicios funcionales (eureka y gateway no necesitan Swagger).</div>
+    </div>
+  </li>
+  <li>
+    <span class="num">2</span>
+    <div>
+      <strong>Crear <code>SwaggerConfig.java</code> por servicio</strong>
+      <div class="desc">Un <code>@Bean OpenAPI</code> que define el título, versión y descripción del API de cada microservicio. Se crea en el paquete <code>config</code> de cada servicio.</div>
+    </div>
+  </li>
+  <li>
+    <span class="num">3</span>
+    <div>
+      <strong>Anotar controladores con <code>@Tag</code></strong>
+      <div class="desc">Se agrega <code>@Tag(name, description)</code> a nivel de clase en cada <code>@RestController</code> para agrupar los endpoints en la UI.</div>
+    </div>
+  </li>
+  <li>
+    <span class="num">4</span>
+    <div>
+      <strong>Anotar métodos con <code>@Operation</code> y <code>@ApiResponse</code></strong>
+      <div class="desc">Cada método HTTP recibe <code>@Operation(summary, description)</code> y <code>@ApiResponse(responseCode, description)</code> para describir la operación y sus posibles respuestas.</div>
+    </div>
+  </li>
+</ul>
+
+<hr id="patron"/>
+<h2>2. Patrón aplicado</h2>
+
+<h3>SwaggerConfig.java (por servicio)</h3>
+<pre><span class="ann">@Configuration</span>
+<span class="kw">public class</span> SwaggerConfig {
+
+    <span class="ann">@Bean</span>
+    <span class="kw">public</span> OpenAPI customOpenAPI() {
+        <span class="kw">return new</span> OpenAPI().info(<span class="kw">new</span> Info()
+            .title(<span class="str">"API Estacionamiento - Nombre Servicio"</span>)
+            .version(<span class="str">"1.0.0"</span>)
+            .description(<span class="str">"Descripción del servicio"</span>));
+    }
+}</pre>
+
+<h3>Controlador anotado</h3>
+<pre><span class="ann">@Tag</span>(name = <span class="str">"Vehículos"</span>, description = <span class="str">"Gestión de vehículos del sistema"</span>)
+<span class="ann">@RestController</span>
+<span class="ann">@RequestMapping</span>(<span class="str">"/api/vehiculos"</span>)
+<span class="kw">public class</span> VehiculoController {
+
+    <span class="ann">@Operation</span>(summary = <span class="str">"Listar vehículos"</span>, description = <span class="str">"Retorna todos los vehículos registrados"</span>)
+    <span class="ann">@ApiResponse</span>(responseCode = <span class="str">"200"</span>, description = <span class="str">"Operación exitosa"</span>)
+    <span class="ann">@GetMapping</span>
+    <span class="kw">public</span> ResponseEntity&lt;List&lt;VehiculoResponseDTO&gt;&gt; listar() { ... }
+
+    <span class="ann">@Operation</span>(summary = <span class="str">"Crear vehículo"</span>, description = <span class="str">"Registra un nuevo vehículo"</span>)
+    <span class="ann">@ApiResponse</span>(responseCode = <span class="str">"201"</span>, description = <span class="str">"Vehículo creado correctamente"</span>)
+    <span class="ann">@ApiResponse</span>(responseCode = <span class="str">"409"</span>, description = <span class="str">"Patente ya registrada"</span>)
+    <span class="ann">@PostMapping</span>
+    <span class="kw">public</span> ResponseEntity&lt;VehiculoResponseDTO&gt; crear(...) { ... }
+}</pre>
+
+<hr id="resumen"/>
+<h2>3. Resumen por servicio</h2>
+
+<table class="svc-table">
+  <thead>
+    <tr>
+      <th>Servicio</th>
+      <th>Puerto</th>
+      <th>Controladores</th>
+      <th>Endpoints</th>
+      <th>SwaggerConfig</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>auth-service</td>       <td><span class="badge badge-port">8081</span></td><td>1</td><td>2</td> <td><span class="badge badge-done">✓</span></td></tr>
+    <tr><td>user-service</td>       <td><span class="badge badge-port">8082</span></td><td>3</td><td>12</td><td><span class="badge badge-done">✓</span></td></tr>
+    <tr><td>security-service</td>   <td><span class="badge badge-port">8083</span></td><td>2</td><td>9</td> <td><span class="badge badge-done">✓</span></td></tr>
+    <tr><td>ms-vehiculos</td>       <td><span class="badge badge-port">8084</span></td><td>2</td><td>12</td><td><span class="badge badge-done">✓</span></td></tr>
+    <tr><td>ms-espacios</td>        <td><span class="badge badge-port">8085</span></td><td>2</td><td>10</td><td><span class="badge badge-done">✓</span></td></tr>
+    <tr><td>ms-reservas</td>        <td><span class="badge badge-port">8086</span></td><td>1</td><td>8</td> <td><span class="badge badge-done">✓</span></td></tr>
+    <tr><td>ms-accesos</td>         <td><span class="badge badge-port">8087</span></td><td>1</td><td>5</td> <td><span class="badge badge-done">✓</span></td></tr>
+    <tr><td>ms-tarifas</td>         <td><span class="badge badge-port">8088</span></td><td>2</td><td>11</td><td><span class="badge badge-done">✓</span></td></tr>
+    <tr><td>ms-pagos</td>           <td><span class="badge badge-port">8089</span></td><td>4</td><td>19</td><td><span class="badge badge-done">✓</span></td></tr>
+    <tr><td>ms-reportes</td>        <td><span class="badge badge-port">8090</span></td><td>1</td><td>3</td> <td><span class="badge badge-done">✓</span></td></tr>
+    <tr>
+      <td><strong>TOTAL</strong></td>
+      <td></td>
+      <td><strong>20</strong></td>
+      <td><strong>91</strong></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr id="urls"/>
+<h2>4. URLs de Swagger UI</h2>
+<p>Acceso directo por puerto (no pasa por el gateway). Requiere que el servicio esté levantado.</p>
+
+<div class="url-grid">
+  <div class="url-card">
+    <div class="svc">auth-service</div>
+    <div class="url">http://localhost:8081/swagger-ui/index.html</div>
+    <div class="port">Puerto 8081</div>
+  </div>
+  <div class="url-card">
+    <div class="svc">user-service</div>
+    <div class="url">http://localhost:8082/swagger-ui/index.html</div>
+    <div class="port">Puerto 8082</div>
+  </div>
+  <div class="url-card">
+    <div class="svc">security-service</div>
+    <div class="url">http://localhost:8083/swagger-ui/index.html</div>
+    <div class="port">Puerto 8083</div>
+  </div>
+  <div class="url-card">
+    <div class="svc">ms-vehiculos</div>
+    <div class="url">http://localhost:8084/swagger-ui/index.html</div>
+    <div class="port">Puerto 8084</div>
+  </div>
+  <div class="url-card">
+    <div class="svc">ms-espacios</div>
+    <div class="url">http://localhost:8085/swagger-ui/index.html</div>
+    <div class="port">Puerto 8085</div>
+  </div>
+  <div class="url-card">
+    <div class="svc">ms-reservas</div>
+    <div class="url">http://localhost:8086/swagger-ui/index.html</div>
+    <div class="port">Puerto 8086</div>
+  </div>
+  <div class="url-card">
+    <div class="svc">ms-accesos</div>
+    <div class="url">http://localhost:8087/swagger-ui/index.html</div>
+    <div class="port">Puerto 8087</div>
+  </div>
+  <div class="url-card">
+    <div class="svc">ms-tarifas</div>
+    <div class="url">http://localhost:8088/swagger-ui/index.html</div>
+    <div class="port">Puerto 8088</div>
+  </div>
+  <div class="url-card">
+    <div class="svc">ms-pagos</div>
+    <div class="url">http://localhost:8089/swagger-ui/index.html</div>
+    <div class="port">Puerto 8089</div>
+  </div>
+  <div class="url-card">
+    <div class="svc">ms-reportes</div>
+    <div class="url">http://localhost:8090/swagger-ui/index.html</div>
+    <div class="port">Puerto 8090</div>
+  </div>
+</div>
+
+<hr id="endpoints"/>
+<h2>5. Endpoints documentados</h2>
+
+<!-- AUTH SERVICE -->
+<div class="card">
+  <div class="card-title">
+    <span class="badge badge-port">8081</span> auth-service
+    <span class="tag-pill">AuthController</span>
+  </div>
+  <table class="ep-table">
+    <thead><tr><th>Método</th><th>Ruta</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge badge-post">POST</span></td><td><code>/api/auth/login</code></td><td>Autenticar usuario y obtener token JWT</td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td><td><code>/api/auth/register</code></td><td>Registrar nuevo usuario con credenciales</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- USER SERVICE -->
+<div class="card">
+  <div class="card-title">
+    <span class="badge badge-port">8082</span> user-service
+    <span class="tag-pill">ClienteController</span>
+    <span class="tag-pill">SuscripcionController</span>
+    <span class="tag-pill">TipoClienteController</span>
+  </div>
+  <table class="ep-table">
+    <thead><tr><th>Método</th><th>Ruta</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge badge-get">GET</span></td>   <td><code>/api/clientes</code></td>                     <td>Listar todos los clientes</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>   <td><code>/api/clientes/{id}</code></td>               <td>Buscar cliente por ID</td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td> <td><code>/api/clientes</code></td>                     <td>Crear nuevo cliente</td></tr>
+      <tr><td><span class="badge badge-put">PUT</span></td>   <td><code>/api/clientes/{id}</code></td>               <td>Actualizar datos del cliente</td></tr>
+      <tr><td><span class="badge badge-delete">DELETE</span></td><td><code>/api/clientes/{id}</code></td>            <td>Eliminar cliente (soft delete)</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>   <td><code>/api/clientes/{id}/suscripciones</code></td> <td>Listar suscripciones de un cliente</td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td> <td><code>/api/clientes/{id}/suscripciones</code></td> <td>Asignar suscripción a un cliente</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>   <td><code>/api/suscripciones</code></td>               <td>Listar todas las suscripciones</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>   <td><code>/api/suscripciones/{id}</code></td>          <td>Obtener suscripción por ID</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>   <td><code>/api/tipo-cliente</code></td>                <td>Listar tipos de cliente</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>   <td><code>/api/tipo-cliente/{id}</code></td>           <td>Obtener tipo de cliente por ID</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- SECURITY SERVICE -->
+<div class="card">
+  <div class="card-title">
+    <span class="badge badge-port">8083</span> security-service
+    <span class="tag-pill">PermisoController</span>
+    <span class="tag-pill">RolPermisoController</span>
+  </div>
+  <table class="ep-table">
+    <thead><tr><th>Método</th><th>Ruta</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge badge-get">GET</span></td>      <td><code>/api/permisos</code></td>                    <td>Listar todos los permisos</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>      <td><code>/api/permisos/{id}</code></td>              <td>Obtener permiso por ID</td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td>    <td><code>/api/permisos</code></td>                    <td>Crear nuevo permiso</td></tr>
+      <tr><td><span class="badge badge-put">PUT</span></td>      <td><code>/api/permisos/{id}</code></td>              <td>Actualizar permiso</td></tr>
+      <tr><td><span class="badge badge-delete">DELETE</span></td><td><code>/api/permisos/{id}</code></td>              <td>Eliminar permiso</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>      <td><code>/api/roles-permisos</code></td>             <td>Listar asignaciones rol-permiso</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>      <td><code>/api/roles-permisos/rol/{idRol}</code></td> <td>Permisos asignados a un rol</td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td>    <td><code>/api/roles-permisos</code></td>             <td>Asignar permiso a un rol</td></tr>
+      <tr><td><span class="badge badge-delete">DELETE</span></td><td><code>/api/roles-permisos/{id}</code></td>        <td>Eliminar asignación rol-permiso</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- MS-VEHICULOS -->
+<div class="card">
+  <div class="card-title">
+    <span class="badge badge-port">8084</span> ms-vehiculos
+    <span class="tag-pill">VehiculoController</span>
+    <span class="tag-pill">TipoVehiculoController</span>
+  </div>
+  <table class="ep-table">
+    <thead><tr><th>Método</th><th>Ruta</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge badge-get">GET</span></td>      <td><code>/api/vehiculos</code></td>                          <td>Listar todos los vehículos</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>      <td><code>/api/vehiculos/{id}</code></td>                    <td>Obtener vehículo por ID</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>      <td><code>/api/vehiculos/validar/{patente}</code></td>       <td>Verificar si existe vehículo por patente</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>      <td><code>/api/vehiculos/cliente/{idClienteRef}</code></td>  <td>Vehículos de un cliente</td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td>    <td><code>/api/vehiculos</code></td>                          <td>Registrar nuevo vehículo</td></tr>
+      <tr><td><span class="badge badge-put">PUT</span></td>      <td><code>/api/vehiculos/{id}</code></td>                    <td>Actualizar vehículo</td></tr>
+      <tr><td><span class="badge badge-delete">DELETE</span></td><td><code>/api/vehiculos/{id}</code></td>                    <td>Eliminar vehículo (soft delete)</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>      <td><code>/api/tipos-vehiculo</code></td>                    <td>Listar tipos de vehículo</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>      <td><code>/api/tipos-vehiculo/{id}</code></td>              <td>Obtener tipo por ID</td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td>    <td><code>/api/tipos-vehiculo</code></td>                    <td>Crear tipo de vehículo</td></tr>
+      <tr><td><span class="badge badge-put">PUT</span></td>      <td><code>/api/tipos-vehiculo/{id}</code></td>              <td>Actualizar tipo de vehículo</td></tr>
+      <tr><td><span class="badge badge-delete">DELETE</span></td><td><code>/api/tipos-vehiculo/{id}</code></td>              <td>Eliminar tipo de vehículo</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- MS-ESPACIOS -->
+<div class="card">
+  <div class="card-title">
+    <span class="badge badge-port">8085</span> ms-espacios
+    <span class="tag-pill">EspacioController</span>
+    <span class="tag-pill">TipoEspacioController</span>
+  </div>
+  <table class="ep-table">
+    <thead><tr><th>Método</th><th>Ruta</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge badge-get">GET</span></td>      <td><code>/api/espacios</code></td>                        <td>Listar todos los espacios</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>      <td><code>/api/espacios/{id}</code></td>                  <td>Obtener espacio por ID</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>      <td><code>/api/espacios/disponibles</code></td>           <td>Listar espacios disponibles</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>      <td><code>/api/espacios/zona/{zona}</code></td>           <td>Espacios filtrados por zona</td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td>    <td><code>/api/espacios</code></td>                        <td>Crear nuevo espacio</td></tr>
+      <tr><td><span class="badge badge-put">PUT</span></td>      <td><code>/api/espacios/{id}</code></td>                  <td>Actualizar datos del espacio</td></tr>
+      <tr><td><span class="badge badge-put">PUT</span></td>      <td><code>/api/espacios/{id}/disponibilidad</code></td>   <td>Cambiar disponibilidad (llamado por ms-accesos)</td></tr>
+      <tr><td><span class="badge badge-delete">DELETE</span></td><td><code>/api/espacios/{id}</code></td>                  <td>Eliminar espacio</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>      <td><code>/api/tipo-espacio</code></td>                   <td>Listar tipos de espacio</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>      <td><code>/api/tipo-espacio/{id}</code></td>             <td>Obtener tipo de espacio por ID</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- MS-RESERVAS -->
+<div class="card">
+  <div class="card-title">
+    <span class="badge badge-port">8086</span> ms-reservas
+    <span class="tag-pill">ReservaController</span>
+  </div>
+  <table class="ep-table">
+    <thead><tr><th>Método</th><th>Ruta</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge badge-get">GET</span></td>   <td><code>/api/reservas</code></td>                       <td>Listar todas las reservas</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>   <td><code>/api/reservas/{id}</code></td>                 <td>Obtener reserva por ID</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>   <td><code>/api/reservas/cliente/{id}</code></td>         <td>Reservas de un cliente</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>   <td><code>/api/reservas/estado/{estado}</code></td>      <td>Reservas filtradas por estado</td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td> <td><code>/api/reservas</code></td>                       <td>Crear nueva reserva</td></tr>
+      <tr><td><span class="badge badge-put">PUT</span></td>   <td><code>/api/reservas/{id}/cancelar</code></td>        <td>Cancelar reserva (PENDIENTE → CANCELADA)</td></tr>
+      <tr><td><span class="badge badge-put">PUT</span></td>   <td><code>/api/reservas/{id}/confirmar</code></td>       <td>Confirmar reserva (PENDIENTE → CONFIRMADA)</td></tr>
+      <tr><td><span class="badge badge-put">PUT</span></td>   <td><code>/api/reservas/{id}/finalizar</code></td>       <td>Finalizar reserva (CONFIRMADA → FINALIZADA)</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- MS-ACCESOS -->
+<div class="card">
+  <div class="card-title">
+    <span class="badge badge-port">8087</span> ms-accesos
+    <span class="tag-pill">AccesoController</span>
+  </div>
+  <table class="ep-table">
+    <thead><tr><th>Método</th><th>Ruta</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge badge-get">GET</span></td>    <td><code>/api/accesos</code></td>                          <td>Listar todos los accesos</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>    <td><code>/api/accesos/{id}</code></td>                    <td>Obtener acceso por ID</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>    <td><code>/api/accesos/reserva/{idReserva}</code></td>     <td>Acceso asociado a una reserva</td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td>  <td><code>/api/accesos/entrada</code></td>                 <td>Registrar entrada de vehículo</td></tr>
+      <tr><td><span class="badge badge-put">PUT</span></td>    <td><code>/api/accesos/{id}/salida</code></td>             <td>Registrar salida y calcular minutos</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- MS-TARIFAS -->
+<div class="card">
+  <div class="card-title">
+    <span class="badge badge-port">8088</span> ms-tarifas
+    <span class="tag-pill">TarifasController</span>
+    <span class="tag-pill">HorarioTarifasController</span>
+  </div>
+  <table class="ep-table">
+    <thead><tr><th>Método</th><th>Ruta</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge badge-get">GET</span></td>      <td><code>/api/tarifas</code></td>                     <td>Listar todas las tarifas</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>      <td><code>/api/tarifas/{id}</code></td>               <td>Obtener tarifa por ID</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>      <td><code>/api/tarifas/vigente</code></td>            <td>Tarifa activa (consumida por ms-pagos via Feign)</td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td>    <td><code>/api/tarifas</code></td>                     <td>Crear nueva tarifa</td></tr>
+      <tr><td><span class="badge badge-put">PUT</span></td>      <td><code>/api/tarifas/{id}</code></td>               <td>Actualizar tarifa</td></tr>
+      <tr><td><span class="badge badge-delete">DELETE</span></td><td><code>/api/tarifas/{id}</code></td>               <td>Eliminar tarifa (soft delete)</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>      <td><code>/api/horarios-tarifa</code></td>            <td>Listar horarios de tarifa</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>      <td><code>/api/horarios-tarifa/{id}</code></td>       <td>Obtener horario por ID</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>      <td><code>/api/horarios-tarifa/vigente</code></td>    <td>Horario activo actual (consumido por ms-pagos via Feign)</td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td>    <td><code>/api/horarios-tarifa</code></td>            <td>Crear horario de tarifa</td></tr>
+      <tr><td><span class="badge badge-delete">DELETE</span></td><td><code>/api/horarios-tarifa/{id}</code></td>       <td>Eliminar horario de tarifa</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- MS-PAGOS -->
+<div class="card">
+  <div class="card-title">
+    <span class="badge badge-port">8089</span> ms-pagos
+    <span class="tag-pill">CobroController</span>
+    <span class="tag-pill">BancoController</span>
+    <span class="tag-pill">MetodoPagoController</span>
+    <span class="tag-pill">TipoTarjetaController</span>
+  </div>
+  <table class="ep-table">
+    <thead><tr><th>Método</th><th>Ruta</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge badge-get">GET</span></td>      <td><code>/api/cobros</code></td>                         <td>Listar todos los cobros</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>      <td><code>/api/cobros/{id}</code></td>                   <td>Obtener cobro por ID</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>      <td><code>/api/cobros/acceso/{accesoId}</code></td>      <td>Cobro asociado a un acceso</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>      <td><code>/api/cobros/cliente/{clienteId}</code></td>   <td>Cobros de un cliente</td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td>    <td><code>/api/cobros</code></td>                         <td>Generar cobro desde acceso completado</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>      <td><code>/api/bancos</code></td>                         <td>Listar bancos</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>      <td><code>/api/bancos/{id}</code></td>                   <td>Obtener banco por ID</td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td>    <td><code>/api/bancos</code></td>                         <td>Crear banco</td></tr>
+      <tr><td><span class="badge badge-put">PUT</span></td>      <td><code>/api/bancos/{id}</code></td>                   <td>Actualizar banco</td></tr>
+      <tr><td><span class="badge badge-delete">DELETE</span></td><td><code>/api/bancos/{id}</code></td>                   <td>Eliminar banco</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>      <td><code>/api/metodos-pago</code></td>                  <td>Listar métodos de pago</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>      <td><code>/api/metodos-pago/{id}</code></td>            <td>Obtener método por ID</td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td>    <td><code>/api/metodos-pago</code></td>                  <td>Crear método de pago</td></tr>
+      <tr><td><span class="badge badge-delete">DELETE</span></td><td><code>/api/metodos-pago/{id}</code></td>            <td>Eliminar método de pago</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>      <td><code>/api/tipo-tarjetas</code></td>                 <td>Listar tipos de tarjeta</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td>      <td><code>/api/tipo-tarjetas/{id}</code></td>           <td>Obtener tipo de tarjeta por ID</td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td>    <td><code>/api/tipo-tarjetas</code></td>                 <td>Crear tipo de tarjeta</td></tr>
+      <tr><td><span class="badge badge-delete">DELETE</span></td><td><code>/api/tipo-tarjetas/{id}</code></td>           <td>Eliminar tipo de tarjeta</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- MS-REPORTES -->
+<div class="card">
+  <div class="card-title">
+    <span class="badge badge-port">8090</span> ms-reportes
+    <span class="tag-pill">ReporteController</span>
+  </div>
+  <table class="ep-table">
+    <thead><tr><th>Método</th><th>Ruta</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge badge-get">GET</span></td><td><code>/api/reportes/ocupacion</code></td>                       <td>Reporte de ocupación del estacionamiento</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td><td><code>/api/reportes/accesos/reserva/{idReserva}</code></td>    <td>Detalle de acceso por reserva</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td><td><code>/api/reportes/cobros/cliente/{idCliente}</code></td>     <td>Historial de cobros de un cliente</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<hr/>
+<p style="text-align:center; color: var(--text3); font-size: .8rem; margin-top: 1rem;">
+  Estacionamiento Inteligente · DSY1103 Desarrollo FullStack I · DUOC UC 2026
+</p>
+
+</body>
+</html>

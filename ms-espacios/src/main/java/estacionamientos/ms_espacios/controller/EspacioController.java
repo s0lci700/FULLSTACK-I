@@ -20,59 +20,70 @@ import estacionamientos.ms_espacios.dto.EspacioCreateDTO;
 import estacionamientos.ms_espacios.dto.EspacioResponseDTO;
 import estacionamientos.ms_espacios.dto.EspacioUpdateDTO;
 import estacionamientos.ms_espacios.service.EspacioService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
 @RequestMapping("/api/espacios")
+@Tag(name = "Espacios", description = "Gestión de espacios de estacionamiento y disponibilidad")
 public class EspacioController {
 
     @Autowired
     private EspacioService espaciosService;
 
-    // Retorna la lista completa de todos los espacios registrados
+    @Operation(summary = "Listar espacios", description = "Retorna todos los espacios del estacionamiento")
+    @ApiResponse(responseCode = "200", description = "Listado de espacios")
     @GetMapping
     public ResponseEntity<List<EspacioResponseDTO>> getAll() {
         log.info("GET /api/espacios");
         return ResponseEntity.ok(espaciosService.findAll());
     }
-    // Busca un espacio por su ID, lanza 404 si no existe
+    @Operation(summary = "Obtener espacio", description = "Busca un espacio por su ID")
+    @ApiResponse(responseCode = "200", description = "Espacio encontrado")
+    @ApiResponse(responseCode = "404", description = "Espacio no encontrado")
     @GetMapping("/{id}")
     public ResponseEntity<EspacioResponseDTO> getById(@PathVariable Long id) {
         log.info("GET /api/espacios/{}", id);
         return ResponseEntity.ok(espaciosService.findById(id));
     }
-    // Retorna espacios que pertenecen a una zona específica
+    @Operation(summary = "Espacios por zona", description = "Retorna espacios filtrados por zona")
+    @ApiResponse(responseCode = "200", description = "Espacios de la zona")
     @GetMapping("/zona/{zona}")
     public ResponseEntity<List<EspacioResponseDTO>> getByZona(@PathVariable String zona) {
         log.info("GET /api/espacios/zona/{}", zona);
         return ResponseEntity.ok(espaciosService.findByZona(zona));
     }
-    // Retorna solo los espacios que tienen disponible=true
-    // Lo usa ms-reservas para saber dónde puede hacer una reserva
+    @Operation(summary = "Espacios disponibles", description = "Retorna solo los espacios con disponible=true. Consumido por ms-reservas.")
+    @ApiResponse(responseCode = "200", description = "Espacios disponibles")
     @GetMapping("/disponibles")
     public ResponseEntity<List<EspacioResponseDTO>> getDisponibles() {
         log.info("GET /api/espacios/disponibles");
         return ResponseEntity.ok(espaciosService.findDisponibles());
     }
-    // Crea un nuevo espacio, valida que el numero no esté duplicado
-    // Retorna 201 CREATED con el espacio creado
+    @Operation(summary = "Crear espacio", description = "Registra un nuevo espacio de estacionamiento")
+    @ApiResponse(responseCode = "201", description = "Espacio creado correctamente")
+    @ApiResponse(responseCode = "409", description = "Número de espacio duplicado")
     @PostMapping
     public ResponseEntity<EspacioResponseDTO> create(@Valid @RequestBody EspacioCreateDTO dto) {
         log.info("POST /api/espacios");
         return ResponseEntity.status(HttpStatus.CREATED).body(espaciosService.create(dto));
     }
-     // Actualiza los datos de un espacio existente por ID
-    // No cambia la disponibilidad, eso se hace con el PATCH
+    @Operation(summary = "Actualizar espacio", description = "Actualiza los datos del espacio (no modifica disponibilidad)")
+    @ApiResponse(responseCode = "200", description = "Espacio actualizado")
+    @ApiResponse(responseCode = "404", description = "Espacio no encontrado")
     @PutMapping("/{id}")
     public ResponseEntity<EspacioResponseDTO> update(@PathVariable Long id,
     @Valid @RequestBody EspacioUpdateDTO dto) {
         log.info("PUT /api/espacios/{}", id);
         return ResponseEntity.ok(espaciosService.update(id, dto));
     }
-    // Cambia solo la disponibilidad del espacio (true/false)
-    // Lo llama ms-accesos cuando registra entrada (false) o salida (true)
+    @Operation(summary = "Cambiar disponibilidad", description = "Actualiza disponible=true/false. Llamado por ms-accesos en entrada/salida.")
+    @ApiResponse(responseCode = "200", description = "Disponibilidad actualizada")
+    @ApiResponse(responseCode = "404", description = "Espacio no encontrado")
     @PutMapping("/{id}/disponibilidad")
     public ResponseEntity<Map<String, String>> updateDisponibilidad(@PathVariable Long id,
                                                                      @RequestParam Boolean disponible) {
@@ -80,7 +91,9 @@ public class EspacioController {
         espaciosService.updateDisponibilidad(id, disponible);
         return ResponseEntity.ok(Map.of("mensaje", "Disponibilidad actualizada correctamente"));
     }
-    // Elimina un espacio por ID, retorna 204 sin contenido
+    @Operation(summary = "Eliminar espacio", description = "Elimina un espacio por su ID")
+    @ApiResponse(responseCode = "204", description = "Espacio eliminado")
+    @ApiResponse(responseCode = "404", description = "Espacio no encontrado")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.info("DELETE /api/espacios/{}", id);

@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Loads all database schemas and seed data into MySQL.
 
@@ -32,7 +32,7 @@ if (-not (Get-Command mysql -ErrorAction SilentlyContinue)) {
     exit 1
 }
 
-$args = @("-u", "root", "--port=$Port")
+$args = @("-u", "root", "--port=$Port", "--default-auth=mysql_native_password")
 if ($Password -ne "") { $args += "-p$Password" }
 
 Write-Host ""

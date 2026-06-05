@@ -18,12 +18,16 @@ import org.springframework.web.bind.annotation.RestController;
 import estacionamientos.security_service.dto.PermisoCreateDTO;
 import estacionamientos.security_service.dto.PermisoResponseDTO;
 import estacionamientos.security_service.service.PermisoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
 @RequestMapping("/api/permisos")
+@Tag(name = "Permisos", description = "Gestión de permisos del sistema de seguridad")
 public class PermisoController {
 
 
@@ -34,31 +38,35 @@ public class PermisoController {
         this.permisoService = permisoService;
     }
 
-    // Retorna la lista completa de permisos registrados en el sistema
+    @Operation(summary = "Listar permisos", description = "Retorna todos los permisos registrados en el sistema")
+    @ApiResponse(responseCode = "200", description = "Listado de permisos")
     @GetMapping
     public ResponseEntity<List<PermisoResponseDTO>> getAll() {
         log.info("GET /api/permisos");
         return ResponseEntity.ok(permisoService.findAll());
     }
 
-    // Busca un permiso por su ID
-    // Retorna 404 si no existe
+    @Operation(summary = "Obtener permiso", description = "Busca un permiso por su ID")
+    @ApiResponse(responseCode = "200", description = "Permiso encontrado")
+    @ApiResponse(responseCode = "404", description = "Permiso no encontrado")
     @GetMapping("/{id}")
     public ResponseEntity<PermisoResponseDTO> getById(@PathVariable Long id) {
         log.info("GET /api/permisos/{}", id);
         return ResponseEntity.ok(permisoService.findById(id));
     }
 
-    // Crea un nuevo permiso validando que el nombre no este duplicado
-    // Retorna 201 CREATED con el permiso creado
+    @Operation(summary = "Crear permiso", description = "Crea un nuevo permiso. El nombre debe ser único.")
+    @ApiResponse(responseCode = "201", description = "Permiso creado correctamente")
+    @ApiResponse(responseCode = "409", description = "Nombre de permiso ya existe")
     @PostMapping
     public ResponseEntity<PermisoResponseDTO> create(@Valid @RequestBody PermisoCreateDTO dto) {
         log.info("POST /api/permisos");
         return ResponseEntity.status(HttpStatus.CREATED).body(permisoService.create(dto));
     }
 
-    // Actualiza nombre y descripcion de un permiso existente
-    // Retorna 404 si el permiso no existe
+    @Operation(summary = "Actualizar permiso", description = "Actualiza nombre y descripción de un permiso existente")
+    @ApiResponse(responseCode = "200", description = "Permiso actualizado")
+    @ApiResponse(responseCode = "404", description = "Permiso no encontrado")
     @PutMapping("/{id}")
     public ResponseEntity<PermisoResponseDTO> update(@PathVariable Long id,
                                                       @Valid @RequestBody PermisoCreateDTO dto) {
@@ -66,8 +74,9 @@ public class PermisoController {
         return ResponseEntity.ok(permisoService.update(id, dto));
     }
 
-    // Elimina un permiso por su ID
-    // Retorna 204 sin contenido si se elimino correctamente
+    @Operation(summary = "Eliminar permiso", description = "Elimina un permiso por su ID")
+    @ApiResponse(responseCode = "204", description = "Permiso eliminado")
+    @ApiResponse(responseCode = "404", description = "Permiso no encontrado")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.info("DELETE /api/permisos/{}", id);

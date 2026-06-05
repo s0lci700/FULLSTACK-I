@@ -15,14 +15,17 @@ import org.springframework.web.bind.annotation.RestController;
 import estacionamientos.ms_pagos.dto.MetodoPagoCreateDTO;
 import estacionamientos.ms_pagos.dto.MetodoPagoResponseDTO;
 import estacionamientos.ms_pagos.service.MetodoPagoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/metodos-pago")
 @Slf4j
+@Tag(name = "Métodos de Pago", description = "Registro de métodos de pago (banco + tipo de tarjeta)")
 public class MetodoPagoController {
-
 
     private final MetodoPagoService metodoPagoService;
 
@@ -30,32 +33,35 @@ public class MetodoPagoController {
         this.metodoPagoService = metodoPagoService;
     }
 
-    // Retorna la lista completa de metodos de pago disponibles
+    @Operation(summary = "Listar métodos de pago", description = "Retorna todos los métodos de pago disponibles")
+    @ApiResponse(responseCode = "200", description = "Listado de métodos de pago")
     @GetMapping
     public ResponseEntity<List<MetodoPagoResponseDTO>> getAll() {
         log.info("GET /api/metodos-pago");
         return ResponseEntity.ok(metodoPagoService.findAll());
     }
 
-    // Busca un metodo de pago por su ID
-    // Retorna 404 si no existe
+    @Operation(summary = "Obtener método de pago", description = "Busca un método de pago por su ID")
+    @ApiResponse(responseCode = "200", description = "Método encontrado")
+    @ApiResponse(responseCode = "404", description = "Método no encontrado")
     @GetMapping("/{id}")
     public ResponseEntity<MetodoPagoResponseDTO> getById(@PathVariable Long id) {
         log.info("GET /api/metodos-pago/{}", id);
         return ResponseEntity.ok(metodoPagoService.findById(id));
     }
 
-    // Crea un nuevo metodo de pago asociado opcionalmente a un banco y tipo de tarjeta
-    // Si se indica idBanco o idTipoTarjeta y no existen, retorna 404
-    // Retorna 201 CREATED con el metodo creado
+    @Operation(summary = "Crear método de pago", description = "Registra un nuevo método de pago, asociado opcionalmente a banco y tipo de tarjeta")
+    @ApiResponse(responseCode = "201", description = "Método de pago creado correctamente")
+    @ApiResponse(responseCode = "404", description = "Banco o tipo de tarjeta no encontrado")
     @PostMapping
     public ResponseEntity<MetodoPagoResponseDTO> create(@Valid @RequestBody MetodoPagoCreateDTO dto) {
         log.info("POST /api/metodos-pago");
         return ResponseEntity.status(HttpStatus.CREATED).body(metodoPagoService.create(dto));
     }
 
-    // Elimina un metodo de pago por su ID
-    // Retorna 204 sin contenido si se elimino correctamente
+    @Operation(summary = "Eliminar método de pago", description = "Elimina un método de pago por su ID")
+    @ApiResponse(responseCode = "204", description = "Método eliminado")
+    @ApiResponse(responseCode = "404", description = "Método no encontrado")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.info("DELETE /api/metodos-pago/{}", id);

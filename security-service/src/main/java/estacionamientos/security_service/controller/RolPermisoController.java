@@ -17,12 +17,16 @@ import org.springframework.web.bind.annotation.RestController;
 import estacionamientos.security_service.dto.RolPermisoCreateDTO;
 import estacionamientos.security_service.dto.RolPermisoResponseDTO;
 import estacionamientos.security_service.service.RolPermisoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
 @RequestMapping("/api/roles-permisos")
+@Tag(name = "Roles y Permisos", description = "Asignación de permisos a roles del sistema")
 public class RolPermisoController {
 
 
@@ -33,32 +37,35 @@ public class RolPermisoController {
         this.rolPermisoService = rolPermisoService;
     }
 
-    // Retorna todas las asignaciones rol-permiso registradas
+    @Operation(summary = "Listar asignaciones", description = "Retorna todas las asignaciones rol-permiso registradas")
+    @ApiResponse(responseCode = "200", description = "Listado de asignaciones")
     @GetMapping
     public ResponseEntity<List<RolPermisoResponseDTO>> getAll() {
         log.info("GET /api/roles-permisos");
         return ResponseEntity.ok(rolPermisoService.findAll());
     }
 
-    // Retorna todos los permisos asignados a un rol especifico
-    // Util para saber que acciones puede realizar un rol determinado
+    @Operation(summary = "Permisos por rol", description = "Retorna todos los permisos asignados a un rol específico")
+    @ApiResponse(responseCode = "200", description = "Permisos del rol")
+    @ApiResponse(responseCode = "404", description = "Rol no encontrado")
     @GetMapping("/rol/{idRol}")
     public ResponseEntity<List<RolPermisoResponseDTO>> getByRol(@PathVariable Long idRol) {
         log.info("GET /api/roles-permisos/rol/{}", idRol);
         return ResponseEntity.ok(rolPermisoService.findByIdRol(idRol));
     }
 
-    // Asigna un permiso a un rol
-    // Valida que el permiso exista y que no este ya asignado a ese rol
-    // Retorna 201 CREATED con la asignacion creada
+    @Operation(summary = "Asignar permiso a rol", description = "Asigna un permiso a un rol. Valida que no esté duplicado.")
+    @ApiResponse(responseCode = "201", description = "Asignación creada correctamente")
+    @ApiResponse(responseCode = "409", description = "Permiso ya asignado a ese rol")
     @PostMapping
     public ResponseEntity<RolPermisoResponseDTO> create(@Valid @RequestBody RolPermisoCreateDTO dto) {
         log.info("POST /api/roles-permisos");
         return ResponseEntity.status(HttpStatus.CREATED).body(rolPermisoService.create(dto));
     }
 
-    // Elimina una asignacion rol-permiso por su ID
-    // Retorna 204 sin contenido si se elimino correctamente
+    @Operation(summary = "Eliminar asignación", description = "Elimina una asignación rol-permiso por su ID")
+    @ApiResponse(responseCode = "204", description = "Asignación eliminada")
+    @ApiResponse(responseCode = "404", description = "Asignación no encontrada")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.info("DELETE /api/roles-permisos/{}", id);

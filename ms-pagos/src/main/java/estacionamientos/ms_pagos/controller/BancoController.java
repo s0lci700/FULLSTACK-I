@@ -16,14 +16,17 @@ import org.springframework.web.bind.annotation.RestController;
 import estacionamientos.ms_pagos.dto.BancoDTO;
 import estacionamientos.ms_pagos.dto.BancoResponseDTO;
 import estacionamientos.ms_pagos.service.BancoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
 @RequestMapping("/api/bancos")
+@Tag(name = "Bancos", description = "Catálogo de bancos con descuentos asociados al pago")
 public class BancoController {
-
 
     private final BancoService bancoService;
 
@@ -31,32 +34,35 @@ public class BancoController {
         this.bancoService = bancoService;
     }
 
-    // Retorna la lista completa de bancos registrados
+    @Operation(summary = "Listar bancos", description = "Retorna todos los bancos registrados")
+    @ApiResponse(responseCode = "200", description = "Listado de bancos")
     @GetMapping
     public ResponseEntity<List<BancoResponseDTO>> getAll() {
         log.info("GET /api/bancos");
         return ResponseEntity.ok(bancoService.findAll());
     }
 
-    // Busca un banco por su ID
-    // Retorna 404 si no existe
+    @Operation(summary = "Obtener banco", description = "Busca un banco por su ID")
+    @ApiResponse(responseCode = "200", description = "Banco encontrado")
+    @ApiResponse(responseCode = "404", description = "Banco no encontrado")
     @GetMapping("/{id}")
     public ResponseEntity<BancoResponseDTO> getById(@PathVariable Long id) {
         log.info("GET /api/bancos/{}", id);
         return ResponseEntity.ok(bancoService.findById(id));
     }
 
-    // Crea un nuevo banco con su porcentaje de descuento
-    // Valida que no exista otro banco con el mismo nombre
-    // Retorna 201 CREATED con el banco creado
+    @Operation(summary = "Crear banco", description = "Registra un nuevo banco con su porcentaje de descuento")
+    @ApiResponse(responseCode = "201", description = "Banco creado correctamente")
+    @ApiResponse(responseCode = "409", description = "Nombre de banco duplicado")
     @PostMapping
     public ResponseEntity<BancoResponseDTO> create(@Valid @RequestBody BancoDTO dto) {
         log.info("POST /api/bancos");
         return ResponseEntity.status(HttpStatus.CREATED).body(bancoService.create(dto));
     }
 
-    // Actualiza el nombre y descuento de un banco existente
-    // Retorna 404 si no existe
+    @Operation(summary = "Actualizar banco", description = "Actualiza nombre y descuento de un banco existente")
+    @ApiResponse(responseCode = "200", description = "Banco actualizado")
+    @ApiResponse(responseCode = "404", description = "Banco no encontrado")
     @PutMapping("/{id}")
     public ResponseEntity<BancoResponseDTO> update(@PathVariable Long id,
                                                     @Valid @RequestBody BancoDTO dto) {
@@ -64,8 +70,9 @@ public class BancoController {
         return ResponseEntity.ok(bancoService.update(id, dto));
     }
 
-    // Elimina un banco por su ID
-    // Retorna 204 sin contenido si se elimino correctamente
+    @Operation(summary = "Eliminar banco", description = "Elimina un banco por su ID")
+    @ApiResponse(responseCode = "204", description = "Banco eliminado")
+    @ApiResponse(responseCode = "404", description = "Banco no encontrado")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.info("DELETE /api/bancos/{}", id);
