@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Defensa Individual — DSY1103 Ev2 — Grupo 7</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0f1117;
+      --bg2:       #1a1f2e;
+      --bg3:       #1e2330;
+      --border:    #2d3748;
+      --text:      #e2e8f0;
+      --text2:     #94a3b8;
+      --blue:      #93c5fd;
+      --blue-bg:   #1e3a5f;
+      --green:     #4ade80;
+      --green-bg:  #14532d;
+      --purple:    #c4b5fd;
+      --purple-bg: #2d1b4e;
+      --yellow:    #fbbf24;
+      --yellow-bg: #3b2700;
+      --pink:      #f9a8d4;
+      --pink-bg:   #4a1942;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 2rem 1rem;
+    }
+
+    .container { max-width: 900px; margin: 0 auto; }
+
+    h1 {
+      font-size: 1.6rem;
+      color: var(--blue);
+      text-align: center;
+      margin-bottom: 0.4rem;
+    }
+    .subtitle {
+      text-align: center;
+      color: var(--text2);
+      font-size: 0.9rem;
+      margin-bottom: 2.5rem;
+    }
+
+    /* Tab nav */
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      color: var(--text2);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .tab-btn:hover { border-color: var(--blue); color: var(--blue); }
+    .tab-btn.active { background: var(--blue-bg); border-color: var(--blue); color: var(--blue); }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* Question card */
+    .question-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .question-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .q-num {
+      background: var(--blue-bg);
+      color: var(--blue);
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .q-num.purple { background: var(--purple-bg); color: var(--purple); }
+    .q-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* Answer */
+    .answer {
+      background: var(--bg3);
+      border-left: 3px solid var(--green);
+      border-radius: 0 6px 6px 0;
+      padding: 1rem 1.25rem;
+      font-size: 0.88rem;
+      color: var(--text);
+    }
+    .answer p { margin-bottom: 0.6rem; }
+    .answer p:last-child { margin-bottom: 0; }
+    .answer strong { color: var(--yellow); }
+    .answer code {
+      background: #0f1117;
+      padding: 0.1rem 0.35rem;
+      border-radius: 3px;
+      font-family: 'Cascadia Code', 'Consolas', monospace;
+      font-size: 0.82rem;
+      color: var(--blue);
+    }
+    .answer ul {
+      padding-left: 1.2rem;
+      margin-top: 0.4rem;
+      margin-bottom: 0.4rem;
+    }
+    .answer ul li { margin-bottom: 0.3rem; }
+
+    /* Diagram-like flow */
+    .flow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.4rem;
+      margin: 0.75rem 0;
+      font-size: 0.82rem;
+    }
+    .flow-node {
+      background: var(--blue-bg);
+      color: var(--blue);
+      border: 1px solid var(--blue);
+      border-radius: 5px;
+      padding: 0.25rem 0.6rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .flow-node.green { background: var(--green-bg); color: var(--green); border-color: var(--green); }
+    .flow-node.purple { background: var(--purple-bg); color: var(--purple); border-color: var(--purple); }
+    .flow-node.yellow { background: var(--yellow-bg); color: var(--yellow); border-color: var(--yellow); }
+    .flow-arrow { color: var(--text2); font-size: 1rem; }
+
+    /* Formula box */
+    .formula {
+      background: #0f1117;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      font-family: 'Cascadia Code', 'Consolas', monospace;
+      font-size: 0.82rem;
+      color: var(--purple);
+      margin: 0.5rem 0;
+      white-space: pre-wrap;
+    }
+
+    /* Tip box */
+    .tip {
+      background: var(--yellow-bg);
+      border: 1px solid var(--yellow);
+      border-radius: 6px;
+      padding: 0.6rem 0.9rem;
+      font-size: 0.82rem;
+      color: var(--yellow);
+      margin-top: 0.75rem;
+    }
+    .tip::before { content: "💡 "; }
+
+    /* Personal note */
+    .personal {
+      border-left-color: var(--purple);
+    }
+    .personal-note {
+      color: var(--text2);
+      font-style: italic;
+      font-size: 0.82rem;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <h1>Preparación Defensa Individual</h1>
+  <p class="subtitle">DSY1103 — Evaluación Parcial 2 · Grupo 7 · Sección 011 · Viernes 22/05/2026</p>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('catalina')">Catalina Aguirre Torres</button>
+    <button class="tab-btn" onclick="showTab('sol')">Sol León González</button>
+  </div>
+
+  <!-- ═══════════════════════════════ CATALINA ═══════════════════════════════ -->
+  <div id="tab-catalina" class="tab-panel active">
+
+    <!-- P1 -->
+    <div class="question-card">
+      <div class="question-header">
+        <div class="q-num">1</div>
+        <div class="q-title">Explique la arquitectura general del sistema de estacionamiento inteligente. Indique el rol de Eureka Server, API Gateway, Auth Service, User Service y al menos cuatro microservicios de dominio.</div>
+      </div>
+      <div class="answer">
+        <p>El sistema tiene una <strong>arquitectura de microservicios</strong>. Hay 12 servicios independientes que se comunican entre sí a través de la red.</p>
+        <p><strong>Eureka Server (puerto 8761)</strong> es el registro de servicios. Cuando cada microservicio arranca, se registra en Eureka con su nombre. Así, los demás servicios pueden encontrarse por nombre sin saber la IP exacta.</p>
+        <p><strong>API Gateway (puerto 8080)</strong> es el único punto de entrada para el cliente externo (Postman, frontend). Recibe todas las peticiones y las redirige al microservicio correspondiente usando las rutas definidas en <code>application.yaml</code>. Valida el token JWT antes de dejar pasar la petición.</p>
+        <p><strong>Auth Service (8081)</strong> maneja el login. Recibe email y contraseña, verifica contra la base de datos con BCrypt, y si son válidos emite un token JWT que el cliente usará en todas las peticiones siguientes.</p>
+        <p><strong>User Service (8082)</strong> maneja los clientes del estacionamiento: crear cliente, asignarle tipo de cliente y suscripción, actualizar datos. Tiene su propia base de datos <code>db_usuarios</code>.</p>
+        <p><strong>Cuatro microservicios de dominio:</strong></p>
+        <ul>
+          <li><strong>ms-vehiculos (8084)</strong>: gestiona vehículos y tipos de vehículo. Cada vehículo pertenece a un cliente (referencia lógica).</li>
+          <li><strong>ms-espacios (8085)</strong>: gestiona los espacios del estacionamiento. Controla disponibilidad con un flag <code>disponible</code>.</li>
+          <li><strong>ms-reservas (8086)</strong>: permite reservar un espacio para una fecha. Valida via Feign que el cliente, vehículo y espacio existan y estén activos.</li>
+          <li><strong>ms-pagos (8089)</strong>: genera el cobro al finalizar un acceso. Calcula el monto con tarifa, multiplicadores y descuentos.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- P2 -->
+    <div class="question-card">
+      <div class="question-header">
+        <div class="q-num">2</div>
+        <div class="q-title">Use ms-reservas como referencia y explique el flujo Controller → Service → Repository. Indique qué responsabilidad cumple cada capa y qué DTOs participan.</div>
+      </div>
+      <div class="answer">
+        <div class="flow">
+          <span class="flow-node">ReservaController</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-node green">ReservaService</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-node purple">ReservaRepository</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-node yellow">MySQL db_reservas</span>
+        </div>
+        <p><strong>Controller</strong> (<code>ReservaController</code>) recibe la petición HTTP REST. No tiene lógica de negocio — solo lee el cuerpo de la petición como un <code>ReservaCreateDTO</code>, llama al Service, y devuelve el <code>ReservaResponseDTO</code> con el código HTTP correcto (201 para crear, 200 para el resto). Usa <code>@Valid</code> para activar las validaciones del DTO.</p>
+        <p><strong>Service</strong> (<code>ReservaService</code>) contiene toda la lógica de negocio. Llama a los Feign clients para validar cliente, vehículo y espacio. Crea la entidad <code>Reserva</code>, le asigna el estado inicial <code>PENDIENTE</code> y la guarda via Repository.</p>
+        <p><strong>Repository</strong> (<code>ReservaRepository</code>) extiende <code>JpaRepository&lt;Reserva, Long&gt;</code>. Solo define las consultas personalizadas como <code>findByEstado()</code> y <code>findByIdCliente()</code>. Spring Data JPA genera el SQL automáticamente.</p>
+        <p><strong>DTOs involucrados:</strong> <code>ReservaCreateDTO</code> (entrada del cliente), <code>ReservaResponseDTO</code> (salida), <code>ClienteResponseDTO</code> / <code>VehiculoResponseDTO</code> / <code>EspacioResponseDTO</code> (respuestas de los Feign clients).</p>
+      </div>
+    </div>
+
+    <!-- P3 -->
+    <div class="question-card">
+      <div class="question-header">
+        <div class="q-num">3</div>
+        <div class="q-title">Explique el flujo completo para crear una reserva. Debe mencionar idCliente, idVehiculo, idEspacio, validación remota mediante Feign, estado inicial PENDIENTE y persistencia.</div>
+      </div>
+      <div class="answer">
+        <p>El cliente hace <code>POST /api/reservas</code> enviando un JSON con <strong>idCliente</strong>, <strong>idVehiculo</strong>, <strong>idEspacio</strong>, <code>fechaInicio</code> y <code>fechaFin</code>. Eso llega al <code>ReservaController</code> que lo mapea a un <code>ReservaCreateDTO</code>.</p>
+        <p>El Controller delega al <code>ReservaService.create()</code>, que hace tres validaciones remotas usando Feign:</p>
+        <ul>
+          <li><strong>ClienteClient.findById(idCliente)</strong>: si lanza <code>FeignException.NotFound</code> → excepción. Si el cliente tiene <code>activo = false</code> → excepción.</li>
+          <li><strong>VehiculoClient.findById(idVehiculo)</strong>: mismo patrón, verifica que <code>activo = true</code>.</li>
+          <li><strong>EspacioClient.findById(idEspacio)</strong>: verifica que <code>activo = true</code> Y <code>disponible = true</code>. Si el espacio está ocupado ya rechaza aquí.</li>
+        </ul>
+        <p>Si todo pasa, crea la entidad <code>Reserva</code>, asigna los tres IDs como referencias lógicas (<code>Long</code>), las fechas, y fija el estado en <strong>PENDIENTE</strong>. Llama a <code>reservasRepository.save(nReserva)</code> que persiste en <code>db_reservas</code>. Devuelve un <code>ReservaResponseDTO</code> con HTTP 201.</p>
+        <div class="tip">La reserva en PENDIENTE NO bloquea el espacio todavía. El espacio se marca como no disponible solo cuando se CONFIRMA la reserva.</div>
+      </div>
+    </div>
+
+    <!-- P4 -->
+    <div class="question-card">
+      <div class="question-header">
+        <div class="q-num">4</div>
+        <div class="q-title">Explique cómo se confirma una reserva y qué ocurre con la disponibilidad del espacio. Mencione el cambio de estado a CONFIRMADA y la llamada remota para marcar el espacio como no disponible.</div>
+      </div>
+      <div class="answer">
+        <p>El cliente hace <code>PUT /api/reservas/{id}/confirmar</code>. El Controller llama a <code>ReservaService.confirmar(id)</code>.</p>
+        <p>El Service busca la reserva en la base de datos. Valida que el estado actual sea <strong>PENDIENTE</strong> — si ya es CONFIRMADA, FINALIZADA o CANCELADA lanza una <code>ConflictException</code>.</p>
+        <p>Si está pendiente, cambia el estado a <strong>CONFIRMADA</strong> y hace dos cosas:</p>
+        <ul>
+          <li>Llama a <code>EspacioClient.findById(idEspacio)</code> para obtener el espacio.</li>
+          <li>Llama a <code>EspacioClient.updateDisponibilidad(espacioId, false)</code> — esto hace un <code>PUT /api/espacios/{id}/disponibilidad</code> a ms-espacios que cambia el flag <code>disponible = false</code>.</li>
+        </ul>
+        <p>Finalmente guarda la reserva actualizada con <code>repository.save(reserva)</code>. A partir de este momento el espacio aparecerá como ocupado en <code>GET /api/espacios/disponibles</code>.</p>
+      </div>
+    </div>
+
+    <!-- P5 -->
+    <div class="question-card">
+      <div class="question-header">
+        <div class="q-num">5</div>
+        <div class="q-title">Explique por qué el proyecto usa referencias lógicas Long entre microservicios en vez de relaciones JPA directas entre bases de datos.</div>
+      </div>
+      <div class="answer">
+        <p>En una arquitectura de microservicios, <strong>cada servicio tiene su propia base de datos independiente</strong>. <code>ms-reservas</code> usa <code>db_reservas</code> en MySQL, y <code>user-service</code> usa <code>db_usuarios</code>, y así con los 10 servicios.</p>
+        <p>JPA y Hibernate solo pueden manejar relaciones (<code>@ManyToOne</code>, <code>@JoinColumn</code>, <code>@ForeignKey</code>) entre tablas <strong>dentro de la misma base de datos y el mismo contexto de persistencia</strong>. No pueden hacer joins ni foreign keys entre bases de datos separadas.</p>
+        <p>Por eso, cuando <code>Reserva</code> necesita referenciar a un cliente, no almacena la entidad <code>Cliente</code> sino un simple <code>Long idCliente</code>. Cuando necesita los datos del cliente, llama al <code>ClienteClient</code> via Feign — que hace una petición HTTP a <code>user-service</code>.</p>
+        <p>Esto es el patrón correcto de microservicios: la <strong>integridad referencial se valida en la lógica de negocio</strong> (el Service verifica con Feign que el cliente exista antes de guardar), no a nivel de base de datos.</p>
+      </div>
+    </div>
+
+    <!-- P6 -->
+    <div class="question-card">
+      <div class="question-header">
+        <div class="q-num purple">6</div>
+        <div class="q-title">Explique su aporte personal al proyecto.</div>
+      </div>
+      <div class="answer personal">
+        <p class="personal-note">→ Catalina: completa esta sección con tus aportes reales. Algunos puntos de referencia:</p>
+        <ul>
+          <li>¿Qué microservicios codificaste tú? (user-service, security-service, otros)</li>
+          <li>¿Qué commits en GitHub corresponden a tu usuario?</li>
+          <li>¿Participaste en el diseño de las bases de datos (archivos SQL en <code>db/</code>)?</li>
+          <li>¿Escribiste tests? ¿Documentación en <code>docs/</code>?</li>
+          <li>¿Configuraste algún Feign client o regla de negocio específica?</li>
+        </ul>
+      </div>
+    </div>
+
+  </div><!-- /tab-catalina -->
+
+  <!-- ═══════════════════════════════ SOL ═══════════════════════════════ -->
+  <div id="tab-sol" class="tab-panel">
+
+    <!-- P1 -->
+    <div class="question-card">
+      <div class="question-header">
+        <div class="q-num purple">1</div>
+        <div class="q-title">Explique cómo funciona el API Gateway del proyecto. ¿Qué significa usar rutas lb://auth-service, lb://ms-reservas, lb://ms-accesos, lb://ms-pagos y lb://ms-reportes, y qué relación tiene esto con Eureka?</div>
+      </div>
+      <div class="answer">
+        <p>El API Gateway corre en el puerto 8080 y es el <strong>único punto de entrada</strong> al sistema. Todas las peticiones de Postman o del cliente van primero al Gateway.</p>
+        <p>En <code>application.yaml</code>, cada ruta tiene un <code>predicates.Path</code> (qué URL coincide) y un <code>uri</code> con prefijo <code>lb://</code>. El prefijo <strong>lb</strong> significa <em>load balancer</em> — le dice a Spring Cloud Gateway que no use una IP fija sino que pregunte a <strong>Eureka</strong> por el nombre del servicio.</p>
+        <p>Por ejemplo: cuando llega <code>POST /api/reservas</code>, el Gateway busca en su tabla de rutas, encuentra que coincide con <code>lb://ms-reservas</code>, pregunta a Eureka "¿dónde está registrado ms-reservas?" y Eureka responde con la IP y puerto real (localhost:8086). El Gateway redirige la petición ahí.</p>
+        <p>Esto permite que los servicios puedan cambiar de puerto o escalar horizontalmente sin cambiar la configuración del Gateway — Eureka siempre tiene el registro actualizado.</p>
+        <div class="tip">Si Eureka no está corriendo, el Gateway no puede resolver ningún nombre y todas las rutas fallan con 503.</div>
+      </div>
+    </div>
+
+    <!-- P2 -->
+    <div class="question-card">
+      <div class="question-header">
+        <div class="q-num purple">2</div>
+        <div class="q-title">Explique el flujo completo reserva → acceso → cobro → reporte. Debe indicar qué microservicio participa en cada etapa y qué información se intercambia.</div>
+      </div>
+      <div class="answer">
+        <div class="flow">
+          <span class="flow-node">ms-reservas</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-node green">ms-accesos</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-node yellow">ms-pagos</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-node purple">ms-reportes</span>
+        </div>
+        <p><strong>1. Reserva (ms-reservas)</strong>: el cliente hace <code>POST /api/reservas</code> con idCliente, idVehiculo, idEspacio. El servicio valida via Feign que todo existe y está activo, crea la reserva en estado PENDIENTE. Luego se confirma con <code>PUT /api/reservas/{id}/confirmar</code> — en ese momento el espacio se marca como no disponible en ms-espacios.</p>
+        <p><strong>2. Entrada (ms-accesos)</strong>: el guardia registra <code>POST /api/accesos/entrada</code> con el idReserva y la patente. AccesoService consulta a ms-reservas via Feign — solo permite entrada si la reserva está CONFIRMADA. Crea el Acceso con estado ACTIVO, registra <code>fechaHoraEntrada = ahora</code> y vuelve a marcar el espacio no disponible.</p>
+        <p><strong>3. Salida (ms-accesos)</strong>: <code>PUT /api/accesos/{id}/salida</code>. Registra <code>fechaHoraSalida</code>, calcula <code>minutos = ChronoUnit.MINUTES.between(entrada, ahora)</code>, estado = COMPLETADO. Llama a ms-espacios para liberar el espacio y a ms-reservas para finalizar la reserva.</p>
+        <p><strong>4. Cobro (ms-pagos)</strong>: <code>POST /api/cobros</code> con idAcceso, idCliente, idMetodoPago. PagoService consulta el acceso (para obtener los minutos, idVehiculo, idEspacio), la tarifa vigente, los factores de vehículo y espacio, el multiplicador horario y los descuentos. Calcula y persiste el Cobro.</p>
+        <p><strong>5. Reporte (ms-reportes)</strong>: no tiene base de datos propia. <code>GET /api/reportes/cobros/cliente/{id}</code> llama a CobroClient que consulta ms-pagos. <code>GET /api/reportes/ocupacion</code> consulta ms-espacios. <code>GET /api/reportes/accesos/reserva/{id}</code> consulta ms-accesos.</p>
+      </div>
+    </div>
+
+    <!-- P3 -->
+    <div class="question-card">
+      <div class="question-header">
+        <div class="q-num purple">3</div>
+        <div class="q-title">Explique cómo se calcula un cobro en ms-pagos. Debe mencionar tarifa base, multiplicadores, tipo de vehículo, tipo de espacio, minutos y descuentos por cliente/suscripción/banco.</div>
+      </div>
+      <div class="answer">
+        <p>El <code>PagoService.crear()</code> recopila datos de 7 microservicios via Feign y aplica la fórmula en dos pasos:</p>
+        <p><strong>Paso 1 — Monto base:</strong></p>
+        <div class="formula">monto_base = precio_base_hora (tarifa vigente)
+           × multiplicador_horario  (según LABORAL / FIN_DE_SEMANA / FESTIVO)
+           × factor_tipo_vehiculo   (campo factorPrecio de TipoVehiculo)
+           × factor_tipo_espacio    (campo factorPrecio de TipoEspacio)
+           × (minutos / 60)         -- horas proporcionales</div>
+        <p><strong>Paso 2 — Descuentos aplicados en cadena:</strong></p>
+        <div class="formula">monto_final = monto_base
+           × (1 - descTipoCliente / 100)
+           × (1 - descSuscripcion  / 100)
+           × (1 - descBanco        / 100)</div>
+        <p><strong>De dónde viene cada valor:</strong></p>
+        <ul>
+          <li><code>precio_base_hora</code>: <code>TarifaClient.getTarifaVigente()</code> → ms-tarifas</li>
+          <li><code>multiplicador_horario</code>: <code>HorarioTarifaClient.getVigente()</code> → ms-tarifas (según hora actual)</li>
+          <li><code>factor_tipo_vehiculo</code>: <code>VehiculoClient → TipoVehiculoClient</code> → ms-vehiculos</li>
+          <li><code>factor_tipo_espacio</code>: <code>EspacioClient</code> → ms-espacios (el DTO trae el TipoEspacio embebido)</li>
+          <li><code>minutos</code>: del campo <code>acceso.getMinutos()</code> calculado en el registrarSalida</li>
+          <li><code>descTipoCliente</code>: del campo <code>tipoCliente.descuentoPct</code> del cliente</li>
+          <li><code>descSuscripcion</code>: del campo <code>suscripcion.descuentoPct</code> si el cliente tiene suscripción activa</li>
+          <li><code>descBanco</code>: del campo <code>banco.descuentoPct</code> del método de pago seleccionado</li>
+        </ul>
+        <p>Todo se calcula con <code>BigDecimal</code> y <code>RoundingMode.HALF_UP</code> para evitar errores de redondeo en valores monetarios.</p>
+      </div>
+    </div>
+
+    <!-- P4 -->
+    <div class="question-card">
+      <div class="question-header">
+        <div class="q-num purple">4</div>
+        <div class="q-title">Explique cómo funcionan los scripts de apoyo del proyecto: load-db.ps1, set-db-port.ps1, start-all.ps1 y manage.ps1. ¿Cómo ayudan a la reproducibilidad?</div>
+      </div>
+      <div class="answer">
+        <p><strong>load-db.ps1</strong>: crea las 10 bases de datos y carga todos los datos seed. Internamente llama al cliente MySQL con el archivo maestro <code>db/00_run_all.sql</code> que sourcea los 9 scripts SQL en orden. Acepta parámetros <code>-Password</code> y <code>-Port</code> para funcionar tanto con XAMPP (3306) como con Docker (3307). Esto permite que cualquier persona clone el proyecto y tenga la base de datos lista en un comando.</p>
+        <p><strong>set-db-port.ps1</strong>: actualiza el puerto MySQL en todos los <code>application.properties</code> de los 12 servicios en un solo paso. Fue necesario porque en el laboratorio de la DUOC el MySQL puede estar en un puerto diferente al local. Con <code>-DryRun</code> muestra qué cambiaría sin aplicar nada.</p>
+        <p><strong>start-all.ps1</strong>: lanza todos los servicios en el orden correcto de dependencias: primero Eureka, luego Gateway, luego los servicios de dominio. Cada servicio se abre en su propia ventana o pestaña de PowerShell para poder ver los logs independientemente. Acepta <code>-Layout Tabs|Windows</code>.</p>
+        <p><strong>manage.ps1</strong>: dashboard interactivo para operar el sistema en vivo. Permite iniciar, detener o reiniciar servicios individualmente por número o nombre (<code>start 4</code>, <code>stop all</code>), ver estado, conectar a la base de datos. Útil durante la defensa para mostrar control.</p>
+        <div class="tip">Estos scripts son clave para la reproducibilidad: un evaluador puede clonar el repo, ejecutar load-db.ps1 y start-all.ps1, y tener el sistema corriendo sin configuración manual.</div>
+      </div>
+    </div>
+
+    <!-- P5 -->
+    <div class="question-card">
+      <div class="question-header">
+        <div class="q-num purple">5</div>
+        <div class="q-title">Explique cómo probaría el proyecto con Newman. ¿Qué valida la colección Postman de 74 requests y por qué es importante que sea idempotente?</div>
+      </div>
+      <div class="answer">
+        <p>Newman es el runner de línea de comandos de Postman. Para ejecutar la colección:</p>
+        <div class="formula">newman run estacionamientos.postman_collection.json --env-var "base=http://localhost:8080"</div>
+        <p>La colección tiene <strong>74 requests</strong> organizados en fases que cubren el flujo completo del sistema: autenticación → clientes → vehículos → espacios → tarifas → reservas → accesos → pagos → reportes → seguridad.</p>
+        <p><strong>Cómo funciona el token:</strong> la Fase 1 hace login a <code>POST /api/auth/login</code> y un script post-respuesta captura el JWT y lo guarda en una variable de entorno. Todas las fases siguientes usan ese token en el header <code>Authorization: Bearer {token}</code>.</p>
+        <p><strong>Idempotente</strong> significa que puedes ejecutar la colección múltiples veces seguidas y siempre pasa, sin dejar datos sucios que rompan la siguiente ejecución. Esto se logra con <strong>pre-request scripts de limpieza</strong>: antes de crear un recurso, el script busca si ya existe y lo elimina. Así la colección siempre parte de un estado limpio.</p>
+        <p>Esto es importante porque durante la defensa se puede ejecutar en vivo varias veces para demostrar que el sistema funciona correctamente, y el evaluador puede pedirte que lo corras de nuevo sin que falle por datos duplicados.</p>
+      </div>
+    </div>
+
+    <!-- P6 -->
+    <div class="question-card">
+      <div class="question-header">
+        <div class="q-num purple">6</div>
+        <div class="q-title">Explique su aporte personal al proyecto.</div>
+      </div>
+      <div class="answer personal">
+        <p class="personal-note">→ Sol: completa esta sección con tus aportes reales. Algunos puntos de referencia:</p>
+        <ul>
+          <li>¿Qué microservicios codificaste tú? (api-gateway, ms-pagos, ms-accesos, ms-reportes, scripts, documentación)</li>
+          <li>¿Qué commits en GitHub corresponden a tu usuario (s0lci700)?</li>
+          <li>¿Escribiste los scripts PowerShell (<code>scripts/</code>)?</li>
+          <li>¿Montaste la colección Postman con los 74 requests?</li>
+          <li>¿Generaste la documentación en <code>docs/</code>?</li>
+          <li>¿Configuraste el JWT en el Gateway o en auth-service?</li>
+        </ul>
+      </div>
+    </div>
+
+  </div><!-- /tab-sol -->
+
+</div><!-- /container -->
+
+<script>
+  function showTab(name) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    event.target.classList.add('active');
+  }
+</script>
+</body>
+</html>
