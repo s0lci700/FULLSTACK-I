@@ -242,7 +242,7 @@
   <div class="header">
     <div class="header-badge">DUOC UC · DSY1103</div>
     <h1>Estacionamiento Inteligente</h1>
-    <p class="subtitle">Sistema de gestión de estacionamiento — arquitectura de microservicios Spring Boot</p>
+    <p class="subtitle">Índice principal de documentación — arquitectura de microservicios Spring Boot</p>
     <div class="meta-row">
       <span class="meta-item">Stack: <span>Spring Boot 3 · Java 21 · MySQL 8 · Spring Cloud</span></span>
       <span class="meta-item">Servicios: <span>12 microservicios</span></span>
@@ -250,8 +250,8 @@
     </div>
   </div>
 
-  <!-- Guía de inicio -->
-  <div class="section-label">Inicio rápido</div>
+  <!-- Inicio rápido y estado -->
+  <div class="section-label">Inicio rápido y estado</div>
   <div class="doc-grid">
     <a class="doc-card new" href="README.html">
       <div class="doc-icon">📖</div>
@@ -260,107 +260,156 @@
         <p>Guía de instalación, requisitos previos, orden de arranque y puertos de acceso</p>
       </div>
     </a>
-  </div>
-
-  <!-- Estado del proyecto -->
-  <div class="section-label">Estado del proyecto</div>
-  <div class="doc-grid">
     <a class="doc-card new" href="docs/estado.html">
       <div class="doc-icon">📊</div>
       <div class="doc-card-text">
         <h3>Estado de implementación</h3>
-        <p>Seguimiento servicio por servicio — checklist, advertencias activas y progreso general</p>
+        <p>Seguimiento servicio por servicio — Newman 74/74 · Tests unitarios 33/33</p>
       </div>
     </a>
-    <a class="doc-card new" href="docs/debrief-autoria-commits.html">
+    <a class="doc-card" href="docs/ROADMAP.html">
+      <div class="doc-icon">🗺️</div>
+      <div class="doc-card-text">
+        <h3>Roadmap</h3>
+        <p>Fases de desarrollo, división de trabajo y puertos de referencia</p>
+      </div>
+    </a>
+    <a class="doc-card" href="docs/debrief-autoria-commits.html">
       <div class="doc-icon">🧾</div>
       <div class="doc-card-text">
         <h3>Debrief de autoría por commits</h3>
-        <p>Análisis de quién hizo qué por microservicio y aportes transversales según historial Git</p>
+        <p>Quién hizo qué por microservicio según el historial Git</p>
       </div>
     </a>
-    <a class="doc-card new" href="docs/index.html">
-      <div class="doc-icon">📁</div>
-      <div class="doc-card-text">
-        <h3>Índice de documentación</h3>
-        <p>Acceso a todos los documentos del proyecto organizados por categoría</p>
-      </div>
-    </a>
-    <a class="doc-card new" href="docs/html-index.html">
+    <a class="doc-card" href="docs/html-index.html">
       <div class="doc-icon">🧭</div>
       <div class="doc-card-text">
-        <h3>Índice HTML completo</h3>
-        <p>Listado indexado de todos los archivos .html del repositorio</p>
+        <h3>Catálogo HTML completo</h3>
+        <p>Listado plano de todos los archivos .html del repositorio (auto-generado)</p>
       </div>
     </a>
   </div>
 
-  <!-- Arquitectura & Servicios -->
-  <div class="section-label">Arquitectura &amp; Servicios</div>
+  <!-- Arquitectura y diseño -->
+  <div class="section-label">Arquitectura y diseño</div>
   <div class="doc-grid">
     <a class="doc-card" href="docs/microservicios-overview.html">
-      <div class="doc-icon">🗺️</div>
+      <div class="doc-icon">🏗️</div>
       <div class="doc-card-text">
-        <h3>Visión general de microservicios</h3>
-        <p>Diagrama de flujo, fases de implementación, entidades y endpoints por servicio</p>
+        <h3>Microservicios Overview</h3>
+        <p>Vista completa: entidades, endpoints, Feign clients, reglas de negocio y fórmula de cobro</p>
       </div>
     </a>
-    <a class="doc-card" href="docs/contenido-clases-map.html">
-      <div class="doc-icon">📚</div>
+    <a class="doc-card" href="docs/ARQUITECTURA.html">
+      <div class="doc-icon">📐</div>
       <div class="doc-card-text">
-        <h3>Mapa contenido de clases</h3>
-        <p>Qué PDF de clase cubre cada microservicio · mapa inverso · rúbrica vs. material</p>
+        <h3>Arquitectura</h3>
+        <p>Decisiones de diseño, patrones aplicados y flujo general del sistema</p>
+      </div>
+    </a>
+    <a class="doc-card" href="docs/FUNCIONALIDADES.html">
+      <div class="doc-icon">⚙️</div>
+      <div class="doc-card-text">
+        <h3>Funcionalidades</h3>
+        <p>Descripción de las funcionalidades desde la perspectiva de negocio</p>
       </div>
     </a>
   </div>
 
-  <!-- Base de Datos -->
-  <div class="section-label">Base de Datos</div>
+  <!-- Base de datos -->
+  <div class="section-label">Base de datos</div>
   <div class="doc-grid">
     <a class="doc-card" href="docs/bases_de_datos.html">
       <div class="doc-icon">🗄️</div>
       <div class="doc-card-text">
         <h3>Bases de datos</h3>
-        <p>Descripción de las 9 BDs, tablas y relaciones lógicas entre servicios</p>
-      </div>
-    </a>
-    <a class="doc-card" href="docs/DEGLOSE_MER.html">
-      <div class="doc-icon">📊</div>
-      <div class="doc-card-text">
-        <h3>Desglose MER</h3>
-        <p>Modelo entidad-relación detallado por cada base de datos</p>
+        <p>Esquemas de las 10 BDs, tablas y relaciones lógicas entre servicios</p>
       </div>
     </a>
     <a class="doc-card" href="docs/DER_estacionamiento_inteligente2.html">
       <div class="doc-icon">🔗</div>
       <div class="doc-card-text">
-        <h3>DER — Diagrama E-R</h3>
-        <p>Diagrama entidad-relación completo del sistema de estacionamiento</p>
+        <h3>DER — Diagrama Entidad-Relación</h3>
+        <p>Modelo entidad-relación completo del sistema</p>
+      </div>
+    </a>
+    <a class="doc-card" href="docs/DEGLOSE_MER.html">
+      <div class="doc-icon">📋</div>
+      <div class="doc-card-text">
+        <h3>Desglose MER</h3>
+        <p>Desglose detallado con atributos y restricciones por base de datos</p>
+      </div>
+    </a>
+    <a class="doc-card" href="docs/ERD_estacionamiento.html">
+      <div class="doc-icon">📄</div>
+      <div class="doc-card-text">
+        <h3>ERD</h3>
+        <p>Versión en texto plano del diagrama entidad-relación</p>
+      </div>
+    </a>
+    <a class="doc-card" href="docs/BASE_DE_DATOS.html">
+      <div class="doc-icon">📝</div>
+      <div class="doc-card-text">
+        <h3>Base de Datos — DDL</h3>
+        <p>Documentación de DDL y decisiones de modelado de datos</p>
       </div>
     </a>
   </div>
 
-  <!-- Evaluación -->
-  <div class="section-label">Evaluación</div>
+  <!-- Seguridad y roles -->
+  <div class="section-label">Seguridad y roles</div>
   <div class="doc-grid">
-    <a class="doc-card" href="docs/evaluacion-parcial2.html" style="border-color:#d2992244">
-      <div class="doc-icon">🎯</div>
+    <a class="doc-card" href="docs/SEGURIDAD.html">
+      <div class="doc-icon">🔐</div>
       <div class="doc-card-text">
-        <h3 style="color:#d29922">Evaluación Parcial 2 <span class="new-badge" style="background:#3b2700;color:#f59e0b">19–22 Mayo</span></h3>
-        <p>Rúbrica completa (grupal + defensa), guión del video, preparación para la defensa técnica individual y alertas críticas</p>
+        <h3>Seguridad</h3>
+        <p>JWT, BCrypt, Spring Security, rutas públicas y protegidas, filtros</p>
       </div>
     </a>
-    <a class="doc-card" href="docs/guion-video-final.html" style="border-color:#22c55e44">
-      <div class="doc-icon">🎬</div>
+    <a class="doc-card" href="docs/ROLES_USUARIO.html">
+      <div class="doc-icon">👤</div>
       <div class="doc-card-text">
-        <h3 style="color:#22c55e">Guion final de grabacion</h3>
-        <p>Script final 6:30–7:00 min con secuencia de demo, frases sugeridas y checklist critico de entrega/defensa</p>
+        <h3>Roles de Usuario</h3>
+        <p>Definición de roles, permisos y accesos por tipo de usuario</p>
       </div>
     </a>
   </div>
 
-  <!-- Desarrollo -->
-  <div class="section-label">Desarrollo</div>
+  <!-- Unidad 3 -->
+  <div class="section-label">Unidad 3 — Swagger, Maven multi-módulo y pruebas</div>
+  <div class="doc-grid">
+    <a class="doc-card" href="docs/swagger-ui.html" style="border-color:#7c3aed66">
+      <div class="doc-icon">🖥️</div>
+      <div class="doc-card-text">
+        <h3 style="color:#bc8cff">Swagger UI — Vista unificada</h3>
+        <p>Los 10 Swagger UI en una sola página con pestañas e indicador de servicio activo (requiere servicios corriendo)</p>
+      </div>
+    </a>
+    <a class="doc-card" href="docs/swagger.html" style="border-color:#7c3aed44">
+      <div class="doc-icon">📋</div>
+      <div class="doc-card-text">
+        <h3 style="color:#bc8cff">Documentación Swagger</h3>
+        <p>Integración OpenAPI: SwaggerConfig, anotaciones @Tag/@Operation/@ApiResponse y URLs por servicio</p>
+      </div>
+    </a>
+    <a class="doc-card" href="docs/MAVEN_MULTIMODULO.html" style="border-color:#7c3aed44">
+      <div class="doc-icon">🧩</div>
+      <div class="doc-card-text">
+        <h3 style="color:#bc8cff">Maven Multi-Módulo</h3>
+        <p>POM padre, versiones centralizadas, wrapper en raíz y Etapas 1–4 del material de clases</p>
+      </div>
+    </a>
+    <a class="doc-card" href="docs/PRUEBAS.html" style="border-color:#7c3aed44">
+      <div class="doc-icon">🧪</div>
+      <div class="doc-card-text">
+        <h3 style="color:#bc8cff">Pruebas</h3>
+        <p>33 tests pasando: Service (Mockito), Controller (MockMvc) y Repository (H2) + perfil de test</p>
+      </div>
+    </a>
+  </div>
+
+  <!-- Referencia técnica -->
+  <div class="section-label">Referencia técnica</div>
   <div class="doc-grid">
     <a class="doc-card" href="docs/springboot-cheatsheet.html">
       <div class="doc-icon">⚡</div>
@@ -373,7 +422,108 @@
       <div class="doc-icon">✅</div>
       <div class="doc-card-text">
         <h3>Postman — Cobertura API</h3>
-        <p>Guía indexada de pruebas full-coverage con enlaces a Springdoc/OpenAPI por microservicio</p>
+        <p>Guía de pruebas por fases (74 requests) con cobertura por servicio</p>
+      </div>
+    </a>
+    <a class="doc-card" href="docs/api-reference.html">
+      <div class="doc-icon">📖</div>
+      <div class="doc-card-text">
+        <h3>Referencia de API — 74 Endpoints</h3>
+        <p>Método, URL, body, descripción y código de respuesta esperado por request</p>
+      </div>
+    </a>
+    <a class="doc-card" href="docs/contenido-clases-map.html">
+      <div class="doc-icon">📚</div>
+      <div class="doc-card-text">
+        <h3>Mapa contenido de clases</h3>
+        <p>Qué PDF de clase cubre cada microservicio · rúbrica vs. material</p>
+      </div>
+    </a>
+    <a class="doc-card" href="docs/HERRAMIENTAS.html">
+      <div class="doc-icon">🛠️</div>
+      <div class="doc-card-text">
+        <h3>Herramientas</h3>
+        <p>Stack tecnológico, IDEs, extensiones y herramientas usadas</p>
+      </div>
+    </a>
+    <a class="doc-card" href="docs/SPRING_INITIALIZR.html">
+      <div class="doc-icon">🚀</div>
+      <div class="doc-card-text">
+        <h3>Spring Initializr</h3>
+        <p>Configuración base usada para scaffoldear cada microservicio</p>
+      </div>
+    </a>
+    <a class="doc-card" href="docs/DESPLIEGUE.html">
+      <div class="doc-icon">📦</div>
+      <div class="doc-card-text">
+        <h3>Despliegue</h3>
+        <p>Instrucciones de despliegue, orden de arranque y configuración de entorno</p>
+      </div>
+    </a>
+    <a class="doc-card" href="docs/guia-ms-accesos.html">
+      <div class="doc-icon">🚗</div>
+      <div class="doc-card-text">
+        <h3>Guía ms-accesos</h3>
+        <p>Implementación paso a paso: entrada/salida y Feign clients</p>
+      </div>
+    </a>
+  </div>
+
+  <!-- Evaluación y aprendizajes -->
+  <div class="section-label">Evaluación y aprendizajes</div>
+  <div class="doc-grid">
+    <a class="doc-card" href="aprendizajes-ev2.html" style="border-color:#7c3aed44">
+      <div class="doc-icon">🎓</div>
+      <div class="doc-card-text">
+        <h3 style="color:#bc8cff">Aprendizajes EP2 — Grupo 7</h3>
+        <p>Análisis de resultados: grupal 27/30, defensa 65.4/100, respuestas modelo y guías de estudio</p>
+      </div>
+    </a>
+    <a class="doc-card" href="docs/evaluacion-parcial2.html" style="border-color:#d2992244">
+      <div class="doc-icon">🎯</div>
+      <div class="doc-card-text">
+        <h3 style="color:#d29922">Evaluación Parcial 2</h3>
+        <p>Rúbrica completa (grupal + defensa), preparación y alertas críticas</p>
+      </div>
+    </a>
+    <a class="doc-card" href="docs/defensa-preguntas.html">
+      <div class="doc-icon">❓</div>
+      <div class="doc-card-text">
+        <h3>Preguntas de defensa</h3>
+        <p>Banco de preguntas probables de la defensa técnica con respuestas modelo</p>
+      </div>
+    </a>
+    <a class="doc-card" href="docs/guion-video-final.html" style="border-color:#22c55e44">
+      <div class="doc-icon">🎬</div>
+      <div class="doc-card-text">
+        <h3 style="color:#3fb950">Guion final de grabación</h3>
+        <p>Timeline 6:30–7:00, secuencia Postman, frases sugeridas y checklist</p>
+      </div>
+    </a>
+    <a class="doc-card" href="docs/video-plan.html">
+      <div class="doc-icon">📝</div>
+      <div class="doc-card-text">
+        <h3>Plan del Video (borrador previo)</h3>
+        <p>Guión con tiempos, indicadores de rúbrica y demo Postman</p>
+      </div>
+    </a>
+  </div>
+
+  <!-- Depuración y auditoría -->
+  <div class="section-label">Depuración y auditoría</div>
+  <div class="doc-grid">
+    <a class="doc-card" href="docs/debug-session-analysis.html" style="border-color:#14532d">
+      <div class="doc-icon">🔍</div>
+      <div class="doc-card-text">
+        <h3 style="color:#3fb950">Análisis de sesión de depuración</h3>
+        <p>11 bugs corregidos en 8 servicios · Newman 74/74 · causas raíz y lecciones</p>
+      </div>
+    </a>
+    <a class="doc-card" href="docs/audit-schema.html">
+      <div class="doc-icon">🧾</div>
+      <div class="doc-card-text">
+        <h3>Auditoría de esquema</h3>
+        <p>Entidades JPA vs DDL: alineación de tipos y columnas en las 10 BDs</p>
       </div>
     </a>
   </div>

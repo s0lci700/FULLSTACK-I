@@ -277,8 +277,8 @@
       `;
       frameArea.appendChild(panel);
 
-      // Probe all services on load (dots only, no overlay for inactive tabs)
-      probeService(i, false);
+      // Probe all services on load (overlay only for the initially active tab)
+      probeService(i, i === 0);
     });
 
     // Load first tab iframe immediately
@@ -305,6 +305,8 @@
 
     // Probe service via fetch no-cors (resolves=up, rejects=down)
     // showOverlay: true when the user just switched to this tab
+    const lastStatus = {};   // i -> 'up' | 'down'
+
     function probeService(i, showOverlay) {
       const dot     = document.getElementById(`dot-${i}`);
       const offline = document.getElementById(`offline-${i}`);
@@ -322,10 +324,18 @@
           clearTimeout(timer);
           dot.className = 'dot dot-ok';
           offline.classList.remove('visible');
+          // Si el iframe se cargó mientras el servicio estaba caído,
+          // quedó mostrando la página de error: recargarlo ahora que está arriba.
+          const frame = document.getElementById(`frame-${i}`);
+          if (lastStatus[i] === 'down' && frame.dataset.loaded === 'true') {
+            frame.src = frame.dataset.url;
+          }
+          lastStatus[i] = 'up';
         })
         .catch(() => {
           clearTimeout(timer);
           dot.className = 'dot dot-error';
+          lastStatus[i] = 'down';
           if (showOverlay) offline.classList.add('visible');
         });
     }
