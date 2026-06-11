@@ -16,6 +16,36 @@ El proyecto implementa una estrategia de pruebas en capas para garantizar la cal
 
 ---
 
+## ✅ Pruebas Implementadas (Unidad 3 — Etapa 4)
+
+Estado real del proyecto: **33 pruebas pasando** (21 nuevas + 12 `contextLoads`), verificadas con
+`.\mvnw.cmd clean install` desde el POM padre **sin** `-DskipTests` — BUILD SUCCESS en los 13 módulos.
+
+### Inventario de clases de prueba
+
+| Servicio | Clase | Tipo | Tests | Qué verifica |
+|----------|-------|------|-------|--------------|
+| ms-espacios | `EspacioServiceTest` | Service (Mockito) | 7 | Mapeo a DTO, 404, número duplicado, soft delete, disponibilidad |
+| ms-espacios | `EspacioControllerTest` | Controller (`@WebMvcTest` + MockMvc) | 5 | Códigos 200/201/404/400, body de error del `GlobalExceptionHandler`, validación con mapa `campos` |
+| ms-espacios | `EspacioRepositoryTest` | Repository (`@DataJpaTest` + H2) | 3 | Queries derivadas reales: `findByDisponibleTrue`, `findByZona`, `existsByNumero` |
+| ms-vehiculos | `VehiculoServiceTest` | Service (Mockito) | 6 | Patente duplicada (Conflict), tipo inexistente, borrado lógico |
+| ms-reservas | `ReservaServiceTest` | Service (Mockito + mocks de Feign) | 7 | Máquina de estados PENDIENTE→CONFIRMADA/CANCELADA, validación cliente/vehículo/espacio vía Feign, bloqueo de espacio al confirmar |
+| (los 12) | `*ApplicationTests` | Smoke (`@SpringBootTest`) | 12 | El contexto Spring carga con perfil `test` (H2, sin Eureka) |
+
+### Infraestructura de pruebas
+
+- **H2** con `<scope>test</scope>` en los 9 servicios con base de datos.
+- **`src/test/resources/application-test.properties`** en los 10 servicios de negocio: H2 en
+  modo MySQL, `ddl-auto=create-drop`, dialecto H2 y Eureka deshabilitado (auth-service agrega
+  un `jwt.secret` de prueba).
+- **`@ActiveProfiles("test")`** en todos los `*ApplicationTests` para que el smoke test no
+  necesite MySQL ni Eureka corriendo.
+
+> Las pruebas con mocks de Feign (`ReservaServiceTest`) son el mejor ejemplo para la defensa:
+> demuestran cómo se aísla un microservicio de sus dependencias remotas.
+
+---
+
 ## Herramientas
 
 | Herramienta | Versión | Uso |
@@ -262,37 +292,42 @@ class ProductoRepositoryTest {
 
 ## Configuración para Pruebas
 
-### `src/test/resources/application-test.properties`
+### `src/test/resources/application-test.properties` (archivo real del proyecto)
 
 ```properties
-# Base de datos en memoria H2 para pruebas
-spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+# Perfil de test: H2 en memoria, sin MySQL ni Eureka
+spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=MySQL
 spring.datasource.driver-class-name=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=
 spring.jpa.hibernate.ddl-auto=create-drop
 spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
-
-# Deshabilitar Eureka en pruebas
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.H2Dialect
+spring.jpa.show-sql=false
 eureka.client.enabled=false
 spring.cloud.discovery.enabled=false
 ```
+
+> Nota: se sobreescribe también `spring.jpa.properties.hibernate.dialect` porque el
+> `application.properties` principal define el dialecto MySQL8 y esa propiedad tiene
+> prioridad sobre `spring.jpa.database-platform`.
 
 ---
 
 ## Ejecución de Pruebas
 
-```bash
-# Ejecutar todas las pruebas
-mvn test
+```powershell
+# Compilar TODO el proyecto con pruebas, desde la raíz (Etapa 4 — Maven multi-módulo)
+.\mvnw.cmd clean install
 
-# Ejecutar pruebas de un servicio específico
-cd nombre-servicio && mvn test
+# Ejecutar solo las pruebas de un servicio específico
+cd ms-espacios; .\mvnw.cmd test
 
 # Ejecutar una clase de prueba específica
-mvn test -Dtest=ProductoServiceTest
+.\mvnw.cmd test -Dtest=EspacioServiceTest
 
-# Generar reporte de cobertura (con JaCoCo)
-mvn verify
-# Reporte en: target/site/jacoco/index.html
+# Compilar sin pruebas (Etapa 1 — solo estructura)
+.\mvnw.cmd clean install -DskipTests
 ```
 
 ---

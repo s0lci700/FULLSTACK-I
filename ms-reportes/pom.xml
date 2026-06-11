@@ -11,26 +11,12 @@
 	<groupId>estacionamientos</groupId>
 	<artifactId>ms-reportes</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name/>
-	<description/>
-	<url/>
-	<licenses>
-		<license/>
-	</licenses>
-	<developers>
-		<developer/>
-	</developers>
-	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
-	</scm>
+	<name>ms-reportes</name>
+	<description>Reportes consolidados vía Feign (sin base de datos propia)</description>
 	<dependencies>
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-			<version>2.8.6</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
