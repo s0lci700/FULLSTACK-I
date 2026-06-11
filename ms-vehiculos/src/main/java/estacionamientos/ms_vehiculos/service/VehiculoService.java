@@ -132,8 +132,4 @@ public class VehiculoService {
             tipoVehiculo.getFactorPrecio()
         );
     }
-    // TODO: Crear las clases de excepción en el paquete exception/:
-    // NotFoundException, ConflictException, BadRequestException, BusinessException
-    // y el GlobalExceptionHandler con @RestControllerAdvice.
-
 }

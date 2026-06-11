@@ -28,10 +28,6 @@ public class TipoVehiculo {
     @Column(nullable = true, unique = false)
     private String descripcion;
 
-    // TODO: Cambiar Float por BigDecimal — factor_precio se usa en la fórmula de cobro
-    // (multiplicación con precios), Float pierde precisión con decimales.
-    // También renombrar a factorPrecio (camelCase) para seguir la convención Java;
-    // usar @Column(name = "factor_precio") para mantener el nombre de columna en la BD.
     @Column(name = "factor_precio", nullable = false)
     private BigDecimal factorPrecio;
 }
