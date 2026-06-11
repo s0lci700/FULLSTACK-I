@@ -38,15 +38,6 @@ public class Vehiculo {
     @Column(nullable = true, unique = false)
     private Integer anio;
 
-    // TODO: Reemplazar este Long por una relación JPA real.
-    // TipoVehiculo está en la misma BD, por lo que sí debe haber FK real.
-    // Cambiar a:
-    // @ManyToOne
-    // @JoinColumn(name = "id_tipo_vehiculo", nullable = false)
-    // private TipoVehiculo tipoVehiculo;
-    // @Column(nullable = false, unique = false)
-    // private Long id_tipo_vehiculo;
-
     @ManyToOne
     @JoinColumn(name = "id_tipo_vehiculo", nullable = false)
     private TipoVehiculo idTipoVehiculo;
@@ -57,10 +48,6 @@ public class Vehiculo {
     @Column(name = "id_cliente_ref", nullable = false)
     private Long idClienteRef;
 
-    // TODO: Cambiar Integer por Boolean — activo es un flag true/false, no un
-    // número.
-    // Boolean mapea directamente a TINYINT(1) en MySQL, que es lo que define el
-    // ERD.
     @Column(nullable = false, unique = false)
     private Boolean activo = true;
 }
