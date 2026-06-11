@@ -50,6 +50,31 @@ hr{border:none;border-top:1px solid var(--border);margin:1.2rem 0}
          └───────────────────────────┘
 </code></pre>
 <hr />
+<h2 id="pruebas-implementadas">✅ Pruebas Implementadas (Unidad 3 — Etapa 4)</h2>
+<p>Estado real del proyecto: <strong>33 pruebas pasando</strong> (21 nuevas + 12 <code>contextLoads</code>), verificadas con
+<code>.\mvnw.cmd clean install</code> desde el POM padre <strong>sin</strong> <code>-DskipTests</code> — BUILD SUCCESS en los 13 módulos.</p>
+<h3 id="inventario-de-clases-de-prueba">Inventario de clases de prueba</h3>
+<table>
+<thead>
+<tr><th>Servicio</th><th>Clase</th><th>Tipo</th><th>Tests</th><th>Qué verifica</th></tr>
+</thead>
+<tbody>
+<tr><td>ms-espacios</td><td><code>EspacioServiceTest</code></td><td>Service (Mockito)</td><td>7</td><td>Mapeo a DTO, 404, número duplicado, soft delete, disponibilidad</td></tr>
+<tr><td>ms-espacios</td><td><code>EspacioControllerTest</code></td><td>Controller (<code>@WebMvcTest</code> + MockMvc)</td><td>5</td><td>Códigos 200/201/404/400, body de error del <code>GlobalExceptionHandler</code>, validación con mapa <code>campos</code></td></tr>
+<tr><td>ms-espacios</td><td><code>EspacioRepositoryTest</code></td><td>Repository (<code>@DataJpaTest</code> + H2)</td><td>3</td><td>Queries derivadas reales: <code>findByDisponibleTrue</code>, <code>findByZona</code>, <code>existsByNumero</code></td></tr>
+<tr><td>ms-vehiculos</td><td><code>VehiculoServiceTest</code></td><td>Service (Mockito)</td><td>6</td><td>Patente duplicada (Conflict), tipo inexistente, borrado lógico</td></tr>
+<tr><td>ms-reservas</td><td><code>ReservaServiceTest</code></td><td>Service (Mockito + mocks de Feign)</td><td>7</td><td>Máquina de estados PENDIENTE→CONFIRMADA/CANCELADA, validación cliente/vehículo/espacio vía Feign, bloqueo de espacio al confirmar</td></tr>
+<tr><td>(los 12)</td><td><code>*ApplicationTests</code></td><td>Smoke (<code>@SpringBootTest</code>)</td><td>12</td><td>El contexto Spring carga con perfil <code>test</code> (H2, sin Eureka)</td></tr>
+</tbody>
+</table>
+<h3 id="infraestructura-de-pruebas">Infraestructura de pruebas</h3>
+<ul>
+<li><strong>H2</strong> con <code>&lt;scope&gt;test&lt;/scope&gt;</code> en los 9 servicios con base de datos.</li>
+<li><strong><code>src/test/resources/application-test.properties</code></strong> en los 10 servicios de negocio: H2 en modo MySQL, <code>ddl-auto=create-drop</code>, dialecto H2 y Eureka deshabilitado (auth-service agrega un <code>jwt.secret</code> de prueba).</li>
+<li><strong><code>@ActiveProfiles("test")</code></strong> en todos los <code>*ApplicationTests</code> para que el smoke test no necesite MySQL ni Eureka corriendo.</li>
+</ul>
+<blockquote><p>Las pruebas con mocks de Feign (<code>ReservaServiceTest</code>) son el mejor ejemplo para la defensa: demuestran cómo se aísla un microservicio de sus dependencias remotas.</p></blockquote>
+<hr />
 <h2 id="herramientas">Herramientas</h2>
 <table>
 <thead>
@@ -299,12 +324,16 @@ class ProductoRepositoryTest {
 </code></pre>
 <hr />
 <h2 id="configuracion-para-pruebas">Configuración para Pruebas</h2>
-<h3 id="srctestresourcesapplication-testproperties"><code>src/test/resources/application-test.properties</code></h3>
-<pre><code class="language-properties"># Base de datos en memoria H2 para pruebas
-spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+<h3 id="srctestresourcesapplication-testproperties"><code>src/test/resources/application-test.properties</code> (archivo real del proyecto)</h3>
+<pre><code class="language-properties"># Perfil de test: H2 en memoria, sin MySQL ni Eureka
+spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=MySQL
 spring.datasource.driver-class-name=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=
 spring.jpa.hibernate.ddl-auto=create-drop
 spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.H2Dialect
+spring.jpa.show-sql=false
 
 # Deshabilitar Eureka en pruebas
 eureka.client.enabled=false
@@ -312,18 +341,17 @@ spring.cloud.discovery.enabled=false
 </code></pre>
 <hr />
 <h2 id="ejecucion-de-pruebas">Ejecución de Pruebas</h2>
-<pre><code class="language-bash"># Ejecutar todas las pruebas
-mvn test
+<pre><code class="language-bash"># Compilar TODO el proyecto con pruebas, desde la raíz (Etapa 4 — Maven multi-módulo)
+.\mvnw.cmd clean install
 
-# Ejecutar pruebas de un servicio específico
-cd nombre-servicio &amp;&amp; mvn test
+# Ejecutar solo las pruebas de un servicio específico
+cd ms-espacios; .\mvnw.cmd test
 
 # Ejecutar una clase de prueba específica
-mvn test -Dtest=ProductoServiceTest
+.\mvnw.cmd test -Dtest=EspacioServiceTest
 
-# Generar reporte de cobertura (con JaCoCo)
-mvn verify
-# Reporte en: target/site/jacoco/index.html
+# Compilar sin pruebas (Etapa 1 — solo estructura)
+.\mvnw.cmd clean install -DskipTests
 </code></pre>
 <hr />
 <h2 id="buenas-practicas">Buenas Prácticas</h2>

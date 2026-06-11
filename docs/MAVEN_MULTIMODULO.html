@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Maven Multi-Módulo — Estacionamiento Inteligente</title>
+  <style>
+:root { --bg:#0f1117;--bg2:#1a1f2e;--border:#2d3748;--text:#e2e8f0;--text2:#94a3b8;--text3:#7b8ea6;--blue:#93c5fd; }
+*{box-sizing:border-box}
+body{margin:0;font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+.container{max-width:980px;margin:0 auto;padding:2rem}
+.back{display:inline-flex;gap:.4rem;color:var(--text3);text-decoration:none;font-size:.85rem;margin-bottom:1rem}
+.back:hover{color:var(--blue)}
+.header{border-bottom:1px solid var(--border);padding-bottom:1rem;margin-bottom:1.25rem}
+.header h1{margin:0;font-size:1.9rem}
+.header p{margin:.35rem 0 0;color:var(--text2);font-size:.92rem}
+main{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.25rem 1.5rem}
+a{color:var(--blue)}
+h1,h2,h3{color:#f8fafc}
+h2{margin-top:1.6rem;border-bottom:1px solid var(--border);padding-bottom:.35rem}
+h3{margin-top:1.2rem}
+p,li{color:var(--text2)}
+code{background:#111827;border:1px solid var(--border);padding:.1rem .35rem;border-radius:4px;color:#c4b5fd;font-family:Consolas,monospace}
+pre{background:#111827;border:1px solid var(--border);padding:.8rem;border-radius:8px;overflow:auto}
+pre code{border:none;background:none;padding:0;color:#e2e8f0}
+table{width:100%;border-collapse:collapse;margin:.8rem 0}
+th,td{border:1px solid var(--border);padding:.5rem .6rem;text-align:left}
+th{background:#1e2330;color:var(--text3);font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+blockquote{border-left:3px solid var(--border);margin:1rem 0;padding:.2rem .8rem;color:var(--text3)}
+hr{border:none;border-top:1px solid var(--border);margin:1.2rem 0}
+</style>
+</head>
+<body>
+  <div class="container">
+    <a class="back" href="index.html">← Índice docs</a>
+    <div class="header">
+      <h1>Maven Multi-Módulo y Cambios de Unidad 3</h1>
+      <p>Versión HTML legible generada desde <code>MAVEN_MULTIMODULO.md</code>.</p>
+    </div>
+    <main>
+<p>Este documento explica cómo el proyecto implementa el material de la <strong>Unidad 3</strong> del curso:
+la migración a Maven Multi-Módulos (Documentos 1–4), la guía de Swagger (3.1.1 / 3.1.2) y el
+documento del POM padre. Sirve como referencia para la defensa: qué se cambió, dónde y por qué.</p>
+<hr />
+<h2 id="estructura-del-proyecto-padre">Estructura del proyecto padre (Etapa 1)</h2>
+<p>El repositorio es un proyecto Maven multi-módulo. El <code>pom.xml</code> de la raíz es el <strong>POM padre</strong>
+(<code>estacionamientos-parent</code>) con <code>&lt;packaging&gt;pom&lt;/packaging&gt;</code> y los 12 microservicios declarados
+como <code>&lt;modules&gt;</code>:</p>
+<pre><code>FULLSTACK-I/
+├── pom.xml                ← POM padre (packaging pom, sin código)
+├── mvnw.cmd / .mvn/       ← Maven Wrapper en la raíz (Unidad 3)
+├── eureka-server/
+├── api-gateway/
+├── auth-service/
+├── user-service/
+├── security-service/
+├── ms-vehiculos/
+├── ms-espacios/
+├── ms-tarifas/
+├── ms-reservas/
+├── ms-accesos/
+├── ms-pagos/
+└── ms-reportes/
+</code></pre>
+<p>Cada hijo declara al padre con <code>&lt;relativePath&gt;../pom.xml&lt;/relativePath&gt;</code> y <strong>no repite versiones</strong>
+de Spring: las hereda. En VS Code se abre <strong>la carpeta raíz</strong> (no cada servicio por separado) y el
+Spring Boot Dashboard lista las 12 aplicaciones.</p>
+<h3 id="regla-central">Regla central: "el padre administra versiones, los hijos administran necesidades"</h3>
+<p>En el POM padre se centralizan las versiones vía <code>&lt;properties&gt;</code> + <code>&lt;dependencyManagement&gt;</code>:</p>
+<table>
+<thead>
+<tr><th>Qué</th><th>Dónde se define</th><th>Valor</th></tr>
+</thead>
+<tbody>
+<tr><td>Spring Boot</td><td><code>&lt;parent&gt;</code> del POM raíz</td><td>3.5.14</td></tr>
+<tr><td>Spring Cloud</td><td><code>dependencyManagement</code> (BOM)</td><td>2025.0.2</td></tr>
+<tr><td>springdoc-openapi</td><td><code>dependencyManagement</code> + <code>&lt;springdoc.version&gt;</code></td><td>2.8.6</td></tr>
+<tr><td>JJWT (api/impl/jackson)</td><td><code>dependencyManagement</code> + <code>&lt;jjwt.version&gt;</code></td><td>0.11.5</td></tr>
+<tr><td>Java</td><td><code>&lt;java.version&gt;</code></td><td>21</td></tr>
+</tbody>
+</table>
+<p>Los hijos declaran <strong>solo las dependencias que usan, sin versión</strong>. Por ejemplo, eureka-server no
+carga JPA ni MySQL, el api-gateway no carga Swagger, y solo los 9 servicios con base de datos
+incluyen <code>mysql-connector-j</code>.</p>
+<blockquote><p>Cambio aplicado en Unidad 3: antes cada hijo repetía <code>&lt;version&gt;2.8.6&lt;/version&gt;</code> (springdoc) y
+<code>&lt;version&gt;0.11.5&lt;/version&gt;</code> (JJWT). Ahora esas versiones viven solo en el padre — un único punto
+de actualización y cero riesgo de versiones mezcladas.</p></blockquote>
+<hr />
+<h2 id="compilacion-global">Compilación global (Etapas 1 y 3)</h2>
+<p>El Maven Wrapper fue copiado a la raíz, por lo que los comandos del material funcionan tal cual:</p>
+<pre><code class="language-powershell"># Etapa 1 — primera compilación (estructura, sin tests)
+.\mvnw.cmd clean install -DskipTests
+
+# Etapa 4 — compilación completa con pruebas
+.\mvnw.cmd clean install
+
+# Compilar un solo módulo
+.\mvnw.cmd clean install -pl ms-espacios
+
+# Compilar un módulo con sus dependencias
+.\mvnw.cmd clean install -pl ms-espacios -am
+</code></pre>
+<p><strong>Orden de ejecución (Etapa 3):</strong> eureka-server (8761) → api-gateway (8080) → servicios de
+negocio. Automatizado en <code>scripts/start-all.ps1</code> y <code>scripts/manage.ps1</code>.</p>
+<hr />
+<h2 id="swagger-openapi">Swagger / OpenAPI (Documento 2 + Guías 3.1.1 y 3.1.2)</h2>
+<p>Los 10 servicios de negocio (no eureka ni gateway) tienen springdoc habilitado:</p>
+<ol>
+<li><strong>Dependencia</strong> <code>springdoc-openapi-starter-webmvc-ui</code> (versión heredada del padre).</li>
+<li><strong>Propiedades</strong> en cada <code>application.properties</code>, según la guía 3.1.2:</li>
+</ol>
+<pre><code class="language-properties"># Swagger / OpenAPI (springdoc) - Guia 3.1.2 Unidad 3
+springdoc.api-docs.enabled=true
+springdoc.swagger-ui.enabled=true
+springdoc.swagger-ui.path=/swagger-ui/index.html
+</code></pre>
+<ol start="3">
+<li><strong>Clase <code>SwaggerConfig</code></strong> en el paquete <code>config/</code> de cada servicio, con el bean
+<code>customOpenAPI()</code> que define título, versión y descripción (patrón de la guía Biblioteca Duoc).</li>
+<li><strong>Anotaciones en controllers</strong>: <code>@Tag</code> a nivel de clase, <code>@Operation</code> + <code>@ApiResponse</code> por
+endpoint (262 usos en los 19 controllers).</li>
+<li><strong>Anotaciones en DTOs</strong> (<code>@Schema</code> con <code>description</code> y <code>example</code>) en DTOs representativos:
+<code>VehiculoResponseDTO</code>, <code>EspacioCreateDTO</code> y <code>ReservaCreateDTO</code>.</li>
+</ol>
+<p>URL por servicio: <code>http://localhost:{puerto}/swagger-ui/index.html</code> (puerto directo, no gateway).</p>
+<hr />
+<h2 id="calidad-y-pruebas-unitarias">Calidad y Pruebas Unitarias (Etapa 4)</h2>
+<p>Detalle completo en <a href="PRUEBAS.html">Pruebas</a>. Resumen de lo implementado:</p>
+<ul>
+<li><strong>H2</strong> (scope test) en los 9 servicios con BD y <code>application-test.properties</code> con perfil de
+test (H2 modo MySQL, <code>create-drop</code>, Eureka deshabilitado).</li>
+<li><strong><code>@ActiveProfiles("test")</code></strong> en los 12 <code>*ApplicationTests</code> de negocio.</li>
+<li><strong>21 pruebas nuevas</strong> en 5 clases cubriendo los tres tipos del Documento 4:
+<ul>
+<li><em>Service test</em> (Mockito): <code>EspacioServiceTest</code>, <code>VehiculoServiceTest</code>, <code>ReservaServiceTest</code></li>
+<li><em>Controller test</em> (<code>@WebMvcTest</code> + MockMvc): <code>EspacioControllerTest</code></li>
+<li><em>Repository test</em> (<code>@DataJpaTest</code> + H2): <code>EspacioRepositoryTest</code></li>
+</ul>
+</li>
+<li>Cierre de la etapa verificado: <code>.\mvnw.cmd clean install</code> <strong>sin</strong> <code>-DskipTests</code> →
+<strong>BUILD SUCCESS en los 13 módulos</strong> (33 tests, 0 fallos).</li>
+</ul>
+<hr />
+<h2 id="limpieza-de-poms">Limpieza de POMs</h2>
+<p>Además de centralizar versiones, en Unidad 3 se limpiaron los 12 POMs hijos:</p>
+<ul>
+<li>Se eliminaron los tags vacíos generados por Spring Initializr (<code>&lt;name/&gt;</code>, <code>&lt;description/&gt;</code>,
+<code>&lt;licenses&gt;</code>, <code>&lt;developers&gt;</code>, <code>&lt;scm&gt;</code>, <code>&lt;url/&gt;</code>).</li>
+<li>Cada módulo ahora declara <code>&lt;name&gt;</code> y <code>&lt;description&gt;</code> reales en español (visibles en el
+Reactor Summary de Maven y en el Spring Boot Dashboard).</li>
+</ul>
+<hr />
+<p><em>Ver también: <a href="PRUEBAS.html">Pruebas</a> | <a href="ARQUITECTURA.html">Arquitectura</a> | <a href="DESPLIEGUE.html">Despliegue</a></em></p>
+    </main>
+  </div>
+</body>
+</html>

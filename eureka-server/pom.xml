@@ -11,21 +11,8 @@
 	<groupId>estacionamientos</groupId>
 	<artifactId>eureka-server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name/>
-	<description/>
-	<url/>
-	<licenses>
-		<license/>
-	</licenses>
-	<developers>
-		<developer/>
-	</developers>
-	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
-	</scm>
+	<name>eureka-server</name>
+	<description>Servidor de descubrimiento de servicios (Eureka)</description>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
