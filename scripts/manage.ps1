@@ -7,6 +7,8 @@
 
     Commands:
       start <n|name|all>    Start a service (or all via start-all.ps1)
+      package <n|name|all>  Build the executable JAR (mvn clean package -DskipTests)
+      jar <n|name|all>      Start a service from its JAR (java -jar target\*.jar)
       stop  <n|name|all>    Kill the Java process on that port
       restart <n|name|all>  Stop then start
       db                    Run load-db.ps1 (reset all 9 databases)
@@ -113,19 +115,15 @@ function Show-Dashboard([string]$feedback = "") {
     }
 
     Write-Host ""
-    Write-Host "  start / stop / restart  <n | name | all>    db    status    quit" -ForegroundColor DarkGray
+    Write-Host "  start / stop / restart / package / jar  <n | name | all>    db    status    quit" -ForegroundColor DarkGray
     Write-Host ""
 }
 
 # ── Service actions ───────────────────────────────────────────────────────────
-function Start-Svc([hashtable]$svc) {
-    $path = Join-Path $root $svc.Name
-    if (-not (Test-Path $path)) { return "Folder not found: $($svc.Name)" }
 
-    $map = Get-AllStatus
-    if ($map.ContainsKey($svc.Port)) { return "$($svc.Name) already UP (PID $($map[$svc.Port]))" }
-
-    $inner = "`$Host.UI.RawUI.WindowTitle = '$($svc.Name)'; Set-Location '$path'; Write-Host ''; Write-Host '  ► $($svc.Name)' -ForegroundColor Cyan; Write-Host ''; $mvnCmd spring-boot:run"
+# Opens a titled window/tab running $runCmd from the service folder.
+function Open-SvcWindow([hashtable]$svc, [string]$path, [string]$runCmd) {
+    $inner = "`$Host.UI.RawUI.WindowTitle = '$($svc.Name)'; Set-Location '$path'; Write-Host ''; Write-Host '  ► $($svc.Name)' -ForegroundColor Cyan; Write-Host ''; $runCmd"
 
     if ($useWT) {
         $enc   = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($inner))
@@ -134,7 +132,75 @@ function Start-Svc([hashtable]$svc) {
     } else {
         Start-Process powershell -ArgumentList "-NoExit", "-Command", $inner -WindowStyle Normal
     }
+}
+
+function Start-Svc([hashtable]$svc) {
+    $path = Join-Path $root $svc.Name
+    if (-not (Test-Path $path)) { return "Folder not found: $($svc.Name)" }
+
+    $map = Get-AllStatus
+    if ($map.ContainsKey($svc.Port)) { return "$($svc.Name) already UP (PID $($map[$svc.Port]))" }
+
+    Open-SvcWindow $svc $path "$mvnCmd spring-boot:run"
     return "Starting $($svc.Name)…  (run 'status' in a few seconds to confirm)"
+}
+
+# Locate the executable JAR in <service>/target (ignores *.original from repackage)
+function Get-SvcJar([hashtable]$svc) {
+    $target = Join-Path (Join-Path $root $svc.Name) "target"
+    if (-not (Test-Path $target)) { return $null }
+    return Get-ChildItem $target -Filter "*.jar" -ErrorAction SilentlyContinue |
+        Where-Object { $_.Name -notlike "*.original" -and $_.Name -notlike "*sources*" } |
+        Select-Object -First 1
+}
+
+# Build the executable JAR (skips tests for speed). Runs in the dashboard window.
+function Package-Svc([hashtable]$svc) {
+    $path = Join-Path $root $svc.Name
+    if (-not (Test-Path $path)) { return "Folder not found: $($svc.Name)" }
+
+    Write-Host ""
+    Write-Host "  ► Packaging $($svc.Name)…" -ForegroundColor Cyan
+    Push-Location $path
+    Invoke-Expression "$mvnCmd -q clean package -DskipTests"
+    $ok = ($LASTEXITCODE -eq 0)
+    Pop-Location
+
+    if ($ok) {
+        $jar = Get-SvcJar $svc
+        return "Packaged $($svc.Name) → target\$($jar.Name)"
+    }
+    return "BUILD FAILED for $($svc.Name) (exit $LASTEXITCODE)"
+}
+
+# Start a service from its packaged JAR — same as the classroom demo:
+#   title <name>  +  java -jar <name>-x.y.z.jar
+function Start-SvcJar([hashtable]$svc) {
+    $map = Get-AllStatus
+    if ($map.ContainsKey($svc.Port)) { return "$($svc.Name) already UP (PID $($map[$svc.Port]))" }
+
+    $jar = Get-SvcJar $svc
+    if (-not $jar) { return "No JAR for $($svc.Name) — run 'package $($svc.N)' first" }
+
+    Open-SvcWindow $svc $jar.DirectoryName "java -jar '$($jar.Name)'"
+    return "Starting $($svc.Name) from $($jar.Name)…"
+}
+
+# Start all 12 from JARs in dependency order (eureka → gateway → the rest)
+function Start-AllJars {
+    $missing = @($SVCS | Where-Object { -not (Get-SvcJar $_) } | ForEach-Object { $_.Name })
+    if ($missing.Count -gt 0) { return "Missing JARs: $($missing -join ', ')  — run 'package all' first" }
+
+    foreach ($svc in $SVCS) {
+        Show-Dashboard "Starting $($svc.Name) from JAR…"
+        Start-SvcJar $svc | Out-Null
+        switch ($svc.Name) {
+            "eureka-server" { Start-Sleep -Seconds 15 }
+            "api-gateway"   { Start-Sleep -Seconds 8 }
+            default         { Start-Sleep -Seconds 3 }
+        }
+    }
+    return "All 12 services launched from JARs. Run 'status' to confirm."
 }
 
 function Stop-Svc([hashtable]$svc) {
@@ -220,6 +286,41 @@ function Handle-Input([string]$line) {
             return Stop-Svc $svc
         }
 
+        { $_ -in @("package", "pkg", "build") } {
+            if ($arg -eq "") { return "Usage: package <n | name | all>" }
+
+            if ($arg -eq "all") {
+                $results = @()
+                foreach ($s in $SVCS) {
+                    Show-Dashboard "Packaging $($s.Name)…  ($($results.Count + 1)/12)"
+                    $r = Package-Svc $s
+                    if ($r -like "BUILD FAILED*") { $results += $s.Name }
+                }
+                if ($results.Count -gt 0) { return "FAILED: $($results -join ', ')" }
+                return "All 12 JARs packaged successfully."
+            }
+
+            $svc = Resolve-Svc $arg
+            if (-not $svc) { return "Not found: '$arg'" }
+            return Package-Svc $svc
+        }
+
+        "jar" {
+            if ($arg -eq "") { return "Usage: jar <n | name | all>" }
+
+            if ($arg -eq "all") {
+                $map = Get-AllStatus
+                if ($map.Count -gt 0) {
+                    return "$($map.Count) services already running. Run 'stop all' first."
+                }
+                return Start-AllJars
+            }
+
+            $svc = Resolve-Svc $arg
+            if (-not $svc) { return "Not found: '$arg'" }
+            return Start-SvcJar $svc
+        }
+
         "restart" {
             if ($arg -eq "") { return "Usage: restart <n | name | all>" }
 
@@ -238,7 +339,7 @@ function Handle-Input([string]$line) {
         }
 
         { $_ -in @("?", "help", "h") } {
-            return "start / stop / restart <n|name|all>  |  db  |  status  |  quit"
+            return "start/stop/restart <n|name|all>  |  package <n|all> (build JAR)  |  jar <n|all> (run JAR)  |  db  |  status  |  quit"
         }
 
         "" { return "" }   # bare Enter = silent refresh
