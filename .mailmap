@@ -1,0 +1,15 @@
+# .mailmap — unifica identidades de git para `git shortlog -sn`
+# Formato: Nombre Canónico <email-canónico> Nombre-en-commit <email-en-commit>
+
+# Catalina: unificar sus dos identidades bajo una sola
+Catalina Aguirre <ca.aguirret@duocuc.cl> catalina <catalinaguirretorres@gmail.com>
+Catalina Aguirre <ca.aguirret@duocuc.cl> Catalina Aguirre <ca.aguirret@duocuc.cl>
+
+# Sol: identidad principal (ya consistente)
+Sol León <solv.leong@gmail.com>
+
+# AO-Alumno = commits hechos en máquinas del laboratorio DUOC (trabajo mixto
+# de ambas integrantes — ver lista anotada en PLAN-EV3.md).
+# No se puede dividir por email; cada una defiende los suyos en la defensa.
+Equipo (lab DUOC) <AO-Alumno@duoc.acad> AO-Alumno <AO-Alumno@duoc.acad>
+Equipo (lab DUOC) <AO-Alumno@duoc.acad> AO-Alumno <AO-Alumno@AOAWSB02LC0605.duoc.acad>
