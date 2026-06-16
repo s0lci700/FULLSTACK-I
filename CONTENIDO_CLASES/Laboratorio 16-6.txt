@@ -1,0 +1,40 @@
+🚀 Laboratorio: Arquitectura de Microservicios con Spring Boot y MySQL
+¡Hola a todos! Ya está disponible en la plataforma el material para nuestra próxima sesión práctica. Trabajaremos con un sistema de microservicios completamente funcional para un ecosistema de spa de mascotas.
+
+📌 Ubicación del archivo: Carpeta doggspa
+
+📦 Archivo a descargar: doggyspa-parent.v6-clean.zip
+
+Este proyecto viene "limpio": incluye el proyecto padre, los módulos de los microservicios, los scripts de la base de datos MySQL en la carpeta docs/ y las guías de inicio. No contiene archivos compilados ni carpetas pesadas, por lo que se descargará en segundos.
+
+🛠️ Desafío Paso a Paso (Instrucciones para la clase)
+Sigan estrictamente este orden cuando descarguen el material para que descubran cómo viaja el software en el mundo real:
+
+1. 👀 Antes de tocar nada: Revisa el peso
+Descomprime el archivo en tu computadora. Antes de abrirlo, haz clic derecho sobre la carpeta del proyecto y revisa sus Propiedades.
+
+Anota en un papel cuántos Kilobytes (KB) o Megabytes (MB) pesa el proyecto original limpio.
+2. 📖 La guía de navegación
+Abre la carpeta raíz con VS Code. Lo primero que debes hacer es abrir y leer el archivo README.md. Ahí están las instrucciones iniciales para preparar tu base de datos MySQL y entender la arquitectura.
+
+3. ⚙️ El momento de la verdad: Compilación masiva
+Abre la terminal integrada de VS Code en la raíz del proyecto padre y ejecuta el siguiente comando de Maven:
+
+Bash
+
+
+
+mvn clean package
+ 
+(Este comando limpiará cualquier residuo, descargará las librerías necesarias y compilará todo el ecosistema desde el padre de forma automática).
+
+4. ⚖️ El gran cambio: Compara el peso otra vez
+Una vez que la consola te muestre el mensaje BUILD SUCCESS, vuelve a revisar las Propiedades de la carpeta del proyecto en Windows 11.
+
+¿Cuánto pesa ahora? ¿Qué apareció de nuevo?
+🧠 ¿Qué estamos aprendiendo con esto? (Contexto Real)
+Notarán que el peso del proyecto aumentó drásticamente y que apareció una carpeta llamada target/ dentro del proyecto padre y de cada microservicio.
+
+Los ejecutables de Java: Dentro de esas carpetas target/ se acaban de generar los archivos .jar. Estos son los verdaderos ejecutables de Java que contienen el código transformado en bytecode y listo para correr.
+El cliente final no programa: Al cliente final (o al servidor de producción) nunca se le entrega nuestro código fuente .java. Se le entregan estos archivos .jar empaquetados, ya que ellos no necesitan compilar nada, solo ejecutar el software.
+Siguiente paso en el flujo (QA y Docker): En este punto del laboratorio, imaginen que somos el equipo de desarrollo y le estamos entregando estos .jar listos al equipo de Calidad (QA / Testing) para que verifiquen que todo funcione bien. Una vez que ellos nos den el visto bueno, nuestro siguiente gran paso en el curso será tomar esos mismos .jar y empaquetarlos dentro de contenedores Docker.
