@@ -234,6 +234,179 @@
       color: var(--text3);
       font-size: 0.78rem;
     }
+
+    /* ── EV3 ─────────────────────────────────────────────── */
+    .ev3-banner {
+      background: linear-gradient(135deg, #1a1f2e 0%, #1e2a1e 100%);
+      border: 1px solid #3fb95066;
+      border-left: 4px solid var(--green);
+      border-radius: 12px;
+      padding: 1.2rem 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .ev3-banner-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin-bottom: 0.25rem;
+    }
+
+    .ev3-banner-subtitle {
+      font-size: 0.8rem;
+      color: var(--text3);
+    }
+
+    .ev3-timeline {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .ev3-date {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.2rem;
+      position: relative;
+    }
+
+    .ev3-date.red   { border-top: 3px solid var(--red);    }
+    .ev3-date.amber { border-top: 3px solid var(--yellow);  }
+    .ev3-date.blue  { border-top: 3px solid var(--blue);   }
+
+    .ev3-date-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text3);
+      margin-bottom: 0.3rem;
+    }
+
+    .ev3-date.red   .ev3-date-label { color: var(--red); }
+    .ev3-date.amber .ev3-date-label { color: var(--yellow); }
+    .ev3-date.blue  .ev3-date-label { color: var(--blue); }
+
+    .ev3-date-day {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin-bottom: 0.15rem;
+    }
+
+    .ev3-date-time {
+      font-size: 0.78rem;
+      color: var(--text2);
+      margin-bottom: 0.5rem;
+    }
+
+    .ev3-date-note {
+      font-size: 0.75rem;
+      color: var(--text3);
+      border-top: 1px solid var(--border);
+      padding-top: 0.5rem;
+    }
+
+    .ev3-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .ev3-step {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.9rem 1.1rem;
+    }
+
+    .ev3-step-header {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .ev3-step-header .step-num {
+      background: #1e3a5f;
+      color: var(--blue);
+      font-size: 0.65rem;
+      padding: 0.1rem 0.45rem;
+      border-radius: 10px;
+      font-weight: 700;
+    }
+
+    .ev3-checklist {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .ev3-checklist li {
+      font-size: 0.78rem;
+      color: var(--text2);
+      display: flex;
+      gap: 0.5rem;
+      align-items: flex-start;
+    }
+
+    .ev3-checklist li::before {
+      content: "☐";
+      color: var(--text3);
+      flex-shrink: 0;
+      font-size: 0.85rem;
+      line-height: 1.3;
+    }
+
+    .ev3-nota {
+      background: #1e2a10;
+      border: 1px solid #3a4a20;
+      border-left: 3px solid var(--yellow);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-size: 0.8rem;
+      color: var(--text2);
+      margin-bottom: 2rem;
+    }
+
+    .ev3-nota strong { color: var(--yellow); }
+
+    .ev3-nota-individual {
+      background: #1a1e2e;
+      border: 1px solid #2d3560;
+      border-left: 3px solid var(--blue);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-size: 0.8rem;
+      color: var(--text2);
+      margin-bottom: 2rem;
+    }
+
+    .ev3-nota-individual strong { color: var(--blue); }
+
+    .ev3-nota-individual table {
+      margin-top: 0.5rem;
+      font-size: 0.78rem;
+    }
+
+    .ev3-nota-individual table td {
+      padding: 0.25rem 0.75rem 0.25rem 0;
+      color: var(--text2);
+    }
+
+    .ev3-nota-individual table td:first-child {
+      font-family: inherit;
+      font-weight: 600;
+      color: #f1f5f9;
+      font-size: 0.78rem;
+    }
   </style>
 </head>
 <body>
@@ -248,6 +421,127 @@
       <span class="meta-item">Servicios: <span>12 microservicios</span></span>
       <span class="meta-item">Puerto gateway: <span>8080</span></span>
     </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       EVALUACIÓN PARCIAL 3
+  ═══════════════════════════════════════════════════════ -->
+
+  <div class="ev3-banner">
+    <div class="ev3-banner-title">📢 Evaluación Parcial 3 — Cierre de Proyecto Semestral y Defensa Técnica</div>
+    <div class="ev3-banner-subtitle">Docente: Mauricio González V. &nbsp;·&nbsp; DSY1103 Desarrollo FullStack I &nbsp;·&nbsp; Grupo: Sol León + Catalina Aguirre</div>
+  </div>
+
+  <!-- Fechas clave -->
+  <div class="section-label">Fechas clave</div>
+  <div class="ev3-timeline">
+    <div class="ev3-date red">
+      <div class="ev3-date-label">🔴 Cierre GitHub</div>
+      <div class="ev3-date-day">Lunes 29/06</div>
+      <div class="ev3-date-time">hasta las 23:59 hrs</div>
+      <div class="ev3-date-note">⚠️ Sin commits después de esta hora — el repo queda congelado para revisión</div>
+    </div>
+    <div class="ev3-date amber">
+      <div class="ev3-date-label">🟡 Revisión docente</div>
+      <div class="ev3-date-day">Martes 30/06</div>
+      <div class="ev3-date-time">todo el día</div>
+      <div class="ev3-date-note">El docente descarga los repos, revisa entregas y genera las preguntas personalizadas de defensa</div>
+    </div>
+    <div class="ev3-date blue">
+      <div class="ev3-date-label">🔵 Defensa individual</div>
+      <div class="ev3-date-day">Miércoles 01/07</div>
+      <div class="ev3-date-time">en adelante</div>
+      <div class="ev3-date-note">Video 50% + Prueba escrita individual 50%</div>
+    </div>
+  </div>
+
+  <!-- Nota de composición individual -->
+  <div class="ev3-nota-individual">
+    <strong>📊 Nota individual (Nota 5)</strong> — ambos elementos son obligatorios:
+    <table>
+      <tr><td>📝 Prueba escrita individual</td><td>50%</td></tr>
+      <tr><td>🎥 Video explicativo del sistema</td><td>50%</td></tr>
+    </table>
+  </div>
+
+  <!-- Pasos a seguir -->
+  <div class="section-label">Pasos a seguir — antes del 29/06</div>
+  <div class="ev3-steps">
+
+    <div class="ev3-step">
+      <div class="ev3-step-header"><span class="step-num">PASO 1</span> 🧩 Entrega grupal — sistema sin Docker</div>
+      <ul class="ev3-checklist">
+        <li>Generar los <code>.jar</code> de todos los servicios desde el proyecto padre (<code>mvnw.cmd clean package -DskipTests</code>)</li>
+        <li>Crear archivo <code>start.bat</code> que levante en orden: Eureka → microservicios → API Gateway</li>
+        <li>Verificar que Eureka registre todos los servicios</li>
+        <li>Verificar que API Gateway responda en puerto 8080</li>
+        <li>Verificar conexión a BD y endpoints principales operativos</li>
+      </ul>
+    </div>
+
+    <div class="ev3-step">
+      <div class="ev3-step-header"><span class="step-num">PASO 2</span> 🧪 Pruebas unitarias</div>
+      <ul class="ev3-checklist">
+        <li>Ejecutar todos los tests sin errores (<code>mvnw.cmd test</code> en cada servicio)</li>
+        <li>Confirmar que los 33+ tests pasan en la suite completa</li>
+        <li>Tener evidencia de ejecución lista para mostrar en el video</li>
+      </ul>
+    </div>
+
+    <div class="ev3-step">
+      <div class="ev3-step-header"><span class="step-num">PASO 3</span> 📄 README.md</div>
+      <ul class="ev3-checklist">
+        <li>Explicar cómo ejecutar el sistema (orden, puertos, BD)</li>
+        <li>Agregar sección <em>"Video explicativo de la defensa"</em> con el enlace</li>
+        <li>Agregar sección <em>"Subtítulos o transcripción"</em> (o indicar el archivo <code>subtitulos-video.txt</code>)</li>
+        <li>Verificar que el enlace al video sea público y accesible</li>
+      </ul>
+    </div>
+
+    <div class="ev3-step">
+      <div class="ev3-step-header"><span class="step-num">PASO 4</span> 🎥 Video individual</div>
+      <ul class="ev3-checklist">
+        <li>Sistema funcionando en vivo</li>
+        <li>Demostrar puesta en marcha (Eureka + Gateway)</li>
+        <li>Mostrar microservicios principales</li>
+        <li>Ejecutar o mostrar evidencia de pruebas unitarias</li>
+        <li>Explicar el aporte técnico individual con claridad</li>
+        <li>Subir a YouTube o Google Drive con acceso público</li>
+        <li>Pegar el enlace en README.md</li>
+        <li>(Opcional pero recomendado) Agregar subtítulos o transcripción</li>
+      </ul>
+    </div>
+
+    <div class="ev3-step">
+      <div class="ev3-step-header"><span class="step-num">PASO 5</span> ✅ Checklist final antes del cierre</div>
+      <ul class="ev3-checklist">
+        <li>El proyecto compila sin errores</li>
+        <li>Los tests unitarios pasan sin errores</li>
+        <li>Los <code>.jar</code> se generan correctamente desde el proyecto padre</li>
+        <li>El archivo <code>.bat</code> levanta el sistema en el orden correcto</li>
+        <li>Eureka muestra los microservicios registrados</li>
+        <li>El API Gateway funciona (puerto 8080)</li>
+        <li>Las rutas principales pueden ser probadas con Postman</li>
+        <li>El README explica cómo ejecutar el sistema</li>
+        <li>El README incluye el enlace al video (accesible, no privado)</li>
+        <li>Los commits están distribuidos entre ambas integrantes</li>
+        <li>No faltan archivos necesarios para ejecutar el proyecto</li>
+      </ul>
+    </div>
+
+    <div class="ev3-step">
+      <div class="ev3-step-header"><span class="step-num">DOCKER</span> 🐳 Opcional para EV3</div>
+      <ul class="ev3-checklist">
+        <li>Docker <strong>no es obligatorio</strong> para EV3</li>
+        <li>Se revisará en el Examen Transversal</li>
+        <li>Si ya funciona con Docker → se puede presentar ahora y queda adelantado para el examen</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="ev3-nota">
+    <strong>⚠️ Importante:</strong> La defensa técnica es <strong>individual</strong>. Cada estudiante debe conocer y poder explicar: funcionamiento del sistema, su aporte personal, pruebas unitarias implementadas, forma de ejecución, configuración utilizada y decisiones técnicas del equipo.
   </div>
 
   <!-- Inicio rápido y estado -->
