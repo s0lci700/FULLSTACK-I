@@ -1,0 +1,290 @@
+
+Saltar al contenido principal
+DESARROLLO FULLSTACK I_011D
+AbiertoEstado del curso Abierto
+
+    Contenido
+    Calendario
+    Anuncios
+    Foros
+    Libro de calificaciones
+    Mensajes
+    Grupos
+
+DESARROLLO FULLSTACK I_011D
+Contenido del curso
+Directrices mínimas para la elección del tema del Proyecto Semestral.pdf
+Fundamentos de Microservicios
+Desarrollo y Operación de Microservicios
+Incorporando testing y calidad a nuestros microservicios
+Enlace de LTI
+Bibliografía de la asignatura
+Recursos de la asignatura en Biblioteca Duoc UC
+Profesores del curso
+
+    RICARDO MAURICIO GONZALEZ VEJAR
+    RICARDO MAURICIO GONZALEZ VEJAR
+
+    Profesor
+
+Detalles y acciones
+
+    Lista
+
+    Ver a los participantes de su curso
+    Descripción del curso
+
+    Ver la descripción del curso
+    Class Collaborate
+    Libros y herramientas
+
+    Ver herramientas del curso y de la institución
+
+Anuncios del curso
+📢 Evaluación Parcial 3 — Cierre de Proyecto Semestral y Defensa Técnica
+
+Estimados/as estudiantes:
+
+Nos encontramos en la etapa final del semestre y comenzaremos el proceso de cierre de la Evaluación Parcial 3, correspondiente al proyecto semestral de microservicios.
+
+Esta evaluación se dividirá en dos componentes principales:
+
+✅ Entrega grupal del sistema
+
+✅ Defensa técnica individual
+🧩 1. Entrega grupal del sistema
+
+Para esta Evaluación Parcial 3, la entrega grupal deberá considerar el sistema funcionando en modalidad de:
+🖥️ Puesta en marcha sin Docker
+
+Esto significa que el sistema debe poder ejecutarse mediante los archivos .jar generados desde el proyecto padre, utilizando un archivo .bat que permita levantar los componentes en el siguiente orden:
+
+    🟢 Eureka Server
+    🟡 Microservicios de negocio
+    🔵 API Gateway
+
+La puesta en marcha debe permitir revisar que el ecosistema funcione correctamente, incluyendo:
+
+✅ Microservicios levantados.
+
+✅ Registro de servicios en Eureka.
+
+✅ API Gateway funcionando.
+
+✅ Conexión a la base de datos.
+
+✅ Endpoints principales operativos.
+
+✅ Pruebas unitarias implementadas y ejecutadas.
+
+✅ Documentación y estructura del proyecto disponibles en el repositorio.
+
+Con esta puesta en marcha sin Docker, los grupos podrán optar a la nota máxima de la entrega, siempre que el sistema funcione correctamente y cumpla con los elementos solicitados.
+
+
+🐳 2. Uso de Docker
+
+Para esta Evaluación Parcial 3, Docker no será obligatorio.
+
+El despliegue con Docker será revisado posteriormente en el Examen Transversal, utilizando el mismo proyecto semestral, pero funcionando de manera completa con Docker.
+
+📌 Sin embargo, los grupos que ya tengan el sistema funcionando correctamente con Docker podrán presentarlo durante esta revisión de la Evaluación Parcial 3.
+
+En ese caso, si el despliegue con Docker queda correctamente revisado y validado, ese componente quedará avanzado para el Examen Transversal, sin necesidad de repetirlo posteriormente, salvo que se indiquen ajustes específicos.
+
+
+📅 3. Fecha límite de subida a GitHub
+
+La entrega del proyecto en GitHub tendrá como plazo máximo:
+🗓️ Lunes 29/06 hasta las 23:59 hrs.
+
+A partir de esa fecha y hora, el repositorio quedará congelado para revisión.
+
+Después del cierre no se deben realizar nuevos cambios en el repositorio, ya que el proyecto será descargado para revisión docente.
+
+⚠️ Importante: todo cambio posterior al plazo de entrega no será considerado para la revisión.
+
+
+👨‍🏫 4. Revisión docente de proyectos
+
+El día:
+🗓️ Martes 30/06
+
+el docente descargará los proyectos desde GitHub, revisará las entregas y generará los documentos personalizados con las preguntas de defensa técnica para cada estudiante.
+
+Ese día estará destinado a la revisión de los proyectos, preparación de instrumentos individuales y organización de la defensa técnica.
+
+
+🧑‍💻 5. Defensa técnica individual
+
+La defensa técnica individual se realizará a partir del:
+🗓️ Miércoles 01/07
+
+La defensa individual estará compuesta por dos partes:
+
+
+🎥 a) Video explicativo del sistema
+
+Cada estudiante deberá participar en un video explicativo donde se muestre:
+
+✅ El sistema funcionando.
+
+✅ La puesta en marcha del proyecto.
+
+✅ Los microservicios principales.
+
+✅ El uso de Eureka y API Gateway, cuando corresponda.
+
+✅ La ejecución o evidencia de pruebas unitarias.
+
+✅ Una explicación clara del aporte técnico realizado.
+📤 Subida del video
+
+El video debe subirse a una plataforma que permita acceso rápido para revisión, por ejemplo:
+
+▶️ YouTube
+
+📁 Google Drive
+
+🌐 Otra plataforma similar que permita visualizar o descargar el video sin dificultad.
+
+La dirección del video debe quedar indicada claramente en el archivo:
+📄 README.md
+
+El enlace debe estar visible, ordenado y ser de rápido acceso para el docente.
+
+Se recomienda incluir una sección en el README con un título similar a:
+
+## Video explicativo de la defensa
+ 
+Enlace al video: colocar aquí el enlace de Google Drive, YouTube u otra plataforma.
+ 
+
+⚠️ El acceso al video debe estar correctamente configurado.
+
+Si el enlace está restringido, privado o no permite visualizar el contenido, se considerará como no disponible para revisión.
+
+
+📝 Subtítulos o transcripción del video
+
+Se solicita que el video permita extraer o visualizar subtítulos, ya que esto facilita la revisión y permite validar más rápidamente la explicación técnica realizada por cada estudiante.
+
+✅ Si el grupo o estudiante puede entregar también los subtítulos en formato texto, será mejor para la revisión.
+
+Ejemplo sugerido:
+
+subtitulos-video.txt
+
+También pueden agregar una sección en el README:
+
+## Subtítulos o transcripción del video
+ 
+Pegar aquí la transcripción del video o indicar el archivo donde se encuentra.
+
+Esto ayudará a revisar con mayor rapidez:
+
+✅ Explicación del sistema.
+
+✅ Funcionamiento demostrado.
+
+✅ Aporte individual.
+
+✅ Pruebas unitarias explicadas.
+
+✅ Decisiones técnicas relevantes.
+📝 b) Prueba escrita individual
+
+Además del video, cada estudiante deberá responder una prueba escrita asociada a su proyecto, considerando preguntas personalizadas según el repositorio y el desarrollo entregado.
+
+La prueba escrita permitirá verificar el dominio individual sobre:
+
+✅ Código implementado.
+
+✅ Microservicios desarrollados.
+
+✅ Reglas de negocio.
+
+✅ Testing unitario.
+
+✅ Comunicación entre servicios.
+
+✅ Configuración del proyecto.
+
+✅ Puesta en marcha del sistema.
+📊 6. Composición de la nota individual
+
+La nota individual de defensa técnica, correspondiente a la Nota 5, se calculará de la siguiente forma:
+
+Componente
+	
+
+Ponderación
+
+📝 Prueba escrita individual
+	
+
+50%
+
+🎥 Video explicativo del sistema
+	
+
+50%
+
+📌 Ambos elementos son obligatorios para completar la evaluación individual.
+
+
+✅ 7. Recomendaciones finales
+
+Antes del cierre en GitHub, cada grupo debe verificar:
+
+✅ Que el proyecto compile correctamente.
+
+✅ Que los test unitarios se ejecuten sin errores.
+
+✅ Que los .jar se generen correctamente desde el proyecto padre.
+
+✅ Que el archivo .bat permita levantar el sistema en el orden correcto.
+
+✅ Que Eureka muestre los microservicios registrados.
+
+✅ Que el API Gateway funcione.
+
+✅ Que las rutas principales puedan ser probadas.
+
+✅ Que el README explique cómo ejecutar el sistema.
+
+✅ Que el README incluya el enlace al video explicativo.
+
+✅ Que el enlace del video esté accesible.
+
+✅ Que, si es posible, se agreguen subtítulos o transcripción del video.
+
+✅ Que los commits estén correctamente registrados y distribuidos.
+
+✅ Que no falten archivos necesarios para ejecutar el proyecto.
+⚠️ 8. Consideración importante
+
+Recuerden que la defensa técnica es individual.
+
+Cada estudiante debe conocer y poder explicar:
+
+✅ El funcionamiento del sistema.
+
+✅ Su aporte personal.
+
+✅ Las pruebas unitarias implementadas.
+
+✅ La forma en que el proyecto se ejecuta.
+
+✅ La configuración utilizada.
+
+✅ Las decisiones técnicas tomadas por el equipo.
+
+La fecha del Examen Transversal será informada posteriormente.
+
+
+Cordialmente y éxito en su proyectos
+
+Mauricio González V.
+
+Docente Desarrollo FullStack I

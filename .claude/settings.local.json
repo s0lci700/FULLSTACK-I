@@ -4,11 +4,33 @@
       "Bash(git *)",
       "Bash(newman run *)",
       "Bash(.\\mvnw.cmd *)",
-      "Bash(node *)"
+      "Bash(node *)",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__wait_for",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__click",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__list_console_messages",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__take_screenshot",
+      "PowerShell(& \"C:\\\\Users\\\\Sol\\\\Desktop\\\\FULLSTACK\\\\proyecto_semestre\\\\FULLSTACK-I\\\\scripts\\\\load-db.ps1\" -Port 3306)",
+      "PowerShell(Get-Content *)",
+      "PowerShell(& \"C:\\\\Users\\\\Sol\\\\Desktop\\\\FULLSTACK\\\\proyecto_semestre\\\\FULLSTACK-I\\\\scripts\\\\set-db-port.ps1\" -Port 3306)",
+      "PowerShell(Set-Content *)",
+      "PowerShell(& \"C:\\\\Users\\\\Sol\\\\Desktop\\\\FULLSTACK\\\\proyecto_semestre\\\\FULLSTACK-I\\\\scripts\\\\start-all.ps1\" -Services eureka-server,api-gateway,ms-espacios -NoPause -Layout Windows)",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__new_page",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__take_snapshot",
+      "PowerShell(Get-Process *)",
+      "PowerShell($r = Invoke-WebRequest -Uri \"http://localhost:8085/swagger-ui/index.html\" -UseBasicParsing -TimeoutSec 10; $r.Headers.GetEnumerator\\(\\) | Where-Object { $_.Key -match 'Frame|Content-Security' } | ForEach-Object { \"$\\($_.Key\\): $\\($_.Value\\)\" })",
+      "mcp__gitnexus__impact",
+      "PowerShell($pid8085 = \\(Get-NetTCPConnection -LocalPort 8085 -State Listen -ErrorAction SilentlyContinue | Select-Object -First 1\\).OwningProcess; if \\($pid8085\\) { Write-Output \"Deteniendo ms-espacios \\(PID $pid8085\\)\"; Stop-Process -Id $pid8085 -Force -Confirm:$false } else { Write-Output \"8085 ya libre\" })",
+      "PowerShell(& \"C:\\\\Users\\\\Sol\\\\Desktop\\\\FULLSTACK\\\\proyecto_semestre\\\\FULLSTACK-I\\\\scripts\\\\start-all.ps1\" -Services ms-espacios -NoPause -Layout Windows)",
+      "PowerShell(.\\\\mvnw.cmd -q compile -pl auth-service,user-service,security-service,ms-vehiculos,ms-reservas; Write-Output \"compile exit: $LASTEXITCODE\")",
+      "PowerShell(cd C:\\\\Users\\\\Sol\\\\Desktop\\\\FULLSTACK\\\\proyecto_semestre\\\\FULLSTACK-I; .\\\\mvnw.cmd -q compile -pl auth-service,user-service,security-service,ms-vehiculos,ms-reservas; Write-Output \"compile exit: $LASTEXITCODE\")",
+      "mcp__gitnexus__detect_changes",
+      "PowerShell(git add scripts/load-db.ps1 scripts/set-db-port.ps1 auth-service/src/main/java/estacionamientos/auth_service/security/SecurityConfig.java user-service/src/main/java/estacionamientos/user_service/security/SecurityConfig.java security-service/src/main/java/estacionamientos/security_service/security/SecurityConfig.java ms-vehiculos/src/main/java/estacionamientos/ms_vehiculos/security/SecurityConfig.java ms-espacios/src/main/java/estacionamientos/ms_espacios/security/SecurityConfig.java ms-reservas/src/main/java/estacionamientos/ms_reservas/security/SecurityConfig.java && git commit -F \"$env:TEMP\\\\commit-msg.txt\" && git log --oneline -2 && git status --short)",
+      "PowerShell(cd C:\\\\Users\\\\Sol\\\\Desktop\\\\FULLSTACK\\\\proyecto_semestre\\\\FULLSTACK-I; .\\\\mvnw.cmd -q test -pl ms-pagos,ms-vehiculos 2>&1 | Select-String \"Tests run:|FAIL|BUILD\"; Write-Output \"exit: $LASTEXITCODE\")",
+      "PowerShell(cd C:\\\\Users\\\\Sol\\\\Desktop\\\\FULLSTACK\\\\proyecto_semestre\\\\FULLSTACK-I; git add ms-vehiculos/src/main ms-pagos/src/test docs/REVISION_PENDIENTE.md && git commit -F \"$env:TEMP\\\\commit-msg2.txt\" && git log --oneline -1)"
     ]
   },
+  "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "mysql"
-  ],
-  "enableAllProjectMcpServers": true
+  ]
 }
