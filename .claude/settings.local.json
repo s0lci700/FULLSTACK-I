@@ -26,7 +26,13 @@
       "mcp__gitnexus__detect_changes",
       "PowerShell(git add scripts/load-db.ps1 scripts/set-db-port.ps1 auth-service/src/main/java/estacionamientos/auth_service/security/SecurityConfig.java user-service/src/main/java/estacionamientos/user_service/security/SecurityConfig.java security-service/src/main/java/estacionamientos/security_service/security/SecurityConfig.java ms-vehiculos/src/main/java/estacionamientos/ms_vehiculos/security/SecurityConfig.java ms-espacios/src/main/java/estacionamientos/ms_espacios/security/SecurityConfig.java ms-reservas/src/main/java/estacionamientos/ms_reservas/security/SecurityConfig.java && git commit -F \"$env:TEMP\\\\commit-msg.txt\" && git log --oneline -2 && git status --short)",
       "PowerShell(cd C:\\\\Users\\\\Sol\\\\Desktop\\\\FULLSTACK\\\\proyecto_semestre\\\\FULLSTACK-I; .\\\\mvnw.cmd -q test -pl ms-pagos,ms-vehiculos 2>&1 | Select-String \"Tests run:|FAIL|BUILD\"; Write-Output \"exit: $LASTEXITCODE\")",
-      "PowerShell(cd C:\\\\Users\\\\Sol\\\\Desktop\\\\FULLSTACK\\\\proyecto_semestre\\\\FULLSTACK-I; git add ms-vehiculos/src/main ms-pagos/src/test docs/REVISION_PENDIENTE.md && git commit -F \"$env:TEMP\\\\commit-msg2.txt\" && git log --oneline -1)"
+      "PowerShell(cd C:\\\\Users\\\\Sol\\\\Desktop\\\\FULLSTACK\\\\proyecto_semestre\\\\FULLSTACK-I; git add ms-vehiculos/src/main ms-pagos/src/test docs/REVISION_PENDIENTE.md && git commit -F \"$env:TEMP\\\\commit-msg2.txt\" && git log --oneline -1)",
+      "PowerShell(git *)",
+      "mcp__claude_ai_Notion__notion-fetch",
+      "PowerShell(mysql *)",
+      "mcp__claude_ai_Notion__notion-update-page",
+      "mcp__claude_ai_Notion__notion-create-database",
+      "mcp__claude_ai_Notion__notion-create-pages"
     ]
   },
   "enableAllProjectMcpServers": true,
