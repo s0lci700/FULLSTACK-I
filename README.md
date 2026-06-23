@@ -1,23 +1,37 @@
-# Estacionamiento Inteligente — FULLSTACK-I
+# 🚀 Estacionamiento Inteligente — Sistema de Microservicios
 
-> **Asignatura:** DSY1103 Desarrollo FullStack I · **Docente:** Mauricio González V. · **Institución:** DUOC UC
+> **Asignatura:** DSY1103 Desarrollo FullStack I · **Docente:** Mauricio González V. · **Institución:** DUOC UC  
+> **Integrantes:** Sol León · Catalina Aguirre
+
+## 📦 COMPONENTES DE DISTRIBUCIÓN Y DEFENSA TÉCNICA
+
+Utilice los siguientes enlaces externos para descargar las versiones listas para producción y visualizar la defensa del proyecto:
+
+| Componente | Descripción | Enlace de Descarga (Nube externa) |
+| :--- | :--- | :--- |
+| **📦 Versión Sin Docker** <br>*(Arranque Nativo)* | Archivo `.zip` con los `.jar` compilados de los 12 servicios y el script `arrancar-nativo.bat` ordenado por fases (Eureka → Microservicios → API Gateway). | [Descargar ZIP Nativo aquí](ENLACE_A_DRIVE_PENDIENTE) |
+| **🐳 Versión Con Docker** <br>*(Avance Examen Transversal)* | Archivo `.zip` con los `.jar`, el archivo `docker-compose.yml` y el script `arrancar-sistema.bat`. | [Descargar ZIP Docker aquí](ENLACE_A_DRIVE_PENDIENTE) |
+| **🎥 Video de Defensa Técnica** <br>*(Evaluación Individual)* | Video explicativo del sistema funcionando, pruebas unitarias y aporte técnico individual. **Duración: 15 min (máx. 18 min).** | [Ver Video aquí](https://drive.google.com/file/d/1gMpwnvBKhsdM36QqrgThYKAzZQoNSqQT/view?usp=sharing) |
+
+---
+
+## Video explicativo de la defensa
+
+Enlace al video: https://drive.google.com/file/d/1gMpwnvBKhsdM36QqrgThYKAzZQoNSqQT/view?usp=sharing
+
+## Subtítulos o transcripción del video
+
+Ver archivo: [subtitulos-video.txt](subtitulos-video.txt)
+
+---
 
 Sistema de gestión de estacionamiento construido con arquitectura de **12 microservicios** independientes en Spring Boot 3. Cubre el ciclo completo de un estacionamiento inteligente: registro de clientes y vehículos, reserva de espacios, control de accesos (entrada/salida), tarifas dinámicas, cobros con descuentos y reportes agregados.
-
-
-**link del video** 
-https://drive.google.com/file/d/1gMpwnvBKhsdM36QqrgThYKAzZQoNSqQT/view?usp=sharing
-
-
-**Integrantes:**
-
-- Sol León
-- Catalina Aguirre
 
 ---
 
 ## Índice
 
+- [Componentes de distribución](#-componentes-de-distribución-y-defensa-técnica)
 - [Stack tecnológico](#stack-tecnológico)
 - [Arquitectura](#arquitectura)
 - [Servicios y puertos](#servicios-y-puertos)
