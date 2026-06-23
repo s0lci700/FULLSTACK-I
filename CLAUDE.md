@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Parking management system ("Estacionamiento Inteligente") — 12 Spring Boot microservices for an academic project at DUOC UC (DSY1103 Desarrollo FullStack I). Language: Spanish throughout (entity names, endpoints, documentation, variable names). Students: Sol León and Catalina Aguirre.
 
-All 12 services are **complete** with 74/74 Newman tests passing. The project is in delivery/defense phase (Evaluación Parcial 2, week of 19–22 May 2026).
+All 12 services are **complete** with 74/74 Newman tests passing. The project is now in **Evaluación Parcial 3** (EV3) delivery phase — deadline **Monday 29/06/2026 at 23:59**. Individual written defense starts Wednesday 01/07/2026.
 
 ## Build & Run Commands
 
@@ -47,10 +47,11 @@ The collection captures `token` from the login response (Phase 1) via a post-res
 
 | Script | Purpose | Key flags |
 |--------|---------|-----------|
-| `scripts/manage.ps1` | Interactive dashboard — start/stop/restart services by number or name | `start 4` · `stop all` · `db` · `quit` |
+| `scripts/manage.ps1` | Interactive dashboard — start/stop/restart services by number or name; also `package`/`jar` commands | `start 4` · `stop all` · `package` · `jar` · `db` · `quit` |
 | `scripts/start-all.ps1` | Launch all 12 services in dependency order, each in its own PowerShell window/tab | `-Services list` · `-NoPause` · `-Layout Tabs\|Windows` |
 | `scripts/load-db.ps1` | Create 10 databases and load seed data from `db/00_run_all.sql` | `-Port 3307` · `-Password pass` |
 | `scripts/set-db-port.ps1` | Update `spring.datasource.url` port in all `application.properties` | `-Port 3306` · `-DryRun` |
+| `scripts/set-identity.ps1` | Set git local `user.name` + `user.email` before committing (Sol or Catalina) | `sol` · `cata` (positional arg, or interactive menu) |
 
 ## Service Port Map
 
@@ -259,22 +260,26 @@ All monetary values use `BigDecimal` with `RoundingMode.HALF_UP`. `cobro.id_acce
 
 ## Implementation Status
 
-All services are **complete** — 74/74 Newman tests passing as of last audit.
+All services are **complete** — 74/74 Newman tests passing. Unit test suite: **72+ tests** across all 10 business services.
 
-| Service | Notes |
-|---------|-------|
-| `eureka-server` | Dashboard at :8761 |
-| `api-gateway` | YAML config · all 10 services routed · no JWT filter yet |
-| `auth-service` | Full CSR + JWT + BCrypt + GlobalExceptionHandler + SLF4J |
-| `user-service` | By Catalina — Cliente, TipoCliente, Suscripcion, ClienteSuscripcion + full CRUD |
-| `security-service` | Full CRUD for Permiso + RolPermiso |
-| `ms-vehiculos` | Full CRUD + soft delete + VehiculoResponseDTO |
-| `ms-espacios` | Full CRUD + disponibilidad PUT endpoint |
-| `ms-tarifas` | Full CRUD + vigente endpoints (tarifa + horario) |
-| `ms-reservas` | Full CRUD + cancelar/confirmar/finalizar + 3 Feign clients |
-| `ms-accesos` | registrarEntrada + registrarSalida + 2 Feign clients |
-| `ms-pagos` | Full CRUD (Cobro, Banco, MetodoPago, TipoTarjeta) + 7 Feign clients + BigDecimal formula |
-| `ms-reportes` | 3 report endpoints + 4 Feign clients |
+| Service | Unit tests | Notes |
+|---------|-----------|-------|
+| `eureka-server` | — | Dashboard at :8761 |
+| `api-gateway` | — | YAML config · all 10 services routed |
+| `auth-service` | 6 tests (`AuthServiceTest`) | Login + register flows, BCrypt, JWT mock |
+| `user-service` | 6 tests (`ClienteServiceTest`) | CRUD + email-dup + soft delete |
+| `security-service` | 8 tests (`PermisoServiceTest`) | CRUD + name-dup + `RolPermisoRepository` cascade |
+| `ms-vehiculos` | pre-existing tests | Full CRUD + soft delete |
+| `ms-espacios` | pre-existing tests | Full CRUD + disponibilidad PUT |
+| `ms-tarifas` | 8 tests (`TarifasServiceTest`) | CRUD + vigente + soft delete |
+| `ms-reservas` | pre-existing tests | Full CRUD + state machine + 3 Feign clients |
+| `ms-accesos` | 7 tests (`AccesoServiceTest`) | Entrada/salida + conflict detection + minutes calc |
+| `ms-pagos` | pre-existing tests | BigDecimal formula |
+| `ms-reportes` | 4 tests (`ReporteServiceTest`) | Ocupacion calc + Feign delegation |
+
+**Pending coverage**: `HorarioTarifasServiceTest`, `RolPermisoServiceTest`, `SuscripcionService`, `TipoClienteService`, `ClienteSuscripcionService` — these stub tests exist but only have `contextLoads`.
+
+**JaCoCo**: Configured in root `pom.xml` (`prepare-agent` + `report` goals, version 0.8.12). Run `.\mvnw.cmd verify` from any service dir to generate `target/site/jacoco/index.html`.
 
 ## Documentation Index
 
@@ -282,24 +287,31 @@ All docs in `docs/`. Key files:
 
 | File | Purpose |
 |------|---------|
-| `docs/index.html` | Central nav hub |
+| `index.html` | Central nav hub (root, not docs/) |
 | `docs/estado.html` | Live implementation status |
-| `docs/evaluacion-parcial2.html` | Full rubric, video script, defense prep |
+| `docs/evaluacion-parcial2.html` | Full rubric, video script, defense prep (EV2 reference) |
 | `docs/postman-tests.html` | Postman guide (74 requests, token setup, manual testing) |
 | `docs/api/*.html` | Endpoint docs per service |
 | `docs/ARQUITECTURA.html` | System design |
 | `docs/BASE_DE_DATOS.html` | ER diagrams and DB schema |
 | `docs/SEGURIDAD.html` | Auth, JWT, BCrypt |
+| `subtitulos-video.txt` | Video transcript placeholder (must be completed before 29/06) |
+| `README.md` | Contains required EV3 3-link table (Drive ZIP native, Drive ZIP Docker, video link) |
 
 ## Evaluation Context
 
-- **Evaluación Parcial 2** — 45% of final grade
-  - 30% grupal (code delivery)
-  - 70% individual defense (live coding, log interpretation, code explanation)
-- **Video deadline:** Tuesday 19/05/2026 — upload to GitHub + each student uploads to AVA
-- **Defense:** Friday 22/05/2026 — no internet, project running locally, Postman ready
-- **CRITICAL:** No commits to GitHub after delivery and before defense — automatic 1.0 if any change detected
-- Highest-weight defense indicator: IE 2.2.5 (12%) — add validation/rule live and prove it in Postman
+- **Evaluación Parcial 3 (EV3)** — final project delivery + individual defense
+  - **GitHub freeze:** Monday 29/06/2026 at 23:59 — NO commits after this
+  - **Teacher review:** Tuesday 30/06/2026 (no class)
+  - **Individual defense:** Wednesday 01/07/2026 onwards
+  - Individual grade = 50% video + 50% written exam (both mandatory)
+- **EV3 delivery requirements:**
+  - README.md must have 3-link table at top: ZIP Nativo (Drive), ZIP Docker (Drive), Video
+  - `subtitulos-video.txt` must be in the repo root
+  - `.bat` files go in the Drive ZIP only — NOT in GitHub
+  - Each student submits GitHub link to AVA individually
+  - `.jar` files, `target/`, `.bat`, `.sh` must NOT be committed
+- **EV3 rubric weight:** video 50% + written exam 50% of individual grade (Nota 5)
 
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence

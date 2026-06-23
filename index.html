@@ -480,10 +480,12 @@
     </div>
 
     <div class="ev3-step">
-      <div class="ev3-step-header"><span class="step-num">PASO 2</span> 🧪 Pruebas unitarias</div>
+      <div class="ev3-step-header"><span class="step-num">PASO 2</span> 🧪 Pruebas unitarias + JaCoCo</div>
       <ul class="ev3-checklist">
         <li>Ejecutar todos los tests sin errores (<code>mvnw.cmd test</code> en cada servicio)</li>
-        <li>Confirmar que los 33+ tests pasan en la suite completa</li>
+        <li>Confirmar que los 72+ tests pasan en la suite completa (39 nuevos escritos el 23/06)</li>
+        <li>Generar reporte de cobertura JaCoCo: <code>mvnw.cmd verify</code> → <code>target/site/jacoco/index.html</code></li>
+        <li>Apuntar a ≥80% cobertura en capas de Service — pendiente: HorarioTarifas, RolPermiso, Suscripcion</li>
         <li>Tener evidencia de ejecución lista para mostrar en el video</li>
       </ul>
     </div>
@@ -538,6 +540,17 @@
       </ul>
     </div>
 
+    <div class="ev3-step">
+      <div class="ev3-step-header"><span class="step-num">PASO 6</span> 📤 Entrega individual en AVA</div>
+      <ul class="ev3-checklist">
+        <li>Cada integrante sube el enlace al repositorio GitHub en AVA individualmente</li>
+        <li>Los archivos <code>.bat</code>, <code>.jar</code>, y <code>target/</code> van en el ZIP de Drive, <strong>NO en GitHub</strong></li>
+        <li>ZIP Nativo: <code>.jar</code> + <code>arrancar-nativo.bat</code> · ZIP Docker: <code>.jar</code> + <code>docker-compose.yml</code></li>
+        <li>Actualizar los enlaces del ZIP en README.md antes del 29/06</li>
+        <li>Completar <code>subtitulos-video.txt</code> con la transcripción real del video</li>
+      </ul>
+    </div>
+
   </div>
 
   <div class="ev3-nota">
@@ -558,7 +571,7 @@
       <div class="doc-icon">📊</div>
       <div class="doc-card-text">
         <h3>Estado de implementación</h3>
-        <p>Seguimiento servicio por servicio — Newman 74/74 · Tests unitarios 33/33</p>
+        <p>Seguimiento servicio por servicio — Newman 74/74 · Tests unitarios 72+ · JaCoCo configurado</p>
       </div>
     </a>
     <a class="doc-card" href="docs/ROADMAP.html">
@@ -696,8 +709,8 @@
     <a class="doc-card" href="docs/PRUEBAS.html" style="border-color:#7c3aed44">
       <div class="doc-icon">🧪</div>
       <div class="doc-card-text">
-        <h3 style="color:#bc8cff">Pruebas</h3>
-        <p>33 tests pasando: Service (Mockito), Controller (MockMvc) y Repository (H2) + perfil de test</p>
+        <h3 style="color:#bc8cff">Pruebas + JaCoCo</h3>
+        <p>72+ tests (39 nuevos el 23/06) · JaCoCo 0.8.12 en POM padre · reporte: <code>mvnw.cmd verify</code> → target/site/jacoco/index.html</p>
       </div>
     </a>
   </div>
