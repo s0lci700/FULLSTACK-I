@@ -1,0 +1,18 @@
+TRANSCRIPCIÓN / SUBTÍTULOS — VIDEO DE DEFENSA TÉCNICA
+Proyecto: Estacionamiento Inteligente
+Asignatura: DSY1103 Desarrollo FullStack I — DUOC UC
+Integrantes: Sol León · Catalina Aguirre
+
+=====================================================
+PENDIENTE: Agregar transcripción del video aquí.
+=====================================================
+
+Estructura sugerida del video (15 min / máx. 18 min):
+
+[00:00 - 01:00] Introducción: presentación del sistema y las integrantes.
+[01:00 - 03:00] Arquitectura general: 12 microservicios, Eureka, API Gateway, Feign.
+[03:00 - 05:00] Puesta en marcha: arrancar el sistema y verificar en Eureka.
+[05:00 - 08:00] Demo del flujo principal: login → reserva → entrada → salida → cobro → reporte.
+[08:00 - 11:00] Pruebas unitarias: ejecución con mvn clean install, cobertura JaCoCo.
+[11:00 - 13:00] Swagger/OpenAPI: endpoints documentados de los microservicios clave.
+[13:00 - 15:00] Aporte técnico individual de cada integrante y conclusiones.
