@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Plan EV3 — Coordinación Sol + Catalina</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0f1117;
+      --bg2:     #1a1f2e;
+      --bg3:     #1e2330;
+      --border:  #2d3748;
+      --text:    #e2e8f0;
+      --text2:   #94a3b8;
+      --text3:   #7b8ea6;
+      --blue:    #58a6ff;
+      --green:   #3fb950;
+      --yellow:  #d29922;
+      --red:     #f85149;
+      --purple:  #bc8cff;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 2rem;
+      line-height: 1.6;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .header {
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--green);
+      background: #1a3a2a;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      margin-bottom: 0.75rem;
+    }
+
+    h1 { font-size: 1.8rem; font-weight: 700; color: #f8fafc; margin-bottom: 0.4rem; }
+    h2 { font-size: 1.1rem; font-weight: 700; color: #f1f5f9; margin: 2rem 0 0.75rem; }
+
+    .subtitle { color: var(--text2); font-size: 0.9rem; }
+
+    .meta-row {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .meta-item { font-size: 0.8rem; color: var(--text3); }
+    .meta-item span { color: var(--text2); font-weight: 600; }
+
+    /* Back link */
+    .back { display: inline-block; font-size: 0.8rem; color: var(--blue); text-decoration: none; margin-bottom: 1.5rem; }
+    .back:hover { text-decoration: underline; }
+
+    /* Section label */
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text3);
+      margin: 2.5rem 0 1rem;
+      padding-left: 0.6rem;
+      border-left: 3px solid var(--border);
+    }
+
+    /* Plan table */
+    .plan-wrap {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+
+    .plan-wrap .phase-header {
+      background: var(--bg3);
+      padding: 0.7rem 1rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+
+    thead th {
+      background: var(--bg3);
+      color: var(--text3);
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.55rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    tbody tr { border-bottom: 1px solid #1e2330; transition: background 0.1s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #1e2330; }
+
+    tbody td { padding: 0.6rem 1rem; color: var(--text2); vertical-align: top; }
+    tbody td:first-child { color: var(--text3); font-weight: 700; font-size: 0.75rem; width: 2.5rem; }
+    tbody td:nth-child(2) { color: #f1f5f9; }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 0.15rem 0.5rem;
+      border-radius: 12px;
+      white-space: nowrap;
+    }
+    .badge-sol      { background: #1e3a5f; color: #93c5fd; }
+    .badge-cata     { background: #2a1e4a; color: #c4b5fd; }
+    .badge-ambas    { background: #1a3a2a; color: #6ee7b7; }
+    .badge-date     { background: #2a2a2a; color: var(--text2); font-family: 'Consolas', monospace; }
+    .badge-critical { background: #3a1a1a; color: var(--red); }
+
+    /* Checklist */
+    .checklist-box {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.2rem 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .checklist-section { margin-bottom: 1.2rem; }
+    .checklist-section:last-child { margin-bottom: 0; }
+
+    .checklist-section h3 {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.6rem;
+    }
+
+    .checklist {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .checklist li {
+      font-size: 0.82rem;
+      color: var(--text2);
+      display: flex;
+      gap: 0.6rem;
+      align-items: flex-start;
+    }
+
+    .checklist li::before {
+      content: "☐";
+      color: var(--text3);
+      flex-shrink: 0;
+      font-size: 0.9rem;
+      line-height: 1.3;
+    }
+
+    code {
+      font-family: 'Consolas', monospace;
+      background: #1e2330;
+      color: #93c5fd;
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      font-size: 0.82em;
+    }
+
+    /* Defense notes */
+    .defense-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .defense-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--purple);
+      border-radius: 10px;
+      padding: 0.9rem 1.1rem;
+    }
+
+    .defense-card h4 {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--purple);
+      margin-bottom: 0.5rem;
+    }
+
+    .defense-card p {
+      font-size: 0.78rem;
+      color: var(--text2);
+      line-height: 1.5;
+    }
+
+    .defense-card code { color: #bc8cff; }
+
+    /* Warning */
+    .warning {
+      background: #1e1a10;
+      border: 1px solid #4a3a10;
+      border-left: 3px solid var(--yellow);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-size: 0.82rem;
+      color: var(--text2);
+      margin-bottom: 1.5rem;
+    }
+    .warning strong { color: var(--yellow); }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      color: var(--text3);
+      font-size: 0.78rem;
+    }
+  </style>
+</head>
+<body>
+
+  <a class="back" href="../index.html">← Volver al índice</a>
+
+  <div class="header">
+    <div class="header-badge">EV3 · Plan de trabajo grupal</div>
+    <h1>Plan EV3 — Sol + Catalina</h1>
+    <p class="subtitle">Coordinación semana a semana hasta el cierre del 29/06/2026</p>
+    <div class="meta-row">
+      <span class="meta-item">Cierre GitHub: <span>Lunes 29/06 a las 23:59</span></span>
+      <span class="meta-item">Defensa individual: <span>Miércoles 01/07 en adelante</span></span>
+      <span class="meta-item">Nota individual: <span>50% video + 50% prueba escrita</span></span>
+    </div>
+  </div>
+
+  <div class="warning">
+    <strong>⚠️ Regla de oro:</strong> usar <code>.\scripts\set-identity.ps1 sol</code> o <code>cata</code> antes de cada commit para que los commits queden con el email correcto en el historial de GitHub. El docente revisa la distribución de commits.
+  </div>
+
+  <!-- Semana 1 -->
+  <div class="section-label">Semana 1 — Producción técnica (23–25 jun)</div>
+  <div class="plan-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Tarea</th>
+          <th>Responsable</th>
+          <th>Fecha</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>Completar tests pendientes: <code>HorarioTarifasServiceTest</code>, <code>RolPermisoServiceTest</code></td>
+          <td><span class="badge badge-sol">Sol</span></td>
+          <td><span class="badge badge-date">24/06</span></td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Completar tests pendientes: <code>SuscripcionService</code>, <code>TipoClienteService</code>, <code>ClienteSuscripcionService</code></td>
+          <td><span class="badge badge-cata">Catalina</span></td>
+          <td><span class="badge badge-date">24/06</span></td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>Verificar que todos los tests pasan (<code>mvnw.cmd test</code> en cada servicio)</td>
+          <td><span class="badge badge-ambas">Ambas</span></td>
+          <td><span class="badge badge-date">24/06</span></td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>Generar reporte de cobertura JaCoCo (<code>mvnw.cmd verify</code>) y capturar screenshot para el video</td>
+          <td><span class="badge badge-sol">Sol</span></td>
+          <td><span class="badge badge-date">24/06</span></td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>Generar todos los JARs (<code>mvnw.cmd clean package -DskipTests</code> desde raíz)</td>
+          <td><span class="badge badge-sol">Sol</span></td>
+          <td><span class="badge badge-date">25/06</span></td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>Crear <code>arrancar-nativo.bat</code> — levanta en orden: Eureka → servicios → Gateway</td>
+          <td><span class="badge badge-sol">Sol</span></td>
+          <td><span class="badge badge-date">25/06</span></td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>Probar que el <code>.bat</code> levanta el sistema completo y Eureka muestra los 12 servicios</td>
+          <td><span class="badge badge-ambas">Ambas</span></td>
+          <td><span class="badge badge-date">25/06</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Semana 2 -->
+  <div class="section-label">Semana 2 — Video y entrega (26–29 jun)</div>
+  <div class="plan-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Tarea</th>
+          <th>Responsable</th>
+          <th>Fecha</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>8</td>
+          <td>Grabar video individual Sol (máx 18 min) — sistema corriendo, Eureka, tests, aporte personal</td>
+          <td><span class="badge badge-sol">Sol</span></td>
+          <td><span class="badge badge-date">26/06</span></td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td>Grabar video individual Catalina (mismo formato)</td>
+          <td><span class="badge badge-cata">Catalina</span></td>
+          <td><span class="badge badge-date">26/06</span></td>
+        </tr>
+        <tr>
+          <td>10</td>
+          <td>Subir ambos videos a Drive o YouTube con acceso público</td>
+          <td><span class="badge badge-ambas">Ambas</span></td>
+          <td><span class="badge badge-date">27/06</span></td>
+        </tr>
+        <tr>
+          <td>11</td>
+          <td>Crear ZIP Nativo (<code>arrancar-nativo.bat</code> + todos los JARs) y subir a Drive</td>
+          <td><span class="badge badge-sol">Sol</span></td>
+          <td><span class="badge badge-date">27/06</span></td>
+        </tr>
+        <tr>
+          <td>12</td>
+          <td>Crear ZIP Docker (<code>docker-compose.yml</code> + JARs) y subir a Drive — <em>opcional pero suma</em></td>
+          <td><span class="badge badge-cata">Catalina</span></td>
+          <td><span class="badge badge-date">27/06</span></td>
+        </tr>
+        <tr>
+          <td>13</td>
+          <td>Actualizar los 3 enlaces en README.md: ZIP Nativo, ZIP Docker, Video</td>
+          <td><span class="badge badge-sol">Sol</span></td>
+          <td><span class="badge badge-date">27/06</span></td>
+        </tr>
+        <tr>
+          <td>14</td>
+          <td>Completar <code>subtitulos-video.txt</code> con la transcripción real del video</td>
+          <td><span class="badge badge-ambas">Ambas</span></td>
+          <td><span class="badge badge-date">28/06</span></td>
+        </tr>
+        <tr>
+          <td>15</td>
+          <td>Verificar checklist final completo (ver más abajo)</td>
+          <td><span class="badge badge-ambas">Ambas</span></td>
+          <td><span class="badge badge-date">28/06</span></td>
+        </tr>
+        <tr>
+          <td>16</td>
+          <td><strong>Commit final + push antes de las 23:59</strong></td>
+          <td><span class="badge badge-ambas">Ambas</span></td>
+          <td><span class="badge badge-critical">29/06 ⚠️</span></td>
+        </tr>
+        <tr>
+          <td>17</td>
+          <td><strong>Cada una sube el link de GitHub a AVA individualmente</strong></td>
+          <td><span class="badge badge-ambas">Ambas</span></td>
+          <td><span class="badge badge-critical">29/06 ⚠️</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Checklist final -->
+  <div class="section-label">Checklist final — verificar el 28/06</div>
+  <div class="checklist-box">
+
+    <div class="checklist-section">
+      <h3>Proyecto</h3>
+      <ul class="checklist">
+        <li>Compila sin errores (<code>mvnw.cmd clean package -DskipTests</code>)</li>
+        <li>Todos los tests pasan sin errores (<code>mvnw.cmd test</code> por servicio)</li>
+        <li>JARs se generan correctamente desde el directorio raíz</li>
+        <li>El <code>.bat</code> levanta el sistema en el orden correcto</li>
+        <li>Eureka muestra los 12 microservicios registrados en <code>localhost:8761</code></li>
+        <li>API Gateway responde en <code>localhost:8080</code></li>
+        <li>Newman 74/74 pasan con el sistema corriendo</li>
+      </ul>
+    </div>
+
+    <div class="checklist-section">
+      <h3>GitHub</h3>
+      <ul class="checklist">
+        <li>README.md tiene tabla de 3 links al tope (ZIP Nativo, ZIP Docker, Video)</li>
+        <li><code>subtitulos-video.txt</code> en raíz con transcripción real</li>
+        <li>No hay <code>.jar</code>, <code>target/</code>, <code>.bat</code>, <code>.sh</code> en el repo</li>
+        <li>Commits distribuidos entre Sol y Catalina (verificar con <code>git shortlog -sn</code>)</li>
+        <li>Último commit antes del 29/06 a las 23:59</li>
+      </ul>
+    </div>
+
+    <div class="checklist-section">
+      <h3>Entrega individual (las dos por separado)</h3>
+      <ul class="checklist">
+        <li>Sol sube link de GitHub a AVA</li>
+        <li>Catalina sube link de GitHub a AVA</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- Defensa -->
+  <div class="section-label">Preparación defensa escrita (01/07 en adelante)</div>
+  <p style="font-size:0.82rem; color:var(--text2); margin-bottom:1rem;">Las dos deben poder explicar estos temas sin ayuda. El docente genera preguntas personalizadas basadas en el repo.</p>
+
+  <div class="defense-grid">
+    <div class="defense-card">
+      <h4>Fórmula de cobro (ms-pagos)</h4>
+      <p><code>monto_base = precio_hora × mult_horario × factor_vehiculo × factor_espacio × (min/60)</code><br>
+         <code>monto_final = monto_base × (1 - desc_cliente) × (1 - desc_suscripcion) × (1 - desc_banco)</code><br>
+         Todo en <code>BigDecimal</code> con <code>HALF_UP</code>.</p>
+    </div>
+    <div class="defense-card">
+      <h4>Estado machine de reservas</h4>
+      <p>PENDIENTE → CONFIRMADA o CANCELADA<br>
+         CONFIRMADA → FINALIZADA (solo desde accesos/salida)<br>
+         No hay marcha atrás desde CANCELADA ni FINALIZADA.</p>
+    </div>
+    <div class="defense-card">
+      <h4>Por qué nunca @PatchMapping</h4>
+      <p>El <code>HttpURLConnection</code> que usa Feign por defecto no soporta el método HTTP PATCH. Además, el docente solo enseñó PUT. Por eso todas las actualizaciones parciales usan <code>@PutMapping</code>.</p>
+    </div>
+    <div class="defense-card">
+      <h4>JWT — flujo completo</h4>
+      <p>Solo <code>auth-service</code> emite tokens (login → <code>JwtUtil.generateToken</code>).<br>
+         El API Gateway los valida en <code>JwtAuthFilter</code> antes de rutear.<br>
+         Rutas públicas: <code>/api/auth/**</code>, <code>/swagger-ui/**</code>.</p>
+    </div>
+    <div class="defense-card">
+      <h4>Base de datos por servicio</h4>
+      <p>10 bases MySQL separadas, sin FK entre bases. Las referencias cruzadas se guardan como <code>Long idXRef</code> con <code>@Column</code> — no <code>@ManyToOne</code> ni <code>@JoinColumn</code> cross-service.</p>
+    </div>
+    <div class="defense-card">
+      <h4>Aporte personal (preparar ejemplos)</h4>
+      <p>Tener listos 2–3 clases o métodos que cada una escribió, saber explicar por qué se tomaron esas decisiones técnicas y qué pasaría si se cambiaran.</p>
+    </div>
+  </div>
+
+  <div class="footer">
+    Plan EV3 · DUOC UC DSY1103 · Sol León + Catalina Aguirre · Cierre 29/06/2026
+  </div>
+
+</body>
+</html>
