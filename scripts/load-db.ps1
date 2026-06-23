@@ -41,11 +41,26 @@ if ($sqlFiles.Count -eq 0) {
     exit 1
 }
 
-if (-not (Get-Command mysql -ErrorAction SilentlyContinue)) {
-    Write-Host "  [ERROR] 'mysql' no esta en el PATH." -ForegroundColor Red
+$mysqlCmdObj = Get-Command mysql -ErrorAction SilentlyContinue
+$mysqlCmd = if ($mysqlCmdObj) { $mysqlCmdObj.Source } else { $null }
+
+if (-not $mysqlCmd) {
+    $fallbackPaths = @(
+        "C:\xampp\mysql\bin\mysql.exe",
+        "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe",
+        "C:\Program Files\MySQL\MySQL Server 8.4\bin\mysql.exe",
+        "C:\Program Files (x86)\MySQL\MySQL Server 8.0\bin\mysql.exe"
+    )
+    $mysqlCmd = $fallbackPaths | Where-Object { Test-Path $_ } | Select-Object -First 1
+}
+
+if (-not $mysqlCmd) {
+    Write-Host "  [ERROR] 'mysql' no esta en el PATH y no se encontro en rutas comunes." -ForegroundColor Red
     Write-Host "          Agrega C:\xampp\mysql\bin a las variables de entorno." -ForegroundColor DarkGray
     exit 1
 }
+
+Write-Host "  [mysql] $mysqlCmd" -ForegroundColor DarkGray
 
 $mysqlArgs = @("-u", "root", "--port=$Port", "--default-auth=mysql_native_password")
 if ($Password -ne "") { $mysqlArgs += "-p$Password" }
@@ -57,7 +72,7 @@ Write-Host ""
 $loaded = 0
 foreach ($file in $sqlFiles) {
     Write-Host "  [..] $($file.Name)" -ForegroundColor Yellow -NoNewline
-    Get-Content $file.FullName | mysql @mysqlArgs 2>&1 | Out-String -OutVariable mysqlOut | Out-Null
+    Get-Content $file.FullName | & $mysqlCmd @mysqlArgs 2>&1 | Out-String -OutVariable mysqlOut | Out-Null
 
     if ($LASTEXITCODE -eq 0) {
         Write-Host "`r  [OK] $($file.Name)   " -ForegroundColor Green
