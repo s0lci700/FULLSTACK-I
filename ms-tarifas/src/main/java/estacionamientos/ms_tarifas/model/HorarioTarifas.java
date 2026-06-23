@@ -31,6 +31,7 @@ public class HorarioTarifas {
     private Tarifas tarifa;
 
     @Column(name = "dia_tipo", nullable = false)
+    // Debe ser un ENUM 
     private String diaTipo;
 
     @Column(name = "hora_inicio", nullable = false)

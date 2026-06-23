@@ -9,6 +9,7 @@ import estacionamientos.ms_tarifas.repository.HorarioTarifasRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -21,14 +22,17 @@ public class HorarioTarifasService {
 
 
 
-    private final HorarioTarifasRepository horarioTarifasRepository;
-    private final TarifasService tarifasService;
+    @Autowired
+    HorarioTarifasRepository horarioTarifasRepository;
+    
+    @Autowired
+    TarifasService tarifasService;
 
-    public HorarioTarifasService(HorarioTarifasRepository horarioTarifasRepository,
-            TarifasService tarifasService) {
-        this.horarioTarifasRepository = horarioTarifasRepository;
-        this.tarifasService = tarifasService;
-    }
+//    public HorarioTarifasService(HorarioTarifasRepository horarioTarifasRepository,
+//            TarifasService tarifasService) {
+//        this.horarioTarifasRepository = horarioTarifasRepository;
+//        this.tarifasService = tarifasService;
+//    }
 
     // Retorna el horario cuya ventana de tiempo contiene el instante actual
     public HorarioTarifaResponseDTO findVigente() {
