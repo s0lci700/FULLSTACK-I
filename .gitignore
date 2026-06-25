@@ -22,5 +22,7 @@ Thumbs.db
 
 .env
 
-# Claude Code
-.claude/
+# Claude Code — solo ignorar archivos locales/sensibles; hooks, skills y settings.json se versionan
+.claude/settings.local.json
+.claude/hooks/*.log
+.claude/hooks/*.lock
