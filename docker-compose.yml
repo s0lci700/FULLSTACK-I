@@ -1,0 +1,309 @@
+version: '3.8'
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Estacionamiento Inteligente — Docker Compose
+#
+# Estructura esperada del directorio (ZIP Docker):
+#   jars/
+#     eureka-server-0.0.1-SNAPSHOT.jar
+#     api-gateway-0.0.1-SNAPSHOT.jar
+#     auth-service-0.0.1-SNAPSHOT.jar
+#     user-service-0.0.1-SNAPSHOT.jar
+#     security-service-0.0.1-SNAPSHOT.jar
+#     ms-vehiculos-0.0.1-SNAPSHOT.jar
+#     ms-espacios-0.0.1-SNAPSHOT.jar
+#     ms-tarifas-0.0.1-SNAPSHOT.jar
+#     ms-reservas-0.0.1-SNAPSHOT.jar
+#     ms-accesos-0.0.1-SNAPSHOT.jar
+#     ms-pagos-0.0.1-SNAPSHOT.jar
+#     ms-reportes-0.0.1-SNAPSHOT.jar
+#   db/
+#     01_db_auth.sql … 09_db_pagos.sql
+#   Dockerfile
+#   docker-compose.yml
+#
+# Arrancar: docker compose up --build -d
+# Detener:  docker compose down
+# Logs:     docker compose logs -f [servicio]
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+
+  # ── Base de datos ──────────────────────────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./db/01_db_auth.sql:/docker-entrypoint-initdb.d/01_db_auth.sql:ro
+      - ./db/02_db_seguridad.sql:/docker-entrypoint-initdb.d/02_db_seguridad.sql:ro
+      - ./db/03_db_usuarios.sql:/docker-entrypoint-initdb.d/03_db_usuarios.sql:ro
+      - ./db/04_db_vehiculos.sql:/docker-entrypoint-initdb.d/04_db_vehiculos.sql:ro
+      - ./db/05_db_espacios.sql:/docker-entrypoint-initdb.d/05_db_espacios.sql:ro
+      - ./db/06_db_tarifas.sql:/docker-entrypoint-initdb.d/06_db_tarifas.sql:ro
+      - ./db/07_db_reservas.sql:/docker-entrypoint-initdb.d/07_db_reservas.sql:ro
+      - ./db/08_db_accesos.sql:/docker-entrypoint-initdb.d/08_db_accesos.sql:ro
+      - ./db/09_db_pagos.sql:/docker-entrypoint-initdb.d/09_db_pagos.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    networks:
+      - red-estacionamiento
+
+  # ── Service Discovery ──────────────────────────────────────────────────────
+  eureka-server:
+    build:
+      context: .
+      args:
+        JAR_FILE: eureka-server-0.0.1-SNAPSHOT.jar
+    ports:
+      - "8761:8761"
+    networks:
+      - red-estacionamiento
+    restart: unless-stopped
+
+  # ── API Gateway ────────────────────────────────────────────────────────────
+  api-gateway:
+    build:
+      context: .
+      args:
+        JAR_FILE: api-gateway-0.0.1-SNAPSHOT.jar
+    ports:
+      - "8080:8080"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      - eureka-server
+    networks:
+      - red-estacionamiento
+    restart: unless-stopped
+
+  # ── Fase 3 — Servicios base ────────────────────────────────────────────────
+  auth-service:
+    build:
+      context: .
+      args:
+        JAR_FILE: auth-service-0.0.1-SNAPSHOT.jar
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/db_auth?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    networks:
+      - red-estacionamiento
+    restart: unless-stopped
+
+  user-service:
+    build:
+      context: .
+      args:
+        JAR_FILE: user-service-0.0.1-SNAPSHOT.jar
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/db_usuarios?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    networks:
+      - red-estacionamiento
+    restart: unless-stopped
+
+  security-service:
+    build:
+      context: .
+      args:
+        JAR_FILE: security-service-0.0.1-SNAPSHOT.jar
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/db_seguridad?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    networks:
+      - red-estacionamiento
+    restart: unless-stopped
+
+  ms-vehiculos:
+    build:
+      context: .
+      args:
+        JAR_FILE: ms-vehiculos-0.0.1-SNAPSHOT.jar
+    ports:
+      - "8084:8084"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/db_vehiculos?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    networks:
+      - red-estacionamiento
+    restart: unless-stopped
+
+  ms-espacios:
+    build:
+      context: .
+      args:
+        JAR_FILE: ms-espacios-0.0.1-SNAPSHOT.jar
+    ports:
+      - "8085:8085"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/db_espacios?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    networks:
+      - red-estacionamiento
+    restart: unless-stopped
+
+  ms-tarifas:
+    build:
+      context: .
+      args:
+        JAR_FILE: ms-tarifas-0.0.1-SNAPSHOT.jar
+    ports:
+      - "8088:8088"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/db_tarifas?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    networks:
+      - red-estacionamiento
+    restart: unless-stopped
+
+  # ── Fase 4 ─────────────────────────────────────────────────────────────────
+  ms-reservas:
+    build:
+      context: .
+      args:
+        JAR_FILE: ms-reservas-0.0.1-SNAPSHOT.jar
+    ports:
+      - "8086:8086"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/db_reservas?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    networks:
+      - red-estacionamiento
+    restart: unless-stopped
+
+  ms-accesos:
+    build:
+      context: .
+      args:
+        JAR_FILE: ms-accesos-0.0.1-SNAPSHOT.jar
+    ports:
+      - "8087:8087"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/db_accesos?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    networks:
+      - red-estacionamiento
+    restart: unless-stopped
+
+  # ── Pagos y Reportes ───────────────────────────────────────────────────────
+  ms-pagos:
+    build:
+      context: .
+      args:
+        JAR_FILE: ms-pagos-0.0.1-SNAPSHOT.jar
+    ports:
+      - "8089:8089"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/db_pagos?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    networks:
+      - red-estacionamiento
+    restart: unless-stopped
+
+  ms-reportes:
+    build:
+      context: .
+      args:
+        JAR_FILE: ms-reportes-0.0.1-SNAPSHOT.jar
+    ports:
+      - "8090:8090"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      - eureka-server
+    networks:
+      - red-estacionamiento
+    restart: unless-stopped
+
+# ── Volúmenes y redes ──────────────────────────────────────────────────────
+volumes:
+  mysql-data:
+
+networks:
+  red-estacionamiento:
+    driver: bridge
