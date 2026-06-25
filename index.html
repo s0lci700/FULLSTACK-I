@@ -407,6 +407,43 @@
       color: #f1f5f9;
       font-size: 0.78rem;
     }
+
+    /* ── Pendientes block ────────────────────────────────── */
+    .pendientes {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.2rem 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .pendientes-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text3);
+      margin-bottom: 1rem;
+    }
+
+    .pendientes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 0.4rem;
+    }
+
+    .p-item {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      font-size: 0.82rem;
+      padding: 0.3rem 0;
+    }
+
+    .p-item .p-icon { font-size: 1rem; flex-shrink: 0; }
+    .p-item .p-text { color: var(--text2); }
+    .p-item.done .p-text { color: #4a5568; text-decoration: line-through; }
+    .p-item.done .p-icon { opacity: 0.5; }
   </style>
 </head>
 <body>
@@ -430,6 +467,24 @@
   <div class="ev3-banner">
     <div class="ev3-banner-title">📢 Evaluación Parcial 3 — Cierre de Proyecto Semestral y Defensa Técnica</div>
     <div class="ev3-banner-subtitle">Docente: Mauricio González V. &nbsp;·&nbsp; DSY1103 Desarrollo FullStack I &nbsp;·&nbsp; Grupo: Sol León + Catalina Aguirre</div>
+  </div>
+
+  <!-- Pendientes -->
+  <div class="section-label">Lo que falta — cierre 29/06</div>
+  <div class="pendientes">
+    <div class="pendientes-title">Estado actual · actualizado 24/06/2026</div>
+    <div class="pendientes-grid">
+      <div class="p-item"><span class="p-icon">🔴</span><span class="p-text"><strong>Grabar el video</strong> — subir a Drive o YouTube (link público)</span></div>
+      <div class="p-item"><span class="p-icon">🔴</span><span class="p-text"><strong>subtitulos-video.txt</strong> — completar transcripción y commitear en raíz del repo</span></div>
+      <div class="p-item"><span class="p-icon">🔴</span><span class="p-text"><strong>README.md</strong> — tabla de 3 links al tope: ZIP Nativo · ZIP Docker · Video</span></div>
+      <div class="p-item"><span class="p-icon">🔴</span><span class="p-text"><strong>ZIP Nativo</strong> — empaquetar JARs + arrancar-nativo.bat y subir a Drive</span></div>
+      <div class="p-item"><span class="p-icon">🔴</span><span class="p-text"><strong>ZIP Docker</strong> — docker-compose.yml + instrucciones y subir a Drive (obligatorio)</span></div>
+      <div class="p-item"><span class="p-icon">🔴</span><span class="p-text"><strong>Subir a AVA</strong> — cada estudiante envía su link GitHub individualmente</span></div>
+      <div class="p-item done"><span class="p-icon">✅</span><span class="p-text">Tests unitarios — 54 tests pasan (ms-tarifas 17, security 16, user 21)</span></div>
+      <div class="p-item done"><span class="p-icon">✅</span><span class="p-text">JaCoCo configurado — ejecutar <code>mvnw.cmd verify</code> antes de la defensa</span></div>
+      <div class="p-item done"><span class="p-icon">✅</span><span class="p-text">Newman 74/74 — colección completa pasando</span></div>
+      <div class="p-item done"><span class="p-icon">✅</span><span class="p-text">12 microservicios completos y funcionando</span></div>
+    </div>
   </div>
 
   <!-- Fechas clave -->
@@ -532,11 +587,13 @@
     </div>
 
     <div class="ev3-step">
-      <div class="ev3-step-header"><span class="step-num">DOCKER</span> 🐳 Opcional para EV3</div>
+      <div class="ev3-step-header"><span class="step-num">PASO 5b</span> 🐳 Docker — obligatorio en entrega ZIP</div>
       <ul class="ev3-checklist">
-        <li>Docker <strong>no es obligatorio</strong> para EV3</li>
-        <li>Se revisará en el Examen Transversal</li>
-        <li>Si ya funciona con Docker → se puede presentar ahora y queda adelantado para el examen</li>
+        <li>Docker es <strong>obligatorio</strong> — el ZIP Docker va en Drive (no en GitHub)</li>
+        <li>Crear <code>docker-compose.yml</code> con todos los servicios + MySQL</li>
+        <li>Incluir <code>arrancar-docker.bat</code> para levantar el stack con un clic</li>
+        <li>Los <code>.jar</code> deben estar incluidos en el ZIP Docker</li>
+        <li>Verificar que el sistema levante completo vía Docker antes de empaquetar</li>
       </ul>
     </div>
 
