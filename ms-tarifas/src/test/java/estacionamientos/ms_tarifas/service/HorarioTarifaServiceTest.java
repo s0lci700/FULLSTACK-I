@@ -1,19 +1,16 @@
 package estacionamientos.ms_tarifas.service;
 
+import estacionamientos.ms_tarifas.dto.HorarioTarifaCreateDTO;
 import estacionamientos.ms_tarifas.dto.HorarioTarifaResponseDTO;
-import estacionamientos.ms_tarifas.dto.TarifaCreateDTO;
 import estacionamientos.ms_tarifas.dto.TarifaResponseDTO;
 import estacionamientos.ms_tarifas.exception.ResourceNotFoundException;
 import estacionamientos.ms_tarifas.model.HorarioTarifas;
 import estacionamientos.ms_tarifas.model.Tarifas;
 import estacionamientos.ms_tarifas.repository.HorarioTarifasRepository;
-import estacionamientos.ms_tarifas.repository.TarifasRepository;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -28,7 +25,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -36,100 +32,106 @@ import static org.mockito.Mockito.when;
 class HorarioTarifasServiceTest {
 
     @Mock private HorarioTarifasRepository horarioTarifasRepository;
-    @Mock private TarifasRepository tarifasRepository;
+    @Mock private TarifasService tarifasService;
 
-    @InjectMocks
-    private TarifasService tarifasService;
     @InjectMocks
     private HorarioTarifasService horarioTarifasService;
 
     private Tarifas tarifaActiva;
     private HorarioTarifas horarioTarifaVigente;
+    private TarifaResponseDTO tarifaDTO;
 
     @BeforeEach
     void setUp() {
-        LocalDateTime t1 = LocalDateTime.of(LocalDate.now(), LocalTime.of(9, 0, 0));  // 09:00
-        LocalDateTime t2 = LocalDateTime.of(LocalDate.now(), LocalTime.of(18, 0, 0));  // 18:00
+        LocalDateTime t1 = LocalDateTime.of(LocalDate.now(), LocalTime.of(9, 0));
+        LocalDateTime t2 = LocalDateTime.of(LocalDate.now(), LocalTime.of(18, 0));
         tarifaActiva = new Tarifas(1L, "Tarifa Normal", "Tarifa estándar", new BigDecimal("1500.00"), true);
-        horarioTarifaVigente = new HorarioTarifas(Long.valueOf(1), tarifaActiva,  "fds", t1, t2, BigDecimal.valueOf(0.5));
+        horarioTarifaVigente = new HorarioTarifas(1L, tarifaActiva, "fds", t1, t2, BigDecimal.valueOf(0.5));
+        tarifaDTO = new TarifaResponseDTO(1L, "Tarifa Normal", "Tarifa estándar", 1500.0, true);
     }
 
     @Test
-    @DisplayName("Retorna todos los horarios de tarifa registrados")
+    @DisplayName("findAll retorna todos los horarios de tarifa como DTOs")
     void findAll_debeRetornarListaDeDTOs() {
-        // Arrange
         when(horarioTarifasRepository.findAll()).thenReturn(List.of(horarioTarifaVigente));
+        when(tarifasService.toDTO(tarifaActiva)).thenReturn(tarifaDTO);
 
-        // Act
         List<HorarioTarifaResponseDTO> resultado = horarioTarifasService.findAll();
 
-        // Assert
         assertThat(resultado).hasSize(1);
         assertThat(resultado.get(0).getTarifa().getNombre()).isEqualTo("Tarifa Normal");
     }
 
+    @Test
+    @DisplayName("findById retorna el horario cuando existe")
+    void findById_existente_debeRetornarDTO() {
+        when(horarioTarifasRepository.findById(1L)).thenReturn(Optional.of(horarioTarifaVigente));
+        when(tarifasService.toDTO(tarifaActiva)).thenReturn(tarifaDTO);
 
-//      // Retorna el horario cuya ventana de tiempo contiene el instante actual
-//     public HorarioTarifaResponseDTO findVigente() {
-//         LocalDateTime ahora = LocalDateTime.now();
-//         return horarioTarifasRepository.findAll().stream()
-//                 .filter(h -> !ahora.isBefore(h.getHoraInicio()) && !ahora.isAfter(h.getHoraFin()))
-//                 .findFirst()
-//                 .map(this::toDTO)
-//                 .orElseThrow(() -> new ResourceNotFoundException("No hay horario de tarifa vigente para el momento actual"));
-//     }
+        HorarioTarifaResponseDTO resultado = horarioTarifasService.findById(1L);
 
-//     // Retorna todos los horarios de tarifa registrados
-//     public List<HorarioTarifaResponseDTO> findAll() {
-//         log.info("Obteniendo todos los horarios de tarifa");
-//         return horarioTarifasRepository.findAll().stream()
-//                 .map(this::toDTO)
-//                 .toList();
-//     }
+        assertThat(resultado.getId()).isEqualTo(1L);
+    }
 
-//     // Busca un horario por id, lanza 404 si no existe
-//     public HorarioTarifaResponseDTO findById(Long id) {
-//         log.info("Buscando horario de tarifa con id: {}", id);
-//         HorarioTarifas horario = horarioTarifasRepository.findById(id)
-//                 .orElseThrow(() -> new ResourceNotFoundException("Horario de tarifa no encontrado con id: " + id));
-//         return toDTO(horario);
-//     }
+    @Test
+    @DisplayName("findById lanza ResourceNotFoundException cuando no existe")
+    void findById_noExiste_debeLanzarNotFound() {
+        when(horarioTarifasRepository.findById(99L)).thenReturn(Optional.empty());
 
-//     // Crea un nuevo horario asociado a una tarifa existente
-//     @Transactional
-//     public HorarioTarifaResponseDTO create(HorarioTarifaCreateDTO dto) {
-//         log.info("Creando horario de tarifa para tarifa id: {}", dto.getIdTarifa());
-//         Tarifas tarifa = tarifasService.findEntityById(dto.getIdTarifa());
-//         HorarioTarifas horario = new HorarioTarifas();
-//         horario.setTarifa(tarifa);
-//         horario.setDiaTipo(dto.getDiaTipo());
-//         horario.setHoraInicio(dto.getHoraInicio());
-//         horario.setHoraFin(dto.getHoraFin());
-//         horario.setMultiplicador(BigDecimal.valueOf(dto.getMultiplicador()));
-//         HorarioTarifas guardado = horarioTarifasRepository.save(horario);
-//         log.info("Horario de tarifa creado con id: {}", guardado.getId());
-//         return toDTO(guardado);
-//     }
+        assertThatThrownBy(() -> horarioTarifasService.findById(99L))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining("99");
+    }
 
-//     // Elimina un horario de tarifa por id
-//     @Transactional
-//     public void delete(Long id) {
-//         log.info("Eliminando horario de tarifa con id: {}", id);
-//         if (!horarioTarifasRepository.existsById(id)) {
-//             throw new ResourceNotFoundException("Horario de tarifa no encontrado con id: " + id);
-//         }
-//         horarioTarifasRepository.deleteById(id);
-//         log.info("Horario de tarifa eliminado con id: {}", id);
-//     }
+    @Test
+    @DisplayName("create guarda un nuevo horario y retorna el DTO")
+    void create_debeGuardarYRetornarDTO() {
+        LocalDateTime inicio = LocalDateTime.now().minusHours(1);
+        LocalDateTime fin = LocalDateTime.now().plusHours(1);
+        HorarioTarifaCreateDTO dto = new HorarioTarifaCreateDTO(1L, "LABORAL", inicio, fin, 1.0);
+        HorarioTarifas guardado = new HorarioTarifas(2L, tarifaActiva, "LABORAL", inicio, fin, BigDecimal.ONE);
 
-//     private HorarioTarifaResponseDTO toDTO(HorarioTarifas horario) {
-//         return new HorarioTarifaResponseDTO(
-//                 horario.getId(),
-//                 tarifasService.toDTO(horario.getTarifa()),
-//                 horario.getDiaTipo(),
-//                 horario.getHoraInicio(),
-//                 horario.getHoraFin(),
-//                 horario.getMultiplicador().doubleValue());
-//     }
-// }
+        when(tarifasService.findEntityById(1L)).thenReturn(tarifaActiva);
+        when(horarioTarifasRepository.save(any())).thenReturn(guardado);
+        when(tarifasService.toDTO(any(Tarifas.class))).thenReturn(tarifaDTO);
+
+        HorarioTarifaResponseDTO resultado = horarioTarifasService.create(dto);
+
+        assertThat(resultado.getId()).isEqualTo(2L);
+        verify(horarioTarifasRepository).save(any());
+    }
+
+    @Test
+    @DisplayName("delete elimina el horario cuando existe")
+    void delete_existente_debeEliminar() {
+        when(horarioTarifasRepository.existsById(1L)).thenReturn(true);
+
+        horarioTarifasService.delete(1L);
+
+        verify(horarioTarifasRepository).deleteById(1L);
+    }
+
+    @Test
+    @DisplayName("delete lanza ResourceNotFoundException cuando no existe")
+    void delete_noExiste_debeLanzarNotFound() {
+        when(horarioTarifasRepository.existsById(99L)).thenReturn(false);
+
+        assertThatThrownBy(() -> horarioTarifasService.delete(99L))
+                .isInstanceOf(ResourceNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("findVigente retorna el horario cuya ventana contiene el momento actual")
+    void findVigente_debeRetornarHorarioVigente() {
+        LocalDateTime inicio = LocalDateTime.now().minusHours(1);
+        LocalDateTime fin = LocalDateTime.now().plusHours(1);
+        HorarioTarifas horarioDia = new HorarioTarifas(3L, tarifaActiva, "LABORAL", inicio, fin, BigDecimal.ONE);
+
+        when(horarioTarifasRepository.findAll()).thenReturn(List.of(horarioDia));
+        when(tarifasService.toDTO(tarifaActiva)).thenReturn(tarifaDTO);
+
+        HorarioTarifaResponseDTO resultado = horarioTarifasService.findVigente();
+
+        assertThat(resultado.getId()).isEqualTo(3L);
+    }
 }
