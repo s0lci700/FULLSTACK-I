@@ -313,6 +313,31 @@ All docs in `docs/`. Key files:
   - `.jar` files, `target/`, `.bat`, `.sh` must NOT be committed
 - **EV3 rubric weight:** video 50% + written exam 50% of individual grade (Nota 5)
 
+### EV2 Review Results (teacher feedback — use for EV3 defense prep)
+
+Docs: `docs/REVISION EV2/DSY1103-011-G7_ev2_revision grupal_aguirre_leon.docx` and `...-G7-leon.docx`
+
+**Grupal: 27/30** — IE 2.5.2 Trello 0/1 (never evidenced); IE 2.3.1 Exceptions 60% (not confirmed homogeneous across all services); IE 2.2.3 Relations 60% (logical Long refs accepted, not penalized heavily).
+
+**Sol individual defense: 65.4/100** — "Desempeño aceptable"
+
+| Indicator | Score | Weakness (teacher's exact words) |
+|---|---|---|
+| IE 2.3.4 Logs/exceptions/HTTP codes | 5.4/18 (30%) | No mention of GlobalExceptionHandler, ResponseEntity, 400/404/409/422 codes |
+| IE 2.5.3 Personal contribution | 2.4/8 (30%) | Too brief — no commits, files, microservices, or verifiable evidence named |
+| IE 2.4.4 Modify comms + test before/after | 9/15 (60%) | No concrete Feign/route change demonstrated with before/after proof |
+| IE 2.3.3 Log interpretation | 7.8/13 (60%) | No concrete error scenario (DB down, wrong port, missing service) described |
+| IE 2.1.3 Data modeling | 1.8/3 (60%) | Described functional flow but not a formal entity with PK, attributes, constraints |
+| IE 2.2.4 Business logic | 10/10 ✅ | Perfect |
+| IE 2.2.5 Validations via REST | 15/15 ✅ | Perfect |
+| IE 2.4.3 Microservice comms | 8/8 ✅ | Perfect |
+
+**EV3 defense prep — what to say that Sol didn't say in EV2:**
+- `GlobalExceptionHandler` (`@RestControllerAdvice`) handles: `NotFoundException` → 404, `ConflictException` → 409, `BadRequestException` → 400, `BusinessException` → 422, `MethodArgumentNotValidException` → 400 with `campos` map. Body always: `{ error, mensaje, timestamp }`.
+- Personal commits: scripts (`manage.ps1`, `start-all.ps1`, `load-db.ps1`, `set-db-port.ps1`), docs/, auth-service, ms-accesos, ms-reservas, ms-pagos, Postman collection.
+- Error scenario: if ms-espacios is down when confirming a reserva → Feign throws `FeignException` → `catch (Exception e)` → `BusinessException` → 422.
+- Concrete entity: `Acceso` — fields: `id (PK)`, `idReservaRef (Long, nullable)`, `idEspacioRef (Long)`, `fechaHoraEntrada`, `fechaHoraSalida`, `minutos`, `estado (EstadoEnum)`. No cross-DB FK — referenced by ms-pagos as `idAccesoRef`.
+
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
