@@ -26,3 +26,8 @@ Thumbs.db
 .claude/settings.local.json
 .claude/hooks/*.log
 .claude/hooks/*.lock
+
+# Entrega EV3 — ZIPs generados por preparar-entrega.ps1 (van a Drive, no a GitHub)
+dist/
+ESTACIONAMIENTO-NATIVO.zip
+ESTACIONAMIENTO-DOCKER.zip
