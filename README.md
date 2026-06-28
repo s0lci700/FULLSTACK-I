@@ -210,14 +210,19 @@ Get-Content db\00_run_all.sql | mysql -u root
 
 ### 4. Arrancar todos los servicios
 
+> **Para la entrega:** descargue el ZIP Nativo desde el enlace de arriba — incluye el script `arrancar-nativo.bat` que levanta los 12 servicios en el orden correcto con un doble clic.
+
 ```powershell
-# Opción A — gestor interactivo (dashboard en vivo + start/stop/restart por nombre)
+# Opción A — script .bat incluido en el ZIP Nativo (recomendado para revisión)
+arrancar-nativo.bat   # Fase 1: Eureka → Fase 2: Microservicios → Fase 3: API Gateway
+
+# Opción B — gestor interactivo PowerShell (dashboard en vivo + start/stop/restart)
 .\scripts\manage.ps1
 
-# Opción B — arrancar todo automáticamente (una ventana por servicio)
+# Opción C — arrancar todo automáticamente (una ventana por servicio)
 .\scripts\start-all.ps1
 
-# Opción C — arrancar individualmente respetando el orden
+# Opción D — arrancar individualmente respetando el orden
 cd eureka-server; .\mvnw.cmd spring-boot:run  # 1° Eureka
 cd api-gateway;   .\mvnw.cmd spring-boot:run  # 2° Gateway
 cd auth-service;  .\mvnw.cmd spring-boot:run  # 3° Auth
@@ -363,13 +368,15 @@ newman run estacionamientos.postman_collection.json --env-var "base=http://local
 ### Pruebas unitarias por servicio
 
 ```powershell
+# Desde la raíz — compila y ejecuta todos los tests (sin omitir)
 cd <nombre-servicio>
-.\mvnw.cmd test                           # Todos los tests
+.\mvnw.cmd clean install                  # Compila + ejecuta todos los tests
 .\mvnw.cmd test -Dtest=NombreServiceTest  # Test específico
-.\mvnw.cmd verify                         # Con reporte JaCoCo en target/site/jacoco/
+.\mvnw.cmd verify                         # Compila + tests + reporte JaCoCo en target/site/jacoco/
 ```
 
-Cada servicio tiene `src/test/resources/application-test.properties` con H2 en memoria y Eureka deshabilitado.
+- **139 tests unitarios · 0 fallos** — JUnit 5 + Mockito en los 10 servicios de negocio
+- Cada servicio tiene `src/test/resources/application-test.properties` con H2 en memoria y Eureka deshabilitado — no requiere MySQL para ejecutar los tests
 
 ### Swagger UI
 
@@ -387,6 +394,13 @@ Disponible directamente en cada servicio (no por el gateway):
 | ms-tarifas | http://localhost:8088/swagger-ui/index.html |
 | ms-pagos | http://localhost:8089/swagger-ui/index.html |
 | ms-reportes | http://localhost:8090/swagger-ui/index.html |
+
+---
+
+## Gestión del proyecto
+
+Tablero Trello con tareas asignadas por integrante y estado de avance:
+🔗 https://trello.com/b/h7PQA19W/dsy1103-g7-estacionamiento-inteligente
 
 ---
 
