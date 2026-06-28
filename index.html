@@ -472,18 +472,20 @@
   <!-- Pendientes -->
   <div class="section-label">Lo que falta — cierre 29/06</div>
   <div class="pendientes">
-    <div class="pendientes-title">Estado actual · actualizado 24/06/2026</div>
+    <div class="pendientes-title">Estado actual · actualizado 28/06/2026</div>
     <div class="pendientes-grid">
       <div class="p-item"><span class="p-icon">🔴</span><span class="p-text"><strong>Grabar el video</strong> — subir a Drive o YouTube (link público)</span></div>
-      <div class="p-item"><span class="p-icon">🔴</span><span class="p-text"><strong>subtitulos-video.txt</strong> — completar transcripción y commitear en raíz del repo</span></div>
-      <div class="p-item"><span class="p-icon">🔴</span><span class="p-text"><strong>README.md</strong> — tabla de 3 links al tope: ZIP Nativo · ZIP Docker · Video</span></div>
-      <div class="p-item"><span class="p-icon">🔴</span><span class="p-text"><strong>ZIP Nativo</strong> — empaquetar JARs + arrancar-nativo.bat y subir a Drive</span></div>
-      <div class="p-item"><span class="p-icon">🔴</span><span class="p-text"><strong>ZIP Docker</strong> — docker-compose.yml + instrucciones y subir a Drive (obligatorio)</span></div>
+      <div class="p-item"><span class="p-icon">🔴</span><span class="p-text"><strong>README.md</strong> — reemplazar <code>ENLACE_A_DRIVE_PENDIENTE</code> con links reales de Drive</span></div>
+      <div class="p-item"><span class="p-icon">🔴</span><span class="p-text"><strong>ZIP Nativo</strong> — ejecutar <code>preparar-entrega.ps1</code>, subir a Drive</span></div>
+      <div class="p-item"><span class="p-icon">🔴</span><span class="p-text"><strong>ZIP Docker</strong> — ejecutar <code>preparar-entrega.ps1</code>, subir a Drive</span></div>
       <div class="p-item"><span class="p-icon">🔴</span><span class="p-text"><strong>Subir a AVA</strong> — cada estudiante envía su link GitHub individualmente</span></div>
-      <div class="p-item done"><span class="p-icon">✅</span><span class="p-text">Tests unitarios — 54 tests pasan (ms-tarifas 17, security 16, user 21)</span></div>
+      <div class="p-item done"><span class="p-icon">✅</span><span class="p-text">Tests unitarios — <strong>139 tests · 0 fallos</strong> en 10 servicios (commit <code>5a9beb7</code> · 28/06)</span></div>
+      <div class="p-item done"><span class="p-icon">✅</span><span class="p-text">subtitulos-video.txt — transcripción técnica completa 15 min (commit <code>5a9beb7</code>)</span></div>
       <div class="p-item done"><span class="p-icon">✅</span><span class="p-text">JaCoCo configurado — ejecutar <code>mvnw.cmd verify</code> antes de la defensa</span></div>
       <div class="p-item done"><span class="p-icon">✅</span><span class="p-text">Newman 74/74 — colección completa pasando</span></div>
       <div class="p-item done"><span class="p-icon">✅</span><span class="p-text">12 microservicios completos y funcionando</span></div>
+      <div class="p-item done"><span class="p-icon">✅</span><span class="p-text">Docker — Dockerfile + docker-compose.yml + arrancar-sistema.bat</span></div>
+      <div class="p-item done"><span class="p-icon">✅</span><span class="p-text">Scripts de entrega — <code>preparar-entrega.ps1</code> genera ambos ZIPs automáticamente</span></div>
     </div>
   </div>
 
@@ -538,9 +540,9 @@
       <div class="ev3-step-header"><span class="step-num">PASO 2</span> 🧪 Pruebas unitarias + JaCoCo</div>
       <ul class="ev3-checklist">
         <li>Ejecutar todos los tests sin errores (<code>mvnw.cmd test</code> en cada servicio)</li>
-        <li>Confirmar que los 72+ tests pasan en la suite completa (39 nuevos escritos el 23/06)</li>
+        <li>✅ <strong>139 tests · 0 fallos</strong> en todos los servicios (commit <code>5a9beb7</code> · 28/06)</li>
         <li>Generar reporte de cobertura JaCoCo: <code>mvnw.cmd verify</code> → <code>target/site/jacoco/index.html</code></li>
-        <li>Apuntar a ≥80% cobertura en capas de Service — pendiente: HorarioTarifas, RolPermiso, Suscripcion</li>
+        <li>Cobertura por servicio (JaCoCo): ms-espacios 68% · security 66% · user 64% · ms-reservas 59% · ms-tarifas 56% · auth 54% · ms-accesos 48% · ms-reportes 47% · ms-pagos 31% · ms-vehiculos 32%</li>
         <li>Tener evidencia de ejecución lista para mostrar en el video</li>
       </ul>
     </div>
