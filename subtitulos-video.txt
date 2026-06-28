@@ -3,16 +3,325 @@ Proyecto: Estacionamiento Inteligente
 Asignatura: DSY1103 Desarrollo FullStack I — DUOC UC
 Integrantes: Sol León · Catalina Aguirre
 
-=====================================================
-PENDIENTE: Agregar transcripción del video aquí.
-=====================================================
+=============================================================
+NOTA: Este archivo contiene el guion/transcripción del video
+de defensa técnica de la Evaluación Parcial 3 (EV3).
+=============================================================
 
-Estructura sugerida del video (15 min / máx. 18 min):
 
-[00:00 - 01:00] Introducción: presentación del sistema y las integrantes.
-[01:00 - 03:00] Arquitectura general: 12 microservicios, Eureka, API Gateway, Feign.
-[03:00 - 05:00] Puesta en marcha: arrancar el sistema y verificar en Eureka.
-[05:00 - 08:00] Demo del flujo principal: login → reserva → entrada → salida → cobro → reporte.
-[08:00 - 11:00] Pruebas unitarias: ejecución con mvn clean install, cobertura JaCoCo.
-[11:00 - 13:00] Swagger/OpenAPI: endpoints documentados de los microservicios clave.
-[13:00 - 15:00] Aporte técnico individual de cada integrante y conclusiones.
+[00:00 - 01:00] INTRODUCCIÓN
+-----------------------------------------------------------
+Hola, somos Sol León y Catalina Aguirre, estudiantes de
+DSY1103 Desarrollo FullStack I en DUOC UC, sección 011.
+
+En este video presentamos nuestro proyecto final:
+"Estacionamiento Inteligente" — un sistema de gestión de
+estacionamiento construido con arquitectura de microservicios.
+
+El sistema está compuesto por 12 microservicios independientes
+desarrollados en Spring Boot 3 con Java 21, usando MySQL 8
+como motor de base de datos. Cubre el ciclo completo de un
+estacionamiento: registro de clientes y vehículos, reserva de
+espacios, control de accesos, tarifas dinámicas, cobros y
+reportes.
+
+
+[01:00 - 03:00] ARQUITECTURA GENERAL
+-----------------------------------------------------------
+La arquitectura está basada en microservicios con los
+siguientes componentes clave:
+
+1. EUREKA SERVER (puerto 8761): actúa como registro central
+   de servicios. Cada microservicio se registra automáticamente
+   al arrancar. Feign Client resuelve los nombres de servicio
+   a través de Eureka, sin necesidad de URLs hardcodeadas.
+
+2. API GATEWAY (puerto 8080): punto de entrada único para
+   todos los clientes. Valida el token JWT en el filtro
+   JwtAuthFilter antes de enrutar la solicitud al microservicio
+   correspondiente. Las rutas públicas son: /api/auth/**,
+   /swagger-ui/** y /v3/api-docs/**.
+
+3. FEIGN CLIENT: permite comunicación sincrónica entre
+   microservicios usando los nombres registrados en Eureka.
+   Por ejemplo, ms-pagos usa FeignClients para consultar
+   accesos, tarifas, clientes, vehículos, espacios y horarios
+   en una sola operación de cobro.
+
+4. BASE DE DATOS POR SERVICIO: 10 bases de datos MySQL
+   independientes, sin FK a nivel de BD entre servicios.
+   Las referencias cross-BD se almacenan como campos Long
+   (FK lógicas), por ejemplo: idClienteRef, idEspacioRef,
+   idAccesoRef.
+
+5. SEGURIDAD JWT: el token es emitido exclusivamente por
+   auth-service con BCrypt strength 12 para contraseñas.
+   JJWT 0.11.5 con sesiones stateless.
+
+Los 12 servicios y sus puertos son:
+- eureka-server  :8761  (registro)
+- api-gateway    :8080  (entrada única)
+- auth-service   :8081  db_auth
+- user-service   :8082  db_usuarios
+- security-service :8083 db_seguridad
+- ms-vehiculos   :8084  db_vehiculos
+- ms-espacios    :8085  db_espacios
+- ms-reservas    :8086  db_reservas
+- ms-accesos     :8087  db_accesos
+- ms-tarifas     :8088  db_tarifas
+- ms-pagos       :8089  db_pagos
+- ms-reportes    :8090  (solo Feign, sin BD propia)
+
+
+[03:00 - 05:00] PUESTA EN MARCHA
+-----------------------------------------------------------
+Para arrancar el sistema usamos el script start-all.ps1
+que lanza los 12 servicios en orden correcto de dependencias:
+
+Fase 1: eureka-server — debe estar registrando antes que
+        cualquier otro servicio.
+Fase 2: api-gateway — punto de entrada.
+Fase 3: auth-service, user-service, security-service,
+        ms-vehiculos, ms-espacios, ms-tarifas — servicios
+        base sin dependencias Feign.
+Fase 4: ms-reservas, ms-accesos — dependen de la fase 3.
+Fase 5: ms-pagos — depende de ms-accesos, ms-tarifas,
+        user-service.
+Fase 6: ms-reportes — último en arrancar, consume todos.
+
+Primero cargamos las bases de datos con:
+  .\scripts\load-db.ps1
+Esto crea las 10 bases de datos y carga datos de prueba:
+2 clientes (María González, Carlos Pérez), 4 tipos de
+vehículo, 4 tipos de espacio, 2 tarifas, 6 horarios,
+4 bancos con descuentos.
+
+Luego arrancamos todo con:
+  .\scripts\start-all.ps1
+
+En el dashboard de Eureka (http://localhost:8761) vemos
+los 12 servicios registrados correctamente. También podemos
+usar .\scripts\manage.ps1 para un dashboard interactivo
+con start/stop/restart por nombre o número.
+
+
+[05:00 - 08:00] DEMO DEL FLUJO PRINCIPAL
+-----------------------------------------------------------
+Demostración del flujo de negocio completo usando nuestra
+colección Postman de 74 requests:
+
+PASO 1 — LOGIN (auth-service):
+  POST /api/auth/login
+  Body: { "email": "maria@test.com", "password": "Test1234!" }
+  Respuesta: 200 OK con token JWT
+  El token se captura automáticamente vía script post-response
+  y se reutiliza en todos los requests siguientes.
+
+PASO 2 — CREAR RESERVA (ms-reservas):
+  POST /api/reservas
+  Headers: Authorization: Bearer {token}
+  Body: { "idClienteRef": 1, "idVehiculoRef": 1,
+          "idEspacioRef": 1, "fechaInicio": "...",
+          "fechaFin": "..." }
+  El servicio valida via Feign: cliente activo, vehículo
+  activo, espacio activo y disponible.
+  Respuesta: 201 CREATED — estado inicial: PENDIENTE
+
+PASO 3 — CONFIRMAR RESERVA:
+  PUT /api/reservas/{id}/confirmar
+  Transición de estado: PENDIENTE → CONFIRMADA
+  El estado machine permite solo: PENDIENTE→CONFIRMADA,
+  PENDIENTE→CANCELADA, CONFIRMADA→FINALIZADA.
+
+PASO 4 — REGISTRAR ENTRADA (ms-accesos):
+  POST /api/accesos/entrada
+  Body: { "idEspacioRef": 1, "idReservaRef": 1, ... }
+  Crea acceso con estado ACTIVO y llama a EspacioClient
+  para marcar el espacio como NO disponible.
+  Respuesta: 201 CREATED con fechaHoraEntrada
+
+PASO 5 — REGISTRAR SALIDA:
+  PUT /api/accesos/{id}/salida
+  Calcula los minutos de permanencia, cambia estado a
+  COMPLETADO, llama a EspacioClient para liberar el espacio.
+  Respuesta: 200 OK con minutos calculados.
+
+PASO 6 — CREAR COBRO (ms-pagos):
+  POST /api/cobros
+  Body: { "idAccesoRef": 1, "idBancoRef": 1,
+          "idMetodoPagoRef": 1, "idTipoTarjetaRef": 1 }
+  El servicio aplica la fórmula de cobro completa:
+    monto_base = precio_base_hora × multiplicador_horario
+                 × factor_tipo_vehiculo × factor_tipo_espacio
+                 × (minutos / 60)
+    monto_final = monto_base
+                 × (1 - desc_tipo_cliente / 100)
+                 × (1 - desc_suscripcion / 100)
+                 × (1 - desc_banco / 100)
+  Todo en BigDecimal con RoundingMode.HALF_UP.
+  Respuesta: 201 CREATED con montoBase y montoFinal.
+
+PASO 7 — CONSULTAR REPORTE (ms-reportes):
+  GET /api/reportes/ocupacion
+  GET /api/reportes/cobros/cliente/{id}
+  ms-reportes no tiene BD propia — agrega datos de todos
+  los servicios vía Feign. Solo lectura, sin efectos.
+
+
+[08:00 - 11:00] PRUEBAS UNITARIAS Y COBERTURA JACOCO
+-----------------------------------------------------------
+El proyecto tiene más de 92 pruebas unitarias distribuidas
+en los 10 servicios de negocio.
+
+Tecnologías de testing:
+- JUnit 5 con @ExtendWith(MockitoExtension.class)
+- Mockito para mocks: @Mock, @InjectMocks
+- AssertJ para aserciones: assertThat(), assertThatThrownBy()
+- H2 en memoria para tests de integración
+- @DisplayName en español con descripción semántica
+
+Patrón AAA aplicado en todos los tests:
+  Arrange: preparar mocks y datos
+  Act:     invocar el método a probar
+  Assert:  verificar resultado o excepción
+
+Ejemplo de test (AccesoServiceTest):
+  @Test
+  @DisplayName("registrarEntrada: debe crear acceso ACTIVO
+               y marcar espacio no disponible")
+  void registrarEntrada_debeCrearAccesoActivo() {
+      // Arrange
+      when(espacioClient.getEspacio(1L)).thenReturn(espacio);
+      when(repository.save(any())).thenAnswer(inv -> ...);
+      // Act
+      AccesoResponseDTO result = service.registrarEntrada(dto);
+      // Assert
+      assertThat(result.getEstado()).isEqualTo(EstadoEnum.ACTIVO);
+      verify(espacioClient).actualizarDisponibilidad(1L, false);
+  }
+
+Manejo de excepciones probado:
+- NotFoundException → HTTP 404 (recurso no encontrado)
+- ConflictException → HTTP 409 (duplicado)
+- BadRequestException → HTTP 400 (datos inválidos)
+- BusinessException → HTTP 422 (regla de negocio violada)
+
+El GlobalExceptionHandler (@RestControllerAdvice) centraliza
+el manejo de todas las excepciones. Body siempre incluye:
+  { "error": "...", "mensaje": "...", "timestamp": "..." }
+
+Para generar el reporte de cobertura JaCoCo:
+  cd ms-pagos
+  .\mvnw.cmd verify
+  Abre: target/site/jacoco/index.html
+
+El reporte muestra cobertura de instrucciones, ramas,
+métodos y clases para cada servicio.
+
+Para correr la suite completa Newman (74 requests):
+  newman run estacionamientos.postman_collection.json
+         --env-var "base=http://localhost:8080"
+  Resultado: 74/74 passed — todos los endpoints validados.
+
+
+[11:00 - 13:00] SWAGGER / OPENAPI
+-----------------------------------------------------------
+Todos los 12 servicios tienen documentación Swagger
+habilitada con springdoc-openapi 2.5.0.
+
+Acceso directo por puerto (no por el gateway):
+  auth-service:     http://localhost:8081/swagger-ui/index.html
+  ms-pagos:         http://localhost:8089/swagger-ui/index.html
+  ms-reservas:      http://localhost:8086/swagger-ui/index.html
+  ms-accesos:       http://localhost:8087/swagger-ui/index.html
+
+Destacamos los endpoints más relevantes de ms-pagos:
+  POST /api/cobros              — crear cobro con fórmula completa
+  GET  /api/cobros/{id}         — consultar cobro por ID
+  GET  /api/cobros/acceso/{id}  — cobro por acceso (1:1 unique)
+  GET  /api/bancos              — listar bancos con descuentos
+  POST /api/bancos              — crear banco
+
+En ms-reservas, el ciclo de estados via PUT:
+  PUT /api/reservas/{id}/confirmar   — PENDIENTE → CONFIRMADA
+  PUT /api/reservas/{id}/cancelar    — PENDIENTE → CANCELADA
+  PUT /api/reservas/{id}/finalizar   — CONFIRMADA → FINALIZADA
+
+Nota técnica: usamos @PutMapping exclusivamente (nunca
+@PatchMapping) porque Feign con HttpURLConnection no soporta
+PATCH y el docente solo enseñó PUT para actualizaciones.
+
+
+[13:00 - 15:00] APORTE TÉCNICO INDIVIDUAL Y CONCLUSIONES
+-----------------------------------------------------------
+SOL LEÓN — Aporte técnico:
+
+Fui responsable de los siguientes componentes del sistema:
+
+1. Scripts de gestión del proyecto:
+   - scripts/manage.ps1: dashboard interactivo con start/stop/
+     restart por nombre o número, detección automática de PIDs.
+   - scripts/start-all.ps1: arranque de los 12 servicios en
+     orden de dependencias con detección de Maven.
+   - scripts/load-db.ps1: crea las 10 BD y carga datos seed.
+   - scripts/set-db-port.ps1: actualiza el puerto MySQL en
+     todos los application.properties del proyecto.
+
+2. Microservicios implementados:
+   - auth-service: login con JWT, registro de usuarios,
+     BCrypt strength 12, UserCredential con email como login.
+   - ms-accesos: registro de entrada/salida, cálculo de
+     minutos, integración Feign con ms-espacios.
+   - ms-reservas: máquina de estados (PENDIENTE→CONFIRMADA→
+     FINALIZADA), validación cruzada via 3 Feign clients.
+   - ms-pagos: fórmula de cobro completa con BigDecimal,
+     4 factores multiplicativos, 3 tipos de descuento.
+
+3. Colección Postman:
+   - estacionamientos.postman_collection.json con 74 requests
+     organizados en 12 fases, idempotente, con captura
+     automática del token JWT y scripts de limpieza.
+
+4. GlobalExceptionHandler:
+   - @RestControllerAdvice homogéneo en todos los servicios
+   - Mapea: NotFoundException→404, ConflictException→409,
+     BadRequestException→400, BusinessException→422,
+     MethodArgumentNotValidException→400 con mapa de campos.
+
+CATALINA AGUIRRE — Aporte técnico:
+
+Fui responsable de:
+
+1. Microservicios de dominio core:
+   - user-service: CRUD de clientes, tipos de cliente,
+     suscripciones, relación cliente-suscripción con
+     descuentos aplicables al cobro.
+   - security-service: permisos y mapeo rol-permiso.
+   - ms-vehiculos: CRUD de vehículos con soft delete,
+     validación de patente única.
+   - ms-espacios: gestión de disponibilidad en tiempo real,
+     toggle via PUT /disponibilidad.
+   - ms-tarifas: tarifas base y horarios con multiplicadores
+     (LABORAL/FIN_DE_SEMANA/FESTIVO), endpoint /vigente.
+   - ms-reportes: reportes agregados solo Feign.
+
+2. Documentación técnica:
+   - docs/ARQUITECTURA.html, docs/BASE_DE_DATOS.html,
+     docs/SEGURIDAD.html, docs/api/*.html por servicio.
+
+3. Base de datos:
+   - Scripts SQL en db/ (01 al 09) con datos seed.
+   - Diagrama ER y relaciones lógicas entre servicios.
+
+CONCLUSIONES:
+
+El sistema implementa exitosamente los patrones fundamentales
+de microservicios: service discovery (Eureka), API Gateway
+centralizado, comunicación sincrónica (Feign), base de datos
+por servicio y seguridad stateless con JWT.
+
+La colección Newman de 74 requests pasa al 100% en un sistema
+completamente levantado, demostrando la integración completa
+de todos los microservicios.
+
+Gracias por su atención.

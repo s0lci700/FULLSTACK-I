@@ -23,6 +23,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -164,5 +165,83 @@ class ReservaServiceTest {
         assertThatThrownBy(() -> reservaService.findById(99L))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("Reserva no encontrada");
+    }
+
+    @Test
+    @DisplayName("findAll debe retornar lista de reservas como DTOs")
+    void findAll_debeRetornarListaDeDTOs() {
+        when(reservasRepository.findAll()).thenReturn(List.of(reservaPendiente));
+
+        List<ReservaResponseDTO> resultado = reservaService.findAll();
+
+        assertThat(resultado).hasSize(1);
+        assertThat(resultado.get(0).getEstado()).isEqualTo(EstadoEnums.PENDIENTE);
+    }
+
+    @Test
+    @DisplayName("findById debe retornar el DTO cuando la reserva existe")
+    void findById_existente_debeRetornarDTO() {
+        when(reservasRepository.findById(1L)).thenReturn(Optional.of(reservaPendiente));
+
+        ReservaResponseDTO resultado = reservaService.findById(1L);
+
+        assertThat(resultado.getId()).isEqualTo(1L);
+        assertThat(resultado.getEstado()).isEqualTo(EstadoEnums.PENDIENTE);
+    }
+
+    @Test
+    @DisplayName("findByIdCliente debe retornar las reservas del cliente")
+    void findByIdCliente_debeRetornarReservasDelCliente() {
+        when(reservasRepository.findByIdCliente(1L)).thenReturn(List.of(reservaPendiente));
+
+        List<ReservaResponseDTO> resultado = reservaService.findByIdCliente(1L);
+
+        assertThat(resultado).hasSize(1);
+        assertThat(resultado.get(0).getIdCliente()).isEqualTo(1L);
+    }
+
+    @Test
+    @DisplayName("findByEstado debe retornar las reservas filtradas por estado")
+    void findByEstado_debeRetornarReservasFiltradas() {
+        when(reservasRepository.findByEstado(EstadoEnums.PENDIENTE)).thenReturn(List.of(reservaPendiente));
+
+        List<ReservaResponseDTO> resultado = reservaService.findByEstado(EstadoEnums.PENDIENTE);
+
+        assertThat(resultado).hasSize(1);
+        assertThat(resultado.get(0).getEstado()).isEqualTo(EstadoEnums.PENDIENTE);
+    }
+
+    @Test
+    @DisplayName("cancelar debe pasar la reserva a CANCELADA cuando estaba PENDIENTE")
+    void cancelar_pendiente_debeCancelarReserva() {
+        when(reservasRepository.findById(1L)).thenReturn(Optional.of(reservaPendiente));
+        when(reservasRepository.save(any(Reserva.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        ReservaResponseDTO resultado = reservaService.cancelar(1L);
+
+        assertThat(resultado.getEstado()).isEqualTo(EstadoEnums.CANCELADA);
+    }
+
+    @Test
+    @DisplayName("finalizar debe pasar la reserva a FINALIZADA cuando estaba CONFIRMADA")
+    void finalizar_confirmada_debeFinalizarReserva() {
+        reservaPendiente.setEstado(EstadoEnums.CONFIRMADA);
+        when(reservasRepository.findById(1L)).thenReturn(Optional.of(reservaPendiente));
+        when(reservasRepository.save(any(Reserva.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        ReservaResponseDTO resultado = reservaService.finalizar(1L);
+
+        assertThat(resultado.getEstado()).isEqualTo(EstadoEnums.FINALIZADA);
+    }
+
+    @Test
+    @DisplayName("finalizar debe lanzar ConflictException si la reserva ya fue cancelada")
+    void finalizar_cancelada_debeLanzarConflict() {
+        reservaPendiente.setEstado(EstadoEnums.CANCELADA);
+        when(reservasRepository.findById(1L)).thenReturn(Optional.of(reservaPendiente));
+
+        assertThatThrownBy(() -> reservaService.finalizar(1L))
+                .isInstanceOf(ConflictException.class);
+        verify(reservasRepository, never()).save(any(Reserva.class));
     }
 }
