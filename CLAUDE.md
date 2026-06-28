@@ -8,6 +8,18 @@ Parking management system ("Estacionamiento Inteligente") — 12 Spring Boot mic
 
 All 12 services are **complete** with 74/74 Newman tests passing. The project is now in **Evaluación Parcial 3** (EV3) delivery phase — deadline **Monday 29/06/2026 at 23:59**. Individual written defense starts Wednesday 01/07/2026.
 
+## External Credentials & Tools
+
+| Tool | Credentials file | Notes |
+|------|-----------------|-------|
+| Trello | `C:\Users\Sol\Desktop\FULLSTACK\proyecto_semestre\trello-credentials.txt` | API key + token + board URL. NOT in git. |
+| GitHub token | `C:\Users\Sol\Documents\ghkey.txt` | Set as `$env:GITHUB_TOKEN` per session. NOT in git. |
+| MySQL (XAMPP) | `application.properties` per service | Port 3307 (managed via `scripts\set-db-port.ps1`) |
+
+**Trello board**: https://trello.com/b/h7PQA19W/dsy1103-g7-estacionamiento-inteligente
+- Lists: EV1 Entregado · EV2 Entregado (27/30) · Listo · En Curso · Pendiente
+- Add cards via REST API (PowerShell `Invoke-RestMethod`) or MCP package `@delorenj/mcp-server-trello`
+
 ## Build & Run Commands
 
 **`mvn` is NOT globally installed** — use the Maven Wrapper (`.\mvnw.cmd`) from each service directory. A local Maven binary also exists at `.\apache-maven-3.9.15\bin\mvn.cmd` for offline lab use.
