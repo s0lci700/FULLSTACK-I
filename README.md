@@ -223,10 +223,18 @@ arrancar-nativo.bat   # 1. Eureka Server → 2. Microservicios → 3. API Gatewa
 .\scripts\start-all.ps1
 
 # Opción D — arrancar individualmente respetando el orden
-cd eureka-server; .\mvnw.cmd spring-boot:run  # 1° Eureka
-cd api-gateway;   .\mvnw.cmd spring-boot:run  # 2° Gateway
-cd auth-service;  .\mvnw.cmd spring-boot:run  # 3° Auth
-# ... resto en cualquier orden
+cd eureka-server;    .\mvnw.cmd spring-boot:run  # 1° Eureka
+cd auth-service;     .\mvnw.cmd spring-boot:run  # 2° Microservicios (cualquier orden entre sí)
+cd user-service;     .\mvnw.cmd spring-boot:run
+cd security-service; .\mvnw.cmd spring-boot:run
+cd ms-vehiculos;     .\mvnw.cmd spring-boot:run
+cd ms-espacios;      .\mvnw.cmd spring-boot:run
+cd ms-tarifas;       .\mvnw.cmd spring-boot:run
+cd ms-reservas;      .\mvnw.cmd spring-boot:run
+cd ms-accesos;       .\mvnw.cmd spring-boot:run
+cd ms-pagos;         .\mvnw.cmd spring-boot:run
+cd ms-reportes;      .\mvnw.cmd spring-boot:run
+cd api-gateway;      .\mvnw.cmd spring-boot:run  # 3° API Gateway — último
 ```
 
 **Orden de arranque obligatorio:**
