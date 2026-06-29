@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Guión de Grabación — EV3 Video</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:#0f1117; --bg2:#1a1f2e; --bg3:#1e2330;
+      --border:#2d3748; --text:#e2e8f0; --text2:#94a3b8; --text3:#64748b;
+      --green:#22c55e; --green-bg:#14532d;
+      --blue:#93c5fd;  --blue-bg:#1e3a5f;
+      --yellow:#fbbf24;--yellow-bg:#3b2700;
+      --purple:#c4b5fd;--purple-bg:#2d1b4e;
+      --red:#f87171;   --red-bg:#450a0a;
+      --cyan:#67e8f9;  --cyan-bg:#164e63;
+      --orange:#fb923c;--orange-bg:#431407;
+      --sol:#f472b6;   --sol-bg:#500724;
+      --cata:#34d399;  --cata-bg:#064e3b;
+    }
+    body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--text); line-height:1.6; }
+    .layout { display:flex; min-height:100vh; }
+
+    /* Sidebar */
+    nav { width:240px; min-width:240px; background:var(--bg2); border-right:1px solid var(--border); padding:1.5rem 1rem; position:sticky; top:0; height:100vh; overflow-y:auto; }
+    nav a.back { display:flex; align-items:center; gap:.4rem; font-size:.75rem; color:var(--text3); text-decoration:none; margin-bottom:1.5rem; }
+    nav a.back:hover { color:var(--text2); }
+    nav h2 { font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--text3); margin:1.2rem 0 .4rem; }
+    nav ul { list-style:none; }
+    nav ul li a { display:block; padding:.25rem .6rem; border-radius:4px; color:var(--text2); text-decoration:none; font-size:.78rem; transition:background .12s,color .12s; }
+    nav ul li a:hover { background:var(--bg3); color:var(--text); }
+    .tc-sm { font-size:.6rem; font-family:monospace; background:var(--cyan-bg); color:var(--cyan); padding:.1rem .3rem; border-radius:3px; margin-left:.25rem; }
+
+    /* Main */
+    main { flex:1; padding:2rem 2.5rem; max-width:1060px; }
+    h1 { font-size:1.5rem; margin-bottom:.25rem; }
+    .sub { color:var(--text3); font-size:.82rem; margin-bottom:1.5rem; }
+    h2 { font-size:1rem; color:var(--blue); margin:2.5rem 0 .8rem; padding-bottom:.4rem; border-bottom:1px solid var(--border); }
+    h3 { font-size:.88rem; color:var(--purple); margin:1.4rem 0 .5rem; }
+    p { color:var(--text2); font-size:.85rem; margin-bottom:.6rem; }
+
+    /* Timer chip */
+    .tc { font-family:monospace; font-size:.82rem; color:var(--cyan); background:var(--cyan-bg); padding:.15rem .45rem; border-radius:4px; white-space:nowrap; }
+    .who-sol  { display:inline-block; font-size:.7rem; padding:.12rem .38rem; border-radius:3px; background:var(--sol-bg);    color:var(--sol); font-weight:700; }
+    .who-cata { display:inline-block; font-size:.7rem; padding:.12rem .38rem; border-radius:3px; background:var(--cata-bg);   color:var(--cata); font-weight:700; }
+    .who-both { display:inline-block; font-size:.7rem; padding:.12rem .38rem; border-radius:3px; background:var(--purple-bg); color:var(--purple); font-weight:700; }
+    .ie { font-size:.62rem; padding:.08rem .28rem; border-radius:3px; background:var(--yellow-bg); color:var(--yellow); font-family:monospace; }
+
+    /* Checklist */
+    .chk { list-style:none; }
+    .chk li { display:flex; align-items:flex-start; gap:.6rem; padding:.35rem 0; border-bottom:1px solid var(--border); font-size:.84rem; color:var(--text2); }
+    .chk li:last-child { border-bottom:none; }
+    .chk li input[type=checkbox] { margin-top:.15rem; accent-color:var(--green); width:15px; height:15px; flex-shrink:0; cursor:pointer; }
+    .chk-label { flex:1; }
+    .chk-label code { font-size:.78rem; background:var(--bg3); padding:.1rem .3rem; border-radius:3px; color:var(--cyan); }
+    .chk-group { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:1rem 1.2rem; margin:.8rem 0; }
+    .chk-group h3 { margin-top:0; font-size:.82rem; color:var(--text3); text-transform:uppercase; letter-spacing:.08em; margin-bottom:.6rem; }
+
+    /* Section cards */
+    .section-card { background:var(--bg2); border:1px solid var(--border); border-radius:8px; margin:1.2rem 0; overflow:hidden; }
+    .section-header { display:flex; align-items:center; gap:.8rem; padding:.7rem 1.1rem; background:var(--bg3); border-bottom:1px solid var(--border); flex-wrap:wrap; }
+    .section-num { font-size:1.1rem; font-weight:800; color:var(--text3); }
+    .section-title { font-size:.95rem; font-weight:600; flex:1; }
+    .section-body { padding:1rem 1.1rem; }
+
+    /* Script / screen columns */
+    .cols { display:grid; grid-template-columns:1fr 1fr; gap:.8rem; margin:.6rem 0; }
+    @media(max-width:700px){ .cols { grid-template-columns:1fr; } }
+
+    .script-box { background:#0a1221; border:1px solid #1e3a5f; border-radius:6px; padding:.8rem 1rem; }
+    .screen-box { background:#091510; border:1px solid #14532d; border-radius:6px; padding:.8rem 1rem; }
+    .box-lbl { font-size:.63rem; text-transform:uppercase; letter-spacing:.09em; font-weight:700; margin-bottom:.55rem; }
+    .script-box .box-lbl { color:var(--blue); }
+    .screen-box .box-lbl { color:var(--green); }
+
+    /* Script text */
+    .line { display:flex; gap:.5rem; margin-bottom:.55rem; font-size:.83rem; }
+    .line:last-child { margin-bottom:0; }
+    .speaker { font-weight:700; font-size:.72rem; min-width:58px; padding-top:.05rem; }
+    .speaker.sol  { color:var(--sol); }
+    .speaker.cata { color:var(--cata); }
+    .speech { color:var(--text); line-height:1.55; }
+    .speech em { color:var(--text2); font-style:normal; font-size:.78rem; }
+
+    /* Screen steps */
+    .step { display:flex; gap:.6rem; margin-bottom:.5rem; font-size:.82rem; color:var(--text2); align-items:flex-start; }
+    .step:last-child { margin-bottom:0; }
+    .step-n { background:var(--green-bg); color:var(--green); font-size:.67rem; font-weight:700; min-width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:.1rem; }
+    .step code { font-size:.78rem; background:var(--bg); padding:.1rem .3rem; border-radius:3px; color:var(--cyan); white-space:nowrap; }
+    .step .arrow { color:var(--text3); }
+    .step .resp { color:var(--green); font-weight:600; }
+    .step .warn { color:var(--yellow); }
+
+    /* Tips */
+    .tip { border-radius:6px; padding:.6rem .9rem; margin:.7rem 0; font-size:.82rem; border-left:3px solid; }
+    .tip b { display:block; margin-bottom:.2rem; font-size:.78rem; text-transform:uppercase; letter-spacing:.06em; }
+    .tip-ok   { background:var(--green-bg);  border-color:var(--green);  color:#86efac; }
+    .tip-warn { background:var(--yellow-bg); border-color:var(--yellow); color:var(--yellow); }
+    .tip-info { background:var(--blue-bg);   border-color:var(--blue);   color:var(--blue); }
+    .tip-red  { background:var(--red-bg);    border-color:var(--red);    color:#fca5a5; }
+    .tip-sol  { background:var(--sol-bg);    border-color:var(--sol);    color:#f9a8d4; }
+    .tip-cata { background:var(--cata-bg);   border-color:var(--cata);   color:#6ee7b7; }
+
+    /* Sub-step separator */
+    h4 { font-size:.8rem; color:var(--orange); margin:1rem 0 .4rem; border-top:1px solid var(--border); padding-top:.8rem; }
+
+    /* Table */
+    table { width:100%; border-collapse:collapse; font-size:.82rem; margin:.6rem 0; }
+    th { background:var(--bg2); color:var(--text3); text-align:left; padding:.35rem .6rem; font-size:.67rem; text-transform:uppercase; letter-spacing:.06em; }
+    td { padding:.35rem .6rem; border-top:1px solid var(--border); color:var(--text2); }
+    tr:hover td { background:var(--bg3); }
+
+    hr.div { border:none; border-top:1px solid var(--border); margin:2rem 0; }
+    code { font-size:.8rem; background:var(--bg3); padding:.1rem .3rem; border-radius:3px; color:var(--cyan); }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+<nav>
+  <a class="back" href="index.html">← Docs</a>
+  <h2>Para Catalina</h2>
+  <ul>
+    <li><a href="#cata-resumen">🟢 Mis líneas (resumen)</a></li>
+  </ul>
+  <h2>Preparación</h2>
+  <ul>
+    <li><a href="#checklist">Checklist pre-grabación</a></li>
+    <li><a href="#orden">Orden de grabación</a></li>
+    <li><a href="#emergencias">Si algo falla</a></li>
+  </ul>
+  <h2>Secciones</h2>
+  <ul>
+    <li><a href="#s1">1 · Intro <span class="tc-sm">0:00</span></a></li>
+    <li><a href="#s2">2 · Arquitectura <span class="tc-sm">1:30</span></a></li>
+    <li><a href="#s3">3 · Puesta en marcha <span class="tc-sm">3:30</span></a></li>
+    <li><a href="#s4a">4a · Login <span class="tc-sm">5:30</span></a></li>
+    <li><a href="#s4b">4b · Reserva <span class="tc-sm">6:10</span></a></li>
+    <li><a href="#s4c">4c · Accesos <span class="tc-sm">7:00</span></a></li>
+    <li><a href="#s4d">4d · Cobro <span class="tc-sm">7:40</span></a></li>
+    <li><a href="#s4e">4e · Reporte <span class="tc-sm">8:10</span></a></li>
+    <li><a href="#s5">5 · Tests + JaCoCo <span class="tc-sm">8:30</span></a></li>
+    <li><a href="#s6">6 · Swagger UI <span class="tc-sm">11:00</span></a></li>
+    <li><a href="#s7">7 · Aportes <span class="tc-sm">13:00</span></a></li>
+  </ul>
+</nav>
+
+<main>
+  <h1>🎬 Guión de Grabación — EV3</h1>
+  <p class="sub">Estacionamiento Inteligente &nbsp;·&nbsp; <span class="who-sol">Sol León</span> &nbsp;<span class="who-cata">Catalina Aguirre</span> &nbsp;·&nbsp; Objetivo: <strong>15 min</strong> &nbsp;·&nbsp; Máximo: <strong>18 min</strong></p>
+
+  <!-- ═══════════════════════════ CHECKLIST ═══════════════════════════ -->
+  <section id="checklist">
+    <h2>✅ Checklist antes de presionar REC — hacer en orden</h2>
+
+    <div class="chk-group">
+      <h3>1 · Base de datos y servicios</h3>
+      <ul class="chk">
+        <li><input type="checkbox"><span class="chk-label">XAMPP abierto — MySQL activo (puerto 3307, indicador verde)</span></li>
+        <li><input type="checkbox"><span class="chk-label">Ejecutar <code>.\scripts\load-db.ps1 -Port 3307</code> — esperar "Done" en todas las BDs</span></li>
+        <li><input type="checkbox"><span class="chk-label">Ejecutar <code>.\scripts\start-all.ps1</code> o usar manage.ps1 para levantar los 12 servicios</span></li>
+        <li><input type="checkbox"><span class="chk-label">Abrir <code>http://localhost:8761</code> — confirmar que los 12 servicios aparecen en estado UP (esperar ~60 s)</span></li>
+      </ul>
+    </div>
+
+    <div class="chk-group">
+      <h3>2 · Postman</h3>
+      <ul class="chk">
+        <li><input type="checkbox"><span class="chk-label">Abrir Postman con la colección <code>demo-ev3.postman_collection.json</code></span></li>
+        <li><input type="checkbox"><span class="chk-label">Ir a Variables de entorno → borrar el valor de <code>token</code> si hubiera uno previo</span></li>
+        <li><input type="checkbox"><span class="chk-label">Tener abierto en la fase 1 el request <code>POST /api/auth/login</code> listo para ejecutar</span></li>
+        <li><input type="checkbox"><span class="chk-label">Confirmar que la variable <code>base</code> apunta a <code>http://localhost:8080</code></span></li>
+      </ul>
+    </div>
+
+    <div class="chk-group">
+      <h3>3 · IDE (IntelliJ / VS Code)</h3>
+      <ul class="chk">
+        <li><input type="checkbox"><span class="chk-label">Abrir <code>auth-service/.../service/AuthService.java</code> — scrollear a línea 36</span></li>
+        <li><input type="checkbox"><span class="chk-label">Abrir <code>ms-reservas/.../service/ReservaService.java</code> — scrollear a líneas 68–121</span></li>
+        <li><input type="checkbox"><span class="chk-label">Abrir <code>ms-accesos/.../service/AccesoService.java</code> — scrollear a líneas 37–97</span></li>
+        <li><input type="checkbox"><span class="chk-label">Abrir <code>ms-pagos/.../service/PagoService.java</code> — scrollear a líneas 235–262</span></li>
+        <li><input type="checkbox"><span class="chk-label">Abrir <code>ms-accesos/.../AccesoServiceTest.java</code></span></li>
+        <li><input type="checkbox"><span class="chk-label">Abrir <code>auth-service/.../exception/GlobalExceptionHandler.java</code></span></li>
+        <li><input type="checkbox"><span class="chk-label">Abrir <code>ms-accesos/.../client/EspacioClient.java</code></span></li>
+        <li><input type="checkbox"><span class="chk-label">Zoom del IDE al 125–130%, fuente mínimo 14pt</span></li>
+      </ul>
+    </div>
+
+    <div class="chk-group">
+      <h3>4 · Pestañas del navegador (abrir antes de grabar)</h3>
+      <ul class="chk">
+        <li><input type="checkbox"><span class="chk-label">Pestaña 1: <code>http://localhost:8761</code> — Eureka Dashboard</span></li>
+        <li><input type="checkbox"><span class="chk-label">Pestaña 2: <code>http://localhost:8089/swagger-ui/index.html</code> — ms-pagos</span></li>
+        <li><input type="checkbox"><span class="chk-label">Pestaña 3: <code>http://localhost:8086/swagger-ui/index.html</code> — ms-reservas</span></li>
+        <li><input type="checkbox"><span class="chk-label">Pestaña 4: <code>http://localhost:8085/swagger-ui/index.html</code> — ms-espacios</span></li>
+        <li><input type="checkbox"><span class="chk-label">Pestaña 5: README.md en GitHub — tener el repo abierto en la sección de arquitectura</span></li>
+      </ul>
+    </div>
+
+    <div class="chk-group">
+      <h3>5 · Pantalla y audio</h3>
+      <ul class="chk">
+        <li><input type="checkbox"><span class="chk-label">Resolución de grabación: 1920×1080 — verificar que el software de captura está configurado</span></li>
+        <li><input type="checkbox"><span class="chk-label">Probar micrófono — grabar 10 segundos y escuchar nivel de audio</span></li>
+        <li><input type="checkbox"><span class="chk-label">Cerrar notificaciones (modo No Molestar activado)</span></li>
+        <li><input type="checkbox"><span class="chk-label">Cerrar aplicaciones innecesarias — Discord, correo, etc.</span></li>
+        <li><input type="checkbox"><span class="chk-label">Barra de tareas en auto-ocultar para más espacio de pantalla</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ ORDEN ═══════════════════════════ -->
+  <section id="orden">
+    <h2>📋 Tabla de secciones — visión general</h2>
+    <table>
+      <tr><th>#</th><th>Tiempo</th><th>Duración</th><th>Sección</th><th>Habla</th><th>Indicadores EV3</th></tr>
+      <tr><td>1</td><td>0:00–1:30</td><td>1:30</td><td>Introducción del sistema</td><td><span class="who-both">Ambas</span></td><td><span class="ie">IE 1.1.1</span> <span class="ie">IE 1.1.2</span></td></tr>
+      <tr><td>2</td><td>1:30–3:30</td><td>2:00</td><td>Arquitectura de microservicios</td><td><span class="who-cata">Catalina</span></td><td><span class="ie">IE 2.2.1</span> <span class="ie">IE 2.4.1</span> <span class="ie">IE 2.4.2</span></td></tr>
+      <tr><td>3</td><td>3:30–5:30</td><td>2:00</td><td>Puesta en marcha</td><td><span class="who-sol">Sol</span></td><td><span class="ie">IE 3.3.7</span></td></tr>
+      <tr><td>4</td><td>5:30–8:30</td><td>3:00</td><td>Demo flujo principal (Postman)</td><td><span class="who-both">Ambas</span></td><td><span class="ie">IE 2.2.4</span> <span class="ie">IE 2.4.3</span> <span class="ie">IE 2.2.5</span></td></tr>
+      <tr><td>5</td><td>8:30–11:00</td><td>2:30</td><td>Tests unitarios + JaCoCo</td><td><span class="who-sol">Sol</span></td><td><span class="ie">IE 3.1.1</span> <span class="ie">IE 3.1.2</span></td></tr>
+      <tr><td>6</td><td>11:00–13:00</td><td>2:00</td><td>Swagger UI</td><td><span class="who-cata">Catalina</span></td><td><span class="ie">IE 3.2.1</span></td></tr>
+      <tr><td>7</td><td>13:00–15:00</td><td>2:00</td><td>Aportes técnicos individuales</td><td><span class="who-both">Ambas</span></td><td><span class="ie">IE 2.5.3</span> <span class="ie">IE 2.3.4</span></td></tr>
+    </table>
+  </section>
+
+  <hr class="div"/>
+
+  <!-- ═══════════════════════════ CATA RESUMEN ═══════════════════════════ -->
+  <section id="cata-resumen">
+    <h2>🟢 Catalina — Todas mis líneas</h2>
+    <div class="tip tip-cata" style="margin-bottom:1.2rem"><b>Cómo usar esto</b>Este card tiene TODO lo que dice Catalina en el video, en orden. Leerlo completo una vez antes de grabar. Cada bloque tiene el tiempo exacto y lo que debe estar en pantalla.</div>
+
+    <!-- S2 Arquitectura -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-num">02</span>
+        <span class="section-title">Arquitectura de microservicios</span>
+        <span class="tc">1:30 → 3:30</span>
+        <span class="who-cata">Catalina</span>
+      </div>
+      <div class="section-body">
+        <div class="cols">
+          <div class="script-box">
+            <div class="box-lbl">Lo que dices</div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">"Vamos a ver la arquitectura. Todos los clientes externos se conectan al API Gateway en el puerto 8080. El Gateway valida el token JWT en su filtro JwtAuthFilter antes de rutear — si no hay token válido, devuelve 401 sin llegar a ningún microservicio."</span></div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">"El Eureka Server en el puerto 8761 actúa como registro central. Cada microservicio se registra automáticamente al arrancar usando su spring.application.name como identificador único."</span></div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">"Para comunicación entre servicios usamos Feign Client. Declaramos interfaces con la anotación @FeignClient indicando el nombre del servicio — por ejemplo @FeignClient(name="ms-espacios") — y Spring genera el cliente HTTP automáticamente. Feign resuelve ese nombre a IP y puerto real consultando Eureka, sin URLs hardcodeadas."</span></div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">"Principio clave: cada servicio tiene su propia base de datos. Las referencias cruzadas se guardan como campos Long — idEspacioRef, idClienteRef, idAccesoRef. Nunca @ManyToOne entre servicios, porque si ms-reservas tuviera FK directa hacia db_usuarios y esa base de datos cae, ms-reservas también cae."</span></div>
+          </div>
+          <div class="screen-box">
+            <div class="box-lbl">Pantalla mientras hablas</div>
+            <div class="step"><span class="step-n">1</span><span>Eureka Dashboard <code>localhost:8761</code> — 12 servicios UP</span></div>
+            <div class="step"><span class="step-n">2</span><span>IDE: <code>EspacioClient.java</code> — mostrar <code>@FeignClient(name="ms-espacios")</code></span></div>
+            <div class="step"><span class="step-n">3</span><span>README diagrama de arquitectura en GitHub</span></div>
+            <div class="step"><span class="step-n">4</span><span>IDE: <code>application.properties</code> de ms-accesos — mostrar <code>spring.application.name</code> y <code>db_accesos</code></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S4e Reporte -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-num">04e</span>
+        <span class="section-title">Demo — Reporte</span>
+        <span class="tc">8:10 → 8:30</span>
+        <span class="who-cata">Catalina</span>
+      </div>
+      <div class="section-body">
+        <div class="cols">
+          <div class="script-box">
+            <div class="box-lbl">Lo que dices</div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">"ms-reportes es un servicio puramente agregador. No tiene base de datos propia — no hay ningún Repository en el código. Todos los datos vienen de llamadas Feign a los demás servicios."</span></div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">"Ofrece tres endpoints de solo lectura: ocupación general del estacionamiento, accesos por reserva, y cobros por cliente."</span></div>
+          </div>
+          <div class="screen-box">
+            <div class="box-lbl">Pantalla mientras hablas</div>
+            <div class="step"><span class="step-n">1</span><span>Postman: <code>GET /api/reportes/ocupacion</code> <span class="arrow">→</span> <span class="resp">200 OK</span></span></div>
+            <div class="step"><span class="step-n">2</span><span>Postman: <code>GET /api/reportes/cobros/cliente/1</code> <span class="arrow">→</span> <span class="resp">200 OK</span></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S6 Swagger -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-num">06</span>
+        <span class="section-title">Swagger UI</span>
+        <span class="tc">11:00 → 13:00</span>
+        <span class="who-cata">Catalina</span>
+      </div>
+      <div class="section-body">
+        <div class="cols">
+          <div class="script-box">
+            <div class="box-lbl">Lo que dices</div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">"Los diez servicios de negocio tienen Swagger habilitado con SpringDoc OpenAPI versión 2.8.6."</span></div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">"Accedemos directamente por el puerto de cada servicio — no a través del Gateway — porque el Gateway requiere JWT válido y el Swagger necesita ser accesible sin autenticación para que el docente pueda revisarlo directamente."</span></div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">"Los endpoints están documentados con @Operation para describir el propósito, @ApiResponse para cada código HTTP posible, y @Tag para agrupar por recurso. Desde Swagger podemos ejecutar requests en vivo con 'Try it out'."</span></div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">"Aquí vemos ms-pagos en el puerto 8089. En POST /api/cobros vemos los responses documentados: 201 cuando el cobro se crea correctamente, 404 cuando no se encuentra el acceso, y 422 cuando ya existe un cobro para ese acceso — la restricción UNIQUE de id_acceso_ref garantiza la relación uno a uno entre acceso y cobro."</span></div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">"En ms-reservas vemos los tres endpoints de cambio de estado: confirmar, cancelar y finalizar. Todos usan PUT, nunca PATCH, porque Feign con HttpURLConnection no soporta el método PATCH."</span></div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">"Ejecutamos GET /api/espacios/disponibles en ms-espacios para mostrar el sistema respondiendo en vivo y el estado actualizado de disponibilidad después del flujo que acabamos de ejecutar."</span></div>
+          </div>
+          <div class="screen-box">
+            <div class="box-lbl">Pantalla mientras hablas</div>
+            <div class="step"><span class="step-n">1</span><span>Abrir <code>localhost:8089/swagger-ui/index.html</code> — ms-pagos</span></div>
+            <div class="step"><span class="step-n">2</span><span>Expandir <code>POST /api/cobros</code> — mostrar respuestas documentadas (201, 404, 409)</span></div>
+            <div class="step"><span class="step-n">3</span><span>Cambiar a <code>localhost:8086/swagger-ui/index.html</code> — ms-reservas</span></div>
+            <div class="step"><span class="step-n">4</span><span>Mostrar <code>PUT /api/reservas/{id}/confirmar</code>, <code>cancelar</code>, <code>finalizar</code></span></div>
+            <div class="step"><span class="step-n">5</span><span>Cambiar a <code>localhost:8085/swagger-ui/index.html</code> — ms-espacios</span></div>
+            <div class="step"><span class="step-n">6</span><span>Try it out: <code>GET /api/espacios/disponibles</code> <span class="arrow">→</span> <span class="resp">200 OK</span></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S7 Aportes Catalina -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-num">07</span>
+        <span class="section-title">Aportes técnicos — Catalina</span>
+        <span class="tc">14:00 → 15:00</span>
+        <span class="who-cata">Catalina</span>
+      </div>
+      <div class="section-body">
+        <div class="cols">
+          <div class="script-box">
+            <div class="box-lbl">Lo que dices</div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">"Mi aporte principal fue la implementación de security-service, ms-vehiculos, ms-espacios, ms-tarifas y ms-reportes."</span></div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">"En ms-espacios diseñé el endpoint <code>PUT /api/espacios/{id}/disponibilidad</code> — es el que ms-accesos llama automáticamente al registrar entrada y salida para actualizar el estado real del espacio. Sin este endpoint el toggle de disponibilidad no funcionaría."</span></div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">"En ms-reportes diseñé el servicio como puramente agregador: sin base de datos propia, sin ningún Repository — solo Feign clients. Este patrón demuestra que un microservicio puede tener valor de negocio sin persistencia propia."</span></div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">"En ms-tarifas implementé los endpoints /api/tarifas/vigente y /api/horarios-tarifa/vigente que ms-pagos consume vía Feign para obtener el precio base y el multiplicador horario correcto al momento de generar el cobro."</span></div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">"Integré SpringDoc OpenAPI en los 10 servicios de negocio — agregué la dependencia, configuré el bean OpenAPI con título y versión, y habilité el endpoint /swagger-ui en todos ellos."</span></div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">"Completé la documentación @Schema en los DTOs de auth-service, security-service, ms-vehiculos, ms-espacios, ms-accesos y user-service — más de 30 DTOs anotados. @Schema le indica a Swagger el nombre del campo, su descripción y si es requerido, para que la documentación sea navegable sin revisar el código fuente."</span></div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">"También desarrollé la documentación técnica, los diagramas de arquitectura y de base de datos, y los scripts SQL de las 10 bases de datos con los datos seed."</span></div>
+          </div>
+          <div class="screen-box">
+            <div class="box-lbl">Pantalla mientras hablas</div>
+            <div class="step"><span class="step-n">1</span><span>IDE: <code>EspacioService.java</code> — método <code>updateDisponibilidad</code></span></div>
+            <div class="step"><span class="step-n">2</span><span>Postman: <code>PUT /api/espacios/3/disponibilidad</code> <code>{"disponible": false}</code> <span class="arrow">→</span> <span class="resp">200 OK</span></span></div>
+            <div class="step"><span class="step-n">3</span><span>IDE: <code>ReporteService.java</code> — mostrar que solo hay Feign clients, sin <code>@Repository</code></span></div>
+            <div class="step"><span class="step-n">4</span><span>IDE: <code>EspacioResponseDTO.java</code> — mostrar <code>@Schema(description="...", required=true)</code> en los campos</span></div>
+            <div class="step"><span class="step-n">5</span><span>Terminal: <code>git log --oneline --author="Catalina Aguirre" | head -15</code> — ver commits <code>@Schema</code> + <code>feat(unidad3)</code></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <hr class="div"/>
+
+  <!-- ═══════════════════════════ S1 ═══════════════════════════ -->
+  <section id="s1">
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-num">01</span>
+        <span class="section-title">Introducción del sistema</span>
+        <span class="tc">0:00 → 1:30</span>
+        <span class="who-both">Sol + Catalina</span>
+        <span class="ie">IE 1.1.1</span><span class="ie">IE 1.1.2</span>
+      </div>
+      <div class="section-body">
+        <p>Ambas a cámara, alternando. Pantalla: README en GitHub mostrando la tabla de distribución y el árbol de directorios.</p>
+        <div class="cols">
+          <div class="script-box">
+            <div class="box-lbl">🗣 Script exacto</div>
+            <div class="line"><span class="speaker sol">SOL:</span><span class="speech">Hola, somos Sol León y Catalina Aguirre, grupo 7 de DSY1103 Desarrollo FullStack I en DUOC UC.</span></div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">Desarrollamos "Estacionamiento Inteligente" — un sistema de gestión de estacionamiento con arquitectura de 12 microservicios independientes en Spring Boot 3.</span></div>
+            <div class="line"><span class="speaker sol">SOL:</span><span class="speech">El sistema cubre el ciclo completo: registro de clientes y vehículos, reserva de espacios, control de entrada y salida, tarifas dinámicas con multiplicadores, cobros con descuentos en cascada, y reportes agregados.</span></div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">Usamos Java 21, MySQL 8 con 10 bases de datos independientes, Spring Cloud con Eureka para el service discovery, y un API Gateway como único punto de entrada que valida el token JWT antes de rutear cualquier solicitud.</span></div>
+          </div>
+          <div class="screen-box">
+            <div class="box-lbl">🖥 Pantalla</div>
+            <div class="step"><span class="step-n">1</span><span>Mostrar el README en GitHub — tabla de distribución en la parte superior visible</span></div>
+            <div class="step"><span class="step-n">2</span><span>Cambiar al IDE — mostrar árbol de directorios con los 12 servicios expandidos</span></div>
+            <div class="step"><span class="step-n">3</span><span>Ir al README sección "Arquitectura" — diagrama ASCII con Gateway → Eureka → servicios</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ S2 ═══════════════════════════ -->
+  <section id="s2">
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-num">02</span>
+        <span class="section-title">Arquitectura de microservicios</span>
+        <span class="tc">1:30 → 3:30</span>
+        <span class="who-cata">Catalina</span>
+        <span class="ie">IE 2.2.1</span><span class="ie">IE 2.4.1</span><span class="ie">IE 2.4.2</span>
+      </div>
+      <div class="section-body">
+        <div class="cols">
+          <div class="script-box">
+            <div class="box-lbl">🗣 Script exacto</div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">Vamos a ver la arquitectura. Todos los clientes externos se conectan al API Gateway en el puerto 8080. El Gateway valida el token JWT en su filtro JwtAuthFilter antes de rutear — si no hay token válido, devuelve 401 sin llegar a ningún microservicio.</span></div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">El Eureka Server en el puerto 8761 actúa como registro central. Cada microservicio se registra automáticamente al arrancar usando su spring.application.name como identificador único.</span></div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">Para comunicación entre servicios usamos Feign Client. Declaramos interfaces con la anotación @FeignClient indicando el nombre del servicio — por ejemplo @FeignClient(name="ms-espacios") — y Spring genera el cliente HTTP automáticamente. Feign resuelve ese nombre a IP y puerto real consultando Eureka, sin URLs hardcodeadas.</span></div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">Principio clave: cada servicio tiene su propia base de datos. Las referencias cruzadas se guardan como campos Long — idEspacioRef, idClienteRef, idAccesoRef. Nunca @ManyToOne entre servicios, porque si ms-reservas tuviera FK directa hacia db_usuarios y esa base de datos cae, ms-reservas también cae.</span></div>
+          </div>
+          <div class="screen-box">
+            <div class="box-lbl">🖥 Pantalla</div>
+            <div class="step"><span class="step-n">1</span><span>Abrir <code>http://localhost:8761</code> — Eureka con los 12 servicios en UP</span></div>
+            <div class="step"><span class="step-n">2</span><span>IDE: abrir <code>ms-accesos/.../client/EspacioClient.java</code> — señalar con cursor la línea <code>@FeignClient(name="ms-espacios")</code></span></div>
+            <div class="step"><span class="step-n">3</span><span>README: diagrama ASCII — señalar el flujo Gateway → Eureka → servicios</span></div>
+            <div class="step"><span class="step-n">4</span><span>IDE: abrir cualquier <code>application.properties</code> — señalar <code>spring.datasource.url=.../db_accesos</code> y <code>spring.application.name</code></span></div>
+          </div>
+        </div>
+        <div class="tip tip-cata">
+          <b>Tip para defensa — si preguntan por qué no @ManyToOne:</b>
+          "Porque si ms-reservas tuviera una FK directa hacia db_usuarios, ya no sería un servicio independiente. El bajo acoplamiento de microservicios exige referencias lógicas — cuando db_usuarios cae, ms-reservas sigue funcionando para todo lo demás."
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ S3 ═══════════════════════════ -->
+  <section id="s3">
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-num">03</span>
+        <span class="section-title">Puesta en marcha del sistema</span>
+        <span class="tc">3:30 → 5:30</span>
+        <span class="who-sol">Sol</span>
+        <span class="ie">IE 3.3.7</span>
+      </div>
+      <div class="section-body">
+        <div class="cols">
+          <div class="script-box">
+            <div class="box-lbl">🗣 Script exacto</div>
+            <div class="line"><span class="speaker sol">SOL:</span><span class="speech">El arranque sigue un orden jerárquico obligatorio determinado por las dependencias Feign entre servicios.</span></div>
+            <div class="line"><span class="speaker sol">SOL:</span><span class="speech">Primero ejecutamos load-db.ps1 que crea las 10 bases de datos y carga los datos seed: dos clientes, cuatro tipos de vehículo, cuatro tipos de espacio, dos tarifas y seis horarios con multiplicadores.</span></div>
+            <div class="line"><span class="speaker sol">SOL:</span><span class="speech">Fase 1: Eureka Server — todos los demás servicios necesitan que Eureka esté activo para poder registrarse.</span></div>
+            <div class="line"><span class="speaker sol">SOL:</span><span class="speech">Fase 2: los servicios base sin dependencias Feign — auth-service, user-service, security-service, ms-vehiculos, ms-espacios y ms-tarifas.</span></div>
+            <div class="line"><span class="speaker sol">SOL:</span><span class="speech">Fase 3: los servicios que consumen a los anteriores — ms-reservas, ms-accesos, ms-pagos y ms-reportes, que es el más dependiente.</span></div>
+            <div class="line"><span class="speaker sol">SOL:</span><span class="speech">El script start-all.ps1 que desarrollé automatiza todo esto — abre cada servicio en su propia pestaña de Windows Terminal y espera activamente a que Eureka esté disponible antes de continuar.</span></div>
+            <div class="line"><span class="speaker sol">SOL:</span><span class="speech">En el dashboard de Eureka en localhost:8761 confirmamos que los 12 servicios están registrados y en estado UP.</span></div>
+          </div>
+          <div class="screen-box">
+            <div class="box-lbl">🖥 Pantalla</div>
+            <div class="step"><span class="step-n">1</span><span>Terminal: mostrar <code>.\scripts\load-db.ps1</code> ya ejecutado con output verde (o ejecutarlo en vivo si hay tiempo)</span></div>
+            <div class="step"><span class="step-n">2</span><span>IDE: abrir <code>scripts\start-all.ps1</code> — señalar brevemente el array de fases en el código</span></div>
+            <div class="step"><span class="step-n">3</span><span>Navegador: <code>http://localhost:8761</code> — todos los servicios en UP</span></div>
+            <div class="step"><span class="step-n">4</span><span>Postman: <code>GET http://localhost:8080/api/espacios</code> → <span class="resp">200 OK</span> — confirma que el Gateway está funcionando</span></div>
+          </div>
+        </div>
+        <div class="tip tip-warn">
+          <b>Si un servicio no aparece en Eureka:</b> "Esto sucede cuando el orden de arranque no se respeta — si Eureka no está activo al momento en que un servicio intenta registrarse, el registro falla y hay que reiniciar ese servicio. Por eso el script espera activamente antes de continuar."
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ S4 ═══════════════════════════ -->
+  <section id="s4a">
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-num">04a</span>
+        <span class="section-title">Demo — Login</span>
+        <span class="tc">5:30 → 6:10</span>
+        <span class="who-sol">Sol</span>
+        <span class="ie">IE 2.2.4</span>
+      </div>
+      <div class="section-body">
+        <div class="cols">
+          <div class="script-box">
+            <div class="box-lbl">🗣 Script exacto</div>
+            <div class="line"><span class="speaker sol">SOL:</span><span class="speech">Vamos a ejecutar el flujo completo usando la colección demo-ev3, con 20 requests en 7 carpetas que siguen el guion. Empezamos con el login.</span></div>
+            <div class="line"><span class="speaker sol">SOL:</span><span class="speech">El login lo maneja exclusivamente auth-service. Enviamos email y contraseña. El servicio busca al usuario por email — no por username — verifica con BCrypt strength 12, y devuelve un JWT firmado con 24 horas de vigencia.</span></div>
+            <div class="line"><span class="speaker sol">SOL:</span><span class="speech">Postman captura el token automáticamente vía un script post-respuesta y lo reutiliza en todos los requests siguientes como header Authorization Bearer, sin necesidad de copiarlo manualmente.</span></div>
+          </div>
+          <div class="screen-box">
+            <div class="box-lbl">🖥 Pantalla</div>
+            <div class="step"><span class="step-n">1</span><span>Postman: abrir <code>POST /api/auth/login</code> — body: <code>{"email":"admin@parking.cl","password":"Test1234!"}</code></span></div>
+            <div class="step"><span class="step-n">2</span><span>Ejecutar → respuesta: <span class="resp">200 OK</span> con <code>token</code> JWT visible</span></div>
+            <div class="step"><span class="step-n">3</span><span>IDE: <code>AuthService.java línea 36–49</code> — señalar <code>findByEmail</code>, <code>BCrypt.matches</code> y <code>generateToken</code></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="s4b">
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-num">04b</span>
+        <span class="section-title">Demo — Crear y confirmar reserva</span>
+        <span class="tc">6:10 → 7:00</span>
+        <span class="who-sol">Sol</span>
+        <span class="ie">IE 2.4.3</span><span class="ie">IE 2.2.5</span>
+      </div>
+      <div class="section-body">
+        <div class="cols">
+          <div class="script-box">
+            <div class="box-lbl">🗣 Script exacto</div>
+            <div class="line"><span class="speaker sol">SOL:</span><span class="speech">Al crear una reserva, ms-reservas valida datos en tres microservicios distintos vía Feign antes de guardar nada en la base de datos.</span></div>
+            <div class="line"><span class="speaker sol">SOL:</span><span class="speech">Primero llama a user-service para verificar que el cliente existe y está activo. Luego a ms-vehiculos para el vehículo. Finalmente a ms-espacios para confirmar que el espacio está activo y disponible.</span></div>
+            <div class="line"><span class="speaker sol">SOL:</span><span class="speech">Si cualquier llamada Feign devuelve 404, capturamos FeignException.NotFound y lanzamos nuestra propia NotFoundException — que el GlobalExceptionHandler convierte automáticamente en HTTP 404.</span></div>
+            <div class="line"><span class="speaker sol">SOL:</span><span class="speech">La reserva parte en estado PENDIENTE. Al confirmarla con PUT confirmar, la transición es PENDIENTE a CONFIRMADA. La máquina de estados solo permite: PENDIENTE a CONFIRMADA, PENDIENTE a CANCELADA, y CONFIRMADA a FINALIZADA.</span></div>
+          </div>
+          <div class="screen-box">
+            <div class="box-lbl">🖥 Pantalla</div>
+            <div class="step"><span class="step-n">1</span><span>Postman: <code>POST /api/reservas</code> → <span class="resp">201 CREATED</span>, estado <code>PENDIENTE</code></span></div>
+            <div class="step"><span class="step-n">2</span><span>IDE: <code>ReservaService.java líneas 68–121</code> — señalar los 3 try-catch Feign y <code>EstadoEnums.PENDIENTE</code></span></div>
+            <div class="step"><span class="step-n">3</span><span>Postman: <code>PUT /api/reservas/{id}/confirmar</code> → <span class="resp">200 OK</span>, estado <code>CONFIRMADA</code></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="s4c">
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-num">04c</span>
+        <span class="section-title">Demo — Entrada y salida</span>
+        <span class="tc">7:00 → 7:40</span>
+        <span class="who-sol">Sol</span>
+      </div>
+      <div class="section-body">
+        <div class="cols">
+          <div class="script-box">
+            <div class="box-lbl">🗣 Script exacto</div>
+            <div class="line"><span class="speaker sol">SOL:</span><span class="speech">Al registrar la entrada, ms-accesos crea un acceso con estado ACTIVO y llama a ms-espacios vía Feign para marcar el espacio como no disponible.</span></div>
+            <div class="line"><span class="speaker sol">SOL:</span><span class="speech">Al registrar la salida, calculamos los minutos con ChronoUnit.MINUTES.between entre la hora de entrada y la hora actual. El estado pasa a COMPLETADO, se llama a EspacioClient para liberar el espacio, y a ReservaClient para finalizar la reserva — tres efectos en una sola transacción.</span></div>
+          </div>
+          <div class="screen-box">
+            <div class="box-lbl">🖥 Pantalla</div>
+            <div class="step"><span class="step-n">1</span><span>Postman: <code>POST /api/accesos/entrada</code> → <span class="resp">201 CREATED</span>, estado <code>ACTIVO</code></span></div>
+            <div class="step"><span class="step-n">2</span><span>IDE: <code>AccesoService.java línea ~69</code> — señalar <code>espacioClient.updateDisponibilidad(false)</code></span></div>
+            <div class="step"><span class="step-n">3</span><span>Postman: <code>PUT /api/accesos/{id}/salida</code> → <span class="resp">200 OK</span>, estado <code>COMPLETADO</code> con <code>minutos</code></span></div>
+            <div class="step"><span class="step-n">4</span><span>IDE: líneas 87–94 — señalar <code>ChronoUnit.MINUTES.between</code> + liberar espacio + finalizar reserva</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="s4d">
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-num">04d</span>
+        <span class="section-title">Demo — Cobro</span>
+        <span class="tc">7:40 → 8:10</span>
+        <span class="who-sol">Sol</span>
+        <span class="ie">IE 2.2.4</span>
+      </div>
+      <div class="section-body">
+        <div class="cols">
+          <div class="script-box">
+            <div class="box-lbl">🗣 Script exacto</div>
+            <div class="line"><span class="speaker sol">SOL:</span><span class="speech">El cobro es la operación más compleja — consulta seis microservicios distintos vía Feign para obtener todos los datos de cálculo.</span></div>
+            <div class="line"><span class="speaker sol">SOL:</span><span class="speech">La fórmula tiene dos etapas. El monto base es precio base por hora, multiplicado por el multiplicador horario, por el factor del tipo de vehículo, por el factor del tipo de espacio, por los minutos dividido en 60.</span></div>
+            <div class="line"><span class="speaker sol">SOL:</span><span class="speech">El monto final aplica tres descuentos en cascada: tipo de cliente, suscripción del cliente, y descuento del banco. Usamos BigDecimal con RoundingMode.HALF_UP — nunca double para operaciones monetarias.</span></div>
+          </div>
+          <div class="screen-box">
+            <div class="box-lbl">🖥 Pantalla</div>
+            <div class="step"><span class="step-n">1</span><span>Postman: <code>POST /api/cobros</code> → <span class="resp">201 CREATED</span> con <code>montoBase</code> y <code>montoFinal</code> distintos</span></div>
+            <div class="step"><span class="step-n">2</span><span>IDE: <code>PagoService.java líneas 235–262</code> — señalar <code>calcularMontoBase</code> y <code>calcularMontoFinal</code></span></div>
+            <div class="step"><span class="step-n">3</span><span>Señalar explícitamente <code>RoundingMode.HALF_UP</code> en el código</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="s4e">
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-num">04e</span>
+        <span class="section-title">Demo — Reporte</span>
+        <span class="tc">8:10 → 8:30</span>
+        <span class="who-cata">Catalina</span>
+      </div>
+      <div class="section-body">
+        <div class="cols">
+          <div class="script-box">
+            <div class="box-lbl">🗣 Script exacto</div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">ms-reportes es un servicio puramente agregador. No tiene base de datos propia — no hay ningún Repository en el código. Todos los datos vienen de llamadas Feign a los demás servicios.</span></div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">Ofrece tres endpoints de solo lectura: ocupación general del estacionamiento, accesos por reserva, y cobros por cliente.</span></div>
+          </div>
+          <div class="screen-box">
+            <div class="box-lbl">🖥 Pantalla</div>
+            <div class="step"><span class="step-n">1</span><span>Postman: <code>GET /api/reportes/ocupacion</code> → JSON con espacios disponibles vs total</span></div>
+            <div class="step"><span class="step-n">2</span><span>Postman: <code>GET /api/reportes/cobros/cliente/1</code> → historial de cobros del cliente</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ S5 ═══════════════════════════ -->
+  <section id="s5">
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-num">05</span>
+        <span class="section-title">Pruebas unitarias y cobertura JaCoCo</span>
+        <span class="tc">8:30 → 11:00</span>
+        <span class="who-sol">Sol</span>
+        <span class="ie">IE 3.1.1</span><span class="ie">IE 3.1.2</span>
+      </div>
+      <div class="section-body">
+        <p>Abrir una terminal nueva en <code>ms-accesos/</code> antes de esta sección.</p>
+        <div class="cols">
+          <div class="script-box">
+            <div class="box-lbl">🗣 Script exacto</div>
+            <div class="line"><span class="speaker sol">SOL:</span><span class="speech">El proyecto tiene 139 tests unitarios distribuidos en los 10 servicios de negocio. Todos pasan con cero fallos.</span></div>
+            <div class="line"><span class="speaker sol">SOL:</span><span class="speech">Usamos JUnit 5 con la extensión MockitoExtension. Los mocks aislan completamente la lógica de negocio — los tests no necesitan MySQL ni Eureka corriendo, lo que permite ejecutarlos en cualquier máquina sin infraestructura.</span></div>
+            <div class="line"><span class="speaker sol">SOL:</span><span class="speech">El patrón que aplicamos es AAA: Arrange configura el estado inicial con when().thenReturn(). Act invoca el método bajo prueba. Assert verifica el resultado con AssertJ y confirma que los mocks fueron llamados con verify().</span></div>
+            <div class="line"><span class="speaker sol">SOL:</span><span class="speech">Cada test tiene @DisplayName en español describiendo exactamente la condición que se está probando — esto hace los reportes de error legibles sin necesidad de leer el código del test.</span></div>
+            <div class="line"><span class="speaker sol">SOL:</span><span class="speech">Vemos un test real de AccesoServiceTest. registrarSalida verifica que los minutos se calculan, que el estado cambia a COMPLETADO, y que EspacioClient fue llamado con true para liberar el espacio. EspacioClient y ReservaClient son mocks — sin red, sin Eureka. Esto es unit testing real: probamos la regla de negocio, no la infraestructura.</span></div>
+            <div class="line"><span class="speaker sol">SOL:</span><span class="speech">JaCoCo genera el reporte de cobertura al ejecutar mvnw verify. El reporte queda en target/site/jacoco/index.html y muestra cobertura de instrucciones, ramas, métodos y clases por paquete.</span></div>
+          </div>
+          <div class="screen-box">
+            <div class="box-lbl">🖥 Pantalla</div>
+            <div class="step"><span class="step-n">1</span><span>Terminal en <code>ms-accesos/</code>: ejecutar <code>.\mvnw.cmd test</code> → esperar BUILD SUCCESS verde</span></div>
+            <div class="step"><span class="step-n">2</span><span>IDE: <code>AccesoServiceTest.java</code> — señalar <code>@ExtendWith(MockitoExtension.class)</code>, <code>@Mock</code>, <code>@InjectMocks</code></span></div>
+            <div class="step"><span class="step-n">3</span><span>IDE: señalar un test completo con el patrón AAA — comentarios Arrange / Act / Assert</span></div>
+            <div class="step"><span class="step-n">4</span><span>Terminal: ejecutar <code>.\mvnw.cmd verify</code> → mensaje "JaCoCo report generated"</span></div>
+            <div class="step"><span class="step-n">5</span><span>Navegador: abrir <code>ms-accesos/target/site/jacoco/index.html</code> — mostrar tabla de cobertura</span></div>
+          </div>
+        </div>
+        <div class="tip tip-ok">
+          <b>Punto clave para mencionar al mostrar el test:</b> "El mock de EspacioClient permite probar la lógica de negocio en total aislamiento — sin red, sin Eureka, sin MySQL. Esto es unit testing real: probamos exactamente la regla de negocio, no la infraestructura."
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ S6 ═══════════════════════════ -->
+  <section id="s6">
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-num">06</span>
+        <span class="section-title">Swagger UI — documentación de APIs</span>
+        <span class="tc">11:00 → 13:00</span>
+        <span class="who-cata">Catalina</span>
+        <span class="ie">IE 3.2.1</span>
+      </div>
+      <div class="section-body">
+        <div class="cols">
+          <div class="script-box">
+            <div class="box-lbl">🗣 Script exacto</div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">Los diez servicios de negocio tienen Swagger habilitado con SpringDoc OpenAPI versión 2.8.6.</span></div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">Accedemos directamente por el puerto de cada servicio — no a través del Gateway — porque el Gateway requiere JWT válido y el Swagger necesita ser accesible sin autenticación para que el docente pueda revisarlo directamente.</span></div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">Los endpoints están documentados con @Operation para describir el propósito, @ApiResponse para cada código HTTP posible, y @Tag para agrupar por recurso. Desde Swagger podemos ejecutar requests en vivo con "Try it out".</span></div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">Aquí vemos ms-pagos en el puerto 8089. En POST /api/cobros vemos los responses documentados: 201 cuando el cobro se crea correctamente, 404 cuando no se encuentra el acceso, y 422 cuando ya existe un cobro para ese acceso — la restricción UNIQUE de id_acceso_ref garantiza la relación uno a uno entre acceso y cobro.</span></div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">En ms-reservas vemos los tres endpoints de cambio de estado: confirmar, cancelar y finalizar. Todos usan PUT, nunca PATCH, porque Feign con HttpURLConnection no soporta el método PATCH.</span></div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">Ejecutamos GET /api/espacios/disponibles en ms-espacios para mostrar el sistema respondiendo en vivo y el estado actualizado de disponibilidad después del flujo que acabamos de ejecutar.</span></div>
+          </div>
+          <div class="screen-box">
+            <div class="box-lbl">🖥 Pantalla</div>
+            <div class="step"><span class="step-n">1</span><span>Navegador: <code>http://localhost:8089/swagger-ui/index.html</code> (ms-pagos)</span></div>
+            <div class="step"><span class="step-n">2</span><span>Expandir <code>POST /api/cobros</code> — señalar los @ApiResponse 201 / 404 / 422</span></div>
+            <div class="step"><span class="step-n">3</span><span>Navegador: <code>http://localhost:8086/swagger-ui/index.html</code> (ms-reservas)</span></div>
+            <div class="step"><span class="step-n">4</span><span>Mostrar <code>PUT /api/reservas/{id}/confirmar</code> — señalar que es PUT (no PATCH)</span></div>
+            <div class="step"><span class="step-n">5</span><span>Navegador: <code>http://localhost:8085/swagger-ui/index.html</code> (ms-espacios)</span></div>
+            <div class="step"><span class="step-n">6</span><span>Ejecutar <code>GET /api/espacios/disponibles</code> con "Try it out" → mostrar respuesta JSON en vivo</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ S7 ═══════════════════════════ -->
+  <section id="s7">
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-num">07</span>
+        <span class="section-title">Aportes técnicos individuales</span>
+        <span class="tc">13:00 → 15:00</span>
+        <span class="who-both">Sol + Catalina</span>
+        <span class="ie">IE 2.5.3</span><span class="ie">IE 2.3.4</span>
+      </div>
+      <div class="section-body">
+
+        <h4>SOL — 13:00 → 14:00</h4>
+        <div class="cols">
+          <div class="script-box">
+            <div class="box-lbl">🗣 Script exacto — <span class="who-sol">Sol</span></div>
+            <div class="line"><span class="speaker sol">SOL:</span><span class="speech">Mi aporte principal fue el GlobalExceptionHandler con @RestControllerAdvice — centraliza el manejo de excepciones en todos los servicios. No hay ningún try-catch en los controllers del proyecto.</span></div>
+            <div class="line"><span class="speaker sol">SOL:</span><span class="speech">Define seis handlers: NotFoundException a 404, ConflictException a 409, InvalidCredentialsException a 401, MethodArgumentNotValidException a 400 con un mapa de campos exacto, HttpMessageNotReadableException a 400 para body inválido, y un handler genérico de Exception a 500. El body siempre tiene el mismo formato: timestamp, status y mensaje — homogéneo en los 12 servicios.</span></div>
+            <div class="line"><span class="speaker sol">SOL:</span><span class="speech">Implementé la lógica completa de ms-accesos: registrarEntrada con bloqueo de espacio vía Feign, y registrarSalida con cálculo de minutos. También la fórmula de cobro en ms-pagos con BigDecimal, y el ciclo de estados en ms-reservas.</span></div>
+            <div class="line"><span class="speaker sol">SOL:</span><span class="speech">Los scripts de gestión también son mi aporte: manage.ps1 con dashboard interactivo, start-all.ps1 para arranque automático en orden de dependencias, y load-db.ps1 para cargar las 10 bases de datos.</span></div>
+            <div class="line"><span class="speaker sol">SOL:</span><span class="speech">La colección demo-ev3 de 20 requests en 7 carpetas, organizada por sección del guion, con captura automática del token JWT — también fue mi contribución.</span></div>
+          </div>
+          <div class="screen-box">
+            <div class="box-lbl">🖥 Pantalla — <span class="who-sol">Sol</span></div>
+            <div class="step"><span class="step-n">1</span><span>IDE: <code>GlobalExceptionHandler.java</code> — señalar <code>@RestControllerAdvice</code> y los 6 métodos con sus anotaciones <code>@ExceptionHandler</code></span></div>
+            <div class="step"><span class="step-n">2</span><span>Postman: request a un ID inexistente → body de respuesta <code>{"timestamp":...,"status":404,"mensaje":"..."}</code></span></div>
+            <div class="step"><span class="step-n">3</span><span>Postman: segundo cobro para el mismo acceso → <span class="warn">422 BusinessException</span> — demostrar restricción UNIQUE</span></div>
+            <div class="step"><span class="step-n">4</span><span>Terminal: <code>git log --oneline --author="Sol León" | head -10</code> — mostrar commits propios</span></div>
+          </div>
+        </div>
+
+        <h4>CATALINA — 14:00 → 15:00</h4>
+        <div class="cols">
+          <div class="script-box">
+            <div class="box-lbl">🗣 Script exacto — <span class="who-cata">Catalina</span></div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">Mi aporte principal fue la implementación de security-service, ms-vehiculos, ms-espacios, ms-tarifas y ms-reportes.</span></div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">En ms-espacios diseñé el endpoint PUT /api/espacios/{id}/disponibilidad — es el que ms-accesos llama automáticamente al registrar entrada y salida para actualizar el estado real del espacio. Sin este endpoint el toggle de disponibilidad no funcionaría.</span></div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">En ms-reportes diseñé el servicio como puramente agregador: sin base de datos propia, sin ningún Repository — solo Feign clients. Este patrón demuestra que un microservicio puede tener valor de negocio sin persistencia propia.</span></div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">En ms-tarifas implementé los endpoints /api/tarifas/vigente y /api/horarios-tarifa/vigente que ms-pagos consume vía Feign para obtener el precio base y el multiplicador horario correcto al momento de generar el cobro.</span></div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">Integré SpringDoc OpenAPI en los 10 servicios de negocio — agregué la dependencia, configuré el bean OpenAPI con título y versión, y habilité el endpoint /swagger-ui en todos ellos.</span></div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">Completé la documentación @Schema en los DTOs de auth-service, security-service, ms-vehiculos, ms-espacios, ms-accesos y user-service — más de 30 DTOs anotados. @Schema le indica a Swagger el nombre del campo, su descripción y si es requerido, para que la documentación sea navegable sin revisar el código fuente.</span></div>
+            <div class="line"><span class="speaker cata">CATA:</span><span class="speech">También desarrollé la documentación técnica, los diagramas de arquitectura y de base de datos, y los scripts SQL de las 10 bases de datos con los datos seed.</span></div>
+          </div>
+          <div class="screen-box">
+            <div class="box-lbl">🖥 Pantalla — <span class="who-cata">Catalina</span></div>
+            <div class="step"><span class="step-n">1</span><span>IDE: <code>ms-espacios/.../EspacioService.java</code> — método <code>updateDisponibilidad</code></span></div>
+            <div class="step"><span class="step-n">2</span><span>Postman: <code>PUT /api/espacios/3/disponibilidad</code> con <code>{"disponible": false}</code> → <span class="resp">200 OK</span></span></div>
+            <div class="step"><span class="step-n">3</span><span>IDE: <code>ms-reportes/.../ReporteService.java</code> — señalar que solo hay Feign clients, ningún @Repository ni @Entity</span></div>
+            <div class="step"><span class="step-n">4</span><span>IDE: cualquier DTO con <code>@Schema</code> (ej. <code>ms-espacios/.../dto/EspacioResponseDTO.java</code>) — señalar <code>@Schema(description="...", required=true)</code></span></div>
+            <div class="step"><span class="step-n">5</span><span>Terminal: <code>git log --oneline --author="Catalina Aguirre" | head -15</code> — ver commits @Schema + feat(unidad3)</span></div>
+          </div>
+        </div>
+
+        <h4>Cierre — 14:55 → 15:00</h4>
+        <div class="script-box">
+          <div class="box-lbl">🗣 Cierre — ambas a cámara</div>
+          <div class="line"><span class="speaker sol">SOL:</span><span class="speech">El sistema implementa correctamente los principios de microservicios: bajo acoplamiento mediante base de datos por servicio y referencias lógicas, y alta cohesión con una responsabilidad clara por servicio.</span></div>
+          <div class="line"><span class="speaker cata">CATA:</span><span class="speech">Comunicación vía APIs bien definidas con Feign Client, y 139 tests unitarios que validan las reglas de negocio en aislamiento total.</span></div>
+          <div class="line"><span class="speaker sol">SOL:</span><span class="speech">Muchas gracias.</span></div>
+          <div class="line"><span class="speaker cata">CATA:</span><span class="speech">Muchas gracias.</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ EMERGENCIAS ═══════════════════════════ -->
+  <hr class="div"/>
+  <section id="emergencias">
+    <h2>🚨 Si algo falla durante la grabación</h2>
+
+    <div class="tip tip-red">
+      <b>Un servicio no responde / 503 en Postman:</b>
+      Pausa la grabación, ve a Eureka (:8761), identifica cuál no está en UP, reinícialo con <code>.\scripts\manage.ps1</code> → <code>restart nombre-servicio</code>. Retoma desde el punto donde estabas — edita el video después para cortar la pausa.
+    </div>
+
+    <div class="tip tip-warn">
+      <b>Postman devuelve 401 Unauthorized:</b>
+      El token expiró o el ENV no tiene el token. Vuelve a ejecutar <code>POST /api/auth/login</code> — el script post-respuesta lo captura automáticamente. No menciones el error, solo di "volvemos a autenticarnos" y continúa.
+    </div>
+
+    <div class="tip tip-warn">
+      <b>JaCoCo tarda mucho / falla el verify:</b>
+      Usa el reporte ya generado si existe en <code>ms-accesos/target/site/jacoco/index.html</code>. Si no existe, muestra el <code>mvnw test</code> con BUILD SUCCESS y menciona que el verify genera el HTML.
+    </div>
+
+    <div class="tip tip-info">
+      <b>Swagger no carga (tiempo de espera):</b>
+      F5 una vez. Si sigue fallando, di "el Swagger está disponible directamente en el puerto de cada servicio sin autenticación" y muestra otro Swagger que sí funcione.
+    </div>
+
+    <div class="tip tip-info">
+      <b>Se te va el hilo o hay silencio largo:</b>
+      Di "déjenme mostrar el código correspondiente" y cambia al IDE mientras te reorienta. El cambio de pantalla da tiempo para retomar sin que quede silencio incómodo en el audio.
+    </div>
+
+    <div class="tip tip-ok">
+      <b>Consejo general:</b>
+      Si algo sale mal, no lo menciones en cámara — simplemente corta, arregla, y retoma. Edita el video después para unir los segmentos. Es más fácil editar que re-grabar todo desde el principio.
+    </div>
+  </section>
+
+</main>
+</div>
+</body>
+</html>

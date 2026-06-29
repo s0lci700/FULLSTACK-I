@@ -1,0 +1,821 @@
+{
+  "info": {
+    "_postman_id": "ev3-demo-estacionamiento-2026",
+    "name": "EV3 · Demo Video — Estacionamiento Inteligente",
+    "description": "# EV3 Demo Video — Estacionamiento Inteligente\n**Grupo 7 · DSY1103 FullStack I · DUOC UC**\n\nColección específica para el video de evaluación EV3. Cada carpeta corresponde a una sección del guión de grabación (`docs/guion-grabacion.html`).\n\n## Preparación antes de grabar\n1. Ejecutar `load-db.ps1 -Port 3307` para cargar datos seed limpios\n2. Esperar hasta que los 12 servicios aparezcan UP en `http://localhost:8761`\n3. Borrar el valor de la variable `token` en **Variables de Colección** si tiene valor previo\n4. Ejecutar los requests en **orden estricto** — los IDs se capturan automáticamente entre carpetas\n\n## Flujo de captura de variables\n```\nCarpeta 01 — Login\n  └─ token  ←  pm.collectionVariables.set('token', ...)\n\nCarpeta 03 — Reserva\n  └─ reservaId  ←  POST /api/reservas → id\n\nCarpeta 04 — Accesos\n  └─ accesoId  ←  POST /api/accesos/entrada → id\n\nCarpeta 05 — Cobro\n  └─ cobroId  ←  POST /api/cobros → id\n```\n\n## Indicadores de rúbrica cubiertos\n| Carpeta | Indicador | Descripción |\n|---------|-----------|-------------|\n| 01 AUTH | IE 2.2.4 | Login + manejo credenciales inválidas |\n| 02 SISTEMA | IE 3.3.7 | Verificar Gateway + servicios activos |\n| 03 RESERVA | IE 2.4.3, IE 2.2.5 | Feign multi-servicio + máquina de estados |\n| 04 ACCESOS | IE 2.4.3 | Comunicación Feign en tiempo real |\n| 05 COBRO | IE 2.2.4 | Lógica de negocio BigDecimal compleja |\n| 06 REPORTES | IE 2.4.3 | Microservicio agregador sin BD propia |\n| 07 ERRORES | IE 2.3.4 | GlobalExceptionHandler centralizado |",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base",
+      "value": "http://localhost:8080",
+      "type": "default",
+      "description": "URL base del API Gateway"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "default",
+      "description": "JWT capturado automáticamente en Login (carpeta 01)"
+    },
+    {
+      "key": "reservaId",
+      "value": "",
+      "type": "default",
+      "description": "ID capturado automáticamente en POST /api/reservas"
+    },
+    {
+      "key": "accesoId",
+      "value": "",
+      "type": "default",
+      "description": "ID capturado automáticamente en POST /api/accesos/entrada"
+    },
+    {
+      "key": "cobroId",
+      "value": "",
+      "type": "default",
+      "description": "ID capturado automáticamente en POST /api/cobros"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 🔐 AUTH — Login y token JWT",
+      "description": "**IE 2.2.4** — Autenticación con JWT\n\nDemuestra el flujo completo de autenticación:\n- `auth-service` valida email + BCrypt strength 12\n- Genera JWT firmado (24h de vigencia)\n- Postman captura el token automáticamente\n- Todos los requests siguientes usan `Authorization: Bearer {{token}}`\n\n**Tiempo en video:** 5:30 → 6:10",
+      "item": [
+        {
+          "name": "01 — POST Login → 200 OK + captura JWT",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@parking.cl\",\n  \"password\": \"Test1234!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base}}/api/auth/login",
+              "host": ["{{base}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "**IE 2.2.4** — Autenticación exitosa.\n\n**Qué muestra:**\n- `auth-service` recibe `email` + `password`\n- Busca usuario por `email` (no por username) via `findByEmail()`\n- Verifica password con **BCrypt strength 12**\n- Retorna **JWT** firmado con `jwt.secret` (≥256-bit Base64), expira en 24h\n\n**Script automático:** el test captura el `token` del body de respuesta y lo guarda en la variable de colección `token`. Todos los requests siguientes lo envían automáticamente como `Authorization: Bearer {{token}}`.\n\n**Qué decir en el video:**\n> *\"El login lo maneja exclusivamente auth-service. Enviamos email y contraseña. El servicio busca al usuario por email — no por username — verifica con BCrypt strength 12, y devuelve un JWT firmado con 24 horas de vigencia. Postman captura el token automáticamente vía un script post-respuesta.\"*"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK — Autenticación exitosa', () => pm.response.to.have.status(200));",
+                  "pm.test('Token JWT presente en respuesta', () => {",
+                  "    pm.expect(pm.response.json()).to.have.property('token');",
+                  "});",
+                  "",
+                  "if (pm.response.code === 200) {",
+                  "    const token = pm.response.json().token;",
+                  "    pm.collectionVariables.set('token', token);",
+                  "    pm.test('Token JWT capturado — formato válido (3 segmentos)', () => {",
+                  "        pm.expect(token.split('.').length).to.eql(3, 'JWT debe tener header.payload.signature');",
+                  "    });",
+                  "    console.log('✅ Token capturado y guardado → variable \"token\"');",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "02 — POST Login inválido → 401 Unauthorized",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"noexiste@test.cl\",\n  \"password\": \"wrongpassword\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base}}/api/auth/login",
+              "host": ["{{base}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "**IE 2.2.4** — Manejo de credenciales inválidas.\n\nDemuestra que `auth-service` rechaza correctamente credenciales que no existen en la BD → **HTTP 401 Unauthorized**.\n\n**Qué decir en el video:**\n> *\"Si las credenciales son incorrectas, auth-service retorna 401 Unauthorized. El GlobalExceptionHandler garantiza que el body de error siempre tenga el mismo formato: mensaje y timestamp.\"*"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('401 Unauthorized — credenciales inválidas', () => pm.response.to.have.status(401));",
+                  "pm.test('Body de error presente', () => {",
+                  "    pm.expect(pm.response.json()).to.have.property('mensaje');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02 🌐 SISTEMA — Verificar Gateway operativo",
+      "description": "**IE 3.3.7** — Puesta en marcha\n\nVerifica que el API Gateway está recibiendo peticiones y ruteando correctamente a los microservicios. El JWT del Login es validado por `JwtAuthFilter` antes de que la petición llegue al servicio destino.\n\n**Tiempo en video:** 3:30 → 5:30 (sección de puesta en marcha)",
+      "item": [
+        {
+          "name": "01 — GET /api/espacios → 200 OK (Gateway + ms-espacios activos)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base}}/api/espacios",
+              "host": ["{{base}}"],
+              "path": ["api", "espacios"]
+            },
+            "description": "**IE 3.3.7** — Verifica que el API Gateway está activo y rutea correctamente.\n\n**Flujo de la petición:**\n1. Cliente → API Gateway (:8080)\n2. Gateway valida JWT via `JwtAuthFilter`\n3. Gateway consulta Eureka para resolver `ms-espacios`\n4. Rutea a ms-espacios (:8085)\n5. Respuesta: 200 OK con lista de espacios\n\n**Qué decir en el video:**\n> *\"Con un GET a /api/espacios a través del Gateway confirmamos que el sistema de routing y autenticación funciona de extremo a extremo.\"*"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK — Gateway y ms-espacios operativos', () => pm.response.to.have.status(200));",
+                  "pm.test('Respuesta es un array de espacios', () => {",
+                  "    pm.expect(Array.isArray(pm.response.json())).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "02 — GET /api/espacios/disponibles — Estado inicial del estacionamiento",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base}}/api/espacios/disponibles",
+              "host": ["{{base}}"],
+              "path": ["api", "espacios", "disponibles"]
+            },
+            "description": "**IE 3.3.7** — Muestra el estado inicial del estacionamiento antes del flujo demo.\n\nTodos los espacios deberían estar disponibles (`disponible=true`) luego de ejecutar `load-db.ps1`. Esto establece la línea base antes de demostrar cómo la entrada bloquea un espacio."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK — Lista de espacios disponibles', () => pm.response.to.have.status(200));",
+                  "pm.test('Hay espacios disponibles para el demo', () => {",
+                  "    const espacios = pm.response.json();",
+                  "    pm.expect(espacios.length).to.be.above(0, '⚠️ No hay espacios disponibles — ejecutar load-db.ps1 primero');",
+                  "    console.log('📊 Espacios disponibles al inicio: ' + espacios.length);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03 📋 RESERVA — Crear y confirmar con validación Feign",
+      "description": "**IE 2.4.3 · IE 2.2.5** — Comunicación entre microservicios + máquina de estados\n\nDemuestra:\n- Validación cruzada en 3 microservicios via **Feign Client** (user-service, ms-vehiculos, ms-espacios)\n- Máquina de estados: `PENDIENTE → CONFIRMADA`\n- Captura automática de `reservaId` para los siguientes pasos\n\n**Tiempo en video:** 6:10 → 7:00",
+      "item": [
+        {
+          "name": "01 — POST /api/reservas → 201 PENDIENTE (Feign ×3: cliente+vehículo+espacio)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCliente\": 1,\n  \"idVehiculo\": 1,\n  \"idEspacio\": 3,\n  \"fechaInicio\": \"2026-07-01T10:00:00\",\n  \"fechaFin\": \"2026-07-01T12:00:00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base}}/api/reservas",
+              "host": ["{{base}}"],
+              "path": ["api", "reservas"]
+            },
+            "description": "**IE 2.4.3** — Comunicación Feign multi-servicio en la creación de reserva.\n\n**Antes de guardar en BD, ms-reservas valida via Feign:**\n1. `ClienteClient` → user-service: ¿cliente existe y está activo?\n2. `VehiculoClient` → ms-vehiculos: ¿vehículo existe y activo?\n3. `EspacioClient` → ms-espacios: ¿espacio activo **y** disponible?\n\n**Manejo de errores Feign:**\n- Si cualquier llamada Feign retorna 404 → `FeignException.NotFound` → se captura como `NotFoundException` → `GlobalExceptionHandler` → **HTTP 404**\n\n**Estado inicial:** `PENDIENTE` (la máquina de estados solo permite PENDIENTE como estado de creación)\n\n**Qué decir:**\n> *\"Al crear una reserva, ms-reservas valida datos en tres microservicios distintos vía Feign antes de guardar nada en la base de datos.\"*"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created — Reserva creada', () => pm.response.to.have.status(201));",
+                  "pm.test('Estado inicial = PENDIENTE', () => {",
+                  "    pm.expect(pm.response.json().estado).to.eql('PENDIENTE');",
+                  "});",
+                  "",
+                  "if (pm.response.code === 201) {",
+                  "    const id = pm.response.json().id;",
+                  "    pm.collectionVariables.set('reservaId', String(id));",
+                  "    pm.test('reservaId capturado → ' + id, () => pm.expect(id).to.be.a('number').and.above(0));",
+                  "    console.log('✅ Reserva ID ' + id + ' guardado en variable \"reservaId\"');",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "02 — PUT /api/reservas/{{reservaId}}/confirmar → 200 CONFIRMADA",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{base}}/api/reservas/{{reservaId}}/confirmar",
+              "host": ["{{base}}"],
+              "path": ["api", "reservas", "{{reservaId}}", "confirmar"]
+            },
+            "description": "**IE 2.2.5** — Máquina de estados de la reserva.\n\n**Transición:** `PENDIENTE → CONFIRMADA`\n\n**Máquina de estados completa:**\n- `PENDIENTE → CONFIRMADA` ✅ (este request)\n- `PENDIENTE → CANCELADA` ✅\n- `CONFIRMADA → FINALIZADA` ✅ (ocurre en salida vía Feign desde ms-accesos)\n- Cualquier otra transición → **BusinessException → 422**\n\n**Por qué PUT y no PATCH:**\n> Feign usa `HttpURLConnection` por defecto, que no soporta el método HTTP PATCH. Por eso todas las actualizaciones parciales del sistema usan `@PutMapping`.\n\n**Qué decir:**\n> *\"La reserva parte en estado PENDIENTE. Al confirmarla con PUT, la transición es PENDIENTE a CONFIRMADA. La máquina de estados garantiza que esta es la única transición válida desde ese estado.\"*"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK — Reserva confirmada', () => pm.response.to.have.status(200));",
+                  "pm.test('Estado = CONFIRMADA', () => {",
+                  "    pm.expect(pm.response.json().estado).to.eql('CONFIRMADA');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03 — GET /api/reservas/{{reservaId}} → verificar estado CONFIRMADA",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base}}/api/reservas/{{reservaId}}",
+              "host": ["{{base}}"],
+              "path": ["api", "reservas", "{{reservaId}}"]
+            },
+            "description": "**IE 2.2.5** — Verificación del estado tras la confirmación.\n\nConfirma que la transición `PENDIENTE → CONFIRMADA` persistió correctamente en la BD. Muestra los campos `idCliente`, `idVehiculo`, `idEspacio` como referencias lógicas `Long` (no @ManyToOne cross-service)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK — Reserva encontrada', () => pm.response.to.have.status(200));",
+                  "pm.test('Estado persiste como CONFIRMADA', () => {",
+                  "    pm.expect(pm.response.json().estado).to.eql('CONFIRMADA');",
+                  "});",
+                  "pm.test('Referencias lógicas (Long) presentes', () => {",
+                  "    const r = pm.response.json();",
+                  "    pm.expect(r.idCliente).to.be.a('number');",
+                  "    pm.expect(r.idVehiculo).to.be.a('number');",
+                  "    pm.expect(r.idEspacio).to.be.a('number');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "04 🚗 ACCESOS — Entrada, bloqueo de espacio y salida",
+      "description": "**IE 2.4.3** — Comunicación Feign con efectos en tiempo real\n\nDemuestra:\n- `registrarEntrada`: crea Acceso ACTIVO + llama `EspacioClient` → espacio `disponible=false`\n- Efecto visible: GET /api/espacios/3 muestra `disponible=false` inmediatamente\n- `registrarSalida`: calcula minutos + cambia estado a COMPLETADO + libera espacio + finaliza reserva (3 efectos Feign en una sola operación)\n\n**Tiempo en video:** 7:00 → 7:40",
+      "item": [
+        {
+          "name": "01 — POST /api/accesos/entrada → 201 ACTIVO (bloquea espacio vía Feign)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idVehiculo\": 1,\n  \"idEspacio\": 3,\n  \"idReserva\": {{reservaId}},\n  \"patenteEscaneada\": \"BBBB11\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base}}/api/accesos/entrada",
+              "host": ["{{base}}"],
+              "path": ["api", "accesos", "entrada"]
+            },
+            "description": "**IE 2.4.3** — Comunicación Feign en el registro de entrada.\n\n**Qué hace ms-accesos al registrar entrada:**\n1. Crea registro `Acceso` con `estado=ACTIVO` y `fechaHoraEntrada=now()`\n2. Llama `EspacioClient.updateDisponibilidad(idEspacio, false)` → espacio queda `disponible=false`\n\n**El campo `idReserva` es nullable** — permite accesos directos sin reserva previa.\n\n**Qué decir:**\n> *\"Al registrar la entrada, ms-accesos crea un acceso con estado ACTIVO y llama a ms-espacios vía Feign para marcar el espacio como no disponible. El efecto es inmediato y visible.\"*"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created — Entrada registrada', () => pm.response.to.have.status(201));",
+                  "pm.test('Estado = ACTIVO', () => {",
+                  "    pm.expect(pm.response.json().estado).to.eql('ACTIVO');",
+                  "});",
+                  "pm.test('fechaHoraEntrada capturada', () => {",
+                  "    pm.expect(pm.response.json().fechaHoraEntrada).to.exist;",
+                  "});",
+                  "",
+                  "if (pm.response.code === 201) {",
+                  "    const id = pm.response.json().id;",
+                  "    pm.collectionVariables.set('accesoId', String(id));",
+                  "    pm.test('accesoId capturado → ' + id, () => pm.expect(id).to.be.a('number').and.above(0));",
+                  "    console.log('✅ Acceso ID ' + id + ' guardado en variable \"accesoId\"');",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "02 — GET /api/espacios/3 → disponible=false (efecto Feign visible)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base}}/api/espacios/3",
+              "host": ["{{base}}"],
+              "path": ["api", "espacios", "3"]
+            },
+            "description": "**IE 2.4.3** — Demuestra el efecto de la comunicación Feign.\n\nImmediatamente después del `registrarEntrada`, ms-accesos llamó a `EspacioClient.updateDisponibilidad(3, false)`. Este GET confirma que el cambio se propagó correctamente entre microservicios.\n\n**Qué señalar en el video:** comparar con el resultado del request 02-02 donde espacio 3 estaba `disponible=true`."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK — Espacio encontrado', () => pm.response.to.have.status(200));",
+                  "pm.test('disponible=false — Feign bloqueó el espacio correctamente', () => {",
+                  "    pm.expect(pm.response.json().disponible).to.be.false;",
+                  "});",
+                  "console.log('📊 Estado del espacio:', JSON.stringify(pm.response.json()));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03 — PUT /api/accesos/{{accesoId}}/salida → 200 COMPLETADO + minutos calculados",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{base}}/api/accesos/{{accesoId}}/salida",
+              "host": ["{{base}}"],
+              "path": ["api", "accesos", "{{accesoId}}", "salida"]
+            },
+            "description": "**IE 2.4.3** — Registro de salida con 3 efectos Feign en una sola operación.\n\n**Qué hace `registrarSalida`:**\n1. Registra `fechaHoraSalida = now()`\n2. Calcula `minutos` con `ChronoUnit.MINUTES.between(fechaEntrada, fechaSalida)`\n3. Cambia `estado = COMPLETADO`\n4. Llama `EspacioClient.updateDisponibilidad(idEspacio, true)` → espacio liberado\n5. Llama `ReservaClient.finalizarReserva(idReserva)` → reserva pasa a FINALIZADA\n\n**Qué decir:**\n> *\"Al registrar la salida, calculamos los minutos con ChronoUnit.MINUTES.between. El estado pasa a COMPLETADO, se llama a EspacioClient para liberar el espacio, y a ReservaClient para finalizar la reserva — tres efectos en una sola transacción.\"*"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK — Salida registrada', () => pm.response.to.have.status(200));",
+                  "pm.test('Estado = COMPLETADO', () => {",
+                  "    pm.expect(pm.response.json().estado).to.eql('COMPLETADO');",
+                  "});",
+                  "pm.test('Minutos calculados (>= 0)', () => {",
+                  "    pm.expect(pm.response.json().minutos).to.be.at.least(0);",
+                  "});",
+                  "pm.test('fechaHoraSalida registrada', () => {",
+                  "    pm.expect(pm.response.json().fechaHoraSalida).to.exist;",
+                  "});",
+                  "console.log('⏱️ Minutos registrados: ' + pm.response.json().minutos);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "05 💳 COBRO — Fórmula BigDecimal con descuentos en cascada",
+      "description": "**IE 2.2.4** — Lógica de negocio compleja\n\nDemuestra:\n- ms-pagos consulta **6 microservicios** via Feign para obtener datos de cálculo\n- Fórmula en dos etapas: `montoBase` y `montoFinal` con 3 descuentos en cascada\n- Uso de **BigDecimal** con `RoundingMode.HALF_UP` (nunca `double` para montos)\n- Restricción UNIQUE `cobro.id_acceso_ref` → 1 cobro por acceso\n\n**Tiempo en video:** 7:40 → 8:10",
+      "item": [
+        {
+          "name": "01 — POST /api/cobros → 201 (6 Feign calls, BigDecimal, descuentos)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idAcceso\": {{accesoId}},\n  \"idMetodoPago\": 1,\n  \"idCliente\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base}}/api/cobros",
+              "host": ["{{base}}"],
+              "path": ["api", "cobros"]
+            },
+            "description": "**IE 2.2.4** — Operación de cobro con fórmula de negocio compleja.\n\n**Los 6 Feign calls de ms-pagos:**\n1. `AccesoClient` → ms-accesos: obtiene minutos + idEspacio + idVehiculo\n2. `TarifaClient` → ms-tarifas: obtiene precio base/hora (`/api/tarifas/vigente`)\n3. `HorarioTarifaClient` → ms-tarifas: obtiene multiplicador horario (`/api/horarios-tarifa/vigente`)\n4. `TipoVehiculoClient` → ms-vehiculos: obtiene factor tipo vehículo\n5. `EspacioClient` → ms-espacios: obtiene factor tipo espacio\n6. `ClienteClient` → user-service: obtiene descuento tipo cliente + descuento suscripción\n\n**Fórmula:**\n```\nmontoBase  = precioBaseHora × multiplicadorHorario × factorTipoVehiculo\n             × factorTipoEspacio × (minutos / 60)\n\nmontoFinal = montoBase\n             × (1 - descTipoCliente / 100)\n             × (1 - descSuscripcion / 100)\n             × (1 - descBanco / 100)\n```\n\n**Qué señalar en el video:**\n- `montoBase` ≠ `montoFinal` (los descuentos en cascada son visibles)\n- Valores `BigDecimal` con 2 decimales (`RoundingMode.HALF_UP`)\n\n**Qué decir:**\n> *\"El cobro es la operación más compleja — consulta seis microservicios distintos vía Feign para obtener todos los datos de cálculo. Usamos BigDecimal con RoundingMode.HALF_UP — nunca double para operaciones monetarias.\"*"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created — Cobro generado', () => pm.response.to.have.status(201));",
+                  "",
+                  "if (pm.response.code === 201) {",
+                  "    const cobro = pm.response.json();",
+                  "    pm.collectionVariables.set('cobroId', String(cobro.id));",
+                  "",
+                  "    pm.test('montoBase calculado (> 0)', () => {",
+                  "        pm.expect(Number(cobro.montoBase)).to.be.above(0);",
+                  "    });",
+                  "    pm.test('montoFinal calculado (> 0)', () => {",
+                  "        pm.expect(Number(cobro.montoFinal)).to.be.above(0);",
+                  "    });",
+                  "    pm.test('cobroId capturado → ' + cobro.id, () => pm.expect(cobro.id).to.be.a('number').and.above(0));",
+                  "",
+                  "    console.log('💰 montoBase:', cobro.montoBase, '| montoFinal:', cobro.montoFinal);",
+                  "    console.log('✅ Cobro ID ' + cobro.id + ' guardado en variable \"cobroId\"');",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "02 — GET /api/cobros/{{cobroId}} → ver montoBase vs montoFinal",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base}}/api/cobros/{{cobroId}}",
+              "host": ["{{base}}"],
+              "path": ["api", "cobros", "{{cobroId}}"]
+            },
+            "description": "**IE 2.2.4** — Visualización del resultado del cálculo.\n\nMuestra el cobro completo con `montoBase` y `montoFinal` diferenciados — los descuentos en cascada son visibles. Ideal para señalar en el video mientras se explica la fórmula."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK — Cobro encontrado', () => pm.response.to.have.status(200));",
+                  "pm.test('montoBase y montoFinal presentes', () => {",
+                  "    const c = pm.response.json();",
+                  "    pm.expect(c).to.have.property('montoBase');",
+                  "    pm.expect(c).to.have.property('montoFinal');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03 — POST /api/cobros DUPLICADO → 422 BusinessException (UNIQUE id_acceso_ref)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idAcceso\": {{accesoId}},\n  \"idMetodoPago\": 1,\n  \"idCliente\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base}}/api/cobros",
+              "host": ["{{base}}"],
+              "path": ["api", "cobros"]
+            },
+            "description": "**IE 2.3.4** — Demuestra la restricción de negocio 1:1 entre Acceso y Cobro.\n\n`cobro.id_acceso_ref` tiene restricción `UNIQUE` en la BD — un acceso solo puede tener un cobro. Al intentar crear un segundo cobro para el mismo acceso:\n- ms-pagos detecta el duplicado → lanza `BusinessException`\n- `GlobalExceptionHandler` → **HTTP 422 BUSINESS_RULE_VIOLATION**\n\n**Body de respuesta esperado:**\n```json\n{\n  \"error\": \"BUSINESS_RULE_VIOLATION\",\n  \"mensaje\": \"Ya existe un cobro para este acceso\",\n  \"timestamp\": \"...\"\n}\n```\n\n**Qué decir:**\n> *\"La restricción UNIQUE en id_acceso_ref garantiza que hay exactamente un cobro por acceso. Si se intenta crear un duplicado, la BusinessException es capturada por el GlobalExceptionHandler y retorna 422 con el cuerpo de error estandarizado.\"*"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('422 Business Rule Violation — cobro duplicado', () => pm.response.to.have.status(422));",
+                  "pm.test('error = BUSINESS_RULE_VIOLATION', () => {",
+                  "    pm.expect(pm.response.json().error).to.eql('BUSINESS_RULE_VIOLATION');",
+                  "});",
+                  "pm.test('Body contiene error + mensaje + timestamp', () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body).to.have.property('error');",
+                  "    pm.expect(body).to.have.property('mensaje');",
+                  "    pm.expect(body).to.have.property('timestamp');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "06 📊 REPORTES — Microservicio agregador sin base de datos",
+      "description": "**IE 2.4.3** — Patrón de microservicio agregador\n\nms-reportes demuestra que un microservicio puede tener valor de negocio sin persistencia propia:\n- **Sin BD, sin Repository, sin Entity** — solo Feign clients\n- Todos los datos se obtienen via llamadas a otros servicios en tiempo de ejecución\n- Agrega datos de ms-accesos, ms-pagos, ms-espacios, ms-vehiculos\n\n**Tiempo en video:** 8:10 → 8:30",
+      "item": [
+        {
+          "name": "01 — GET /api/reportes/ocupacion → ocupación en tiempo real",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base}}/api/reportes/ocupacion",
+              "host": ["{{base}}"],
+              "path": ["api", "reportes", "ocupacion"]
+            },
+            "description": "**IE 2.4.3** — Reporte de ocupación del estacionamiento.\n\nms-reportes consulta ms-espacios via Feign para calcular:\n- Total de espacios del estacionamiento\n- Espacios actualmente ocupados (`disponible=false`)\n- Espacios libres (`disponible=true`)\n\n**Sin ninguna BD propia** — todo calculado en tiempo real.\n\n**Qué decir:**\n> *\"ms-reportes es un servicio puramente agregador. No tiene base de datos propia — no hay ningún Repository en el código. Todos los datos vienen de llamadas Feign a los demás servicios.\"*"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK — Reporte de ocupación generado', () => pm.response.to.have.status(200));",
+                  "console.log('📊 Ocupación:', JSON.stringify(pm.response.json()));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "02 — GET /api/reportes/accesos/reserva/{{reservaId}} → accesos de la reserva",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base}}/api/reportes/accesos/reserva/{{reservaId}}",
+              "host": ["{{base}}"],
+              "path": ["api", "reportes", "accesos", "reserva", "{{reservaId}}"]
+            },
+            "description": "**IE 2.4.3** — Consulta de accesos asociados a una reserva específica.\n\nms-reportes consulta ms-accesos via Feign para obtener el historial de accesos de la reserva recién creada en el demo."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK — Accesos de la reserva encontrados', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03 — GET /api/reportes/cobros/cliente/1 → historial de cobros del cliente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base}}/api/reportes/cobros/cliente/1",
+              "host": ["{{base}}"],
+              "path": ["api", "reportes", "cobros", "cliente", "1"]
+            },
+            "description": "**IE 2.4.3** — Historial de cobros del cliente 1 (María González).\n\nms-reportes consulta ms-pagos via Feign. El cobro generado en la carpeta 05 debería aparecer en este historial.\n\nDemuestra agregación cross-service: combina datos de ms-accesos + ms-pagos sin tener BD propia."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK — Historial de cobros del cliente', () => pm.response.to.have.status(200));",
+                  "pm.test('Al menos un cobro en el historial', () => {",
+                  "    pm.expect(pm.response.json().length).to.be.above(0);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "07 ⚠️ ERRORES — GlobalExceptionHandler centralizado",
+      "description": "**IE 2.3.4** — Manejo centralizado de excepciones con @RestControllerAdvice\n\nDemuestra el `GlobalExceptionHandler` que homogeneiza las respuestas de error en los 12 servicios:\n\n| Excepción | HTTP | Código |\n|-----------|------|--------|\n| `NotFoundException` | 404 | NOT_FOUND |\n| `ConflictException` | 409 | CONFLICT |\n| `BadRequestException` | 400 | BAD_REQUEST |\n| `BusinessException` | 422 | BUSINESS_RULE_VIOLATION |\n| `MethodArgumentNotValidException` | 400 | VALIDATION_FAILED |\n\n**Tiempo en video:** 13:00 → 15:00 (sección de aportes individuales - Sol)",
+      "item": [
+        {
+          "name": "01 — GET /api/reservas/9999 → 404 NotFoundException",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base}}/api/reservas/9999",
+              "host": ["{{base}}"],
+              "path": ["api", "reservas", "9999"]
+            },
+            "description": "**IE 2.3.4** — Demuestra `NotFoundException` → HTTP 404.\n\n`ReservaService.findById(9999)` → ID no existe en BD → lanza `NotFoundException` → `GlobalExceptionHandler.handleNotFound()` → **HTTP 404**.\n\n**Body de respuesta homogéneo (igual en los 12 servicios):**\n```json\n{\n  \"error\": \"NOT_FOUND\",\n  \"mensaje\": \"Reserva no encontrada con id: 9999\",\n  \"timestamp\": \"2026-...\"\n}\n```\n\n**Qué decir:**\n> *\"El GlobalExceptionHandler con @RestControllerAdvice — centraliza el manejo de excepciones. No hay ningún try-catch en los controllers del proyecto. NotFoundException mapea a 404, con un body siempre homogéneo: error, mensaje y timestamp.\"*"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('404 NotFoundException — ID 9999 no existe', () => pm.response.to.have.status(404));",
+                  "pm.test('error = NOT_FOUND', () => {",
+                  "    pm.expect(pm.response.json().error).to.eql('NOT_FOUND');",
+                  "});",
+                  "pm.test('Body homogéneo {error, mensaje, timestamp}', () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body).to.have.property('error');",
+                  "    pm.expect(body).to.have.property('mensaje');",
+                  "    pm.expect(body).to.have.property('timestamp');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "02 — POST /api/reservas body inválido → 400 VALIDATION_FAILED + campos",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCliente\": null,\n  \"idVehiculo\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base}}/api/reservas",
+              "host": ["{{base}}"],
+              "path": ["api", "reservas"]
+            },
+            "description": "**IE 2.3.4** — Demuestra `MethodArgumentNotValidException` → HTTP 400 con mapa de campos.\n\nCuando la validación Bean Validation (`@NotNull`, `@Valid`) falla en el controller:\n- Spring lanza `MethodArgumentNotValidException`\n- `GlobalExceptionHandler.handleValidationErrors()` captura la excepción\n- Retorna **HTTP 400** con un mapa `campos` que indica exactamente qué campo falló y por qué\n\n**Body de respuesta:**\n```json\n{\n  \"error\": \"VALIDATION_FAILED\",\n  \"mensaje\": \"Errores de validación\",\n  \"campos\": {\n    \"idCliente\": \"no debe ser nulo\",\n    \"idEspacio\": \"no debe ser nulo\",\n    \"idVehiculo\": \"no debe ser nulo\"\n  },\n  \"timestamp\": \"...\"\n}\n```\n\n**Qué decir:**\n> *\"Para validaciones de campo, el GlobalExceptionHandler retorna 400 con un mapa de campos que indica exactamente qué campo falló. Esto facilita la depuración del cliente que consume la API.\"*"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('400 — Validación fallida', () => pm.response.to.have.status(400));",
+                  "pm.test('error = VALIDATION_FAILED', () => {",
+                  "    pm.expect(pm.response.json().error).to.eql('VALIDATION_FAILED');",
+                  "});",
+                  "pm.test('Mapa de campos con errores específicos', () => {",
+                  "    pm.expect(pm.response.json()).to.have.property('campos');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03 — PUT /api/espacios/3/disponibilidad → toggle disponibilidad (Catalina)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"disponible\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base}}/api/espacios/3/disponibilidad",
+              "host": ["{{base}}"],
+              "path": ["api", "espacios", "3", "disponibilidad"]
+            },
+            "description": "**IE 2.2.5 (Catalina)** — Endpoint de disponibilidad diseñado por Catalina.\n\n`PUT /api/espacios/{id}/disponibilidad` — actualiza el flag `disponible` de un espacio.\n\nEste endpoint es el que ms-accesos llama automáticamente vía `EspacioClient` al registrar entrada y salida. Sin este endpoint, el control de disponibilidad en tiempo real no funcionaría.\n\n**Qué decir (Catalina):**\n> *\"En ms-espacios diseñé el endpoint PUT /api/espacios/{id}/disponibilidad — es el que ms-accesos llama automáticamente al registrar entrada y salida para actualizar el estado real del espacio. Sin este endpoint el toggle de disponibilidad no funcionaría.\"*\n\n**Seguir con:** GET /api/espacios/disponibles para mostrar que espacio 3 ya no aparece en la lista."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK — Disponibilidad actualizada', () => pm.response.to.have.status(200));",
+                  "pm.test('disponible=false aplicado', () => {",
+                  "    pm.expect(pm.response.json().disponible).to.be.false;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "04 — GET /api/espacios/disponibles → espacio 3 ya no aparece",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base}}/api/espacios/disponibles",
+              "host": ["{{base}}"],
+              "path": ["api", "espacios", "disponibles"]
+            },
+            "description": "**IE 2.2.5 (Catalina)** — Confirma el efecto del toggle de disponibilidad.\n\nCompara con el resultado de carpeta 02-02 (todos disponibles) — ahora espacio 3 fue marcado como `disponible=false` y no aparece en esta lista.\n\n**Ideal para mostrar en video:** pantalla partida o navegación rápida entre este resultado y el anterior para demostrar el cambio."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK — Lista espacios disponibles', () => pm.response.to.have.status(200));",
+                  "pm.test('Espacio 3 no aparece en disponibles', () => {",
+                  "    const ids = pm.response.json().map(e => e.id);",
+                  "    pm.expect(ids).to.not.include(3, 'Espacio 3 debería estar bloqueado por el request anterior');",
+                  "});",
+                  "console.log('📊 IDs disponibles:', pm.response.json().map(e => e.id).join(', '));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
