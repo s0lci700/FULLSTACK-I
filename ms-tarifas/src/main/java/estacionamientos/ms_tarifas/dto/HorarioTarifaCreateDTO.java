@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(description = "DTO para crear un horario de tarifa")
 public class HorarioTarifaCreateDTO {
 
     @NotNull(message = "El id de tarifa es obligatorio")
