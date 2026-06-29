@@ -31,3 +31,7 @@ Thumbs.db
 dist/
 ESTACIONAMIENTO-NATIVO.zip
 ESTACIONAMIENTO-DOCKER.zip
+
+# Entrega EV3 — .bat y .sh solo van en el ZIP de Drive, no en GitHub
+scripts/*.bat
+scripts/*.sh
