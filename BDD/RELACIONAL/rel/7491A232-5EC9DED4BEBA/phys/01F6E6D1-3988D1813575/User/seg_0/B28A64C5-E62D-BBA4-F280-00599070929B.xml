@@ -1,8 +1,0 @@
-<?xml version = '1.0' encoding = 'UTF-8'?>
-<UserOraclev10g class="oracle.dbtools.crest.model.design.storage.oracle.v10g.UserOraclev10g" name="db_accesos" directorySegmentName="seg_0" id="B28A64C5-E62D-BBA4-F280-00599070929B">
-<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
-<createdBy>AO-Alumno</createdBy>
-<createdTime>2026-05-07 16:24:09 UTC</createdTime>
-<ownerDesignName>RELACIONAL</ownerDesignName>
-<schemaObject>0478C36C-F6F9-D0D9-1693-F42504E61586</schemaObject>
-</UserOraclev10g>

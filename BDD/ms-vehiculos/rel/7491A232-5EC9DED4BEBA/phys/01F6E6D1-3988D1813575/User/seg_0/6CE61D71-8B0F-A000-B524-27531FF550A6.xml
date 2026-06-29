@@ -1,8 +1,0 @@
-<?xml version = '1.0' encoding = 'UTF-8'?>
-<UserOraclev10g class="oracle.dbtools.crest.model.design.storage.oracle.v10g.UserOraclev10g" name="db_pagos" directorySegmentName="seg_0" id="6CE61D71-8B0F-A000-B524-27531FF550A6">
-<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
-<createdBy>AO-Alumno</createdBy>
-<createdTime>2026-05-07 16:24:09 UTC</createdTime>
-<ownerDesignName>ms-vehiculos</ownerDesignName>
-<schemaObject>790F1638-5688-9AA8-5F7B-93B44B7EEDE9</schemaObject>
-</UserOraclev10g>

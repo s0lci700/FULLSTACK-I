@@ -1,8 +1,0 @@
-<?xml version = '1.0' encoding = 'UTF-8'?>
-<UserOraclev10g class="oracle.dbtools.crest.model.design.storage.oracle.v10g.UserOraclev10g" name="db_tarifas" directorySegmentName="seg_0" id="7509551F-884C-8763-BE5F-80B8E8EA2739">
-<sourceDDLFile>estacionamiento_DDL_oracle.sql</sourceDDLFile>
-<createdBy>AO-Alumno</createdBy>
-<createdTime>2026-05-07 16:24:09 UTC</createdTime>
-<ownerDesignName>LOGICAL</ownerDesignName>
-<schemaObject>5E5A582B-6A0B-DD46-F2BF-5D987D087368</schemaObject>
-</UserOraclev10g>
