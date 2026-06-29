@@ -1,5 +1,6 @@
 package estacionamientos.ms_pagos.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 
 import jakarta.validation.constraints.NotBlank;
@@ -13,9 +14,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BancoDTO {
 
+    @Schema(description = "Nombre del banco", example = "Banco Chile")
     @NotBlank
     private String nombre;
 
+    @Schema(description = "Porcentaje de descuento del banco", example = "5.0")
     @NotNull
     private BigDecimal descuento;
 }
