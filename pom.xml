@@ -36,8 +36,6 @@
 		<spring-cloud.version>2025.0.2</spring-cloud.version>
 		<springdoc.version>2.8.6</springdoc.version>
 		<jjwt.version>0.11.5</jjwt.version>
-		<!-- By default skip JaCoCo instrumentation to avoid JDK incompatibility during local tests. -->
-		<jacoco.skip>true</jacoco.skip>
 	</properties>
 
 	<build>
@@ -46,16 +44,10 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.14</version>
-				<configuration>
-					<!-- Allow temporary skip of JaCoCo instrumentation when needed (e.g., JDK compatibility issues).
-					     Use -Djacoco.skip=false to enable instrumentation in CI. -->
-					<skip>${jacoco.skip}</skip>
-				</configuration>
 				<executions>
 					<execution>
 						<id>prepare-agent</id>
 						<goals><goal>prepare-agent</goal></goals>
-						<!-- only prepare agent when jacoco.skip is false -->
 					</execution>
 					<execution>
 						<id>report</id>
