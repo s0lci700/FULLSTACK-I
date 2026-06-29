@@ -91,4 +91,3 @@ Notas finales
 - No realizar cambios adicionales en `main` después del freeze; todos los ajustes finales deben estar en `deliver/ev3` y pushing solo antes de la hora límite.
 
 ---
-Generaré este archivo en docs/branch-clean-delivery-plan.md si confirmas. ¿Lo creen útil? ¿Quieres que lo escriba ahora al repo?
