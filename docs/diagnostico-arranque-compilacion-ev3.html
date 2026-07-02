@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnóstico — Problema de compilación/arranque en la Defensa EV3 | Estacionamiento Inteligente</title>
+<style>
+:root { --bg: #f7f8fa; --panel: #ffffff; --ink: #1f2430; --muted: #525b69; --accent: #b34700; --accent-soft: #fdf0e6; --ok-soft: #e7f5ec; --warn-soft: #fdf6e3; --err-soft: #fbe9e7; --code-bg: #1e2430; --code-ink: #dce3ee; --border: #dde2ea; }
+* { box-sizing: border-box; }
+body { margin: 0; padding: 0 0 80px; font-family: "Segoe UI", system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.55; font-size: 16px; }
+header { background: linear-gradient(135deg, #2a1a0e, #6b3410); color: #fff; padding: 36px 24px 28px; }
+header .wrap, main { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+header h1 { margin: 0 0 6px; font-size: 1.7em; }
+header p { margin: 4px 0; color: rgba(255,255,255,0.93); }
+section { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 26px 30px; margin: 26px 0; }
+h2 { font-size: 1.4em; margin: 0 0 4px; color: #46280f; }
+h3 { font-size: 1.1em; margin: 24px 0 8px; color: #6b3410; }
+.sub { color: var(--muted); margin-top: 0; }
+p, li { color: var(--ink); }
+section p, section ul li, section ol li { max-width: 78ch; }
+code { font-family: "Cascadia Code", Consolas, monospace; font-size: 0.88em; background: #eef1f5; padding: 1px 6px; border-radius: 4px; color: #3d2405; }
+pre { background: var(--code-bg); color: var(--code-ink); padding: 16px 18px; border-radius: 10px; overflow-x: auto; font-size: 0.86em; line-height: 1.5; margin: 12px 0; }
+pre code { background: none; color: inherit; padding: 0; }
+table { border-collapse: collapse; width: 100%; margin: 14px 0; font-size: 0.93em; }
+th, td { border: 1px solid var(--border); padding: 8px 11px; text-align: left; vertical-align: top; }
+th { background: #f0ece6; font-weight: 600; }
+tr:nth-child(2n) td { background: #fafbfc; }
+.box { border-radius: 10px; padding: 14px 18px; margin: 14px 0; border: 1px solid; }
+.box.err { background: var(--err-soft); border-color: #d99a90; }
+.box.ok { background: var(--ok-soft); border-color: #8fcaa7; }
+.box.warn { background: var(--warn-soft); border-color: #dcc27e; }
+.box.clave { background: var(--accent-soft); border-color: #d9a978; }
+.box strong:first-child { display: block; margin-bottom: 4px; }
+.check { list-style: none; padding-left: 0; }
+.check li { padding: 7px 0 7px 34px; position: relative; border-bottom: 1px dashed var(--border); }
+.check li::before { content: "☐"; position: absolute; left: 4px; font-size: 1.2em; color: var(--accent); }
+footer { text-align: center; color: var(--muted); font-size: 0.85em; margin-top: 40px; padding: 0 20px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1>🔧 Diagnóstico — Por qué no arrancaron/compilaron los servicios en la Defensa EV3</h1>
+    <p>Análisis técnico posterior a la Defensa Técnica Individual (02/07/2026), a partir de la evidencia entregada en el documento oficial y de reproducir el mismo escenario.</p>
+    <p>Sol León · Estacionamiento Inteligente · uso personal / estudio, no es material de examen</p>
+  </div>
+</header>
+
+<main>
+
+<section id="resumen">
+  <h2>Resumen en una frase</h2>
+  <p class="sub">El comando <code>.\mvnw.cmd</code> intentó descargarse a sí mismo desde internet, Maven Central respondió <strong>429 Too Many Requests</strong> (límite de peticiones excedido, típico cuando todo el curso compila a la vez desde la misma IP del laboratorio), y el build nunca llegó a ejecutarse. No fue un error en el código del proyecto.</p>
+
+  <div class="box err">
+    <strong>Error visto en pantalla durante la defensa</strong>
+    <pre><code>icm : Excepción al llamar a "DownloadFile" con los argumentos "2":
+"Error en el servidor remoto: (429) Too Many Requests."
+...
+Cannot start maven from wrapper</code></pre>
+  </div>
+
+  <div class="box ok">
+    <strong>Este error ya estaba documentado en el propio repositorio</strong>
+    El archivo <code>docs/Instalación Maven en pc laboratorios duoc.docx</code> (guía oficial de Duoc UC para PCs de laboratorio) tiene una sección exacta para esto: <em>"Problema 2: mvnw.cmd muestra error 429"</em>, con la solución ya escrita. No se llegó a consultar a tiempo durante la defensa.
+  </div>
+</section>
+
+<section id="causa">
+  <h2>1. Causa raíz — por qué pasa el 429</h2>
+  <p><code>mvnw.cmd</code> es el <strong>Maven Wrapper</strong>. La primera vez que se ejecuta en un computador, antes de compilar cualquier cosa, necesita descargar <code>maven-wrapper.jar</code> desde internet. Esa descarga golpea los servidores de Maven Central.</p>
+  <p>Un <strong>429</strong> es un límite de peticiones por IP. En un laboratorio, decenas de estudiantes compilando en la misma ventana horaria (08:30–10:00) salen todos por la <strong>misma IP pública</strong> (NAT del establecimiento). Maven Central ve ese volumen concentrado y empieza a rechazar peticiones — a cualquiera, sin importar si el <code>pom.xml</code> o el código de cada estudiante están bien.</p>
+
+  <h3>Por qué el Maven local del repo (<code>apache-maven-3.9.15</code>) tampoco salvó la situación</h3>
+  <p>El repo trae un Maven ya instalado en <code>apache-maven-3.9.15/bin/mvn.cmd</code> pensado justamente para evitar el wrapper. Probé ambos modos en un equipo con caché de dependencias vacía (escenario "PC de laboratorio recién usado"):</p>
+  <table>
+    <tr><th>Modo</th><th>Resultado</th><th>Por qué</th></tr>
+    <tr><td><code>mvn.cmd -o clean compile</code> (offline)</td><td>Falla: <code>Non-resolvable parent POM ... in offline mode</code></td><td>Offline solo reutiliza lo que ya está en <code>~/.m2/repository</code>. Si nunca se compiló antes en ese PC, no hay nada que reutilizar.</td></tr>
+    <tr><td><code>mvn.cmd clean compile</code> (online)</td><td>Falla: <code>status code: 429, Too Many Requests</code></td><td>Sí llega a internet (a diferencia del wrapper, no necesita descargarse a sí mismo), pero pega contra el mismo límite de Maven Central al bajar el POM padre de Spring Boot.</td></tr>
+  </table>
+  <p>Conclusión: el Maven local <strong>sí evita el punto de falla del wrapper</strong> (descargarse a sí mismo), pero solo protege del 429 si la caché <code>.m2</code> ya estaba poblada <em>antes</em> del examen.</p>
+</section>
+
+<section id="jdk">
+  <h2>2. Factor secundario — versión de Java activa</h2>
+  <p>El proyecto fija <code>&lt;java.version&gt;21&lt;/java.version&gt;</code> en el <code>pom.xml</code> raíz (heredado de <code>spring-boot-starter-parent:3.5.14</code>). En el equipo donde reproduje el escenario, <code>JAVA_HOME</code> apuntaba por defecto a <strong>JDK 25</strong> aunque JDK 21 también estaba instalado.</p>
+  <p>La guía oficial de Duoc para laboratorios no fuerza una versión concreta de JDK (su propio ejemplo muestra <code>java version "25"</code>), así que este no es necesariamente el problema principal — pero si el PC del laboratorio tenía un JDK muy nuevo sin configurar explícitamente, es un segundo punto de falla posible (Lombok y algunos plugins tardan en soportar versiones de JDK recién salidas). No se pudo confirmar si aplicó el día de la defensa porque el build nunca pasó del 429.</p>
+</section>
+
+<section id="solucion">
+  <h2>3. La solución — ya estaba escrita en el repo</h2>
+  <p>Del documento <code>docs/Instalación Maven en pc laboratorios duoc.docx</code>, sección "Problema 2":</p>
+  <div class="box clave">
+    <strong>Regla de oro para PCs de laboratorio</strong>
+    No usar <code>.\mvnw.cmd</code>. Usar el Maven instalado de forma independiente (<code>mvn</code>), porque no depende de descargarse a sí mismo cada vez.
+  </div>
+
+  <h3>Checklist para la próxima vez</h3>
+  <ul class="check">
+    <li>Antes del examen (con internet, en cualquier PC, con anticipación): correr una vez <code>mvn clean install -DskipTests</code> en cada servicio para poblar <code>~/.m2/repository</code>. Esa caché es reutilizable luego en modo offline.</li>
+    <li>Instalar Maven como binario independiente (<code>MAVEN_HOME</code> apuntando a <code>C:\apache-maven-3.9.15</code>, agregado al <code>Path</code> como <code>%MAVEN_HOME%\bin</code>) en vez de depender del wrapper — instrucciones completas ya en <code>docs/Instalación Maven en pc laboratorios duoc.docx</code>.</li>
+    <li>Verificar <code>JAVA_HOME</code> explícitamente antes de compilar: <code>java -version</code> y <code>javac -version</code> deben mostrar la misma versión que espera el <code>pom.xml</code> (21). Si el equipo tiene varios JDK, fijar <code>JAVA_HOME</code> a mano en vez de confiar en el que quedó por defecto.</li>
+    <li>Nunca ejecutar <code>.\mvnw.cmd</code> en un PC de laboratorio compartido — usar <code>mvn clean install -DskipTests</code> y luego <code>mvn spring-boot:run</code> directamente.</li>
+    <li>Si aparece <code>mvn no se reconoce como un comando</code>: revisar que <code>MAVEN_HOME</code> exista y que el <code>Path</code> tenga <code>%MAVEN_HOME%\bin</code>, luego cerrar y reabrir VS Code (las variables de entorno solo se leen al reiniciar la terminal/IDE).</li>
+    <li>Si aparece error de dependencias incompletas o corruptas: <code>mvn clean install -U -DskipTests</code> (el <code>-U</code> fuerza revisar de nuevo las dependencias remotas).</li>
+    <li>Orden de arranque real una vez compilado: <code>eureka-server</code> primero, esperar que registre, luego los microservicios de negocio, <code>api-gateway</code> al final (Gateway depende de que Eureka ya tenga registrados los servicios que va a enrutar).</li>
+  </ul>
+</section>
+
+<section id="comandos">
+  <h2>4. Flujo recomendado, paso a paso</h2>
+<pre><code># 1. Verificar herramientas
+java -version
+mvn -version
+
+# 2. Entrar al servicio
+cd eureka-server
+
+# 3. Compilar SIN el wrapper
+mvn clean install -DskipTests
+
+# 4. Ejecutar
+mvn spring-boot:run
+
+# 5. Repetir 2-4 para cada microservicio, en el orden:
+#    eureka-server -> auth/user/security/vehiculos/espacios/tarifas -> reservas/accesos -> pagos -> reportes -> api-gateway</code></pre>
+</section>
+
+</main>
+
+<footer>
+  Documento de estudio personal · generado el 02/07/2026 · no es material de examen ni respuestas a la Defensa Técnica Individual.
+</footer>
+
+</body>
+</html>
