@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ramas del repositorio — Estacionamiento Inteligente</title>
+  <style>
+:root { --bg:#0f1117;--bg2:#1a1f2e;--border:#2d3748;--text:#e2e8f0;--text2:#94a3b8;--text3:#7b8ea6;--blue:#93c5fd; }
+*{box-sizing:border-box}
+body{margin:0;font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+.container{max-width:980px;margin:0 auto;padding:2rem}
+.back{display:inline-flex;gap:.4rem;color:var(--text3);text-decoration:none;font-size:.85rem;margin-bottom:1rem}
+.back:hover{color:var(--blue)}
+.header{border-bottom:1px solid var(--border);padding-bottom:1rem;margin-bottom:1.25rem}
+.header h1{margin:0;font-size:1.9rem}
+.header p{margin:.35rem 0 0;color:var(--text2);font-size:.92rem}
+main{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.25rem 1.5rem}
+a{color:var(--blue)}
+h1,h2,h3{color:#f8fafc}
+h2{margin-top:1.6rem;border-bottom:1px solid var(--border);padding-bottom:.35rem}
+h3{margin-top:1.2rem}
+p,li{color:var(--text2)}
+code{background:#111827;border:1px solid var(--border);padding:.1rem .35rem;border-radius:4px;color:#c4b5fd;font-family:Consolas,monospace}
+pre{background:#111827;border:1px solid var(--border);padding:.8rem;border-radius:8px;overflow:auto}
+pre code{border:none;background:none;padding:0;color:#e2e8f0}
+table{width:100%;border-collapse:collapse;margin:.8rem 0}
+th,td{border:1px solid var(--border);padding:.5rem .6rem;text-align:left}
+th{background:#1e2330;color:var(--text3);font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+blockquote{border-left:3px solid var(--border);margin:1rem 0;padding:.2rem .8rem;color:var(--text3)}
+hr{border:none;border-top:1px solid var(--border);margin:1.2rem 0}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a class="back" href="index.html">← Índice docs</a>
+    <div class="header">
+      <h1>Ramas del repositorio</h1>
+      <p>Versión HTML legible generada desde <code>BRANCHES.md</code>.</p>
+    </div>
+    <main>
+      <p>Este proyecto usa 2 ramas activas con propósitos distintos. No son intercambiables: cada una tiene un rol fijo.</p>
+
+      <h2><code>main</code> — rama de trabajo / desarrollo</h2>
+      <ul>
+        <li><strong>Rama por defecto de GitHub</strong> (<code>origin/HEAD -&gt; origin/main</code>) — es lo que ve cualquiera que abra el repo sin especificar rama.</li>
+        <li>Contiene <strong>todo</strong>: código de los 12 microservicios, scripts, documentación, material de estudio y preparación de defensa, resultados de evaluaciones anteriores, prompts de IA, etc.</li>
+        <li>Incluye archivos que <strong>no deben ir a la entrega final</strong> (<code>.bat</code>, ZIPs, material personal) — por eso su README todavía tiene links <code>ENLACE_A_DRIVE_PENDIENTE</code> en vez de los links reales de Drive.</li>
+        <li>Úsala para seguir desarrollando, documentar, y guardar cualquier cosa relacionada al ramo.</li>
+      </ul>
+
+      <h2><code>Entrega-EV3</code> — rama de entrega (congelada)</h2>
+      <ul>
+        <li>Rama <strong>limpia</strong>, generada específicamente para la entrega de Evaluación 3 (freeze 29/06/2026).</li>
+        <li>Solo contiene el código del proyecto: sin <code>.bat</code>, sin <code>.jar</code> (fuera de <code>apache-maven-3.9.15/</code>), sin <code>target/</code>.</li>
+        <li>README con los 3 links reales de Drive (ZIP nativo, ZIP Docker, video) y <code>subtitulos-video.txt</code> en la raíz.</li>
+        <li><strong>Se reutiliza para el Examen Final Transversal (EFT)</strong> — el docente confirmó por escrito que los grupos con la EV3 avanzada/completa pueden usar esa misma base como entrega final (ver <code>CONTENIDO_CLASES/EVALUACION FINAL - ET/</code>).</li>
+        <li><strong>No se edita directo aquí</strong> salvo que sea explícitamente para preparar una nueva entrega — es un snapshot congelado, no una rama de desarrollo diario.</li>
+        <li><strong>Importante:</strong> el link que se sube al AVA debe ser explícito a esta rama: <code>https://github.com/s0lci700/FULLSTACK-I/tree/Entrega-EV3</code> — nunca el link plano del repo, porque ese cae en <code>main</code>.</li>
+      </ul>
+
+      <h2><code>post-defensa-notas</code> (histórica)</h2>
+      <ul>
+        <li>Rama remota creada después de la defensa individual (01/07/2026) con un documento de diagnóstico de arranque/compilación.</li>
+        <li><strong>Ya fue mergeada a <code>main</code></strong> (commit <code>merge: incorporar notas post-defensa EV3</code>). No hace falta usarla de nuevo; se puede dejar existir en <code>origin</code> como referencia histórica o borrar cuando ya no se necesite.</li>
+      </ul>
+
+      <hr />
+
+      <h2>Comandos de git para moverte entre ramas</h2>
+
+      <h3>Ver en qué rama estás y qué ramas existen</h3>
+      <pre><code>git branch -a -vv          # todas las ramas locales y remotas, con el último commit de cada una
+git status                 # rama actual + archivos pendientes</code></pre>
+
+      <h3>Cambiar de rama</h3>
+      <pre><code>git status                 # SIEMPRE revisar antes de cambiar — evita perder cambios sin commitear
+git checkout main          # ir a la rama de desarrollo
+git checkout Entrega-EV3   # ir a la rama de entrega congelada</code></pre>
+
+      <p>Si <code>git checkout</code> se niega por cambios sin commitear que se perderían, no fuerces nada — primero:</p>
+      <pre><code>git stash push -u -m "wip antes de cambiar de rama"   # guarda todo (incluso archivos nuevos)
+git checkout &lt;rama-destino&gt;
+git stash pop                                          # trae los cambios de vuelta</code></pre>
+
+      <h3>Traer cambios remotos de una rama específica</h3>
+      <pre><code>git fetch origin                          # trae referencias de todas las ramas remotas sin tocar tu working tree
+git checkout Entrega-EV3
+git pull origin Entrega-EV3               # actualiza la rama actual con lo que hay en origin</code></pre>
+
+      <h3>Ver diferencias entre ramas sin cambiarte de rama</h3>
+      <pre><code>git log main..Entrega-EV3 --oneline       # commits que tiene Entrega-EV3 y main no
+git log Entrega-EV3..main --oneline       # commits que tiene main y Entrega-EV3 no
+git diff main Entrega-EV3 --stat          # qué archivos difieren entre ambas</code></pre>
+
+      <h3>Descargar un archivo puntual de otra rama sin cambiarte</h3>
+      <pre><code>git show Entrega-EV3:README.md            # ver contenido de un archivo en otra rama
+git show Entrega-EV3:README.md &gt; temp.md  # guardarlo en un archivo aparte</code></pre>
+
+      <h3>Generar un ZIP de una rama (igual al "Download ZIP" de GitHub)</h3>
+      <pre><code>git archive --format=zip --prefix="FULLSTACK-I-Entrega-EV3/" -o dist/FULLSTACK-I-Entrega-EV3.zip Entrega-EV3</code></pre>
+
+      <h3>Publicar cambios de <code>main</code> al remoto</h3>
+      <pre><code>git push origin main</code></pre>
+
+      <blockquote><p><code>Entrega-EV3</code> normalmente <strong>no se vuelve a pushear</strong> salvo que se decida generar una nueva entrega — en ese caso, avisar antes de tocarla porque es la rama que evalúa el docente.</p></blockquote>
+    </main>
+  </div>
+</body>
+</html>

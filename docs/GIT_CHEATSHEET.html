@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Git Cheatsheet — Estacionamiento Inteligente</title>
+  <style>
+:root { --bg:#0f1117;--bg2:#1a1f2e;--border:#2d3748;--text:#e2e8f0;--text2:#94a3b8;--text3:#7b8ea6;--blue:#93c5fd; }
+*{box-sizing:border-box}
+body{margin:0;font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+.container{max-width:980px;margin:0 auto;padding:2rem}
+.back{display:inline-flex;gap:.4rem;color:var(--text3);text-decoration:none;font-size:.85rem;margin-bottom:1rem}
+.back:hover{color:var(--blue)}
+.header{border-bottom:1px solid var(--border);padding-bottom:1rem;margin-bottom:1.25rem}
+.header h1{margin:0;font-size:1.9rem}
+.header p{margin:.35rem 0 0;color:var(--text2);font-size:.92rem}
+main{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.25rem 1.5rem}
+a{color:var(--blue)}
+h1,h2,h3{color:#f8fafc}
+h2{margin-top:1.6rem;border-bottom:1px solid var(--border);padding-bottom:.35rem}
+h3{margin-top:1.2rem}
+p,li{color:var(--text2)}
+code{background:#111827;border:1px solid var(--border);padding:.1rem .35rem;border-radius:4px;color:#c4b5fd;font-family:Consolas,monospace}
+pre{background:#111827;border:1px solid var(--border);padding:.8rem;border-radius:8px;overflow:auto}
+pre code{border:none;background:none;padding:0;color:#e2e8f0}
+table{width:100%;border-collapse:collapse;margin:.8rem 0}
+th,td{border:1px solid var(--border);padding:.5rem .6rem;text-align:left}
+th{background:#1e2330;color:var(--text3);font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+blockquote{border-left:3px solid var(--border);margin:1rem 0;padding:.2rem .8rem;color:var(--text3)}
+hr{border:none;border-top:1px solid var(--border);margin:1.2rem 0}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a class="back" href="index.html">← Índice docs</a>
+    <div class="header">
+      <h1>Git Cheatsheet</h1>
+      <p>Versión HTML legible generada desde <code>GIT_CHEATSHEET.md</code>. Para el detalle de ramas, ver <a href="BRANCHES.html">Ramas del repositorio</a>.</p>
+    </div>
+    <main>
+      <h2>Día a día</h2>
+      <pre><code>git status                       # qué cambió, qué está sin trackear, en qué rama estás
+git diff                         # cambios sin stagear
+git diff --staged                # cambios ya en el index, listos para commit
+git add ruta/archivo.java        # stagear un archivo puntual (evitar "git add -A" a ciegas)
+git add .                        # stagear todo lo modificado/nuevo — revisar status antes
+git commit -m "tipo: mensaje"    # commit con mensaje corto y descriptivo
+git log --oneline -15            # últimos 15 commits, una línea cada uno
+git push origin main             # subir commits de main al remoto</code></pre>
+
+      <h3>Formato de mensajes de commit usados en el proyecto</h3>
+      <p><code>tipo(scope): descripción corta</code> — tipos comunes: <code>feat</code>, <code>fix</code>, <code>chore</code>, <code>docs</code>, <code>entrega</code>, <code>merge</code>.</p>
+      <p>Ejemplos reales del historial:</p>
+      <ul>
+        <li><code>fix(readme): corregir orden arranque en Opcion D - Gateway al final</code></li>
+        <li><code>docs(ev3): corregir discrepancias guion, regenerar subtitulos, agregar coleccion demo</code></li>
+        <li><code>chore(entrega): limpiar rama - solo codigo del proyecto</code></li>
+      </ul>
+
+      <h2>Antes de hacer commit</h2>
+      <pre><code>.\mvnw.cmd test                  # correr tests del servicio que tocaste, desde su carpeta
+git diff --staged                # revisar exactamente qué vas a commitear</code></pre>
+      <p>Nunca commitear: <code>.env</code>, credenciales, <code>target/</code>, <code>.jar</code> del proyecto (fuera de <code>apache-maven-3.9.15/</code>), archivos <code>.bat</code>/<code>.sh</code> (van solo en el ZIP de Drive — regla explícita del docente).</p>
+
+      <h2>Ver quién hizo qué</h2>
+      <pre><code>git shortlog -sn                 # commits por autor, toda la rama actual
+git shortlog -sn origin/Entrega-EV3   # idem, en otra rama sin cambiarte
+git log --author="Sol León" --oneline
+git log --author="Catalina" --oneline
+git blame ruta/archivo.java      # quién tocó cada línea de un archivo
+git log --follow -p -- ruta/archivo.java   # historial completo de un archivo, con diffs</code></pre>
+
+      <h2>Deshacer cosas (con cuidado)</h2>
+      <pre><code>git restore ruta/archivo.java              # descarta cambios sin commitear de UN archivo (no recuperable)
+git restore --staged ruta/archivo.java     # saca un archivo del stage, sin tocar el working tree
+git commit --amend                         # corrige el mensaje/contenido del ÚLTIMO commit (solo si no se pusheó)
+git revert &lt;hash&gt;                          # crea un commit nuevo que deshace &lt;hash&gt; — seguro en ramas compartidas</code></pre>
+
+      <blockquote>
+        <p><strong>Evitar salvo que sepas exactamente qué haces y lo hayas confirmado con el equipo:</strong></p>
+      </blockquote>
+      <pre><code>git reset --hard &lt;hash&gt;          # descarta commits y cambios sin commitear — destructivo
+git push --force                 # reescribe el historial remoto — puede borrar el trabajo de la otra persona
+git checkout -- .                # descarta TODOS los cambios sin commitear del working tree
+git clean -fd                    # borra archivos no trackeados — irreversible</code></pre>
+
+      <h2>Guardar cambios temporalmente (stash)</h2>
+      <p>Útil para cambiar de rama sin perder trabajo en progreso:</p>
+      <pre><code>git stash push -u -m "descripción"   # guarda cambios trackeados + no trackeados (-u)
+git stash list                        # ver stashes guardados
+git stash pop                         # aplica el más reciente y lo borra de la lista
+git stash apply stash@{0}             # aplica sin borrar (por si necesitas reintentar)
+git stash drop stash@{0}              # borra un stash puntual sin aplicarlo</code></pre>
+
+      <h2>Comparar y explorar ramas sin cambiarte</h2>
+      <pre><code>git branch -a -vv                          # todas las ramas + tracking + último commit
+git log main..Entrega-EV3 --oneline        # commits que tiene una rama y la otra no
+git diff main Entrega-EV3 --stat           # qué archivos difieren entre ramas
+git show Entrega-EV3:README.md             # ver un archivo tal como está en otra rama</code></pre>
+
+      <h2>Sincronizar con el remoto</h2>
+      <pre><code>git fetch --all --prune          # trae todas las referencias remotas, limpia ramas borradas
+git pull origin main              # trae y mergea cambios de origin/main en tu rama actual</code></pre>
+      <p>Si <code>git pull</code> falla con <em>"no tracking information"</em>, es porque la rama local no tiene upstream configurado:</p>
+      <pre><code>git branch --set-upstream-to=origin/main main</code></pre>
+
+      <h2>Advertencias de fin de línea (CRLF/LF) en Windows</h2>
+      <p>Al hacer <code>git add</code>/<code>stash</code> en Windows es normal ver:</p>
+      <pre><code>warning: in the working copy of 'archivo', LF will be replaced by CRLF the next time Git touches it</code></pre>
+      <p>Es solo informativo: git normaliza los saltos de línea según <code>.gitattributes</code>/<code>core.autocrlf</code>. No indica un error ni pérdida de datos.</p>
+
+      <h2>Generar un ZIP de una rama (respaldo tipo "Download ZIP" de GitHub)</h2>
+      <pre><code>git archive --format=zip --prefix="FULLSTACK-I-Entrega-EV3/" -o dist/FULLSTACK-I-Entrega-EV3.zip Entrega-EV3</code></pre>
+    </main>
+  </div>
+</body>
+</html>
