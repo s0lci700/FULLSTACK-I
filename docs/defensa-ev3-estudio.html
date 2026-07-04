@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Defensa Individual EV3 — Guía de Estudio | Estacionamiento Inteligente</title>
+<style>
+  :root {
+    --bg: #f7f8fa;
+    --panel: #ffffff;
+    --ink: #1f2430;
+    --muted: #525b69;
+    --accent: #b34700;
+    --accent-soft: #fdf0e6;
+    --ok-soft: #e7f5ec;
+    --warn-soft: #fdf6e3;
+    --bad-soft: #fbecea;
+    --code-bg: #1e2430;
+    --code-ink: #dce3ee;
+    --border: #dde2ea;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 0 0 80px 0;
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: var(--bg); color: var(--ink);
+    line-height: 1.55; font-size: 16px;
+  }
+  header {
+    background: linear-gradient(135deg, #2a1a0e, #6b3410);
+    color: #fff; padding: 36px 24px 28px;
+  }
+  header .wrap, main { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+  header h1 { margin: 0 0 6px; font-size: 1.7em; text-wrap: balance; }
+  header p { margin: 4px 0; color: rgba(255,255,255,.93); }
+  header .fecha { display:inline-block; background:rgba(255,255,255,.16); padding:4px 12px; border-radius:20px; font-size:.9em; margin-top:10px; color:#fff;}
+  nav.toc {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+    padding: 18px 22px; margin: 24px auto; max-width: 920px;
+  }
+  nav.toc h2 { margin: 0 0 10px; font-size: 1.05em; color: var(--muted); border: none; }
+  nav.toc ol { margin: 0; padding-left: 22px; columns: 2; column-gap: 40px;}
+  nav.toc li { margin: 4px 0; break-inside: avoid;}
+  nav.toc a { color: var(--accent); text-decoration: none; }
+  nav.toc a:hover, nav.toc a:focus-visible { text-decoration: underline; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+  section {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+    padding: 26px 30px; margin: 26px 0;
+  }
+  section[id] { scroll-margin-top: 14px; }
+  h2 { font-size: 1.45em; margin: 0 0 4px; color: #46280f; text-wrap: balance; }
+  h2 .peso { font-size: .55em; vertical-align: middle; background: var(--accent-soft); color: #8a3700; padding: 3px 10px; border-radius: 14px; font-weight: 700; margin-left: 8px; white-space: nowrap;}
+  h3 { font-size: 1.15em; margin: 26px 0 8px; color: #6b3410; text-wrap: balance; }
+  h4 { font-size: 1em; margin: 20px 0 6px; }
+  p, li { color: var(--ink); }
+  p { text-wrap: pretty; }
+  /* prosa a ancho legible; las tablas y bloques de código siguen a ancho completo */
+  section p, section ul li, section ol li { max-width: 76ch; }
+  td p, td li, table li { max-width: none; }
+  .sub { color: var(--muted); margin-top: 0; }
+  table { border-collapse: collapse; width: 100%; margin: 14px 0; font-size: .93em; }
+  th, td { border: 1px solid var(--border); padding: 8px 11px; text-align: left; vertical-align: top;}
+  th { background: #f0ece6; font-weight: 600; }
+  tr:nth-child(even) td { background: #fafbfc; }
+  code {
+    font-family: "Cascadia Code", Consolas, monospace; font-size: .88em;
+    background: #eef1f5; padding: 1px 6px; border-radius: 4px; color: #3d2405;
+  }
+  pre {
+    background: var(--code-bg); color: var(--code-ink);
+    padding: 16px 18px; border-radius: 10px; overflow-x: auto;
+    font-size: .84em; line-height: 1.5; margin: 12px 0;
+  }
+  pre code { background: none; color: inherit; padding: 0; font-size: 1em; }
+  pre .cm { color: #8d9ab0; }        /* comentario */
+  pre .kw { color: #e8a2ff; }        /* keyword */
+  pre .str { color: #a8d78a; }       /* string */
+  pre .ann { color: #ffd479; }       /* anotación */
+  .box { border-radius: 10px; padding: 14px 18px; margin: 14px 0; border: 1px solid; }
+  .box.clave  { background: var(--accent-soft); border-color: #d9a978; }
+  .box.ok     { background: var(--ok-soft); border-color: #8fcaa7; }
+  .box.warn   { background: var(--warn-soft); border-color: #dcc27e; }
+  .box.peligro{ background: var(--bad-soft); border-color: #e0a29d; }
+  .box strong:first-child { display: block; margin-bottom: 4px; }
+  .qa { border: 1px solid #e6d6c2; background: #fdfaf7; padding: 14px 18px; margin: 16px 0; border-radius: 10px; }
+  .qa .q { font-weight: 700; color: #46280f; margin: 0 0 8px; }
+  .qa .q::before { content: "P · "; color: var(--accent); }
+  .qa .r { margin: 0; }
+  .pill { display:inline-block; font-size:.78em; font-weight:700; padding:2px 10px; border-radius:12px; margin-right:6px; border: 1.5px solid transparent;}
+  .pill.p13 { background:#b3261e; color:#fff; }
+  .pill.p10 { background:#b34700; color:#fff; }
+  .pill.p7  { background:#8a5200; color:#fff; }
+  .dos-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  @media (max-width: 760px){ .dos-col { grid-template-columns: 1fr; } nav.toc ol { columns: 1; } section { padding: 20px 18px; } }
+  .persona { border-radius: 10px; padding: 16px 20px; }
+  .persona.sol  { border: 2px solid #b98cd9; background: #faf6fd; }
+  .persona.cata { border: 2px dashed #6fb4cc; background: #f4fafc; }
+  .persona h4 { margin-top: 0; }
+  .check { list-style: none; padding-left: 0; }
+  .check li { padding: 7px 0 7px 34px; position: relative; border-bottom: 1px dashed var(--border); }
+  .check li::before { content: "☐"; position: absolute; left: 4px; font-size: 1.2em; color: var(--accent); }
+
+  /* ══════════════ DIAGRAMAS SVG ══════════════ */
+  .dg-caption { color: var(--muted); font-size: .88em; margin: 6px 0 0; text-align: center; }
+  .diagram { margin: 16px 0; background: #fbfbfc; border: 1px solid var(--border); border-radius: 10px; padding: 14px 10px 6px; overflow-x: auto; }
+  .diagram svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  .dg-box { fill: var(--panel); stroke: var(--border); stroke-width: 1.4; }
+  .dg-box.gw { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.8; }
+  .dg-box.eureka { fill: #eef1fb; stroke: #5b6fb3; stroke-width: 1.8; }
+  .dg-box.group { fill: #fcfaf7; stroke: var(--border); stroke-width: 1.4; stroke-dasharray: 5 4; }
+  .dg-box.mock { fill: #f3f3f5; stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 5 4; }
+  .dg-box.focus { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; }
+  .dg-box.ok { fill: var(--ok-soft); stroke: #4f9c6c; stroke-width: 1.6; }
+  .dg-box.warn { fill: var(--warn-soft); stroke: #b8932e; stroke-width: 1.6; }
+  .dg-box.bad { fill: var(--bad-soft); stroke: #c85c52; stroke-width: 1.6; }
+  .dg-text { font-family: "Segoe UI", system-ui, sans-serif; fill: var(--ink); font-size: 11.5px; }
+  .dg-text.b { font-weight: 700; }
+  .dg-text.sm { font-size: 9.5px; fill: var(--muted); }
+  .dg-text.accent { fill: var(--accent); font-weight: 600; }
+  .dg-text.center { text-anchor: middle; }
+  .dg-arrow { stroke: var(--accent); stroke-width: 1.7; fill: none; }
+  .dg-arrow.muted { stroke: var(--muted); }
+  .dg-arrow.dashed { stroke-dasharray: 5 4; }
+  .dg-arrowhead { fill: var(--accent); }
+  .dg-arrowhead-muted { fill: var(--muted); }
+
+  footer { text-align:center; color: var(--muted); font-size:.85em; margin-top: 40px; padding: 0 20px; }
+
+  /* ══════════════ IMPRESIÓN (escala de grises) ══════════════
+     Reglas: nada depende del color; jerarquía por peso, borde y trama.
+     Código en claro (no bloques oscuros), cortes de página controlados. */
+  @media print {
+    @page { margin: 1.6cm; }
+    body { background: #fff; color: #000; font-size: 10.5pt; line-height: 1.45; padding: 0; }
+    header { background: none; color: #000; padding: 0 0 10px; border-bottom: 3px solid #000; }
+    header p { opacity: 1; }
+    header .fecha { background: none; border: 1px solid #000; color: #000; }
+    header .wrap, main { max-width: none; padding: 0; }
+    nav.toc { border: 1px solid #000; border-radius: 0; margin: 14px 0; }
+    nav.toc a { color: #000; }
+    a { color: #000; text-decoration: none; }
+    section { border: none; border-radius: 0; padding: 0; margin: 18px 0; }
+    main > section { break-before: page; }
+    main > section:first-of-type { break-before: auto; }
+    h2 { color: #000; border-bottom: 2px solid #000; padding-bottom: 4px; break-after: avoid; }
+    h2 .peso { background: none; border: 1px solid #000; color: #000; border-radius: 0; }
+    h3, h4 { color: #000; break-after: avoid; }
+    table { font-size: 8.5pt; }
+    th, td { border-color: #666; }
+    th { background: #ddd !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    tr { break-inside: avoid; }
+    tr:nth-child(even) td { background: #f2f2f2 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    code { background: none; color: #000; padding: 0; font-weight: 600; }
+    pre { background: #fff; color: #000; border: 1px solid #777; border-radius: 0; font-size: 8pt; break-inside: avoid; overflow-x: visible; white-space: pre-wrap; }
+    pre code { font-weight: 400; }
+    pre .cm { color: #444; font-style: italic; }
+    pre .kw, pre .ann { color: #000; font-weight: 700; }
+    pre .str { color: #222; text-decoration: underline; text-decoration-color: #999; text-underline-offset: 2px; }
+    .box { background: #fff !important; border: 1.5px solid #000; border-radius: 0; break-inside: avoid; }
+    .box.peligro { border-width: 3px; }   /* urgencia por peso de borde, no por color */
+    .box.warn { border-style: dashed; }
+    .qa { background: #fff; border: 1px solid #666; border-radius: 0; break-inside: avoid; }
+    .pill { background: none !important; color: #000 !important; border: 1.5px solid #000; border-radius: 0; }
+    .pill.p13 { border-width: 3px; }
+    .dos-col { grid-template-columns: 1fr; }
+    .persona { break-inside: avoid; background: #fff; }
+    .persona.sol { border: 2px solid #000; }
+    .persona.cata { border: 2px dashed #000; }
+    .check li { border-bottom-color: #999; break-inside: avoid; }
+    .check li::before { color: #000; }
+    .diagram { border: 1px solid #000; background: #fff; break-inside: avoid; padding: 10px 8px 4px; }
+    .dg-box { fill: #fff !important; stroke: #000 !important; }
+    .dg-box.gw, .dg-box.focus { stroke-width: 2.4 !important; }
+    .dg-box.eureka { stroke-dasharray: 3 2 !important; }
+    .dg-box.group, .dg-box.mock { stroke-dasharray: 4 3 !important; }
+    .dg-box.ok { stroke-width: 2 !important; }
+    .dg-box.warn { stroke-dasharray: 2 2 !important; }
+    .dg-box.bad { stroke-width: 3 !important; }
+    .dg-text, .dg-text.sm, .dg-text.accent { fill: #000 !important; }
+    .dg-arrow, .dg-arrow.muted { stroke: #000 !important; }
+    .dg-arrowhead, .dg-arrowhead-muted { fill: #000 !important; }
+    .dg-caption { color: #333; }
+    footer { border-top: 1px solid #000; padding-top: 8px; margin-top: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <marker id="dgArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" class="dg-arrowhead"/>
+    </marker>
+    <marker id="dgArrowMuted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" class="dg-arrowhead-muted"/>
+    </marker>
+  </defs>
+</svg>
+
+<header>
+  <div class="wrap">
+    <h1>🎓 Defensa Individual EV3 — Guía de Estudio</h1>
+    <p>DSY1103 Desarrollo FullStack I · Proyecto Estacionamiento Inteligente · Grupo 7 (Sol León · Catalina Aguirre)</p>
+    <p class="fecha">📅 Defensa: miércoles 02/07/2026 · 15 min por estudiante · sin IA, sin internet (salvo dependencias Maven)</p>
+  </div>
+</header>
+
+<nav class="toc">
+  <h2>Contenido</h2>
+  <ol>
+    <li><a href="#s0">Si solo estudias 3 cosas, que sean estas</a></li>
+    <li><a href="#s1">Cómo funciona la evaluación de mañana</a></li>
+    <li><a href="#s2">TESTING — la sección más importante (20%)</a></li>
+    <li><a href="#s3">Overall del proyecto en 10 minutos</a></li>
+    <li><a href="#s4">Lo que el profesor dijo que faltó en EV2</a></li>
+    <li><a href="#s5">Levantar el sistema sola (10% + 6%)</a></li>
+    <li><a href="#s6">Banco de preguntas con respuestas modelo</a></li>
+    <li><a href="#s7">Checklist de la noche anterior</a></li>
+  </ol>
+</nav>
+
+<main>
+
+<!-- ================================================================ -->
+<section id="s0">
+  <h2>0. Si solo estudias 3 cosas, que sean estas</h2>
+  <div class="box clave">
+    <strong>Dónde están los puntos (dimensión Defensa = 60% de la rúbrica EV3):</strong>
+    <ol>
+      <li><span class="pill p13">13%</span><strong>Escribir una prueba unitaria NUEVA en vivo</strong> (IE 3.1.3). Es el indicador individual más pesado de toda la rúbrica. Practica la plantilla de la <a href="#s26">sección 2.6</a> hasta poder escribirla de memoria.</li>
+      <li><span class="pill p10">10%</span><strong>Levantar y configurar el ecosistema sin ayuda</strong> (IE 3.3.7): orden de arranque, puertos, resolver un error en vivo. <a href="#s5">Sección 5</a>.</li>
+      <li><span class="pill p7">7%</span><strong>Explicar los tests existentes</strong> (IE 3.1.2): qué mockea, qué assert usa, qué regla de negocio valida. <a href="#s2">Sección 2</a>.</li>
+    </ol>
+    Solo esos tres indicadores suman <strong>30 de los 60 puntos</strong> de la defensa. El resto (código, DTOs, aporte personal, Swagger, YAML, despliegue) suma los otros 30.
+  </div>
+  <div class="box warn">
+    <strong>Actualización (Catalina, 01/07/2026):</strong> el profesor confirmó que <strong>no</strong> va a pedir escribir/integrar una prueba unitaria nueva en vivo durante la defensa, aunque IE 3.1.3 siga listado en la rúbrica oficial con 13%. La receta de la sección 2.6 sigue sirviendo como preparación de respaldo, pero el foco real de "TESTING" en la defensa es <strong>explicar</strong> los tests que ya existen (IE 3.1.2, sección 2.2-2.5), no demostrar autoría en vivo.
+  </div>
+  <p>Además, el profesor ya te dijo por escrito qué le faltó a Sol en EV2 (65.4/100): <strong>GlobalExceptionHandler y códigos HTTP, aporte personal con evidencia, un escenario de error concreto, y una entidad formal con PK y restricciones</strong>. Todo eso está resuelto y listo para decir en la <a href="#s4">sección 4</a>.</p>
+</section>
+
+<!-- ================================================================ -->
+<section id="s1">
+  <h2>1. Cómo funciona la evaluación de mañana</h2>
+  <h3>Logística (de la rúbrica oficial y anuncios del profesor)</h3>
+  <ul>
+    <li>La defensa es <strong>individual</strong>: la nota depende solo de lo que cada una demuestre, aunque el proyecto grupal esté perfecto.</li>
+    <li><strong>Máximo 15 minutos</strong> por estudiante. El orden se asigna al azar.</li>
+    <li><strong>Prohibido</strong>: IA, herramientas automáticas de código, ayuda externa. Internet solo para dependencias Maven.</li>
+    <li>El profesor prepara <strong>preguntas personalizadas a partir del repo</strong> (lo descargó y auditó el 30/06).</li>
+    <li>Puedes pedir que te repitan la pregunta y puedes <strong>anotar los pasos</strong> antes de ejecutarlos. Se evalúa tanto lo que haces como lo que explicas.</li>
+    <li>Regla dura: si un recurso entregado no está implementado de verdad, todos los ítems asociados se califican con 0.</li>
+  </ul>
+
+  <h3>La rúbrica de la dimensión Defensa (60%)</h3>
+  <table>
+    <tr><th>Indicador</th><th>Qué evalúa</th><th>Peso</th><th>Para el 100% necesitas…</th></tr>
+    <tr><td><strong>IE 3.1.3</strong></td><td><strong>Integrar una prueba unitaria nueva en tiempo acotado</strong></td><td><strong>13%</strong></td><td>Test funcional con Given–When–Then, mocks precisos, asserts coherentes; compila y pasa; seguridad al modificar código en vivo.</td></tr>
+    <tr><td><strong>IE 3.3.7</strong></td><td><strong>Configurar y ejecutar los microservicios sin apoyo</strong></td><td><strong>10%</strong></td><td>Levantar servicios, ajustar puertos/perfiles/rutas del Gateway sin asistencia; diagnosticar y corregir problemas rápido.</td></tr>
+    <tr><td><strong>IE 3.1.2</strong></td><td>Explicar las pruebas unitarias existentes</td><td>7%</td><td>Estructura del test, función evaluada, propósito de cada assert, uso de mocks, qué regla de negocio se valida y por qué esos casos.</td></tr>
+    <tr><td><strong>IE 3.3.6</strong></td><td>Describir el proceso de despliegue</td><td>6%</td><td>Plataforma (Docker/nativo), variables, puertos, logs, arranque, e interpretar errores de despliegue y cómo se resolvieron.</td></tr>
+    <tr><td>IE 2.2.2</td><td>Explicar el código y justificar decisiones</td><td>5%</td><td>Relaciones, lógica, responsabilidades por capa, impactos de las decisiones de diseño.</td></tr>
+    <tr><td>IE 2.4.2</td><td>Consistencia de datos e interoperabilidad (endpoints, DTOs, consumo remoto)</td><td>5%</td><td>Explicar el flujo remoto exacto, diseño de endpoints y DTOs, validaciones y coherencia entre servicios.</td></tr>
+    <tr><td>IE 2.5.3</td><td>Aporte personal (commits, tareas, participación)</td><td>5%</td><td>Claridad total sobre tu trabajo con commits, archivos y roles concretos. <em>(Sol sacó 30% aquí en EV2 — ver sección 4.)</em></td></tr>
+    <tr><td>IE 3.2.2</td><td>Explicar la documentación Swagger</td><td>5%</td><td>Recorrer la UI: rutas, parámetros, modelos, request bodies, códigos de respuesta; cómo consumir cada endpoint.</td></tr>
+    <tr><td>IE 3.3.5</td><td>Explicar la configuración YAML</td><td>4%</td><td>Propiedades clave, función de cada sección, local vs remoto, cómo el YAML afecta el despliegue y la comunicación.</td></tr>
+  </table>
+  <p class="sub">Los otros 40 puntos (dimensión Entrega grupal) ya se jugaron con la entrega del 29/06 — nota grupal 7.0.</p>
+</section>
+
+<!-- ================================================================ -->
+<section id="s2">
+  <h2>2. TESTING <span class="peso">IE 3.1.2 + 3.1.3 = 20%</span></h2>
+  <p class="sub">Basado en la guía oficial "3.1 Análisis de testing en Biblioteca y transición a microservicios" (Unidad 3), pero con ejemplos <strong>del propio proyecto</strong> — que es de donde el profesor sacará las preguntas.</p>
+
+  <h3 id="s21">2.1 Los conceptos que la guía exige dominar</h3>
+  <table>
+    <tr><th>Concepto</th><th>Qué es / qué hace</th></tr>
+    <tr><td><strong>Prueba unitaria</strong></td><td>Prueba automatizada de una unidad pequeña de código (un método del Service, una regla de negocio, una respuesta de endpoint) <strong>de forma aislada</strong>, sin BD real ni servicios externos.</td></tr>
+    <tr><td><strong>Mock</strong></td><td>Objeto simulado que reemplaza una dependencia real (Repository, Feign Client). Permite probar el Service sin MySQL y sin que los otros microservicios estén corriendo.</td></tr>
+    <tr><td><code>@Mock</code> vs <code>@MockBean</code></td><td><code>@Mock</code> (Mockito puro) crea el simulado en un test aislado sin levantar Spring — es lo que usan nuestros Service tests. <code>@MockBean</code>/<code>@MockitoBean</code> reemplaza un bean dentro del contexto de Spring — lo usamos en el Controller test con <code>@WebMvcTest</code>.</td></tr>
+    <tr><td><code>@InjectMocks</code></td><td>Crea la instancia real del Service bajo prueba e inyecta en ella todos los <code>@Mock</code> declarados.</td></tr>
+    <tr><td><code>when(...).thenReturn(...)</code></td><td>Programa el mock: "cuando alguien llame a <code>findById(1L)</code>, devuelve este objeto simulado".</td></tr>
+    <tr><td><code>verify(...)</code></td><td>Comprueba que un método del mock <strong>fue llamado</strong> (o no: <code>verify(repo, never()).save(any())</code>). Es clave en métodos que no retornan nada, como eliminaciones o llamadas a otros servicios.</td></tr>
+    <tr><td><strong>Asserts</strong></td><td>La guía usa JUnit (<code>assertEquals</code>, <code>assertNotNull</code>). Nuestro proyecto usa <strong>AssertJ</strong>: <code>assertThat(x).isEqualTo(y)</code>, <code>assertThat(lista).hasSize(1)</code>, <code>assertThatThrownBy(...).isInstanceOf(...)</code>. Cumplen el mismo rol: verificar el resultado esperado. Si el profesor pide JUnit clásico, di la equivalencia.</td></tr>
+    <tr><td><strong>MockMvc</strong></td><td>Simula peticiones HTTP contra el Controller <strong>sin levantar un servidor real</strong>: <code>mockMvc.perform(get("/api/espacios")).andExpect(status().isOk())</code>.</td></tr>
+    <tr><td><code>jsonPath()</code></td><td>Valida el contenido del JSON de respuesta: <code>jsonPath("$[0].numero").value("A-01")</code>.</td></tr>
+    <tr><td><code>ObjectMapper</code></td><td>Convierte objetos Java a JSON para el body de POST/PUT: <code>.content(objectMapper.writeValueAsString(dto))</code>.</td></tr>
+    <tr><td><strong>Given–When–Then</strong></td><td>Estructura del test: <em>Given/Arrange</em> (preparar datos y mocks) → <em>When/Act</em> (ejecutar el método) → <em>Then/Assert</em> (verificar). En nuestro código los comentarios dicen <code>// Arrange</code>, <code>// Act</code>, <code>// Assert</code> — es la misma convención (AAA); dilo explícitamente si te preguntan por Given–When–Then.</td></tr>
+  </table>
+
+  <div class="box clave">
+    <strong>Diferencia Service test vs Controller test (pregunta segura):</strong>
+    El test de <strong>Service</strong> valida <em>lógica de negocio</em>: reglas, cálculos, excepciones; se mockea el Repository (y los Feign Clients). El test de <strong>Controller</strong> valida el <em>contrato HTTP</em>: ruta, método, código de respuesta y JSON; se mockea el Service y se usa MockMvc. Un test de Controller NO valida la base de datos.
+  </div>
+
+  <div class="diagram">
+  <svg viewBox="0 0 900 300" role="img" aria-label="Comparación de límites de mock entre un test de Service y un test de Controller">
+    <text class="dg-text b center" x="210" y="20">Service Test — Mockito puro (sin Spring)</text>
+    <text class="dg-text b center" x="690" y="20">Controller Test — @WebMvcTest + MockMvc</text>
+    <line class="dg-arrow muted" x1="450" y1="35" x2="450" y2="280"/>
+
+    <rect class="dg-box mock" x="40" y="40" width="340" height="44" rx="6"/>
+    <text class="dg-text center" x="210" y="58">Controller</text>
+    <text class="dg-text sm center" x="210" y="74">no se toca</text>
+
+    <rect class="dg-box focus" x="40" y="100" width="340" height="50" rx="6"/>
+    <text class="dg-text b center" x="210" y="120">Service</text>
+    <text class="dg-text sm accent center" x="210" y="136">★ bajo prueba (real)</text>
+
+    <rect class="dg-box mock" x="40" y="166" width="340" height="44" rx="6"/>
+    <text class="dg-text center" x="210" y="184">Repository</text>
+    <text class="dg-text sm center" x="210" y="200">@Mock</text>
+
+    <rect class="dg-box mock" x="40" y="226" width="340" height="44" rx="6"/>
+    <text class="dg-text center" x="210" y="244">Feign Clients</text>
+    <text class="dg-text sm center" x="210" y="260">@Mock (si el service los usa)</text>
+
+    <line class="dg-arrow muted dashed" x1="210" y1="84" x2="210" y2="100" marker-end="url(#dgArrowMuted)"/>
+    <line class="dg-arrow muted dashed" x1="210" y1="150" x2="210" y2="166" marker-end="url(#dgArrowMuted)"/>
+    <line class="dg-arrow muted dashed" x1="210" y1="210" x2="210" y2="226" marker-end="url(#dgArrowMuted)"/>
+
+    <rect class="dg-box focus" x="520" y="40" width="340" height="50" rx="6"/>
+    <text class="dg-text b center" x="690" y="60">Controller</text>
+    <text class="dg-text sm accent center" x="690" y="76">★ bajo prueba (real, vía MockMvc)</text>
+
+    <rect class="dg-box mock" x="520" y="106" width="340" height="44" rx="6"/>
+    <text class="dg-text center" x="690" y="124">Service</text>
+    <text class="dg-text sm center" x="690" y="140">@MockitoBean</text>
+
+    <rect class="dg-box mock" x="520" y="166" width="340" height="44" rx="6"/>
+    <text class="dg-text center" x="690" y="184">Repository</text>
+    <text class="dg-text sm center" x="690" y="200">no se instancia</text>
+
+    <rect class="dg-box mock" x="520" y="226" width="340" height="44" rx="6"/>
+    <text class="dg-text center" x="690" y="244">Base de datos</text>
+    <text class="dg-text sm center" x="690" y="260">no aplica (Service ya mockeado)</text>
+
+    <line class="dg-arrow muted dashed" x1="690" y1="90" x2="690" y2="106" marker-end="url(#dgArrowMuted)"/>
+    <line class="dg-arrow muted dashed" x1="690" y1="150" x2="690" y2="166" marker-end="url(#dgArrowMuted)"/>
+    <line class="dg-arrow muted dashed" x1="690" y1="210" x2="690" y2="226" marker-end="url(#dgArrowMuted)"/>
+  </svg>
+  <p class="dg-caption">Fig. 4 — Lo resaltado (★) es la clase real bajo prueba; lo punteado es lo que se reemplaza con un mock; lo gris "no se toca" ni siquiera se instancia.</p>
+  </div>
+
+  <h3 id="s22">2.2 Anatomía de un test real del proyecto, línea a línea</h3>
+  <p>De <code>ms-accesos/src/test/java/.../service/AccesoServiceTest.java</code> (este archivo existe tal cual en el repo):</p>
+<pre><code><span class="ann">@ExtendWith(MockitoExtension.class)</span>   <span class="cm">// activa Mockito en JUnit 5, sin levantar Spring</span>
+class AccesoServiceTest {
+
+    <span class="ann">@Mock</span> private AccesoRepository accesoRepository;  <span class="cm">// simula la BD</span>
+    <span class="ann">@Mock</span> private EspacioClient espacioClient;        <span class="cm">// simula el Feign hacia ms-espacios</span>
+    <span class="ann">@Mock</span> private ReservaClient reservaClient;        <span class="cm">// simula el Feign hacia ms-reservas</span>
+
+    <span class="ann">@InjectMocks</span>
+    private AccesoService accesoService;              <span class="cm">// la clase REAL bajo prueba</span>
+
+    <span class="ann">@Test</span>
+    <span class="ann">@DisplayName("registrarEntrada debe crear el acceso y marcar el espacio no disponible")</span>
+    void registrarEntrada_valido_debeCrearAccesoYBloquearEspacio() {
+        <span class="cm">// Arrange (Given): la reserva remota está CONFIRMADA y no hay acceso previo</span>
+        when(reservaClient.findById(1L)).thenReturn(reservaConfirmada);
+        when(accesoRepository.findByIdReserva(1L)).thenReturn(Optional.empty());
+        when(accesoRepository.save(any(Acceso.class))).thenAnswer(inv -&gt; {
+            Acceso a = inv.getArgument(0);
+            a.setId(10L);                              <span class="cm">// simula el ID que asignaría MySQL</span>
+            return a;
+        });
+
+        <span class="cm">// Act (When): se ejecuta el método real del Service</span>
+        AccesoResponseDTO resultado = accesoService.registrarEntrada(createDTO);
+
+        <span class="cm">// Assert (Then): estado correcto y efecto lateral verificado</span>
+        assertThat(resultado.getId()).isEqualTo(10L);
+        assertThat(resultado.getEstado()).isEqualTo(<span class="str">"ACTIVO"</span>);
+        verify(espacioClient).updateDisponibilidad(1L, false);  <span class="cm">// ¡bloqueó el espacio!</span>
+    }
+}</code></pre>
+  <p><strong>Qué regla de negocio valida:</strong> al registrar una entrada con reserva CONFIRMADA y sin acceso duplicado, se crea el Acceso en estado ACTIVO <em>y además</em> se llama a ms-espacios para marcar el espacio como no disponible. El <code>verify()</code> final es lo que prueba la comunicación entre microservicios sin necesitar que ms-espacios exista.</p>
+
+  <h3 id="s23">2.3 La tabla de la guía (sección 7.5), rellenada con nuestro test</h3>
+  <p>Si el profesor te muestra cualquier test y pregunta "explícalo", responde estas 9 preguntas en orden:</p>
+  <table>
+    <tr><th>Pregunta de la guía</th><th>Respuesta para <code>registrarEntrada_reservaNoConfirmada_debeLanzarConflict</code></th></tr>
+    <tr><td>¿Qué clase se está probando?</td><td><code>AccesoService</code> (ms-accesos)</td></tr>
+    <tr><td>¿Qué método se está probando?</td><td><code>registrarEntrada(AccesoCreateDTO)</code></td></tr>
+    <tr><td>¿Qué dependencia se simula?</td><td><code>AccesoRepository</code>, <code>EspacioClient</code> y <code>ReservaClient</code> (¡en microservicios se mockean también los Feign Clients!)</td></tr>
+    <tr><td>¿Qué datos se preparan?</td><td>Una <code>ReservaResponseDTO</code> con estado <code>"PENDIENTE"</code> (no CONFIRMADA)</td></tr>
+    <tr><td>¿Qué método se ejecuta?</td><td><code>accesoService.registrarEntrada(createDTO)</code> — el método real</td></tr>
+    <tr><td>¿Qué assert se utiliza?</td><td><code>assertThatThrownBy(...).isInstanceOf(ConflictException.class)</code></td></tr>
+    <tr><td>¿Qué resultado se espera?</td><td>Que lance <code>ConflictException</code> y que <strong>no</strong> se guarde nada: <code>verify(accesoRepository, never()).save(any())</code></td></tr>
+    <tr><td>¿Usa la base de datos real?</td><td>No. Todo está mockeado; no se conecta a MySQL ni a otros servicios.</td></tr>
+    <tr><td>¿Qué podría fallar?</td><td>Mock mal configurado (ej. <code>when</code> con otro ID), mensaje esperado distinto, o que el Service cambie la regla y ya no lance Conflict.</td></tr>
+  </table>
+
+  <h3 id="s24">2.4 Controller test con MockMvc (el único del repo: ms-espacios)</h3>
+  <p>De <code>ms-espacios/src/test/java/.../controller/EspacioControllerTest.java</code>. Importante conocerlo porque la guía dedica media sección a MockMvc:</p>
+<pre><code><span class="ann">@WebMvcTest(EspacioController.class)</span>       <span class="cm">// levanta SOLO la capa web de este controller</span>
+<span class="ann">@AutoConfigureMockMvc(addFilters = false)</span>  <span class="cm">// desactiva filtros de seguridad en el test</span>
+class EspacioControllerTest {
+
+    <span class="ann">@Autowired</span> private MockMvc mockMvc;
+    <span class="ann">@Autowired</span> private ObjectMapper objectMapper;
+
+    <span class="ann">@MockitoBean</span>                            <span class="cm">// mock del Service dentro del contexto Spring</span>
+    private EspacioService espacioService;
+
+    <span class="ann">@Test</span>
+    void getById_inexistente_debeRetornar404() throws Exception {
+        <span class="cm">// Arrange: el service simulado lanza la excepción de "no encontrado"</span>
+        when(espacioService.findById(99L))
+                .thenThrow(new ResourceNotFoundException(<span class="str">"Espacio no encontrado con id: 99"</span>));
+
+        <span class="cm">// Act + Assert: petición simulada y validación del contrato HTTP</span>
+        mockMvc.perform(get(<span class="str">"/api/espacios/99"</span>))
+                .andExpect(status().isNotFound())                       <span class="cm">// 404</span>
+                .andExpect(jsonPath(<span class="str">"$.error"</span>).value(<span class="str">"NOT_FOUND"</span>))     <span class="cm">// body del handler</span>
+                .andExpect(jsonPath(<span class="str">"$.mensaje"</span>).value(<span class="str">"Espacio no encontrado con id: 99"</span>));
+    }
+
+    <span class="ann">@Test</span>
+    void create_valido_debeRetornar201() throws Exception {
+        when(espacioService.create(any(EspacioCreateDTO.class))).thenReturn(espacioDTO());
+
+        mockMvc.perform(post(<span class="str">"/api/espacios"</span>)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))  <span class="cm">// objeto → JSON</span>
+                .andExpect(status().isCreated());                        <span class="cm">// 201</span>
+    }
+}</code></pre>
+  <div class="box ok">
+    <strong>Fíjate en la cadena completa que valida el test del 404:</strong>
+    Controller recibe GET → Service mockeado lanza <code>ResourceNotFoundException</code> → el <code>GlobalExceptionHandler</code> (<code>@RestControllerAdvice</code>) la captura y responde <code>404</code> con body <code>{error: "NOT_FOUND", mensaje, timestamp}</code>. Este test demuestra en una sola pieza: MockMvc + manejo de excepciones + códigos HTTP — exactamente lo que le faltó a Sol en EV2 (IE 2.3.4).
+  </div>
+  <p>El test <code>create_invalido_debeRetornar400</code> además valida Bean Validation: envía un DTO sin campos obligatorios y espera <code>400</code> con <code>jsonPath("$.campos.numero").exists()</code> — el mapa de campos que arma el handler ante <code>MethodArgumentNotValidException</code>.</p>
+
+  <h3 id="s25">2.5 Lo que cambia en microservicios (transición de la guía)</h3>
+  <p>En el monolito Biblioteca se mockeaba solo el Repository. En microservicios <strong>también se mockea la comunicación externa</strong>. Nuestro mejor ejemplo es <code>ReservaServiceTest</code> (ms-reservas), que mockea 1 repository + 3 Feign Clients:</p>
+<pre><code><span class="ann">@Mock</span> private ReservaRepository reservasRepository;
+<span class="ann">@Mock</span> private ClienteClient clienteClient;    <span class="cm">// → user-service</span>
+<span class="ann">@Mock</span> private VehiculoClient vehiculoClient;  <span class="cm">// → ms-vehiculos</span>
+<span class="ann">@Mock</span> private EspacioClient espacioClient;    <span class="cm">// → ms-espacios</span>
+
+<span class="cm">// Arrange típico: los 3 servicios remotos responden OK</span>
+when(clienteClient.findById(1L)).thenReturn(new ClienteResponseDTO(1L, true));
+when(vehiculoClient.findById(1L)).thenReturn(new VehiculoResponseDTO(1L, 1L, true));
+when(espacioClient.findById(1L)).thenReturn(new EspacioResponseDTO(1L, <span class="str">"A-01"</span>, <span class="str">"Norte"</span>, 1, 1L, true, true));</code></pre>
+  <p><strong>Por qué se simula la comunicación externa</strong> (pregunta 7 de la actividad de reflexión de la guía): porque una prueba unitaria debe ser determinista y aislada — si dependiera de que user-service esté corriendo, el test fallaría por razones ajenas al código probado (red, orden de arranque, datos). El mock convierte "el otro servicio" en una respuesta controlada.</p>
+  <p>Detalle avanzado que suma puntos: <code>PagoServiceTest</code> usa <code>ReflectionTestUtils.invokeMethod(...)</code> para probar los métodos <strong>privados</strong> de la fórmula (<code>calcularMontoBase</code>, <code>calcularMontoFinal</code>) con valores exactos de <code>BigDecimal</code> — p. ej. valida que $1000/h × horario 2.0 × vehículo 1.5 × espacio 1.2 × 1.5h = <strong>5400.00</strong>, y la cascada de descuentos 10%/20%/5% sobre $10.000 = <strong>6840.00</strong>.</p>
+
+  <h3 id="s26">2.6 ⭐ Receta para escribir un test NUEVO en vivo (IE 3.1.3 — 13%)</h3>
+  <div class="box peligro">
+    <strong>Este es el momento de mayor puntaje de toda la defensa.</strong> El profesor pedirá algo como "agrega una prueba que valide X regla". Memoriza la plantilla y el procedimiento. Puedes anotar los pasos en papel antes de escribir.
+  </div>
+  <h4>Procedimiento (di lo que haces en voz alta):</h4>
+  <ol>
+    <li><strong>Ubicar el test existente</strong> del service correspondiente en <code>src/test/java/.../service/</code> — nunca partir de un archivo vacío: copia la estructura de un <code>@Test</code> vecino.</li>
+    <li><strong>Identificar la regla</strong>: ¿qué método del Service? ¿caso feliz o caso de error?</li>
+    <li><strong>Arrange</strong>: programar con <code>when(...)</code> SOLO los mocks que ese método usa en ese camino (Mockito en modo strict falla con stubs innecesarios: <code>UnnecessaryStubbingException</code>).</li>
+    <li><strong>Act</strong>: llamar al método real.</li>
+    <li><strong>Assert</strong>: para caso feliz <code>assertThat(...)</code> + <code>verify(...)</code>; para caso de error <code>assertThatThrownBy(...)</code> + <code>verify(repo, never()).save(any())</code>.</li>
+    <li><strong>Ejecutar</strong>: <code>.\mvnw.cmd test -Dtest=AccesoServiceTest</code> desde la carpeta del servicio, y mostrar el verde.</li>
+  </ol>
+
+  <h4>Plantilla de memoria (caso de error, el más pedido):</h4>
+<pre><code><span class="ann">@Test</span>
+<span class="ann">@DisplayName("descripción en español de la regla que valida")</span>
+void metodo_condicion_resultadoEsperado() {
+    <span class="cm">// Arrange (Given)</span>
+    when(dependenciaMock.metodo(argumento)).thenReturn(valorPreparado);
+
+    <span class="cm">// Act + Assert (When + Then)</span>
+    assertThatThrownBy(() -&gt; serviceReal.metodoBajoPrueba(dto))
+            .isInstanceOf(ConflictException.class)
+            .hasMessageContaining(<span class="str">"parte del mensaje"</span>);
+    verify(repositoryMock, never()).save(any());
+}</code></pre>
+
+  <h4>Ejercicio resuelto 1 — "valida que no se pueda registrar salida dos veces" (ya existe uno casi igual; así se escribiría desde cero):</h4>
+<pre><code><span class="ann">@Test</span>
+<span class="ann">@DisplayName("registrarSalida debe lanzar ConflictException si la salida ya fue registrada")</span>
+void registrarSalida_salidaYaRegistrada_debeLanzarConflict() {
+    <span class="cm">// Given: un acceso que YA tiene fechaHoraSalida</span>
+    accesoActivo.setFechaHoraSalida(LocalDateTime.now());
+    when(accesoRepository.findById(1L)).thenReturn(Optional.of(accesoActivo));
+
+    <span class="cm">// When + Then</span>
+    assertThatThrownBy(() -&gt; accesoService.registrarSalida(1L))
+            .isInstanceOf(ConflictException.class)
+            .hasMessageContaining(<span class="str">"Salida ya registrada"</span>);
+}</code></pre>
+  <p><em>Línea a línea:</em> preparo el estado inválido (salida ya seteada) → programo el repo para devolver ese acceso → ejecuto y afirmo que lanza <code>ConflictException</code>. No necesito mockear <code>espacioClient</code> porque el método falla antes de llegar a esa llamada.</p>
+
+  <h4>Ejercicio resuelto 2 — caso feliz con verify de Feign: "al registrar salida se libera el espacio y se finaliza la reserva":</h4>
+<pre><code><span class="ann">@Test</span>
+void registrarSalida_valido_liberaEspacioYFinalizaReserva() {
+    <span class="cm">// Given: acceso ACTIVO con entrada hace 1 hora (del setUp)</span>
+    when(accesoRepository.findById(1L)).thenReturn(Optional.of(accesoActivo));
+    when(accesoRepository.save(any(Acceso.class))).thenAnswer(inv -&gt; inv.getArgument(0));
+
+    <span class="cm">// When</span>
+    AccesoResponseDTO resultado = accesoService.registrarSalida(1L);
+
+    <span class="cm">// Then: minutos calculados, estado COMPLETADO, y efectos remotos verificados</span>
+    assertThat(resultado.getEstado()).isEqualTo(<span class="str">"COMPLETADO"</span>);
+    assertThat(resultado.getMinutos()).isGreaterThan(0L);
+    verify(espacioClient).updateDisponibilidad(1L, true);   <span class="cm">// libera el espacio</span>
+    verify(reservaClient).finalizarReserva(1L);             <span class="cm">// cierra la reserva</span>
+}</code></pre>
+
+  <h4>Ejercicio resuelto 3 — si pide un test en otro servicio (patrón findById inexistente, sirve para CUALQUIER service del repo):</h4>
+<pre><code><span class="ann">@Test</span>
+<span class="ann">@DisplayName("findById debe lanzar NotFoundException cuando el id no existe")</span>
+void findById_inexistente_lanzaNotFound() {
+    when(xxxRepository.findById(99L)).thenReturn(Optional.empty());
+
+    assertThatThrownBy(() -&gt; xxxService.findById(99L))
+            .isInstanceOf(NotFoundException.class);
+}</code></pre>
+  <div class="box warn">
+    <strong>Ojo con el nombre de la excepción por servicio:</strong> ms-accesos y ms-reservas usan <code>NotFoundException</code> / <code>ConflictException</code>; ms-espacios y ms-pagos usan <code>ResourceNotFoundException</code>; ms-pagos además tiene <code>BusinessException</code> (ej.: "Ya existe un cobro" para el UNIQUE 1:1 con acceso). Antes de escribir, mira los imports del test vecino.
+  </div>
+
+  <h3 id="s27">2.7 Errores comunes al ejecutar pruebas (sección 11 de la guía) y cómo se ven aquí</h3>
+  <table>
+    <tr><th>Error de la guía</th><th>Síntoma</th><th>Cómo lo evitamos en este proyecto</th></tr>
+    <tr><td>Conexión a BD real</td><td><code>Communications link failure</code>, <code>Access denied for user 'root'</code>, <code>Unknown database</code></td><td>Los Service tests con <code>@ExtendWith(MockitoExtension.class)</code> ni siquiera levantan Spring. Los de integración usan H2 en memoria vía <code>src/test/resources/application-test.properties</code>.</td></tr>
+    <tr><td>Perfil incorrecto</td><td>El test usa la config de desarrollo</td><td><code>@ActiveProfiles("test")</code> + el properties de test con <code>ddl-auto=create-drop</code> y <code>eureka.client.enabled=false</code> / <code>spring.cloud.discovery.enabled=false</code> (para que el test no intente registrarse en Eureka).</td></tr>
+    <tr><td>Ruta incorrecta</td><td><code>404 Not Found</code> en MockMvc</td><td>La ruta del test debe calzar EXACTA con el <code>@RequestMapping</code> del controller (ej. <code>/api/espacios</code>).</td></tr>
+    <tr><td>Código HTTP distinto</td><td>Test espera <code>isOk()</code> pero el endpoint devuelve <code>201</code></td><td>Nuestro POST de espacios devuelve 201 Created → el test usa <code>status().isCreated()</code>, no <code>isOk()</code>.</td></tr>
+    <tr><td>Campo JSON distinto</td><td><code>jsonPath</code> no encuentra el campo</td><td>Validar contra el DTO real (ej. <code>$[0].numero</code>, <code>$.tipoEspacio.nombre</code>).</td></tr>
+    <tr><td>Falta un mock</td><td><code>No qualifying bean of type EspacioService</code></td><td>En <code>@WebMvcTest</code> hay que declarar <code>@MockitoBean</code> del Service, si no Spring no puede construir el Controller.</td></tr>
+  </table>
+  <p>Extra frecuente en Mockito moderno: <code>UnnecessaryStubbingException</code> — programaste un <code>when(...)</code> que el camino probado nunca usa. Solución: borrar ese stub o moverlo solo a los tests que lo necesitan.</p>
+
+  <h3>2.8 Comandos de testing (memoriza)</h3>
+<pre><code><span class="cm"># desde la carpeta del servicio (mvn NO está global — usar el wrapper)</span>
+cd ms-accesos
+.\mvnw.cmd test                          <span class="cm"># toda la suite del servicio</span>
+.\mvnw.cmd test -Dtest=AccesoServiceTest <span class="cm"># una clase específica</span>
+.\mvnw.cmd verify                        <span class="cm"># tests + reporte JaCoCo → target/site/jacoco/index.html</span>
+.\mvnw.cmd clean install                 <span class="cm"># compila + ejecuta tests (lo que menciona el README)</span></code></pre>
+</section>
+
+<!-- ================================================================ -->
+<section id="s3">
+  <h2>3. Overall del proyecto en 10 minutos <span class="peso">IE 2.2.2 + 2.4.2 + 3.3.5</span></h2>
+
+  <h3>3.1 Arquitectura: 12 servicios</h3>
+  <table>
+    <tr><th>Servicio</th><th>Puerto</th><th>BD</th><th>Responsabilidad</th></tr>
+    <tr><td>eureka-server</td><td>8761</td><td>—</td><td>Registro/descubrimiento de servicios (Service Discovery)</td></tr>
+    <tr><td>api-gateway</td><td>8080</td><td>—</td><td>Punto único de entrada; enruta con <code>lb://</code> y valida JWT (<code>JwtAuthFilter</code>)</td></tr>
+    <tr><td>auth-service</td><td>8081</td><td>db_auth</td><td>Login/registro; emite JWT; BCrypt fuerza 12; entidades <code>Rol</code>, <code>UserCredential</code> (login por <strong>email</strong>)</td></tr>
+    <tr><td>user-service</td><td>8082</td><td>db_usuarios</td><td><code>Cliente</code>, <code>TipoCliente</code>, <code>Suscripcion</code>, <code>ClienteSuscripcion</code></td></tr>
+    <tr><td>security-service</td><td>8083</td><td>db_seguridad</td><td><code>Permiso</code>, <code>RolPermiso</code></td></tr>
+    <tr><td>ms-vehiculos</td><td>8084</td><td>db_vehiculos</td><td><code>Vehiculo</code> (patente inmutable), <code>TipoVehiculo</code> (factor de cobro)</td></tr>
+    <tr><td>ms-espacios</td><td>8085</td><td>db_espacios</td><td><code>Espacio</code>, <code>TipoEspacio</code>; PUT <code>/disponibilidad</code>; soft delete <code>activo=false</code></td></tr>
+    <tr><td>ms-reservas</td><td>8086</td><td>db_reservas</td><td><code>Reserva</code> + máquina de estados (<code>EstadoEnums</code>)</td></tr>
+    <tr><td>ms-accesos</td><td>8087</td><td>db_accesos</td><td><code>Acceso</code>: entrada/salida, cálculo de minutos</td></tr>
+    <tr><td>ms-tarifas</td><td>8088</td><td>db_tarifas</td><td><code>Tarifas</code>, <code>HorarioTarifas</code> (LABORAL / FIN_DE_SEMANA / FESTIVO); GET <code>/vigente</code></td></tr>
+    <tr><td>ms-pagos</td><td>8089</td><td>db_pagos</td><td><code>Cobro</code> (UNIQUE 1:1 con acceso), <code>Banco</code>, <code>MetodoPago</code>, <code>TipoTarjeta</code>; fórmula BigDecimal</td></tr>
+    <tr><td>ms-reportes</td><td>8090</td><td>— (solo Feign)</td><td>Reportes no persistentes: ocupación, accesos por reserva, cobros por cliente</td></tr>
+  </table>
+
+  <div class="diagram">
+  <svg viewBox="0 0 900 450" role="img" aria-label="Arquitectura: Cliente, API Gateway, Eureka y 10 microservicios de negocio cada uno con su base de datos">
+    <rect class="dg-box" x="360" y="8" width="180" height="32" rx="6"/>
+    <text class="dg-text b center" x="450" y="28">Cliente (Postman / App)</text>
+
+    <line class="dg-arrow" x1="450" y1="40" x2="450" y2="58" marker-end="url(#dgArrow)"/>
+
+    <rect class="dg-box gw" x="320" y="60" width="260" height="46" rx="8"/>
+    <text class="dg-text b center" x="450" y="80">API Gateway :8080</text>
+    <text class="dg-text sm center" x="450" y="96">JwtAuthFilter · enruta lb://</text>
+
+    <rect class="dg-box eureka" x="640" y="60" width="210" height="46" rx="8"/>
+    <text class="dg-text b center" x="745" y="80">Eureka Server :8761</text>
+    <text class="dg-text sm center" x="745" y="96">Service Discovery</text>
+
+    <line class="dg-arrow muted dashed" x1="582" y1="83" x2="638" y2="83" marker-end="url(#dgArrowMuted)"/>
+    <text class="dg-text sm center" x="610" y="76">consulta</text>
+
+    <line class="dg-arrow" x1="450" y1="106" x2="450" y2="148" marker-end="url(#dgArrow)"/>
+    <text class="dg-text sm center" x="450" y="128">Path predicates</text>
+
+    <line class="dg-arrow muted dashed" x1="745" y1="106" x2="745" y2="148" marker-end="url(#dgArrowMuted)"/>
+    <text class="dg-text sm" x="750" y="122">registro</text>
+    <text class="dg-text sm" x="750" y="134">(application.name)</text>
+
+    <rect class="dg-box group" x="50" y="150" width="800" height="280" rx="10"/>
+    <text class="dg-text sm b" x="66" y="168">10 microservicios de negocio, cada uno con su propia base MySQL (database-per-service)</text>
+
+    <g>
+      <rect class="dg-box" x="72" y="178" width="140" height="90" rx="6"/>
+      <text class="dg-text b center" x="142" y="202">auth-service</text>
+      <text class="dg-text sm center" x="142" y="218">:8081</text>
+      <text class="dg-text sm center" x="142" y="234">db_auth</text>
+      <text class="dg-text sm center" x="142" y="250">Rol, UserCredential</text>
+    </g>
+    <g>
+      <rect class="dg-box" x="226" y="178" width="140" height="90" rx="6"/>
+      <text class="dg-text b center" x="296" y="202">user-service</text>
+      <text class="dg-text sm center" x="296" y="218">:8082</text>
+      <text class="dg-text sm center" x="296" y="234">db_usuarios</text>
+      <text class="dg-text sm center" x="296" y="250">Cliente, Suscripcion</text>
+    </g>
+    <g>
+      <rect class="dg-box" x="380" y="178" width="140" height="90" rx="6"/>
+      <text class="dg-text b center" x="450" y="202">security-service</text>
+      <text class="dg-text sm center" x="450" y="218">:8083</text>
+      <text class="dg-text sm center" x="450" y="234">db_seguridad</text>
+      <text class="dg-text sm center" x="450" y="250">Permiso, RolPermiso</text>
+    </g>
+    <g>
+      <rect class="dg-box" x="534" y="178" width="140" height="90" rx="6"/>
+      <text class="dg-text b center" x="604" y="202">ms-vehiculos</text>
+      <text class="dg-text sm center" x="604" y="218">:8084</text>
+      <text class="dg-text sm center" x="604" y="234">db_vehiculos</text>
+      <text class="dg-text sm center" x="604" y="250">Vehiculo, TipoVehiculo</text>
+    </g>
+    <g>
+      <rect class="dg-box" x="688" y="178" width="140" height="90" rx="6"/>
+      <text class="dg-text b center" x="758" y="202">ms-espacios</text>
+      <text class="dg-text sm center" x="758" y="218">:8085</text>
+      <text class="dg-text sm center" x="758" y="234">db_espacios</text>
+      <text class="dg-text sm center" x="758" y="250">Espacio, TipoEspacio</text>
+    </g>
+
+    <g>
+      <rect class="dg-box" x="72" y="288" width="140" height="90" rx="6"/>
+      <text class="dg-text b center" x="142" y="312">ms-reservas</text>
+      <text class="dg-text sm center" x="142" y="328">:8086</text>
+      <text class="dg-text sm center" x="142" y="344">db_reservas</text>
+      <text class="dg-text sm accent center" x="142" y="360">⇄ Feign ×3</text>
+    </g>
+    <g>
+      <rect class="dg-box" x="226" y="288" width="140" height="90" rx="6"/>
+      <text class="dg-text b center" x="296" y="312">ms-accesos</text>
+      <text class="dg-text sm center" x="296" y="328">:8087</text>
+      <text class="dg-text sm center" x="296" y="344">db_accesos</text>
+      <text class="dg-text sm accent center" x="296" y="360">⇄ Feign ×2</text>
+    </g>
+    <g>
+      <rect class="dg-box" x="380" y="288" width="140" height="90" rx="6"/>
+      <text class="dg-text b center" x="450" y="312">ms-tarifas</text>
+      <text class="dg-text sm center" x="450" y="328">:8088</text>
+      <text class="dg-text sm center" x="450" y="344">db_tarifas</text>
+      <text class="dg-text sm center" x="450" y="360">Tarifas, Horario</text>
+    </g>
+    <g>
+      <rect class="dg-box" x="534" y="288" width="140" height="90" rx="6"/>
+      <text class="dg-text b center" x="604" y="312">ms-pagos</text>
+      <text class="dg-text sm center" x="604" y="328">:8089</text>
+      <text class="dg-text sm center" x="604" y="344">db_pagos</text>
+      <text class="dg-text sm accent center" x="604" y="360">⇄ Feign ×7</text>
+    </g>
+    <g>
+      <rect class="dg-box" x="688" y="288" width="140" height="90" rx="6"/>
+      <text class="dg-text b center" x="758" y="312">ms-reportes</text>
+      <text class="dg-text sm center" x="758" y="328">:8090</text>
+      <text class="dg-text sm center" x="758" y="344">sin BD propia</text>
+      <text class="dg-text sm accent center" x="758" y="360">solo Feign (read-only)</text>
+    </g>
+  </svg>
+  <p class="dg-caption">Fig. 1 — Todo el tráfico entra por el Gateway (valida JWT y enruta con <code>lb://</code>); Eureka es el registro donde cada servicio se inscribe con su <code>spring.application.name</code>.</p>
+  </div>
+
+  <p><strong>Stack:</strong> Spring Boot 3.5.14 · Java 21 · MySQL 8 · Spring Cloud 2025.0.2 (Gateway + Eureka + OpenFeign) · JJWT 0.11.5 · springdoc-openapi 2.5.0 · JUnit 5 + Mockito + AssertJ + H2.</p>
+
+  <h3>3.2 El YAML del Gateway (IE 3.3.5 — 4%; cítalo con confianza, es real)</h3>
+<pre><code>server:
+  port: 8080                    <span class="cm"># puerto único de entrada</span>
+spring:
+  application:
+    name: api-gateway           <span class="cm"># nombre con el que se registra en Eureka</span>
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true         <span class="cm"># descubre servicios desde Eureka</span>
+      routes:
+        - id: ms-accesos
+          uri: lb://ms-accesos              <span class="cm"># lb = load-balanced: resuelve por Eureka</span>
+          predicates:
+            - Path=/api/accesos/**          <span class="cm"># predicado: qué requests entran a esta ruta</span>
+        - id: ms-pagos
+          uri: lb://ms-pagos
+          predicates:
+            - Path=/api/cobros/**,/api/bancos/**,/api/metodos-pago/**,/api/tipo-tarjetas/**
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/   <span class="cm"># dónde está Eureka</span>
+jwt:
+  secret: ...                   <span class="cm"># clave Base64 ≥256 bits para validar tokens</span></code></pre>
+  <p><strong>Cómo explicarlo:</strong> <code>lb://ms-accesos</code> significa que el Gateway <em>no conoce IP ni puerto</em>: le pregunta a Eureka "¿dónde vive ms-accesos?" y balancea entre las instancias registradas. El <code>predicate Path</code> decide qué peticiones van a cada servicio. Además el Gateway aplica el <code>JwtAuthFilter</code>: toda ruta excepto <code>/api/auth/**</code> y Swagger exige un token válido. En el <strong>test</strong> los YAML/properties cambian a H2 + <code>eureka.client.enabled=false</code>; en <strong>Docker</strong>, <code>localhost</code> se reemplaza por nombres de servicio (<code>eureka-server</code>, <code>mysql-db</code>) — esa es la diferencia local vs remoto que pide la rúbrica.</p>
+
+  <h3>3.3 Flujo de negocio completo: reserva → acceso → cobro → reporte</h3>
+
+  <div class="diagram">
+  <svg viewBox="0 0 900 210" role="img" aria-label="Flujo de negocio: Reserva, Acceso, Cobro y Reporte comunicados por Feign">
+    <rect class="dg-box" x="25" y="100" width="130" height="90" rx="8"/>
+    <text class="dg-text b center" x="90" y="128">Reserva</text>
+    <text class="dg-text sm center" x="90" y="148">ms-reservas :8086</text>
+    <text class="dg-text sm center" x="90" y="168">PENDIENTE → CONFIRMADA</text>
+
+    <rect class="dg-box" x="260" y="100" width="130" height="90" rx="8"/>
+    <text class="dg-text b center" x="325" y="128">Acceso</text>
+    <text class="dg-text sm center" x="325" y="148">ms-accesos :8087</text>
+    <text class="dg-text sm center" x="325" y="168">ACTIVO → COMPLETADO</text>
+
+    <rect class="dg-box" x="495" y="100" width="130" height="90" rx="8"/>
+    <text class="dg-text b center" x="560" y="128">Cobro</text>
+    <text class="dg-text sm center" x="560" y="148">ms-pagos :8089</text>
+    <text class="dg-text sm center" x="560" y="168">fórmula BigDecimal</text>
+
+    <rect class="dg-box" x="730" y="100" width="130" height="90" rx="8"/>
+    <text class="dg-text b center" x="795" y="128">Reporte</text>
+    <text class="dg-text sm center" x="795" y="148">ms-reportes :8090</text>
+    <text class="dg-text sm center" x="795" y="168">solo lectura (Feign)</text>
+
+    <line class="dg-arrow" x1="155" y1="145" x2="260" y2="145" marker-end="url(#dgArrow)"/>
+    <rect class="dg-box" x="152" y="129" width="110" height="32" rx="5"/>
+    <text class="dg-text sm center" x="207" y="140">confirmar()</text>
+    <text class="dg-text sm center" x="207" y="153">bloquea espacio</text>
+
+    <line class="dg-arrow" x1="390" y1="145" x2="495" y2="145" marker-end="url(#dgArrow)"/>
+    <rect class="dg-box" x="387" y="129" width="110" height="32" rx="5"/>
+    <text class="dg-text sm center" x="442" y="140">salida COMPLETADO</text>
+    <text class="dg-text sm center" x="442" y="153">→ crea Cobro</text>
+
+    <line class="dg-arrow" x1="625" y1="145" x2="730" y2="145" marker-end="url(#dgArrow)"/>
+    <rect class="dg-box" x="622" y="129" width="110" height="32" rx="5"/>
+    <text class="dg-text sm center" x="677" y="140">solo lectura</text>
+    <text class="dg-text sm center" x="677" y="153">(Feign, sin BD)</text>
+  </svg>
+  <p class="dg-caption">Fig. 2 — Flujo secuencial: cada etapa consulta la anterior por Feign; ninguna tiene acceso directo a la base de datos de otra.</p>
+  </div>
+
+  <ol>
+    <li><strong>Reserva (ms-reservas):</strong> <code>create()</code> valida por Feign que el cliente esté activo (user-service), el vehículo activo (ms-vehiculos) y el espacio activo+disponible (ms-espacios) → guarda en <code>PENDIENTE</code>. Máquina de estados: PENDIENTE → CONFIRMADA (bloquea el espacio vía Feign) o CANCELADA (no toca el espacio, nunca se bloqueó); CONFIRMADA → FINALIZADA.</li>
+    <li><strong>Acceso (ms-accesos):</strong> <code>registrarEntrada</code> valida la reserva CONFIRMADA (ReservaClient), evita duplicados, crea <code>Acceso</code> ACTIVO y marca el espacio no disponible (EspacioClient). <code>registrarSalida</code> calcula <code>minutos</code>, pasa a COMPLETADO, libera el espacio y finaliza la reserva. <code>idReserva</code> es nullable: se permite acceso sin reserva.</li>
+    <li><strong>Cobro (ms-pagos):</strong> con el acceso COMPLETADO, consulta por Feign: acceso, tarifa vigente, horario vigente, tipo de vehículo, tipo de espacio, cliente/suscripción y banco → aplica la fórmula (abajo). UNIQUE en <code>id_acceso_ref</code>: 1 cobro por acceso.</li>
+    <li><strong>Reporte (ms-reportes):</strong> sin BD propia; agrega datos vía Feign (ocupación de espacios, accesos por reserva, cobros por cliente). Solo lectura.</li>
+  </ol>
+
+  <div class="diagram">
+  <svg viewBox="0 0 700 270" role="img" aria-label="Máquina de estados de Reserva: PENDIENTE, CONFIRMADA, FINALIZADA, CANCELADA">
+    <rect class="dg-box warn" x="35" y="90" width="150" height="54" rx="8"/>
+    <text class="dg-text b center" x="110" y="112">PENDIENTE</text>
+    <text class="dg-text sm center" x="110" y="128">estado inicial</text>
+
+    <rect class="dg-box ok" x="275" y="90" width="150" height="54" rx="8"/>
+    <text class="dg-text b center" x="350" y="112">CONFIRMADA</text>
+    <text class="dg-text sm center" x="350" y="128">espacio bloqueado</text>
+
+    <rect class="dg-box ok" x="515" y="90" width="150" height="54" rx="8"/>
+    <text class="dg-text b center" x="590" y="112">FINALIZADA</text>
+    <text class="dg-text sm center" x="590" y="128">acceso completado</text>
+
+    <rect class="dg-box bad" x="155" y="195" width="150" height="54" rx="8"/>
+    <text class="dg-text b center" x="230" y="217">CANCELADA</text>
+    <text class="dg-text sm center" x="230" y="233">espacio nunca se bloqueó</text>
+
+    <line class="dg-arrow" x1="185" y1="117" x2="275" y2="117" marker-end="url(#dgArrow)"/>
+    <text class="dg-text sm center" x="230" y="107">confirmar()</text>
+
+    <line class="dg-arrow" x1="425" y1="117" x2="515" y2="117" marker-end="url(#dgArrow)"/>
+    <text class="dg-text sm center" x="470" y="107">finalizar() (ms-accesos)</text>
+
+    <line class="dg-arrow" x1="130" y1="144" x2="205" y2="193" marker-end="url(#dgArrow)"/>
+    <text class="dg-text sm" x="10" y="175">cancelar()</text>
+    <text class="dg-text sm" x="10" y="187">no toca espacio</text>
+  </svg>
+  <p class="dg-caption">Fig. 3 — Desde PENDIENTE solo se puede confirmar o cancelar; desde CONFIRMADA solo se puede finalizar (vía ms-accesos al registrar la salida).</p>
+  </div>
+
+  <h3>3.4 Fórmula de cobro (dila de memoria)</h3>
+<pre><code>monto_base  = precio_base_hora × multiplicador_horario
+              × factor_tipo_vehiculo × factor_tipo_espacio
+              × (minutos / 60)
+
+monto_final = monto_base × (1 − desc_tipo_cliente/100)
+                         × (1 − desc_suscripcion/100)
+                         × (1 − desc_banco/100)        <span class="cm">← descuentos EN CASCADA, no sumados</span></code></pre>
+  <p>Todo con <code>BigDecimal</code> y <code>RoundingMode.HALF_UP</code> (nunca <code>double</code> para dinero). Ejemplo verificado por test: base $10.000 con descuentos 10%, 20% y 5% → 10000 × 0.90 × 0.80 × 0.95 = <strong>$6.840,00</strong>.</p>
+
+  <h3>3.5 Mapa Feign y referencias lógicas</h3>
+<pre><code>ms-reservas  → EspacioClient, VehiculoClient, ClienteClient
+ms-accesos   → EspacioClient, ReservaClient
+ms-pagos     → AccesoClient, TarifaClient, ClienteClient, VehiculoClient,
+               EspacioClient, HorarioTarifaClient, TipoVehiculoClient
+ms-reportes  → AccesoClient, CobroClient, EspacioClient, VehiculoClient</code></pre>
+  <ul>
+    <li>El <code>name</code> del <code>@FeignClient</code> debe calzar exacto con el <code>spring.application.name</code> del servicio destino — así Eureka lo resuelve.</li>
+    <li><strong>Referencias lógicas:</strong> entre bases NO hay FK físicas; se guardan <code>Long</code> planos (<code>@Column(name="id_espacio_ref")</code>). La integridad se garantiza <em>en la capa de servicio</em>, validando por Feign antes de persistir. Justificación: cada microservicio es dueño de su BD (database-per-service); una FK cruzada acoplaría los esquemas y rompería el despliegue independiente.</li>
+    <li><strong>Solo <code>@PutMapping</code>, nunca <code>@PatchMapping</code>:</strong> el <code>HttpURLConnection</code> por defecto de Feign no soporta PATCH; todas las actualizaciones parciales (cancelar, confirmar, finalizar, disponibilidad, salida) son PUT.</li>
+    <li>Feign devuelve los 404 remotos como <code>FeignException</code> (no como <code>null</code>) — por eso los services capturan y traducen la excepción.</li>
+  </ul>
+
+  <h3>3.6 Swagger/OpenAPI (IE 3.2.2 — 5%)</h3>
+  <ul>
+    <li>Dependencia: <code>springdoc-openapi-starter-webmvc-ui</code> 2.5.0 (centralizada en el pom padre).</li>
+    <li>UI por servicio en su puerto directo: <code>http://localhost:8085/swagger-ui/index.html</code> (ms-espacios), 8087 (accesos), 8089 (pagos)…</li>
+    <li>Qué mostrar si te piden recorrerla: la ruta y método de un endpoint → parámetros de entrada → el <strong>schema del DTO</strong> del request body → los códigos de respuesta (200/201/400/404/409) → el ejemplo JSON. Y decir que la doc se genera desde el código (anotaciones + tipos), por eso coincide con el comportamiento real.</li>
+  </ul>
+</section>
+
+<!-- ================================================================ -->
+<section id="s4">
+  <h2>4. Lo que el profesor dijo que faltó en EV2 → respuestas listas</h2>
+  <p class="sub">Sol: 65.4/100 en EV2. Estas 5 debilidades están escritas en la revisión del profesor y son sus focos favoritos. Catalina: te aplican igual — son las mismas trampas.</p>
+
+  <h3>4.1 ❌ "No mencionó GlobalExceptionHandler, ResponseEntity ni códigos 400/404/409" (IE 2.3.4, 30%)</h3>
+  <p><strong>Respuesta lista:</strong> "Cada microservicio tiene un <code>GlobalExceptionHandler</code> anotado con <code>@RestControllerAdvice</code>: los controllers no tienen try/catch, las excepciones burbujean y el handler las convierte en un <code>ResponseEntity</code> con código y body consistentes."</p>
+
+  <div class="diagram">
+  <svg viewBox="0 0 900 150" role="img" aria-label="Flujo de manejo de excepciones: Controller o Service lanza la excepción, GlobalExceptionHandler la captura y arma el ResponseEntity">
+    <rect class="dg-box" x="30" y="45" width="230" height="60" rx="8"/>
+    <text class="dg-text b center" x="145" y="70">Controller / Service</text>
+    <text class="dg-text sm center" x="145" y="88">sin try/catch</text>
+
+    <line class="dg-arrow" x1="260" y1="75" x2="318" y2="75" marker-end="url(#dgArrow)"/>
+    <text class="dg-text sm center" x="289" y="65">throw</text>
+
+    <rect class="dg-box gw" x="320" y="35" width="270" height="80" rx="8"/>
+    <text class="dg-text b center" x="455" y="65">@RestControllerAdvice</text>
+    <text class="dg-text b center" x="455" y="85">GlobalExceptionHandler</text>
+    <text class="dg-text sm center" x="455" y="101">codifica: 404 · 409 · 422 · 400</text>
+
+    <line class="dg-arrow" x1="590" y1="75" x2="648" y2="75" marker-end="url(#dgArrow)"/>
+    <text class="dg-text sm center" x="619" y="65">traduce a</text>
+
+    <rect class="dg-box" x="650" y="45" width="220" height="60" rx="8"/>
+    <text class="dg-text b center" x="760" y="70">ResponseEntity</text>
+    <text class="dg-text sm center" x="760" y="88">{error, mensaje, timestamp} + HTTP</text>
+  </svg>
+  <p class="dg-caption">Fig. 5 — Ningún controller/service atrapa la excepción; burbujea hasta el handler global, que decide el código HTTP y arma el body consistente.</p>
+  </div>
+
+  <table>
+    <tr><th>Excepción</th><th>HTTP</th><th>Cuándo ocurre (ejemplo real)</th></tr>
+    <tr><td><code>NotFoundException</code> / <code>ResourceNotFoundException</code></td><td><strong>404</strong></td><td>GET /api/espacios/99 con id inexistente</td></tr>
+    <tr><td><code>ConflictException</code></td><td><strong>409</strong></td><td>Registrar entrada con reserva no CONFIRMADA, o salida ya registrada</td></tr>
+    <tr><td><code>BusinessException</code> (ms-pagos)</td><td><strong>422</strong></td><td>Crear un segundo cobro para el mismo acceso (viola el 1:1)</td></tr>
+    <tr><td><code>MethodArgumentNotValidException</code> (Bean Validation)</td><td><strong>400</strong></td><td>POST sin campos obligatorios → body incluye el mapa de campos con el error por campo</td></tr>
+    <tr><td><code>HttpMessageNotReadableException</code></td><td><strong>400</strong></td><td>Body vacío o JSON mal formado</td></tr>
+    <tr><td><code>Exception</code> genérica</td><td><strong>500</strong></td><td>Cualquier error inesperado; se loguea con <code>log.error</code></td></tr>
+  </table>
+  <div class="box warn">
+    <strong>Honestidad técnica (te pueden pillar):</strong> los handlers NO son 100% idénticos entre servicios — el profesor ya lo sospechó en EV2 (IE 2.3.1 al 60%: "falta confirmar homogeneidad"). Ejemplos reales: en <strong>ms-accesos</strong> el body es <code>{timestamp, status, mensaje}</code> y los errores de validación van en <code>"errores"</code>; en <strong>ms-espacios</strong> el body es <code>{timestamp, error, mensaje}</code> y la validación va en <code>"campos"</code>. Si te preguntan, di la verdad: "el patrón es el mismo (@RestControllerAdvice + ResponseEntity + códigos correctos), con pequeñas variaciones de nombres de campos entre servicios; una mejora pendiente sería unificar el DTO de error". Eso demuestra que conoces TU código de verdad.
+  </div>
+
+  <h3>4.2 ❌ "No desarrolló una entidad formal con PK, atributos y restricciones" (IE 2.1.3, 60%)</h3>
+  <p><strong>Entidad preparada: <code>Acceso</code></strong> (ms-accesos, tabla <code>acceso</code> en db_accesos) — código real:</p>
+<pre><code><span class="ann">@Entity @Table(name = "acceso")</span>
+<span class="ann">@Data @NoArgsConstructor @AllArgsConstructor</span>   <span class="cm">// Lombok: getters/setters/constructores</span>
+public class Acceso {
+    <span class="ann">@Id @GeneratedValue(strategy = GenerationType.IDENTITY)</span>
+    private Long id;                                          <span class="cm">// PK autoincremental</span>
+
+    <span class="ann">@Column(nullable = false, name = "id_vehiculo_ref")</span>
+    private Long idVehiculo;                                  <span class="cm">// referencia LÓGICA a ms-vehiculos</span>
+
+    <span class="ann">@Column(nullable = false, name = "id_espacio_ref")</span>
+    private Long idEspacio;                                   <span class="cm">// referencia lógica a ms-espacios</span>
+
+    <span class="ann">@Column(nullable = true, name = "id_reserva_ref")</span>
+    private Long idReserva;                                   <span class="cm">// NULLABLE: acceso sin reserva permitido</span>
+
+    <span class="ann">@Column(nullable = false)</span> private String patenteEscaneada;
+    <span class="ann">@Column(nullable = false)</span> private LocalDateTime fechaHoraEntrada;
+    <span class="ann">@Column(nullable = true)</span>  private LocalDateTime fechaHoraSalida; <span class="cm">// null mientras está adentro</span>
+    <span class="ann">@Column(nullable = true)</span>  private Integer minutos;               <span class="cm">// se calcula en la salida</span>
+
+    <span class="ann">@Enumerated(EnumType.STRING)</span>
+    <span class="ann">@Column(nullable = false)</span>
+    private EstadoEnum estado = EstadoEnum.ACTIVO;            <span class="cm">// ACTIVO | COMPLETADO (String en BD)</span>
+}</code></pre>
+  <p><strong>Guion de 30 segundos:</strong> "PK <code>id</code> autoincremental; restricciones NOT NULL en vehículo, espacio, patente, entrada y estado; <code>idReserva</code> nullable a propósito porque el negocio permite acceso sin reserva; el enum se persiste como String para legibilidad; y las columnas <code>*_ref</code> son referencias lógicas — no hay FK física porque cada servicio tiene su propia base. Aguas abajo, ms-pagos me referencia igual: <code>cobro.id_acceso_ref</code> con constraint UNIQUE (un cobro por acceso)."</p>
+
+  <h3>4.3 ❌ "No interpretó un escenario de error concreto" (IE 2.3.3, 60%)</h3>
+  <p><strong>Escenario narrable #1 — servicio caído:</strong> "Si ms-espacios está caído y confirmo una reserva: <code>ReservaService.confirmar()</code> llama a <code>espacioClient.updateDisponibilidad()</code> → Feign no puede conectar y lanza <code>FeignException</code> → el service la captura y la traduce a una excepción de negocio → el handler responde con un código de error controlado, no un stacktrace crudo. En el log del servicio se ve el <code>Connection refused</code> hacia el puerto 8085, y en Eureka (:8761) se ve que la instancia desapareció del registro. Diagnóstico: revisar Eureka primero, levantar el servicio, reintentar."</p>
+  <p><strong>Escenario narrable #2 — BD caída o puerto MySQL equivocado:</strong> "El servicio ni siquiera termina de arrancar: <code>Communications link failure</code> en el log al crear el pool de conexiones. Causa típica en nuestro entorno: XAMPP usa el puerto 3307 y las properties apuntan a otro — lo corregimos con <code>scripts\set-db-port.ps1</code>, que reescribe el puerto del <code>spring.datasource.url</code> en los 10 servicios de una vez."</p>
+  <p><strong>Escenario narrable #3 — 404 vs 409 en Newman:</strong> "Si un request de la colección falla con 409 al re-ejecutar, es un problema de idempotencia (dato duplicado de la corrida anterior); por eso la colección tiene scripts de limpieza pre-request."</p>
+
+  <h3>4.4 ❌ "Aporte personal demasiado breve, sin commits ni archivos" (IE 2.5.3 — vale 5% mañana)</h3>
+  <div class="dos-col">
+    <div class="persona sol">
+      <h4>💜 Sol — guion de aporte personal</h4>
+      <p>"Mis aportes verificables en el historial de commits:</p>
+      <ul>
+        <li><strong>Microservicios donde lidero commits</strong> (según el análisis de autoría del repo): auth-service, user-service, ms-accesos, ms-reservas y ms-tarifas.</li>
+        <li><strong>Scripts de reproducibilidad</strong>: <code>manage.ps1</code> (dashboard TUI), <code>start-all.ps1</code> (arranque ordenado), <code>load-db.ps1</code> (carga las 10 BDs desde <code>db/00_run_all.sql</code>), <code>set-db-port.ps1</code>.</li>
+        <li><strong>Pruebas</strong>: suite de tests unitarios (ej. <code>AccesoServiceTest</code> con 7 casos) y colección Postman de 74 requests idempotente con captura automática del token JWT.</li>
+        <li><strong>Documentación</strong>: carpeta <code>docs/</code> (arquitectura, BD, seguridad, guías por servicio) y README de entrega con los 3 enlaces."</li>
+      </ul>
+    </div>
+    <div class="persona cata">
+      <h4>💙 Catalina — guion de aporte personal</h4>
+      <p>"Mis aportes verificables:</p>
+      <ul>
+        <li><strong>ms-espacios</strong> es el servicio donde tengo más commits directos (gestión de espacios y disponibilidad, el endpoint PUT <code>/disponibilidad</code> que consumen accesos y reservas).</li>
+        <li>Contribuciones distribuidas en varios servicios (pagos, vehículos, tarifas) bajo mis identidades de git ("catalina" / "Catalina Aguirre") más el trabajo de sala compartido bajo "AO-Alumno".</li>
+        <li>Trabajo funcional: pruebas manuales con Postman/Swagger, validación del flujo reserva→acceso→cobro, y revisión de la documentación."</li>
+      </ul>
+      <p><em>Antes de mañana:</em> corre <code>git log --author="catalina" --oneline</code> (y con tu otro correo) y memoriza 3 commits concretos con archivo y propósito — el profesor valora que nombres commits reales.</p>
+    </div>
+  </div>
+  <div class="box warn"><strong>Tip para ambas:</strong> el mapeo usuario-GitHub ↔ estudiante es uno de los 10 riesgos que el profesor anotó en la revisión grupal. Lleguen sabiendo qué identidad de git es de quién (incluida la aclaración de "AO-Alumno" = trabajo desde la sala).</div>
+
+  <h3>4.5 ❌ "Sin modificación concreta con prueba antes/después" (IE 2.4.4 en EV2 → mañana reaparece como IE 3.1.3/3.3.7)</h3>
+  <p><strong>Modificación ensayable en 2 minutos</strong> (practícala hoy): en el Gateway, cambiar el <code>Path</code> de ms-accesos de <code>/api/accesos/**</code> a <code>/api/v2/accesos/**</code> → reiniciar el gateway → mostrar que <code>GET localhost:8080/api/accesos</code> ahora da 404 y <code>/api/v2/accesos</code> responde 200 → revertir. Con eso demuestras: rutas, predicados, y prueba antes/después. Alternativa en código: cambiar el mensaje de una <code>ConflictException</code> y mostrar el cambio con Postman.</p>
+</section>
+
+<!-- ================================================================ -->
+<section id="s5">
+  <h2>5. Levantar el sistema sola <span class="peso">IE 3.3.7 (10%) + 3.3.6 (6%)</span></h2>
+
+  <h3>5.1 Orden de arranque (memoriza — el profesor lo corrigió en el README)</h3>
+  <ol>
+    <li><strong>eureka-server</strong> (8761) — el registro debe existir antes que nadie.</li>
+    <li><strong>Los 10 microservicios de negocio</strong> — fase 3: auth, user, security, vehiculos, espacios, tarifas; fase 4: reservas, accesos; luego pagos y reportes (los que dependen de Feign al final).</li>
+    <li><strong>api-gateway</strong> (8080) <strong>AL FINAL</strong> — para que al enrutar ya encuentre a todos registrados en Eureka.</li>
+  </ol>
+<pre><code><span class="cm"># Opción A: script (arranca los 12 en orden, cada uno en su ventana)</span>
+.\scripts\start-all.ps1
+
+<span class="cm"># Opción B: manual, servicio por servicio</span>
+cd eureka-server; .\mvnw.cmd spring-boot:run
+<span class="cm"># ...esperar que arranque, luego los demás, gateway al final</span>
+
+<span class="cm"># Opción C: JARs (como en el ZIP de entrega)</span>
+java -jar eureka-server.jar   <span class="cm"># → microservicios → gateway</span></code></pre>
+
+  <h3>5.2 Cómo verificar que todo está arriba</h3>
+  <ul>
+    <li><strong>Eureka dashboard:</strong> <code>http://localhost:8761</code> → deben aparecer las 11 instancias registradas.</li>
+    <li><strong>Swagger directo:</strong> <code>http://localhost:8085/swagger-ui/index.html</code> (o el puerto del servicio que sea).</li>
+    <li><strong>Flujo por el Gateway:</strong> login en <code>POST :8080/api/auth/login</code> (seed: <code>Test1234!</code>) → usar el token en <code>GET :8080/api/espacios</code>.</li>
+    <li><strong>Newman (suite completa):</strong> <code>newman run estacionamientos.postman_collection.json --env-var "base=http://localhost:8080"</code> → 74/74.</li>
+  </ul>
+
+  <h3>5.3 Tabla de diagnóstico rápido (lo que el profesor puede romper a propósito)</h3>
+  <table>
+    <tr><th>Síntoma</th><th>Causa probable</th><th>Arreglo</th></tr>
+    <tr><td><code>Port 8085 already in use</code></td><td>Instancia duplicada del servicio</td><td>Cerrar el proceso (o <code>manage.ps1</code> → stop) y relanzar; o cambiar <code>server.port</code> en properties</td></tr>
+    <tr><td><code>Communications link failure</code> al arrancar</td><td>MySQL apagado o puerto equivocado (XAMPP usa 3307 en nuestro dev; los ZIP de entrega van en 3306)</td><td>Encender MySQL; alinear puerto con <code>scripts\set-db-port.ps1 -Port 3306</code></td></tr>
+    <tr><td><code>Unknown database 'db_accesos'</code></td><td>Bases no creadas</td><td><code>.\scripts\load-db.ps1</code> (ejecuta <code>db/00_run_all.sql</code>: crea las 10 BDs + seed)</td></tr>
+    <tr><td>Gateway responde 503 para un servicio</td><td>El servicio no está registrado en Eureka (caído o arrancando)</td><td>Mirar :8761; esperar el registro o relanzar el servicio</td></tr>
+    <tr><td>401 en todos los endpoints</td><td>Falta token o expiró (24 h)</td><td>Re-login en <code>/api/auth/login</code> y mandar <code>Authorization: Bearer &lt;token&gt;</code></td></tr>
+    <tr><td>Schema-validation error de Hibernate</td><td><code>ddl-auto=validate</code> y la tabla no coincide</td><td>Explicar: usamos <code>validate</code> en operación; para modificar en vivo se cambia a <code>update</code></td></tr>
+  </table>
+
+  <h3>5.4 Despliegue: nativo vs Docker (IE 3.3.6)</h3>
+  <table>
+    <tr><th></th><th>Nativo (ZIP 1)</th><th>Docker (ZIP 2)</th></tr>
+    <tr><td>Qué contiene</td><td>carpeta <code>apps/</code> con los 12 JAR + <code>arrancar-nativo.bat</code></td><td><code>apps/</code> + <code>docker-compose.yml</code> + <code>arrancar-sistema.bat</code></td></tr>
+    <tr><td>Cómo arranca</td><td>El .bat lanza los JAR en orden: Eureka → servicios → Gateway</td><td><code>docker compose up</code>: levanta MySQL, Eureka y los servicios como contenedores</td></tr>
+    <tr><td>Conexiones</td><td><code>localhost:3306</code> (MySQL), <code>localhost:8761</code> (Eureka)</td><td><strong>Nombres de servicio</strong> de la red de compose: <code>mysql-db</code>, <code>eureka-server</code> — dentro de un contenedor, <code>localhost</code> es el propio contenedor. Error clásico que el profesor documentó.</td></tr>
+    <tr><td>Datos iniciales</td><td><code>load-db.ps1</code> / SQL manual</td><td><code>init.sql</code> montado como volumen — <em>solo corre la primera vez</em> (si el volumen ya existe, no se re-ejecuta)</td></tr>
+    <tr><td>Puerto ocupado</td><td>cambiar <code>server.port</code></td><td>cambiar solo el puerto <strong>externo</strong> del mapeo en compose (<code>"8081:8080"</code>)</td></tr>
+  </table>
+</section>
+
+<!-- ================================================================ -->
+<section id="s6">
+  <h2>6. Banco de preguntas con respuestas modelo</h2>
+  <p class="sub">Fuentes: los 10 "riesgos de defensa" que el profesor escribió en la revisión grupal EV2, las 6 preguntas EV2 de cada una, y los focos nuevos de la rúbrica EV3 (testing, Swagger, YAML, Docker).</p>
+
+  <h3>6.1 Las 6 preguntas EV2 de Catalina (nunca las respondió por escrito — van con respuesta modelo)</h3>
+
+  <div class="qa"><p class="q">1. Arquitectura general: rol de Eureka, Gateway, Auth, User y 4 microservicios de dominio.</p>
+  <p class="r">"El sistema tiene 12 servicios. <strong>Eureka</strong> (8761) es el registro: cada servicio se inscribe con su <code>spring.application.name</code> y así se descubren entre sí sin IPs fijas. El <strong>API Gateway</strong> (8080) es el punto único de entrada: enruta con <code>lb://</code> según el path y valida el JWT antes de dejar pasar. <strong>auth-service</strong> emite los tokens (login por email, BCrypt); <strong>user-service</strong> administra clientes, tipos y suscripciones. De dominio: <strong>ms-espacios</strong> (disponibilidad física), <strong>ms-reservas</strong> (máquina de estados de la reserva), <strong>ms-accesos</strong> (entrada/salida y minutos) y <strong>ms-pagos</strong> (fórmula de cobro con descuentos). Cada uno con su propia base MySQL — database per service."</p></div>
+
+  <div class="qa"><p class="q">2. Flujo Controller → Service → Repository en ms-reservas, con DTOs.</p>
+  <p class="r">"El <strong>Controller</strong> solo orquesta HTTP: recibe el JSON como <code>ReservaCreateDTO</code> (con Bean Validation), llama al service y devuelve <code>ReservaResponseDTO</code> en un <code>ResponseEntity</code> — nunca expone la entidad JPA como contrato. El <strong>Service</strong> (<code>@Service @Transactional</code>) concentra la lógica: validar cliente/vehículo/espacio por Feign, aplicar la máquina de estados, loguear con <code>@Slf4j</code>. El <strong>Repository</strong> (<code>JpaRepository&lt;Reserva, Long&gt;</code>) persiste. Las excepciones suben al <code>GlobalExceptionHandler</code>. Ventaja de los DTOs: desacoplan el contrato REST del modelo de datos — puedo cambiar la entidad sin romper a los consumidores."</p></div>
+
+  <div class="qa"><p class="q">3. Crear una reserva: idCliente, idVehiculo, idEspacio, validación Feign, PENDIENTE, persistencia.</p>
+  <p class="r">"<code>create()</code> recibe los 3 ids + fechas. Antes de guardar valida remotamente: cliente existe y <code>activo=true</code> (ClienteClient → user-service), vehículo activo (VehiculoClient), espacio activo <strong>y disponible</strong> (EspacioClient). Si algo falla, Feign lanza excepción (un 404 remoto llega como <code>FeignException</code>, no como null) y se traduce a NotFound/Conflict — la reserva NO se guarda. Si todo pasa, se persiste con <code>estado=PENDIENTE</code> y los ids como referencias lógicas Long. Importante: crear la reserva <em>no bloquea</em> el espacio todavía."</p></div>
+
+  <div class="qa"><p class="q">4. Confirmar una reserva y qué pasa con la disponibilidad.</p>
+  <p class="r">"<code>confirmar()</code> valida la transición (solo desde PENDIENTE), cambia a CONFIRMADA y ahí sí llama por Feign a <code>PUT /api/espacios/{id}/disponibilidad?disponible=false</code> para bloquear el espacio. Por eso <code>cancelar()</code> no toca ms-espacios: en PENDIENTE el espacio nunca se bloqueó. Y la liberación ocurre en ms-accesos al registrar la salida (disponible=true de vuelta)."</p></div>
+
+  <div class="qa"><p class="q">5. ¿Por qué referencias lógicas Long en vez de relaciones JPA entre bases?</p>
+  <p class="r">"Porque cada microservicio es dueño exclusivo de su base (10 BDs separadas). Una <code>@ManyToOne</code> entre servicios exigiría que ambas tablas vivan en el mismo esquema — eso acopla los despliegues y rompe la autonomía. Guardamos <code>Long</code> planos (<code>id_espacio_ref</code>) y garantizamos la integridad en la capa de servicio validando por Feign antes de persistir. El trade-off es consistencia eventual: lo aceptamos a cambio de servicios independientes. Dentro de un mismo servicio sí usamos JPA real: <code>Vehiculo → TipoVehiculo</code> es <code>@ManyToOne</code> porque ambas tablas están en db_vehiculos."</p></div>
+
+  <div class="qa"><p class="q">6. Aporte personal.</p>
+  <p class="r">Usar el guion personal de la <a href="#s4">sección 4.4</a> — con commits y archivos concretos, nunca "hice documentación y pruebas" a secas (eso costó 30% en EV2).</p></div>
+
+  <h3>6.2 Los temas EV2 de Sol (ya respondidos bien — repaso exprés)</h3>
+  <ul>
+    <li><strong>Gateway y <code>lb://</code>:</strong> el Gateway centraliza la entrada; <code>lb://ms-pagos</code> = resolución por Eureka con balanceo, sin IPs hardcodeadas. (Sol sacó 100% aquí — mantener la explicación, agregando la palabra <em>predicates</em>.)</li>
+    <li><strong>Flujo completo e información intercambiada:</strong> ver sección 3.3 — Sol sacó 100%.</li>
+    <li><strong>Fórmula de cobro:</strong> sección 3.4 — 100% en EV2; ahora además puedes citar el test que la valida (5400.00 / 6840.00).</li>
+    <li><strong>Scripts:</strong> load-db (crea/recarga las 10 BDs), set-db-port (alinea el puerto MySQL en todas las properties), start-all (orden correcto), manage (TUI que integra todo). Reproducibilidad = cualquier persona clona y levanta igual.</li>
+    <li><strong>Newman/idempotencia:</strong> 74 requests contra el Gateway con token capturado en el login; idempotente gracias a scripts de limpieza pre-request → se puede re-ejecutar y siempre da 74/74, resultado trazable.</li>
+  </ul>
+
+  <h3>6.3 Preguntas nuevas estilo EV3 (testing, Swagger, YAML, Docker)</h3>
+
+  <div class="qa"><p class="q">¿Qué diferencia hay entre probar un Service y probar un Controller? (reflexión #3 de la guía)</p>
+  <p class="r">"El Service test valida lógica de negocio con Mockito puro — mockeo Repository y Feign Clients, y afirmo sobre resultados y excepciones. El Controller test valida el contrato HTTP con <code>@WebMvcTest</code> + MockMvc — mockeo el Service y afirmo sobre ruta, código de estado y JSON (<code>jsonPath</code>). Errores que detecta el de Controller: ruta mal mapeada, código HTTP incorrecto, JSON con campos distintos, validación que no dispara. Errores que detecta el de Service: regla de negocio mal implementada, cálculo erróneo, excepción que no se lanza."</p></div>
+
+  <div class="qa"><p class="q">¿Por qué las pruebas no deben usar la base de datos real? (reflexión #1)</p>
+  <p class="r">"Tres razones: aislamiento (un test no debe depender del estado que dejó otro test o el desarrollo manual), velocidad y reproducibilidad (mismo resultado en cualquier máquina, incluso sin MySQL). Por eso los Service tests mockean el Repository, y los tests de integración usan H2 en memoria con <code>ddl-auto=create-drop</code> en <code>application-test.properties</code>, con Eureka deshabilitado."</p></div>
+
+  <div class="qa"><p class="q">¿Qué hace exactamente <code>verify()</code> y cuándo es imprescindible?</p>
+  <p class="r">"Comprueba interacciones, no valores: que el service llamó (o no llamó) a un método del mock. Es imprescindible cuando el efecto no está en el valor de retorno: en <code>registrarSalida</code>, el retorno es el DTO, pero la liberación del espacio es una llamada Feign — solo <code>verify(espacioClient).updateDisponibilidad(1L, true)</code> puede probarla. Y <code>verify(repo, never()).save(any())</code> prueba que ante un error NO se persistió nada."</p></div>
+
+  <div class="qa"><p class="q">Muéstrame en Swagger cómo se consume un endpoint.</p>
+  <p class="r">Abrir <code>:8085/swagger-ui/index.html</code> → <code>POST /api/espacios</code> → mostrar el schema de <code>EspacioCreateDTO</code> (campos y obligatorios) → "Try it out" con un body válido → 201 y el response DTO → repetir con body inválido → 400 con el mapa <code>campos</code>. Cerrar con: "la doc se genera del código con springdoc, por eso nunca se desalinea del comportamiento real".</p></div>
+
+  <div class="qa"><p class="q">¿Qué pasa si corro los tests y aparece <code>No qualifying bean of type EspacioService</code>?</p>
+  <p class="r">"Es el error clásico de <code>@WebMvcTest</code> sin mock: ese slice solo levanta la capa web, no los services reales. El Controller necesita su dependencia, así que hay que declararla como <code>@MockitoBean</code>. Está en la sección 11.6 de la guía de testing."</p></div>
+
+  <div class="qa"><p class="q">¿Por qué en Docker el servicio no encuentra a MySQL si en local funciona?</p>
+  <p class="r">"Porque dentro de un contenedor <code>localhost</code> apunta al propio contenedor. En la red de docker compose los servicios se resuelven por nombre: la URL pasa de <code>jdbc:mysql://localhost:3306/db_accesos</code> a <code>jdbc:mysql://mysql-db:3306/db_accesos</code>, y Eureka de <code>localhost:8761</code> a <code>eureka-server:8761</code>. Es el error #1 de la guía Docker del profesor."</p></div>
+
+  <div class="qa"><p class="q">¿Cómo garantizan que un acceso tenga máximo un cobro?</p>
+  <p class="r">"Doble capa: constraint UNIQUE en <code>cobro.id_acceso_ref</code> (BD) y validación en <code>PagoService.crear()</code> que consulta <code>findByIdAcceso</code> y lanza <code>BusinessException</code> ('Ya existe un cobro') → 422. Hay un test unitario que lo prueba con el repo mockeado."</p></div>
+
+  <div class="qa"><p class="q">¿Por qué usan @PutMapping para cancelar/confirmar en vez de @PatchMapping?</p>
+  <p class="r">"Decisión técnica documentada: el cliente HTTP por defecto de Feign (<code>HttpURLConnection</code>) no soporta el verbo PATCH, así que todas las actualizaciones parciales entre servicios son PUT. Además fue el patrón enseñado en clases."</p></div>
+
+  <h3>6.4 Los 10 riesgos que el profesor dejó anotados (revisión grupal EV2, sección E)</h3>
+  <ol>
+    <li>Levantar Eureka, Gateway y microservicios en orden → sección 5.1 ✔</li>
+    <li>Ejecutar/explicar la colección de 74 requests → sección 6.2 ✔</li>
+    <li>Cómo se carga <code>db/00_run_all.sql</code> y qué bases crea → <code>load-db.ps1</code>, 10 BDs (01_db_auth … 09_db_pagos) + seed (2 clientes, tipos, tarifas, bancos; password seed <code>Test1234!</code>) ✔</li>
+    <li>Validación JWT en el Gateway → <code>JwtAuthFilter</code>: extrae el Bearer, valida firma con el secret compartido, expiración 24 h; rutas públicas <code>/api/auth/**</code> y Swagger; sesiones STATELESS ✔</li>
+    <li>Flujo reserva → entrada → salida → cobro → reporte → sección 3.3 ✔</li>
+    <li>Justificar referencias lógicas Long → pregunta 5 de Catalina (6.1) ✔</li>
+    <li>Errores Feign cuando cliente/vehículo/espacio no existen → <code>FeignException</code> capturada y traducida; escenario narrado 4.3 ✔</li>
+    <li>Control de disponibilidad al confirmar y al salir → confirmar bloquea, salida libera (6.1 #4) ✔</li>
+    <li>Mapear usuarios GitHub ↔ Catalina/Sol → tip de la sección 4.4 ✔</li>
+    <li>Evidencia de planificación → Trello ya existe para EV3: tablero "DSY1103-G7 Estacionamiento Inteligente" con 48 tarjetas en listas EV1/EV2/EV3 (en EV2 esto valió 0 por no evidenciarse — ahora sí, menciónalo proactivamente) ✔</li>
+  </ol>
+</section>
+
+<!-- ================================================================ -->
+<section id="s7">
+  <h2>7. Checklist de la noche anterior</h2>
+  <ul class="check">
+    <li><strong>Escribir de memoria</strong> la plantilla de test de la sección 2.6 (en papel, sin mirar) — dos veces: caso de error y caso feliz con <code>verify</code>.</li>
+    <li>Correr <code>.\mvnw.cmd test</code> en ms-accesos y ms-reservas para confirmar que todo está verde y <em>ver</em> el output que verás mañana.</li>
+    <li>Levantar el sistema completo una vez con <code>start-all.ps1</code>, abrir Eureka (:8761), un Swagger (:8085) y hacer login + un GET por el Gateway.</li>
+    <li>Practicar la modificación antes/después (ruta del Gateway, sección 4.5) con cronómetro: &lt; 3 minutos.</li>
+    <li>Recitar la fórmula de cobro y el ejemplo 10000 → 6840 con descuentos en cascada.</li>
+    <li>Recitar la entidad <code>Acceso</code> con PK, NOT NULLs, el nullable de idReserva y el enum String.</li>
+    <li>Recitar la tabla excepción → código HTTP (404/409/422/400/500) y decir "@RestControllerAdvice" y "ResponseEntity" al menos una vez en la defensa.</li>
+    <li>Preparar el guion de aporte personal (sección 4.4) con 3 commits reales: <code>git log --author=... --oneline | head</code>.</li>
+    <li>Saber el orden de arranque al derecho y al revés: Eureka → microservicios → Gateway (y por qué el Gateway va al final).</li>
+    <li>Dormir. 15 minutos de defensa se ganan con claridad, no con trasnoche.</li>
+  </ul>
+
+  <div class="box ok">
+    <strong>Frase de cierre si te quedas en blanco:</strong> vuelve siempre al flujo — "el Controller recibe, el Service decide, el Repository persiste, Feign comunica, el handler traduce errores a códigos HTTP, y el test lo demuestra con mocks". Desde esa frase puedes reconstruir cualquier respuesta del ramo.
+  </div>
+</section>
+
+</main>
+
+<footer>
+  Guía de estudio EV3 · generada el 01/07/2026 a partir de: rúbrica oficial EV3, guía 3.1 de testing (Unidad 3), revisiones EV2 del profesor y código real del repositorio FULLSTACK-I.
+</footer>
+
+</body>
+</html>

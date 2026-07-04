@@ -1,0 +1,84 @@
+Estimados estudiantes:
+
+Junto con saludar, se informa que el AVA ya se encuentra configurado para la entrega de evidencias del Examen Final Transversal de la asignatura Desarrollo Fullstack I.
+
+Desde este momento pueden comenzar a subir sus evidencias en los espacios habilitados en AVA. La evaluación se encuentra separada en dos entregas, de acuerdo con la estructura oficial del EFT:
+
+    Entrega grupal del proyecto — 40%
+    Defensa técnica individual — 60%
+
+Cada entrega debe realizarse en el enlace correspondiente, ya que ambos espacios estarán asociados a rúbricas diferentes.
+
+En el enlace de entrega grupal, el grupo deberá subir los siguientes artefactos:
+
+    Link del repositorio GitHub del proyecto.
+    Archivo .zip del proyecto, descargado directamente desde GitHub, como respaldo de la entrega.
+    El repositorio y el archivo zip deben corresponder a la versión final del proyecto presentada para el Examen Final Transversal.
+
+Para ordenar la entrega grupal, se recomienda que el grupo incluya la información con el siguiente formato:
+
+Nombre del proyecto:
+
+Grupo:
+
+Integrantes:
+
+Repositorio GitHub:
+
+Archivo zip adjunto:
+
+Observaciones generales:
+
+En el enlace de defensa técnica individual, cada estudiante deberá subir sus evidencias individuales:
+
+    Link del video de defensa técnica individual o link de rescate del video.
+    Link del proyecto funcionando con Docker o, en caso de no contar con Docker, link del proyecto funcionando de manera nativa.
+    Si el proyecto se ejecuta sin Docker, se debe indicar brevemente cómo debe levantarse el sistema.
+
+Para ordenar la entrega individual, cada estudiante debe incluir la información con el siguiente formato:
+
+Nombre estudiante:
+
+Grupo:
+
+Proyecto:
+
+Repositorio GitHub:
+
+Video defensa técnica:
+
+Proyecto con Docker:
+
+Proyecto sin Docker:
+
+Observaciones de ejecución:
+
+Se recuerda que el enlace grupal corresponde exclusivamente a la entrega del encargo del proyecto, mientras que el enlace individual corresponde a la evidencia de defensa técnica de cada estudiante.
+
+En el caso de grupos que ya dejaron avanzado o completo el trabajo durante la Evaluación 3, podrán utilizar esa misma base como parte de la entrega final, siempre que el repositorio, el archivo zip y las evidencias individuales correspondan a la versión final que será considerada para el Examen Final Transversal.
+
+Las fechas, horarios y salas de aplicación del EFT son las siguientes:
+
+
+DSY1103-011D:
+
+Fecha: martes 07/07/2026
+
+Horario: 09:10 a 11:20 hrs.
+
+Sala: 3204
+
+
+Durante estos horarios estaré presente en la sala correspondiente para la aplicación del EFT, revisión de evidencias y eventuales defensas técnicas, según corresponda.
+
+Finalmente, se solicita revisar que todos los enlaces tengan permisos de acceso correctos antes de realizar la entrega. En caso de utilizar Google Drive, YouTube, GitHub u otra plataforma, deben verificar que el docente pueda acceder al contenido sin solicitar autorización adicional.
+
+
+Saludos cordiales,
+
+
+Mauricio González V.
+
+Docente Desarrollo Fullstack I
+
+Duoc UC Sede Alonso de Ovalle

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apéndice — Actividad de Testing resuelta (Guía 3.1) | Estacionamiento Inteligente</title>
+<style>
+  :root {
+    --bg: #f7f8fa;
+    --panel: #ffffff;
+    --ink: #1f2430;
+    --muted: #525b69;
+    --accent: #b34700;
+    --accent-soft: #fdf0e6;
+    --ok-soft: #e7f5ec;
+    --warn-soft: #fdf6e3;
+    --code-bg: #1e2430;
+    --code-ink: #dce3ee;
+    --border: #dde2ea;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 0 0 80px 0;
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: var(--bg); color: var(--ink);
+    line-height: 1.55; font-size: 16px;
+  }
+  header {
+    background: linear-gradient(135deg, #2a1a0e, #6b3410);
+    color: #fff; padding: 36px 24px 28px;
+  }
+  header .wrap, main { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+  header h1 { margin: 0 0 6px; font-size: 1.7em; text-wrap: balance; }
+  header p { margin: 4px 0; color: rgba(255,255,255,.93); }
+  header a { color: #ffd8b3; }
+  section {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+    padding: 26px 30px; margin: 26px 0;
+  }
+  section[id] { scroll-margin-top: 14px; }
+  h2 { font-size: 1.45em; margin: 0 0 4px; color: #46280f; text-wrap: balance; }
+  h3 { font-size: 1.15em; margin: 26px 0 8px; color: #6b3410; text-wrap: balance; }
+  p, li { color: var(--ink); }
+  p { text-wrap: pretty; }
+  section p, section ul li, section ol li { max-width: 76ch; }
+  td p, td li, table li { max-width: none; }
+  .sub { color: var(--muted); margin-top: 0; }
+  table { border-collapse: collapse; width: 100%; margin: 14px 0; font-size: .93em; }
+  th, td { border: 1px solid var(--border); padding: 8px 11px; text-align: left; vertical-align: top;}
+  th { background: #f0ece6; font-weight: 600; }
+  tr:nth-child(even) td { background: #fafbfc; }
+  /* formato "Ítem | Respuesta" de la guía: primera columna estrecha y destacada */
+  table.actividad td:first-child { width: 220px; font-weight: 600; background: #faf7f2; }
+  code {
+    font-family: "Cascadia Code", Consolas, monospace; font-size: .88em;
+    background: #eef1f5; padding: 1px 6px; border-radius: 4px; color: #3d2405;
+  }
+  pre {
+    background: var(--code-bg); color: var(--code-ink);
+    padding: 16px 18px; border-radius: 10px; overflow-x: auto;
+    font-size: .84em; line-height: 1.5; margin: 12px 0;
+  }
+  pre code { background: none; color: inherit; padding: 0; font-size: 1em; }
+  pre .cm { color: #8d9ab0; }
+  pre .kw { color: #e8a2ff; }
+  pre .str { color: #a8d78a; }
+  pre .ann { color: #ffd479; }
+  .box { border-radius: 10px; padding: 14px 18px; margin: 14px 0; border: 1px solid; }
+  .box.clave  { background: var(--accent-soft); border-color: #d9a978; }
+  .box.ok     { background: var(--ok-soft); border-color: #8fcaa7; }
+  .box.warn   { background: var(--warn-soft); border-color: #dcc27e; }
+  .box strong:first-child { display: block; margin-bottom: 4px; }
+  .qa { border: 1px solid #e6d6c2; background: #fdfaf7; padding: 14px 18px; margin: 16px 0; border-radius: 10px; }
+  .qa .q { font-weight: 700; color: #46280f; margin: 0 0 8px; }
+  .qa .q::before { content: "P · "; color: var(--accent); }
+  .qa .r { margin: 0; }
+  .check { list-style: none; padding-left: 0; }
+  .check li { padding: 7px 0 7px 34px; position: relative; border-bottom: 1px dashed var(--border); }
+  .check li::before { content: "☑"; position: absolute; left: 4px; font-size: 1.2em; color: var(--accent); }
+  footer { text-align:center; color: var(--muted); font-size:.85em; margin-top: 40px; padding: 0 20px; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+
+  /* ══════════════ IMPRESIÓN (escala de grises) ══════════════ */
+  @media print {
+    @page { margin: 1.6cm; }
+    body { background: #fff; color: #000; font-size: 10.5pt; line-height: 1.45; padding: 0; }
+    header { background: none; color: #000; padding: 0 0 10px; border-bottom: 3px solid #000; }
+    header a { color: #000; }
+    header .wrap, main { max-width: none; padding: 0; }
+    a { color: #000; text-decoration: none; }
+    section { border: none; border-radius: 0; padding: 0; margin: 18px 0; }
+    main > section { break-before: page; }
+    main > section:first-of-type { break-before: auto; }
+    h2 { color: #000; border-bottom: 2px solid #000; padding-bottom: 4px; break-after: avoid; }
+    h3 { color: #000; break-after: avoid; }
+    table { font-size: 8.5pt; }
+    th, td { border-color: #666; }
+    th { background: #ddd !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    tr { break-inside: avoid; }
+    tr:nth-child(even) td { background: #f2f2f2 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    table.actividad td:first-child { background: #eee !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    code { background: none; color: #000; padding: 0; font-weight: 600; }
+    pre { background: #fff; color: #000; border: 1px solid #777; border-radius: 0; font-size: 8pt; break-inside: avoid; overflow-x: visible; white-space: pre-wrap; }
+    pre code { font-weight: 400; }
+    pre .cm { color: #444; font-style: italic; }
+    pre .kw, pre .ann { color: #000; font-weight: 700; }
+    pre .str { color: #222; text-decoration: underline; text-decoration-color: #999; text-underline-offset: 2px; }
+    .box { background: #fff !important; border: 1.5px solid #000; border-radius: 0; break-inside: avoid; }
+    .box.warn { border-style: dashed; }
+    .qa { background: #fff; border: 1px solid #666; border-radius: 0; break-inside: avoid; }
+    .check li { border-bottom-color: #999; break-inside: avoid; }
+    .check li::before { color: #000; }
+    footer { border-top: 1px solid #000; padding-top: 8px; margin-top: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1>📎 Apéndice — Actividad de Testing resuelta</h1>
+    <p>Formato de la guía oficial "3.1 Análisis de testing en Biblioteca y transición a microservicios" (secciones 17, 18 y 19), respondido con tests reales del proyecto Estacionamiento Inteligente.</p>
+    <p>Complemento de la <a href="defensa-ev3-estudio.html">Guía de Estudio para la Defensa EV3</a> · Grupo 7 · Sol León y Catalina Aguirre</p>
+  </div>
+</header>
+
+<main>
+
+<!-- ================================================================ -->
+<section id="a1">
+  <h2>Actividad 1 — Análisis de Service Test</h2>
+  <p class="sub">La guía pide seleccionar una prueba de Service y completar la tabla. Resolvemos dos casos: uno con comunicación entre microservicios (ms-accesos) y uno de servicio con lógica propia (ms-espacios), para cubrir ambos perfiles de pregunta.</p>
+
+  <h3>Caso A — ms-accesos: entrada válida crea el acceso y bloquea el espacio</h3>
+  <p>Test analizado (existe tal cual en el repo):</p>
+<pre><code><span class="ann">@Test</span>
+<span class="ann">@DisplayName("registrarEntrada debe crear el acceso y marcar el espacio no disponible")</span>
+void registrarEntrada_valido_debeCrearAccesoYBloquearEspacio() {
+    <span class="cm">// Arrange</span>
+    when(reservaClient.findById(1L)).thenReturn(reservaConfirmada);
+    when(accesoRepository.findByIdReserva(1L)).thenReturn(Optional.empty());
+    when(accesoRepository.save(any(Acceso.class))).thenAnswer(inv -&gt; {
+        Acceso a = inv.getArgument(0);
+        a.setId(10L);
+        return a;
+    });
+
+    <span class="cm">// Act</span>
+    AccesoResponseDTO resultado = accesoService.registrarEntrada(createDTO);
+
+    <span class="cm">// Assert</span>
+    assertThat(resultado.getId()).isEqualTo(10L);
+    assertThat(resultado.getEstado()).isEqualTo(<span class="str">"ACTIVO"</span>);
+    verify(espacioClient).updateDisponibilidad(1L, false);
+}</code></pre>
+
+  <table class="actividad">
+    <tr><th>Ítem</th><th>Respuesta</th></tr>
+    <tr><td>Clase de test analizada</td><td><code>AccesoServiceTest</code> — <code>ms-accesos/src/test/java/estacionamientos/ms_accesos/service/</code></td></tr>
+    <tr><td>Servicio probado</td><td><code>AccesoService</code>, instanciado real con <code>@InjectMocks</code></td></tr>
+    <tr><td>Método probado</td><td><code>registrarEntrada(AccesoCreateDTO)</code></td></tr>
+    <tr><td>Repository simulado</td><td><code>AccesoRepository</code> con <code>@Mock</code>. Además se simulan <strong>dos Feign Clients</strong>: <code>ReservaClient</code> (→ ms-reservas) y <code>EspacioClient</code> (→ ms-espacios)</td></tr>
+    <tr><td>Datos preparados</td><td>Una <code>ReservaResponseDTO</code> con estado <code>"CONFIRMADA"</code>; <code>findByIdReserva(1L)</code> devuelve <code>Optional.empty()</code> (no hay acceso duplicado); <code>save()</code> responde con <code>thenAnswer</code> asignando <code>id=10L</code>, simulando el autoincremental de MySQL</td></tr>
+    <tr><td>Acción ejecutada</td><td><code>accesoService.registrarEntrada(createDTO)</code> — se ejecuta el método real del Service</td></tr>
+    <tr><td>Assert utilizado</td><td><code>assertThat(...).isEqualTo(...)</code> (AssertJ, equivalente a <code>assertEquals</code>) sobre el id y el estado; más <code>verify(espacioClient).updateDisponibilidad(1L, false)</code> para la interacción</td></tr>
+    <tr><td>Resultado esperado</td><td>Se crea el Acceso con id 10 y estado <code>ACTIVO</code>, <strong>y además</strong> se llama a ms-espacios para marcar el espacio como no disponible (regla de negocio: la entrada ocupa el espacio)</td></tr>
+    <tr><td>Posible causa de error</td><td>Mock configurado con otro id (el <code>when</code> nunca aplica y Feign simulado devuelve null); cambiar la regla en el Service y que ya no llame al client (falla el <code>verify</code>); stubs innecesarios (<code>UnnecessaryStubbingException</code> en Mockito strict)</td></tr>
+    <tr><td>Cómo se aplicaría en DoggySpa</td><td>Es el mismo patrón de la Etapa 3 de la guía (<code>ms-mascota</code> que depende de <code>ms-cliente</code>): allá se mockearía <code>MascotaRepository</code> + <code>ClienteClient</code>; acá mockeamos <code>AccesoRepository</code> + <code>ReservaClient</code>/<code>EspacioClient</code>. La comunicación externa siempre se simula</td></tr>
+  </table>
+
+  <h3>Caso B — ms-espacios: número de espacio duplicado rechaza la creación</h3>
+  <p>Test analizado:</p>
+<pre><code><span class="ann">@Test</span>
+<span class="ann">@DisplayName("create debe lanzar IllegalArgumentException cuando el número está duplicado")</span>
+void create_numeroDuplicado_debeLanzarExcepcion() {
+    <span class="cm">// Arrange</span>
+    EspacioCreateDTO dto = new EspacioCreateDTO(<span class="str">"A-01"</span>, <span class="str">"Norte"</span>, 1, 1L, true, true);
+    when(espaciosRepository.existsByNumero(<span class="str">"A-01"</span>)).thenReturn(true);
+
+    <span class="cm">// Act + Assert</span>
+    assertThatThrownBy(() -&gt; espacioService.create(dto))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining(<span class="str">"A-01"</span>);
+    verify(espaciosRepository, never()).save(any(Espacio.class));
+}</code></pre>
+
+  <table class="actividad">
+    <tr><th>Ítem</th><th>Respuesta</th></tr>
+    <tr><td>Clase de test analizada</td><td><code>EspacioServiceTest</code> — <code>ms-espacios/src/test/java/estacionamientos/ms_espacios/service/</code></td></tr>
+    <tr><td>Servicio probado</td><td><code>EspacioService</code></td></tr>
+    <tr><td>Método probado</td><td><code>create(EspacioCreateDTO)</code> — camino de error (número duplicado)</td></tr>
+    <tr><td>Repository simulado</td><td><code>EspacioRepository</code> con <code>@Mock</code>. También se declara <code>@Mock TipoEspacioService</code> (dependencia de otro service de la misma app), aunque este camino falla antes de usarla</td></tr>
+    <tr><td>Datos preparados</td><td>Un <code>EspacioCreateDTO</code> con número <code>"A-01"</code> y el mock programado: <code>existsByNumero("A-01") → true</code> (el número ya existe en "la BD")</td></tr>
+    <tr><td>Acción ejecutada</td><td><code>espacioService.create(dto)</code> dentro de <code>assertThatThrownBy</code></td></tr>
+    <tr><td>Assert utilizado</td><td><code>assertThatThrownBy(...).isInstanceOf(IllegalArgumentException.class).hasMessageContaining("A-01")</code> + <code>verify(repo, never()).save(...)</code></td></tr>
+    <tr><td>Resultado esperado</td><td>Se lanza la excepción con el número en el mensaje y <strong>no se persiste nada</strong> (el <code>never()</code> lo garantiza). El <code>GlobalExceptionHandler</code> de ms-espacios traduce <code>IllegalArgumentException</code> a <strong>400 Bad Request</strong></td></tr>
+    <tr><td>Posible causa de error</td><td>Programar <code>existsByNumero</code> con otro string; esperar otra excepción (en ms-accesos la regla equivalente lanza <code>ConflictException</code>, acá es <code>IllegalArgumentException</code> — hay que mirar los imports del service); validar un mensaje que no contiene el texto esperado</td></tr>
+    <tr><td>Cómo se aplicaría en DoggySpa</td><td>Es el patrón de la Etapa 1 (<code>ms-cliente</code> simple, sin dependencias remotas): regla de unicidad probada solo contra el Repository simulado, sin Feign ni base de datos real</td></tr>
+  </table>
+
+  <div class="box clave">
+    <strong>Contraste entre ambos casos (esto es lo que la guía quiere que notes):</strong>
+    el Caso B es el testing "estilo Biblioteca" (Service → Repository); el Caso A es el testing de microservicios (Service → Repository <em>y</em> Service → Clients externos). La técnica es idéntica — <code>when/thenReturn</code>, asserts, <code>verify</code> — lo que cambia es <em>cuántas fronteras se simulan</em>.
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<section id="a2">
+  <h2>Actividad 2 — Análisis de Controller Test</h2>
+  <p class="sub">Test seleccionado: el único Controller test del repo, con MockMvc. Analizamos el caso 404, que además demuestra el manejo de excepciones y códigos HTTP.</p>
+
+<pre><code><span class="ann">@WebMvcTest(EspacioController.class)</span>
+<span class="ann">@AutoConfigureMockMvc(addFilters = false)</span>
+class EspacioControllerTest {
+
+    <span class="ann">@Autowired</span> private MockMvc mockMvc;
+    <span class="ann">@MockitoBean</span> private EspacioService espacioService;
+
+    <span class="ann">@Test</span>
+    <span class="ann">@DisplayName("GET /api/espacios/{id} debe retornar 404 cuando el espacio no existe")</span>
+    void getById_inexistente_debeRetornar404() throws Exception {
+        <span class="cm">// Arrange</span>
+        when(espacioService.findById(99L))
+                .thenThrow(new ResourceNotFoundException(<span class="str">"Espacio no encontrado con id: 99"</span>));
+
+        <span class="cm">// Act + Assert</span>
+        mockMvc.perform(get(<span class="str">"/api/espacios/99"</span>))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath(<span class="str">"$.error"</span>).value(<span class="str">"NOT_FOUND"</span>))
+                .andExpect(jsonPath(<span class="str">"$.mensaje"</span>).value(<span class="str">"Espacio no encontrado con id: 99"</span>));
+    }
+}</code></pre>
+
+  <table class="actividad">
+    <tr><th>Ítem</th><th>Respuesta</th></tr>
+    <tr><td>Clase de test analizada</td><td><code>EspacioControllerTest</code> — <code>ms-espacios/src/test/java/estacionamientos/ms_espacios/controller/</code>, anotada con <code>@WebMvcTest(EspacioController.class)</code> (levanta solo la capa web, no toda la app)</td></tr>
+    <tr><td>Controller probado</td><td><code>EspacioController</code></td></tr>
+    <tr><td>Endpoint probado</td><td><code>GET /api/espacios/{id}</code> con id 99 (inexistente)</td></tr>
+    <tr><td>Método HTTP</td><td>GET (la misma clase también prueba POST con 201 y 400, y PUT de disponibilidad con 200)</td></tr>
+    <tr><td>Service simulado</td><td><code>EspacioService</code> con <code>@MockitoBean</code>, programado para <strong>lanzar</strong> <code>ResourceNotFoundException</code> (con <code>thenThrow</code>, no <code>thenReturn</code>)</td></tr>
+    <tr><td>JSON enviado, si corresponde</td><td>No aplica en GET. En el caso POST de la misma clase sí: <code>.content(objectMapper.writeValueAsString(dto))</code> con <code>contentType(APPLICATION_JSON)</code> — ObjectMapper convierte el DTO a JSON</td></tr>
+    <tr><td>Código HTTP esperado</td><td><code>status().isNotFound()</code> → <strong>404</strong>. (POST válido espera <strong>201</strong> <code>isCreated()</code>; POST sin campos obligatorios espera <strong>400</strong> con <code>jsonPath("$.campos.numero").exists()</code>)</td></tr>
+    <tr><td>JSON validado</td><td><code>$.error = "NOT_FOUND"</code> y <code>$.mensaje = "Espacio no encontrado con id: 99"</code> — es el body que construye el <code>GlobalExceptionHandler</code> (<code>@RestControllerAdvice</code>) al capturar la excepción</td></tr>
+    <tr><td>Posible causa de error</td><td>Ruta que no calza con el <code>@RequestMapping</code> (→ 404 falso); esperar <code>isOk()</code> cuando el endpoint devuelve 201; campo JSON con otro nombre (<code>$.error</code> vs <code>$.status</code> — ¡los handlers varían entre servicios!); olvidar el <code>@MockitoBean</code> → <code>No qualifying bean of type EspacioService</code></td></tr>
+    <tr><td>Cómo se aplicaría en DoggySpa</td><td>Idéntico: el Controller test no cambia al pasar a microservicios porque el Service está simulado. En <code>ms-cliente</code> de DoggySpa sería <code>@WebMvcTest(ClienteController.class)</code> + <code>@MockitoBean ClienteService</code> + MockMvc validando ruta, código y JSON</td></tr>
+  </table>
+
+  <div class="box ok">
+    <strong>Lo que este test demuestra en una sola pieza</strong> (y que vale puntos en IE 2.3.4 / 3.1.2): la cadena completa <em>Controller recibe GET → Service lanza excepción → @RestControllerAdvice la captura → ResponseEntity 404 con body {error, mensaje, timestamp}</em>. Es la prueba de que el manejo de errores no es teórico: está testeado.
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<section id="a3">
+  <h2>18. Actividad de reflexión — respondida en equipo</h2>
+
+  <div class="qa"><p class="q">1. ¿Por qué no es recomendable probar directamente con la base de datos de desarrollo?</p>
+  <p class="r">Porque el test deja de ser aislado y determinista: dependería del estado que dejaron corridas anteriores o el trabajo manual, sería lento, y podría corromper datos que estamos usando para desarrollar. Además fallaría por razones ajenas al código (MySQL apagado, puerto cambiado). Por eso nuestros Service tests mockean el Repository, y los de integración usan H2 en memoria con <code>ddl-auto=create-drop</code> en <code>application-test.properties</code>, con Eureka deshabilitado (<code>eureka.client.enabled=false</code>).</p></div>
+
+  <div class="qa"><p class="q">2. ¿Qué ventaja tiene usar mocks?</p>
+  <p class="r">Permiten probar una clase sin sus dependencias reales: sin base de datos, sin red y sin que los otros microservicios estén corriendo. El mock devuelve exactamente lo que el escenario necesita (<code>when().thenReturn()</code>), incluso casos difíciles de reproducir en real (un servicio caído, un dato inexistente), y además registra las interacciones para verificarlas (<code>verify()</code>). Resultado: tests rápidos, repetibles y enfocados en una sola regla.</p></div>
+
+  <div class="qa"><p class="q">3. ¿Qué diferencia existe entre probar un Service y probar un Controller?</p>
+  <p class="r">El Service test valida <strong>lógica de negocio</strong> con Mockito puro (<code>@ExtendWith(MockitoExtension.class)</code>): reglas, cálculos, excepciones; se mockean Repository y Feign Clients. El Controller test valida el <strong>contrato HTTP</strong> con <code>@WebMvcTest</code> + MockMvc: ruta, método, código de respuesta y JSON; se mockea el Service. Uno responde "¿la regla está bien implementada?", el otro "¿el endpoint expone bien esa regla?".</p></div>
+
+  <div class="qa"><p class="q">4. ¿Qué tipo de errores detecta una prueba de Controller?</p>
+  <p class="r">Ruta mal mapeada (404), método HTTP incorrecto, código de respuesta equivocado (200 vs 201), JSON con campos distintos a lo pactado (falla el <code>jsonPath</code>), validación Bean Validation que no dispara (400 ausente), y manejo de excepciones roto (el handler no traduce la excepción al código correcto).</p></div>
+
+  <div class="qa"><p class="q">5. ¿Qué tipo de errores detecta una prueba de Service?</p>
+  <p class="r">Reglas de negocio mal implementadas (permitir una entrada con reserva PENDIENTE), cálculos erróneos (la fórmula de <code>PagoService</code> con BigDecimal: 1000×2.0×1.5×1.2×1.5h debe dar exactamente 5400.00), excepciones que no se lanzan cuando corresponde, efectos laterales ausentes (no llamar a <code>updateDisponibilidad</code>) y persistencias indebidas (guardar pese a un error — lo caza <code>verify(repo, never()).save(any())</code>).</p></div>
+
+  <div class="qa"><p class="q">6. ¿Qué cambia cuando un microservicio depende de otro?</p>
+  <p class="r">Aparece una frontera nueva que también hay que simular: el cliente HTTP (Feign en nuestro caso). En <code>ReservaServiceTest</code> se mockean 1 repository + 3 clients (<code>ClienteClient</code>, <code>VehiculoClient</code>, <code>EspacioClient</code>); en <code>AccesoServiceTest</code>, 1 repository + 2 clients. El test además debe cubrir los caminos donde el remoto falla o devuelve datos inválidos (cliente inactivo, espacio no disponible).</p></div>
+
+  <div class="qa"><p class="q">7. ¿Por qué en microservicios se debe simular también la comunicación externa?</p>
+  <p class="r">Porque una prueba unitaria debe poder correr sin que el resto del ecosistema exista. Si el test de ms-accesos necesitara ms-reservas corriendo, fallaría por red, orden de arranque o datos ajenos — dejaría de ser unitaria. Simular el client convierte "el otro servicio" en una respuesta controlada y permite probar escenarios remotos imposibles de orquestar en vivo (404 remoto, servicio caído → <code>FeignException</code>).</p></div>
+
+  <div class="qa"><p class="q">8. ¿Qué se debería validar antes de afirmar que un endpoint está correctamente probado?</p>
+  <p class="r">Cinco cosas: (1) la <strong>ruta y método</strong> exactos; (2) el <strong>código HTTP</strong> real de cada camino (feliz y de error); (3) el <strong>JSON</strong> de respuesta campo a campo; (4) la <strong>interacción con el Service</strong> (que se llamó con los argumentos correctos); y (5) los <strong>casos de error</strong>: validación 400, recurso inexistente 404, conflicto 409. Un endpoint con solo el caso feliz probado no está correctamente probado.</p></div>
+</section>
+
+<!-- ================================================================ -->
+<section id="a4">
+  <h2>19. Evidencia esperada de la actividad — checklist de cumplimiento</h2>
+  <p class="sub">Lo que la guía pide entregar por equipo, y dónde queda cubierto en este apéndice:</p>
+  <ul class="check">
+    <li><strong>Análisis de al menos un Service Test</strong> — Actividad 1, con dos casos: <code>AccesoServiceTest</code> (con Feign) y <code>EspacioServiceTest</code> (regla de unicidad).</li>
+    <li><strong>Análisis de al menos un Controller Test</strong> — Actividad 2: <code>EspacioControllerTest</code> con MockMvc (404, y referencia a los casos 201/400/200 de la misma clase).</li>
+    <li><strong>Explicación de los mocks utilizados</strong> — filas "Repository simulado" y "Service simulado" de cada tabla: <code>@Mock</code>/<code>@InjectMocks</code> en Service tests, <code>@MockitoBean</code> en el Controller test, y por qué en microservicios se mockean además los Feign Clients.</li>
+    <li><strong>Explicación de los asserts utilizados</strong> — filas "Assert utilizado": AssertJ (<code>assertThat</code>, <code>assertThatThrownBy</code>) como equivalente de <code>assertEquals</code>/<code>assertNotNull</code> de la guía, más <code>verify()</code>/<code>never()</code> para interacciones y <code>jsonPath()</code> para el contrato JSON.</li>
+    <li><strong>Identificación de posibles errores</strong> — filas "Posible causa de error" de las tres tablas + los errores de entorno (BD real, perfil, mock faltante) tratados en la sección 2.7 de la guía de estudio.</li>
+    <li><strong>Breve relación con cómo se aplicaría en microservicios</strong> — filas "Cómo se aplicaría en DoggySpa": nuestro proyecto ya implementa las tres etapas que la guía anuncia para DoggySpa (servicio simple → servicio con lógica propia → servicio con comunicación), así que la relación se demuestra con código propio.</li>
+  </ul>
+  <div class="box warn">
+    <strong>Nota para la defensa:</strong> la guía dice explícitamente que "no se busca solamente que el test funcione, sino que el estudiante pueda explicar qué está ocurriendo en cada parte". Este apéndice es el guion de esa explicación; la plantilla para <em>escribir</em> un test nuevo en vivo (IE 3.1.3, 13%) está en la sección 2.6 de la <a href="defensa-ev3-estudio.html#s26">guía de estudio</a>.
+  </div>
+</section>
+
+</main>
+
+<footer>
+  Apéndice de la Guía de Estudio EV3 · generado el 01/07/2026 · formato: secciones 17–19 de la guía oficial 3.1 (Unidad 3) · código citado verificado contra el repositorio FULLSTACK-I.
+</footer>
+
+</body>
+</html>

@@ -230,7 +230,7 @@ public class PagoService {
         return BigDecimal.ZERO;
     }
 
-    // ── Billing formula ──────────────────────────────────────────────────────
+    // ── Cobro formula ──────────────────────────────────────────────────────
 
     private BigDecimal calcularMontoBase(TarifaResponseDTO tarifa,
             BigDecimal factorVehiculo,
