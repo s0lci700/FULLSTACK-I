@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Problema Maven Laboratorio EFT — Estacionamiento Inteligente</title>
+  <style>
+:root { --bg:#0f1117;--bg2:#1a1f2e;--border:#2d3748;--text:#e2e8f0;--text2:#94a3b8;--text3:#7b8ea6;--blue:#93c5fd; }
+*{box-sizing:border-box}
+body{margin:0;font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+.container{max-width:980px;margin:0 auto;padding:2rem}
+.back{display:inline-flex;gap:.4rem;color:var(--text3);text-decoration:none;font-size:.85rem;margin-bottom:1rem}
+.back:hover{color:var(--blue)}
+.header{border-bottom:1px solid var(--border);padding-bottom:1rem;margin-bottom:1.25rem}
+.header h1{margin:0;font-size:1.9rem}
+.header p{margin:.35rem 0 0;color:var(--text2);font-size:.92rem}
+main{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.25rem 1.5rem}
+a{color:var(--blue)}
+h1,h2,h3{color:#f8fafc}
+h2{margin-top:1.6rem;border-bottom:1px solid var(--border);padding-bottom:.35rem}
+h3{margin-top:1.2rem}
+p,li{color:var(--text2)}
+code{background:#111827;border:1px solid var(--border);padding:.1rem .35rem;border-radius:4px;color:#c4b5fd;font-family:Consolas,monospace}
+pre{background:#111827;border:1px solid var(--border);padding:.8rem;border-radius:8px;overflow:auto}
+pre code{border:none;background:none;padding:0;color:#e2e8f0}
+table{width:100%;border-collapse:collapse;margin:.8rem 0}
+th,td{border:1px solid var(--border);padding:.5rem .6rem;text-align:left}
+th{background:#1e2330;color:var(--text3);font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+blockquote{border-left:3px solid var(--border);margin:1rem 0;padding:.2rem .8rem;color:var(--text3)}
+hr{border:none;border-top:1px solid var(--border);margin:1.2rem 0}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a class="back" href="index.html">← Índice docs</a>
+    <div class="header">
+      <h1>Problema: ningún servicio arrancó en el laboratorio (EFT)</h1>
+      <p>Versión HTML legible generada desde <code>PROBLEMA_MAVEN_LABORATORIO.md</code>.</p>
+    </div>
+    <main>
+      <h2>Síntoma</h2>
+      <p>El día del examen, en el computador del laboratorio (Java 25 instalado), no arrancó ningún microservicio. Al intentar ejecutar Maven, el sistema intentó descargar Maven y falló (sin internet en el laboratorio), y además reportó problemas para encontrar el POM padre (<code>estacionamientos-parent</code>).</p>
+
+      <h2>Causa raíz (confirmada)</h2>
+      <p>Hay <strong>tres factores</strong>, pero solo dos son reales:</p>
+      <ol>
+        <li><strong><code>apache-maven-3.9.15/</code> no existe en la rama <code>Entrega-EV3</code>.</strong> Está trackeado en <code>main</code>, pero la rama de entrega (la que se clona/descarga para el examen) nunca lo incluyó. Verificado con:
+          <pre><code>git ls-tree -r origin/Entrega-EV3 --name-only | grep apache-maven   # 0 resultados
+git ls-files apache-maven-3.9.15 | head -3                          # sí existe en main</code></pre>
+        </li>
+        <li><strong>Sin ese binario, los scripts caen al wrapper <code>.\mvnw</code></strong>, que necesita descargar el ZIP completo de Maven desde <code>https://repo.maven.apache.org/...</code> (ver <code>.mvn/wrapper/maven-wrapper.properties</code>) la primera vez que se usa en una máquina nueva. Si el laboratorio bloquea internet, esa descarga falla ahí mismo — esto es lo que generó el error de "no pudo descargar Maven".</li>
+        <li><strong>Java 25 vs <code>&lt;java.version&gt;21&lt;/java.version&gt;</code> — NO es la causa real.</strong> Se verificó corriendo la suite completa de tests en una máquina con Java 25.0.3 instalado: <code>BUILD SUCCESS</code>, 139 tests, 0 fallos. Spring Boot fija <code>maven.compiler.release=21</code> a partir de esa propiedad, y <code>javac</code> de Java 25 soporta compilar con <code>--release 21</code> sin problema. El Java del laboratorio no debería haber bloqueado nada por sí solo.</li>
+      </ol>
+      <p>El "no encuentra el padre" probablemente apareció como síntoma secundario de la cadena de fallos anterior (intentos fallidos de build/ejecución dejando el estado de Maven inconsistente), no como un problema de configuración del <code>&lt;relativePath&gt;</code> en sí — el <code>pom.xml</code> de cada servicio ya declara correctamente <code>&lt;relativePath&gt;../pom.xml&lt;/relativePath&gt;</code>, que resuelve sin problema siempre que la carpeta raíz completa del proyecto esté presente.</p>
+
+      <h2>Los scripts ya están bien diseñados para esto</h2>
+      <p><code>scripts/start-all.ps1</code>, <code>scripts/manage.ps1</code> y <code>scripts/preparar-entrega.ps1</code> <strong>ya implementan</strong> la detección correcta de Maven, en este orden de preferencia:</p>
+      <pre><code>$localMvn = Join-Path $root "apache-maven-3.9.15\bin\mvn.cmd"
+$mvnCmd   = if     (Test-Path $localMvn)                          { "&amp; '$localMvn'" }  # 1. offline, sin internet
+            elseif (Get-Command mvn -ErrorAction SilentlyContinue) { "mvn"           }  # 2. Maven del sistema
+            else                                                   { ".\mvnw"        }  # 3. wrapper, necesita internet</code></pre>
+      <p>El problema <strong>no es la lógica de los scripts</strong> — es que la carpeta que esa lógica busca (<code>apache-maven-3.9.15/</code>) no estaba presente en la rama que se usó ese día.</p>
+
+      <h2>Solución para el día del EFT (07/07/2026)</h2>
+      <ol>
+        <li><strong>Confirmar antes de nada que <code>apache-maven-3.9.15/</code> esté presente</strong> en la carpeta del proyecto que se va a usar en el laboratorio — copiarla manualmente desde el ZIP de entrega o desde un pendrive si el clon de GitHub no la trae (ver nota abajo sobre <code>Entrega-EV3</code>).</li>
+        <li>Si por cualquier motivo el binario local no está disponible y hay que construir desde la raíz manualmente, usar <code>-pl</code> para apuntar a un servicio puntual sin salir de la raíz (así el POM padre se resuelve siempre vía el reactor):
+          <pre><code>.\apache-maven-3.9.15\bin\mvn.cmd -pl auth-service -am spring-boot:run</code></pre>
+        </li>
+        <li><strong>Nunca ejecutar <code>mvnw.cmd</code> como primera opción en el laboratorio</strong> — solo sirve como fallback si hay internet.</li>
+        <li>Los scripts (<code>start-all.ps1</code>, <code>manage.ps1</code>) ya hacen esta detección automáticamente — con solo tener <code>apache-maven-3.9.15/</code> en la raíz del proyecto, todo funciona sin tocar nada más.</li>
+      </ol>
+
+      <h2>Pendiente de decisión</h2>
+      <p><code>apache-maven-3.9.15/</code> está en <code>main</code> pero no en <code>Entrega-EV3</code> (la rama de entrega, ver <a href="BRANCHES.html">BRANCHES.html</a>). Si el EFT va a reutilizar esa rama tal cual, hay que decidir entre:</p>
+      <ul>
+        <li>Agregar <code>apache-maven-3.9.15/</code> a <code>Entrega-EV3</code> (toca la rama congelada de entrega — requiere confirmación antes de hacerlo).</li>
+        <li>O asegurarse de copiar esa carpeta manualmente al equipo del laboratorio el día del examen, sin modificar la rama.</li>
+      </ul>
+    </main>
+  </div>
+</body>
+</html>
