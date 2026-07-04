@@ -13,11 +13,30 @@
       restart <n|name|all>  Stop then start
       db                    Run load-db.ps1 (reset all 9 databases)
       status / s            Refresh the dashboard
+      doctor                Diagnose Maven/Java/connectivity issues (no services touched)
       quit / q              Exit
 
     <n> accepts a number (1-12), an exact name, or a partial match.
     Examples:  start 4   |  stop ms-pagos   |  restart pag
+
+.PARAMETER Help
+    Show this help and exit.
+
+.PARAMETER Troubleshoot
+    Run the environment diagnostic (same as the 'doctor' command) and exit,
+    without opening the interactive dashboard. Use this first if services fail
+    to start in a lab/offline machine. See docs/PROBLEMA_MAVEN_LABORATORIO.md.
 #>
+
+param(
+    [switch]$Help,
+    [switch]$Troubleshoot
+)
+
+if ($Help) {
+    Get-Help $PSCommandPath -Full
+    exit 0
+}
 
 $ErrorActionPreference = "SilentlyContinue"
 $root = Split-Path -Parent $PSScriptRoot
@@ -44,6 +63,55 @@ $localMvn = Join-Path $root "apache-maven-3.9.15\bin\mvn.cmd"
 $mvnCmd   = if     (Test-Path $localMvn)                          { "& '$localMvn'" }
             elseif (Get-Command mvn -ErrorAction SilentlyContinue) { "mvn"           }
             else                                                   { ".\mvnw"        }
+
+# ── Doctor: diagnose the exact failure mode seen in the lab on exam day ───────
+# apache-maven-3.9.15 missing from the checked-out branch -> falls back to .\mvnw
+# -> needs internet -> fails. See docs/PROBLEMA_MAVEN_LABORATORIO.md.
+function Show-Doctor([switch]$Pause) {
+    Clear-Host
+    Write-Host ""
+    Write-Host "  == Diagnostico de entorno ================================" -ForegroundColor Cyan
+    Write-Host ""
+
+    Write-Host "  Maven:" -ForegroundColor Yellow
+    Write-Host "    apache-maven-3.9.15/  : $(if (Test-Path $localMvn) { "OK -> $localMvn" } else { 'NO ENCONTRADO' })"
+    Write-Host "    mvn en PATH           : $(if (Get-Command mvn -ErrorAction SilentlyContinue) { 'OK' } else { 'no' })"
+    Write-Host "    mvnw.cmd (wrapper)    : $(if (Test-Path (Join-Path $root 'mvnw.cmd')) { 'presente (necesita internet la 1a vez)' } else { 'no encontrado' })"
+    Write-Host "    -> se esta usando     : $mvnCmd"
+    Write-Host ""
+
+    Write-Host "  Java:" -ForegroundColor Yellow
+    $javaVersionLine = (& java -version 2>&1 | Select-Object -First 1)
+    Write-Host "    java -version         : $javaVersionLine"
+    Write-Host "    JAVA_HOME             : $env:JAVA_HOME"
+    Write-Host ""
+
+    Write-Host "  Estructura del proyecto:" -ForegroundColor Yellow
+    $parentPom = Join-Path $root "pom.xml"
+    Write-Host "    pom.xml raiz          : $(if (Test-Path $parentPom) { 'OK' } else { 'NO ENCONTRADO -- falta la carpeta raiz completa' })"
+    Write-Host ""
+
+    Write-Host "  Conectividad (solo relevante si se usa mvnw):" -ForegroundColor Yellow
+    $net = Test-NetConnection -ComputerName "repo.maven.apache.org" -Port 443 -InformationLevel Quiet -WarningAction SilentlyContinue
+    Write-Host "    repo.maven.apache.org : $(if ($net) { 'alcanzable' } else { 'SIN CONEXION' })"
+    Write-Host ""
+
+    if (-not (Test-Path $localMvn)) {
+        Write-Host "  AVISO: apache-maven-3.9.15/ no esta en esta carpeta." -ForegroundColor Red
+        Write-Host "  Sin internet, mvnw.cmd va a fallar. Copia esa carpeta desde el ZIP" -ForegroundColor Red
+        Write-Host "  de entrega antes de continuar. Ver docs/PROBLEMA_MAVEN_LABORATORIO.md" -ForegroundColor Red
+    } else {
+        Write-Host "  Todo listo para arrancar sin depender de internet." -ForegroundColor Green
+    }
+    Write-Host ""
+
+    if ($Pause) { Read-Host "  Presiona Enter para volver al dashboard" | Out-Null }
+}
+
+if ($Troubleshoot) {
+    Show-Doctor
+    exit 0
+}
 
 # ── Windows Terminal detection ────────────────────────────────────────────────
 $useWT      = ($null -ne $env:WT_SESSION) -and ($null -ne (Get-Command wt -ErrorAction SilentlyContinue))
@@ -115,7 +183,7 @@ function Show-Dashboard([string]$feedback = "") {
     }
 
     Write-Host ""
-    Write-Host "  start / stop / restart / package / jar  <n | name | all>    db    status    quit" -ForegroundColor DarkGray
+    Write-Host "  start / stop / restart / package / jar  <n | name | all>    db    status    doctor    quit" -ForegroundColor DarkGray
     Write-Host ""
 }
 
@@ -249,6 +317,11 @@ function Handle-Input([string]$line) {
             return "Refreshed."
         }
 
+        { $_ -in @("doctor", "diag", "troubleshoot") } {
+            Show-Doctor -Pause
+            return ""
+        }
+
         "db" {
             $script = Join-Path $PSScriptRoot "load-db.ps1"
             if (-not (Test-Path $script)) { return "load-db.ps1 not found in $PSScriptRoot" }
@@ -339,7 +412,7 @@ function Handle-Input([string]$line) {
         }
 
         { $_ -in @("?", "help", "h") } {
-            return "start/stop/restart <n|name|all>  |  package <n|all> (build JAR)  |  jar <n|all> (run JAR)  |  db  |  status  |  quit"
+            return "start/stop/restart <n|name|all>  |  package <n|all> (build JAR)  |  jar <n|all> (run JAR)  |  db  |  status  |  doctor  |  quit"
         }
 
         "" { return "" }   # bare Enter = silent refresh

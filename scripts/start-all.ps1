@@ -19,9 +19,22 @@
 .PARAMETER NoPause
     Skip the "Press any key" prompt at the end.
 
+.PARAMETER Help
+    Show this help and exit (same as Get-Help .\start-all.ps1 -Full).
+
+.PARAMETER Troubleshoot
+    Diagnose the environment without starting anything: which Maven will be used,
+    Java version/JAVA_HOME, whether the root pom.xml is present, and internet
+    connectivity to repo.maven.apache.org. Use this first if services fail to
+    start in a lab/offline machine. See docs/PROBLEMA_MAVEN_LABORATORIO.md.
+
 .EXAMPLE
     .\start-all.ps1
     Starts all 12 services.
+
+.EXAMPLE
+    .\start-all.ps1 -Troubleshoot
+    Diagnoses Maven/Java/connectivity issues without starting any service.
 
 .EXAMPLE
     .\start-all.ps1 -Services eureka-server,api-gateway,ms-reservas,ms-accesos
@@ -36,8 +49,15 @@ param(
     [string[]]$Services = @(),
     [switch]$NoPause,
     [ValidateSet("Auto","Tabs","Windows")]
-    [string]$Layout = "Auto"
+    [string]$Layout = "Auto",
+    [switch]$Help,
+    [switch]$Troubleshoot
 )
+
+if ($Help) {
+    Get-Help $PSCommandPath -Full
+    exit 0
+}
 
 # ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -131,6 +151,51 @@ if (Test-Path $localMvn) {
 } else {
     $mvnCmd = ".\mvnw"
     $mvnSource = "wrapper (.\mvnw) — requires internet on first run"
+}
+
+# ── Troubleshoot ─────────────────────────────────────────────────────────────
+# Diagnoses the exact failure mode seen in the lab on exam day: apache-maven-3.9.15
+# missing from the checked-out branch → falls back to .\mvnw → needs internet → fails.
+# See docs/PROBLEMA_MAVEN_LABORATORIO.md for the full write-up.
+
+if ($Troubleshoot) {
+    Write-Host ""
+    Write-Host "  == Diagnostico de entorno ================================" -ForegroundColor Cyan
+    Write-Host ""
+
+    Write-Host "  Maven:" -ForegroundColor Yellow
+    Write-Host "    apache-maven-3.9.15/  : $(if (Test-Path $localMvn) { "OK -> $localMvn" } else { 'NO ENCONTRADO' })"
+    Write-Host "    mvn en PATH           : $(if (Get-Command mvn -ErrorAction SilentlyContinue) { 'OK' } else { 'no' })"
+    Write-Host "    mvnw.cmd (wrapper)    : $(if (Test-Path (Join-Path $root 'mvnw.cmd')) { 'presente (necesita internet la 1a vez)' } else { 'no encontrado' })"
+    Write-Host "    -> se va a usar       : $mvnSource" -ForegroundColor $(if ($mvnSource -like 'local*') { 'Green' } else { 'Yellow' })
+    Write-Host ""
+
+    Write-Host "  Java:" -ForegroundColor Yellow
+    $javaVersionLine = (& java -version 2>&1 | Select-Object -First 1)
+    Write-Host "    java -version         : $javaVersionLine"
+    Write-Host "    JAVA_HOME             : $env:JAVA_HOME"
+    Write-Host ""
+
+    Write-Host "  Estructura del proyecto:" -ForegroundColor Yellow
+    $parentPom = Join-Path $root "pom.xml"
+    Write-Host "    pom.xml raiz          : $(if (Test-Path $parentPom) { 'OK' } else { 'NO ENCONTRADO -- falta la carpeta raiz completa' })"
+    Write-Host ""
+
+    Write-Host "  Conectividad (solo relevante si se usara mvnw):" -ForegroundColor Yellow
+    $net = Test-NetConnection -ComputerName "repo.maven.apache.org" -Port 443 -InformationLevel Quiet -WarningAction SilentlyContinue
+    Write-Host "    repo.maven.apache.org : $(if ($net) { 'alcanzable' } else { 'SIN CONEXION' })"
+    Write-Host ""
+
+    if (-not (Test-Path $localMvn)) {
+        Write-Host "  AVISO: apache-maven-3.9.15/ no esta en esta carpeta." -ForegroundColor Red
+        Write-Host "  Sin internet, mvnw.cmd va a fallar. Copia esa carpeta desde el ZIP" -ForegroundColor Red
+        Write-Host "  de entrega o desde otro clon del repo antes de continuar." -ForegroundColor Red
+        Write-Host "  Ver docs/PROBLEMA_MAVEN_LABORATORIO.md para el detalle completo." -ForegroundColor Red
+    } else {
+        Write-Host "  Todo listo para arrancar sin depender de internet." -ForegroundColor Green
+    }
+    Write-Host ""
+    exit 0
 }
 
 # ── Banner ──────────────────────────────────────────────────────────────────
