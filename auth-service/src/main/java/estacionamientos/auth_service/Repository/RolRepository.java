@@ -8,4 +8,6 @@ import estacionamientos.auth_service.model.Rol;
 
 public interface RolRepository extends JpaRepository<Rol, Long> {
     Optional<Rol> findByNombre(String nombre);
+
+    boolean existsByNombre(String nombre);
 }

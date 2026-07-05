@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import estacionamientos.ms_pagos.dto.MetodoPagoCreateDTO;
 import estacionamientos.ms_pagos.dto.MetodoPagoResponseDTO;
+import estacionamientos.ms_pagos.dto.MetodoPagoUpdateDTO;
 import estacionamientos.ms_pagos.exception.ResourceNotFoundException;
 import estacionamientos.ms_pagos.model.Banco;
 import estacionamientos.ms_pagos.model.MetodoPago;
@@ -74,6 +75,36 @@ public class MetodoPagoService {
         }
 
         return toResponse(metodoPagoRepository.save(metodo));
+    }
+
+    @Transactional
+    public MetodoPagoResponseDTO update(Long id, MetodoPagoUpdateDTO dto) {
+        log.info("Actualizando metodo de pago id={}", id);
+        MetodoPago metodo = metodoPagoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("MetodoPago no encontrado id=" + id));
+
+        metodo.setNombreTitular(dto.getNombre());
+        metodo.setIdClienteRef(dto.getIdClienteRef() != null ? dto.getIdClienteRef() : 0L);
+        metodo.setUltimos4(dto.getUltimos4() != null ? dto.getUltimos4() : "0000");
+        metodo.setMesVencimiento(dto.getMesVencimiento() != null ? dto.getMesVencimiento() : 1);
+        metodo.setAnioVencimiento(dto.getAnioVencimiento() != null ? dto.getAnioVencimiento() : 2099);
+
+        if (dto.getIdBanco() != null) {
+            Banco banco = bancoRepository.findById(dto.getIdBanco())
+                    .orElseThrow(() -> new ResourceNotFoundException("Banco no encontrado id=" + dto.getIdBanco()));
+            metodo.setBanco(banco);
+        }
+
+        if (dto.getIdTipoTarjeta() != null) {
+            TipoTarjeta tipo = tipoTarjetaRepository.findById(dto.getIdTipoTarjeta())
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "TipoTarjeta no encontrado id=" + dto.getIdTipoTarjeta()));
+            metodo.setTipoTarjeta(tipo);
+        }
+
+        MetodoPago actualizado = metodoPagoRepository.save(metodo);
+        log.info("Metodo de pago actualizado id={}", actualizado.getId());
+        return toResponse(actualizado);
     }
 
     @Transactional

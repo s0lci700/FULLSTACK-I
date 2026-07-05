@@ -2,6 +2,7 @@ package estacionamientos.ms_tarifas.controller;
 
 import estacionamientos.ms_tarifas.dto.HorarioTarifaCreateDTO;
 import estacionamientos.ms_tarifas.dto.HorarioTarifaResponseDTO;
+import estacionamientos.ms_tarifas.dto.HorarioTarifaUpdateDTO;
 import estacionamientos.ms_tarifas.service.HorarioTarifasService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -59,6 +60,16 @@ public class HorarioTarifasController {
     public ResponseEntity<HorarioTarifaResponseDTO> create(@Valid @RequestBody HorarioTarifaCreateDTO dto) {
         log.info("POST /api/horarios-tarifa");
         return ResponseEntity.status(HttpStatus.CREATED).body(horarioTarifasService.create(dto));
+    }
+
+    @Operation(summary = "Actualizar horario", description = "Actualiza los datos de un horario de tarifa existente")
+    @ApiResponse(responseCode = "200", description = "Horario actualizado")
+    @ApiResponse(responseCode = "404", description = "Horario no encontrado")
+    @PutMapping("/{id}")
+    public ResponseEntity<HorarioTarifaResponseDTO> update(@PathVariable Long id,
+                                                            @Valid @RequestBody HorarioTarifaUpdateDTO dto) {
+        log.info("PUT /api/horarios-tarifa/{}", id);
+        return ResponseEntity.ok(horarioTarifasService.update(id, dto));
     }
 
     @Operation(summary = "Eliminar horario", description = "Elimina un horario de tarifa por su ID")
