@@ -1,6 +1,9 @@
 package estacionamientos.user_service.service;
 
+import estacionamientos.user_service.dto.TipoClienteCreateDTO;
 import estacionamientos.user_service.dto.TipoClienteResponseDTO;
+import estacionamientos.user_service.dto.TipoClienteUpdateDTO;
+import estacionamientos.user_service.exception.ConflictException;
 import estacionamientos.user_service.exception.ResourceNotFoundException;
 import estacionamientos.user_service.model.TipoCliente;
 import estacionamientos.user_service.repository.TipoClienteRepository;
@@ -53,5 +56,44 @@ public class TipoClienteService {
     public TipoCliente findEntityById(Long id) {
         return tipoClienteRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Tipo de cliente no encontrado con id: " + id));
+    }
+
+    @Transactional
+    public TipoClienteResponseDTO create(TipoClienteCreateDTO dto) {
+        log.info("Creando tipo de cliente nombre: {}", dto.getNombre());
+        if (tipoClienteRepository.existsByNombre(dto.getNombre())) {
+            throw new ConflictException("Ya existe un tipo de cliente con el nombre: " + dto.getNombre());
+        }
+        TipoCliente tipo = new TipoCliente();
+        tipo.setNombre(dto.getNombre());
+        tipo.setDescuentoPct(dto.getDescuentoPct());
+        TipoCliente guardado = tipoClienteRepository.save(tipo);
+        log.info("Tipo de cliente creado con id: {}", guardado.getId());
+        return toDTO(guardado);
+    }
+
+    @Transactional
+    public TipoClienteResponseDTO update(Long id, TipoClienteUpdateDTO dto) {
+        log.info("Actualizando tipo de cliente con id: {}", id);
+        TipoCliente tipo = tipoClienteRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Tipo de cliente no encontrado con id: " + id));
+        if (!tipo.getNombre().equals(dto.getNombre()) && tipoClienteRepository.existsByNombre(dto.getNombre())) {
+            throw new ConflictException("Ya existe un tipo de cliente con el nombre: " + dto.getNombre());
+        }
+        tipo.setNombre(dto.getNombre());
+        tipo.setDescuentoPct(dto.getDescuentoPct());
+        TipoCliente actualizado = tipoClienteRepository.save(tipo);
+        log.info("Tipo de cliente actualizado con id: {}", actualizado.getId());
+        return toDTO(actualizado);
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        log.info("Eliminando tipo de cliente con id: {}", id);
+        if (!tipoClienteRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Tipo de cliente no encontrado con id: " + id);
+        }
+        tipoClienteRepository.deleteById(id);
+        log.info("Tipo de cliente eliminado con id: {}", id);
     }
 }

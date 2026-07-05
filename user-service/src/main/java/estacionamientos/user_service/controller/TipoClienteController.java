@@ -1,14 +1,16 @@
 package estacionamientos.user_service.controller;
 
+import estacionamientos.user_service.dto.TipoClienteCreateDTO;
 import estacionamientos.user_service.dto.TipoClienteResponseDTO;
+import estacionamientos.user_service.dto.TipoClienteUpdateDTO;
 import estacionamientos.user_service.service.TipoClienteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,5 +44,35 @@ public class TipoClienteController {
     public ResponseEntity<TipoClienteResponseDTO> getById(@PathVariable Long id) {
         log.info("GET /api/tipo-cliente/{}", id);
         return ResponseEntity.ok(tipoClienteService.findById(id));
+    }
+
+    @Operation(summary = "Crear tipo de cliente", description = "Registra un nuevo tipo de cliente")
+    @ApiResponse(responseCode = "201", description = "Tipo creado correctamente")
+    @ApiResponse(responseCode = "409", description = "Nombre duplicado")
+    @PostMapping
+    public ResponseEntity<TipoClienteResponseDTO> create(@Valid @RequestBody TipoClienteCreateDTO dto) {
+        log.info("POST /api/tipo-cliente");
+        return ResponseEntity.status(HttpStatus.CREATED).body(tipoClienteService.create(dto));
+    }
+
+    @Operation(summary = "Actualizar tipo de cliente", description = "Actualiza los datos de un tipo existente")
+    @ApiResponse(responseCode = "200", description = "Tipo actualizado")
+    @ApiResponse(responseCode = "404", description = "Tipo no encontrado")
+    @ApiResponse(responseCode = "409", description = "Nombre duplicado")
+    @PutMapping("/{id}")
+    public ResponseEntity<TipoClienteResponseDTO> update(@PathVariable Long id,
+            @Valid @RequestBody TipoClienteUpdateDTO dto) {
+        log.info("PUT /api/tipo-cliente/{}", id);
+        return ResponseEntity.ok(tipoClienteService.update(id, dto));
+    }
+
+    @Operation(summary = "Eliminar tipo de cliente", description = "Elimina un tipo de cliente por su ID")
+    @ApiResponse(responseCode = "204", description = "Tipo eliminado")
+    @ApiResponse(responseCode = "404", description = "Tipo no encontrado")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        log.info("DELETE /api/tipo-cliente/{}", id);
+        tipoClienteService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

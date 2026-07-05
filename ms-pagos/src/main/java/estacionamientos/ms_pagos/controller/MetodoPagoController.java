@@ -8,12 +8,14 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import estacionamientos.ms_pagos.dto.MetodoPagoCreateDTO;
 import estacionamientos.ms_pagos.dto.MetodoPagoResponseDTO;
+import estacionamientos.ms_pagos.dto.MetodoPagoUpdateDTO;
 import estacionamientos.ms_pagos.service.MetodoPagoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -57,6 +59,16 @@ public class MetodoPagoController {
     public ResponseEntity<MetodoPagoResponseDTO> create(@Valid @RequestBody MetodoPagoCreateDTO dto) {
         log.info("POST /api/metodos-pago");
         return ResponseEntity.status(HttpStatus.CREATED).body(metodoPagoService.create(dto));
+    }
+
+    @Operation(summary = "Actualizar método de pago", description = "Actualiza los datos de un método de pago existente")
+    @ApiResponse(responseCode = "200", description = "Método actualizado")
+    @ApiResponse(responseCode = "404", description = "Método, banco o tipo de tarjeta no encontrado")
+    @PutMapping("/{id}")
+    public ResponseEntity<MetodoPagoResponseDTO> update(@PathVariable Long id,
+            @Valid @RequestBody MetodoPagoUpdateDTO dto) {
+        log.info("PUT /api/metodos-pago/{}", id);
+        return ResponseEntity.ok(metodoPagoService.update(id, dto));
     }
 
     @Operation(summary = "Eliminar método de pago", description = "Elimina un método de pago por su ID")

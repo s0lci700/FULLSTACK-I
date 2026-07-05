@@ -1,13 +1,15 @@
 package estacionamientos.ms_espacios.service;
 
+import estacionamientos.ms_espacios.dto.TipoEspacioCreateDTO;
 import estacionamientos.ms_espacios.dto.TipoEspacioResponseDTO;
+import estacionamientos.ms_espacios.dto.TipoEspacioUpdateDTO;
+import estacionamientos.ms_espacios.exception.ConflictException;
 import estacionamientos.ms_espacios.exception.ResourceNotFoundException;
 import estacionamientos.ms_espacios.model.TipoEspacio;
 import estacionamientos.ms_espacios.repository.TipoEspacioRepository;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -49,5 +51,46 @@ public class TipoEspacioService {
     public TipoEspacio findEntityById(Long id) {
         return tipoEspaciosRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Tipo de espacio no encontrado con id: " + id));
+    }
+
+    @Transactional
+    public TipoEspacioResponseDTO create(TipoEspacioCreateDTO dto) {
+        log.info("Creando tipo de espacio nombre: {}", dto.getNombre());
+        if (tipoEspaciosRepository.existsByNombre(dto.getNombre())) {
+            throw new ConflictException("Ya existe un tipo de espacio con el nombre: " + dto.getNombre());
+        }
+        TipoEspacio tipo = new TipoEspacio();
+        tipo.setNombre(dto.getNombre());
+        tipo.setDescripcion(dto.getDescripcion());
+        tipo.setFactorPrecio(dto.getFactorPrecio());
+        TipoEspacio guardado = tipoEspaciosRepository.save(tipo);
+        log.info("Tipo de espacio creado con id: {}", guardado.getId());
+        return toDTO(guardado);
+    }
+
+    @Transactional
+    public TipoEspacioResponseDTO update(Long id, TipoEspacioUpdateDTO dto) {
+        log.info("Actualizando tipo de espacio con id: {}", id);
+        TipoEspacio tipo = tipoEspaciosRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Tipo de espacio no encontrado con id: " + id));
+        if (!tipo.getNombre().equals(dto.getNombre()) && tipoEspaciosRepository.existsByNombre(dto.getNombre())) {
+            throw new ConflictException("Ya existe un tipo de espacio con el nombre: " + dto.getNombre());
+        }
+        tipo.setNombre(dto.getNombre());
+        tipo.setDescripcion(dto.getDescripcion());
+        tipo.setFactorPrecio(dto.getFactorPrecio());
+        TipoEspacio actualizado = tipoEspaciosRepository.save(tipo);
+        log.info("Tipo de espacio actualizado con id: {}", actualizado.getId());
+        return toDTO(actualizado);
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        log.info("Eliminando tipo de espacio con id: {}", id);
+        if (!tipoEspaciosRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Tipo de espacio no encontrado con id: " + id);
+        }
+        tipoEspaciosRepository.deleteById(id);
+        log.info("Tipo de espacio eliminado con id: {}", id);
     }
 }

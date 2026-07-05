@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import estacionamientos.ms_pagos.dto.TipoTarjetaDTO;
 import estacionamientos.ms_pagos.dto.TipoTarjetaResponseDTO;
+import estacionamientos.ms_pagos.dto.TipoTarjetaUpdateDTO;
 import estacionamientos.ms_pagos.exception.BusinessException;
 import estacionamientos.ms_pagos.exception.ResourceNotFoundException;
 import estacionamientos.ms_pagos.model.TipoTarjeta;
@@ -52,6 +53,20 @@ public class TipoTarjetaService {
         TipoTarjeta tipo = new TipoTarjeta();
         tipo.setNombre(dto.getNombre());
         return toResponse(tipoTarjetaRepository.save(tipo));
+    }
+
+    @Transactional
+    public TipoTarjetaResponseDTO update(Long id, TipoTarjetaUpdateDTO dto) {
+        log.info("Actualizando tipo tarjeta id={}", id);
+        TipoTarjeta tipo = tipoTarjetaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("TipoTarjeta no encontrado id=" + id));
+        if (!tipo.getNombre().equals(dto.getNombre()) && tipoTarjetaRepository.existsByNombre(dto.getNombre())) {
+            throw new BusinessException("Ya existe un tipo de tarjeta con nombre=" + dto.getNombre());
+        }
+        tipo.setNombre(dto.getNombre());
+        TipoTarjeta actualizado = tipoTarjetaRepository.save(tipo);
+        log.info("Tipo tarjeta actualizado id={}", actualizado.getId());
+        return toResponse(actualizado);
     }
 
     @Transactional

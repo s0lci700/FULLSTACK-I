@@ -2,6 +2,7 @@ package estacionamientos.ms_tarifas.service;
 
 import estacionamientos.ms_tarifas.dto.HorarioTarifaCreateDTO;
 import estacionamientos.ms_tarifas.dto.HorarioTarifaResponseDTO;
+import estacionamientos.ms_tarifas.dto.HorarioTarifaUpdateDTO;
 import estacionamientos.ms_tarifas.exception.ResourceNotFoundException;
 import estacionamientos.ms_tarifas.model.DiaTipoEnum;
 import estacionamientos.ms_tarifas.model.HorarioTarifas;
@@ -75,6 +76,23 @@ public class HorarioTarifasService {
         HorarioTarifas guardado = horarioTarifasRepository.save(horario);
         log.info("Horario de tarifa creado con id: {}", guardado.getId());
         return toDTO(guardado);
+    }
+
+    // Actualiza los datos de un horario de tarifa existente
+    @Transactional
+    public HorarioTarifaResponseDTO update(Long id, HorarioTarifaUpdateDTO dto) {
+        log.info("Actualizando horario de tarifa con id: {}", id);
+        HorarioTarifas horario = horarioTarifasRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Horario de tarifa no encontrado con id: " + id));
+        Tarifas tarifa = tarifasService.findEntityById(dto.getIdTarifa());
+        horario.setTarifa(tarifa);
+        horario.setDiaTipo(DiaTipoEnum.valueOf(dto.getDiaTipo()));
+        horario.setHoraInicio(dto.getHoraInicio());
+        horario.setHoraFin(dto.getHoraFin());
+        horario.setMultiplicador(BigDecimal.valueOf(dto.getMultiplicador()));
+        HorarioTarifas actualizado = horarioTarifasRepository.save(horario);
+        log.info("Horario de tarifa actualizado con id: {}", actualizado.getId());
+        return toDTO(actualizado);
     }
 
     // Elimina un horario de tarifa por id

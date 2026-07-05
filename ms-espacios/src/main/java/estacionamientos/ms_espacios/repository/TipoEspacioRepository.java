@@ -8,4 +8,5 @@ import estacionamientos.ms_espacios.model.TipoEspacio;
 @Repository
 public interface TipoEspacioRepository extends JpaRepository<TipoEspacio, Long>{
 
+    boolean existsByNombre(String nombre);
 }

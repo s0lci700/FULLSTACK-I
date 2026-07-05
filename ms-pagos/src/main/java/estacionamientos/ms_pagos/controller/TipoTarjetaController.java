@@ -8,12 +8,14 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import estacionamientos.ms_pagos.dto.TipoTarjetaDTO;
 import estacionamientos.ms_pagos.dto.TipoTarjetaResponseDTO;
+import estacionamientos.ms_pagos.dto.TipoTarjetaUpdateDTO;
 import estacionamientos.ms_pagos.service.TipoTarjetaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -57,6 +59,17 @@ public class TipoTarjetaController {
     public ResponseEntity<TipoTarjetaResponseDTO> create(@Valid @RequestBody TipoTarjetaDTO dto) {
         log.info("POST /api/tipo-tarjetas");
         return ResponseEntity.status(HttpStatus.CREATED).body(tipoTarjetaService.create(dto));
+    }
+
+    @Operation(summary = "Actualizar tipo de tarjeta", description = "Actualiza el nombre de un tipo de tarjeta existente")
+    @ApiResponse(responseCode = "200", description = "Tipo actualizado")
+    @ApiResponse(responseCode = "404", description = "Tipo no encontrado")
+    @ApiResponse(responseCode = "409", description = "Nombre duplicado")
+    @PutMapping("/{id}")
+    public ResponseEntity<TipoTarjetaResponseDTO> update(@PathVariable Long id,
+            @Valid @RequestBody TipoTarjetaUpdateDTO dto) {
+        log.info("PUT /api/tipo-tarjetas/{}", id);
+        return ResponseEntity.ok(tipoTarjetaService.update(id, dto));
     }
 
     @Operation(summary = "Eliminar tipo de tarjeta", description = "Elimina un tipo de tarjeta por su ID")

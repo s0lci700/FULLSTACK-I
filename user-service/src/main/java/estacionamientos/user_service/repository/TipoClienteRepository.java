@@ -6,4 +6,5 @@ import estacionamientos.user_service.model.TipoCliente;
 
 public interface TipoClienteRepository extends JpaRepository<TipoCliente, Long> {
 
+    boolean existsByNombre(String nombre);
 }
