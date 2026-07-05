@@ -100,8 +100,13 @@ public AccesoResponseDTO registrarEntrada(AccesoCreateDTO dto) {
         acceso.setMinutos((int) minutos);
         acceso.setEstado(EstadoEnum.COMPLETADO);
 
-        espacioClient.updateDisponibilidad(acceso.getIdEspacio(), true);
-        reservaClient.finalizarReserva(acceso.getIdReserva());
+        try {
+            espacioClient.updateDisponibilidad(acceso.getIdEspacio(), true);
+            reservaClient.finalizarReserva(acceso.getIdReserva());
+        } catch (FeignException e) {
+            log.warn("ConflictException: Error al liberar espacio o finalizar reserva: {}", e.getMessage());
+            throw new ConflictException("Error al liberar espacio o finalizar reserva: " + e.getMessage());
+        }
 
         log.info("Salida registrada: id={}, idEspacio={}, idReserva={}, minutos={}",
                 id, acceso.getIdEspacio(), acceso.getIdReserva(), minutos);

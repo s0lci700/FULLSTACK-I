@@ -26,12 +26,6 @@ public class EspacioService {
     @Autowired
     TipoEspacioService tipoEspaciosService;
 
-    //public EspacioService(EspacioRepository espaciosRepository,
-     //       TipoEspacioService tipoEspaciosService) {
-     //   this.espaciosRepository = espaciosRepository;
-     //   this.tipoEspaciosService = tipoEspaciosService;
-    //}
-
     public List<EspacioResponseDTO> findAll() {
         log.info("Obteniendo todos los espacios");
         return espaciosRepository.findAll().stream()

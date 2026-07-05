@@ -4,6 +4,7 @@ import estacionamientos.ms_tarifas.dto.HorarioTarifaCreateDTO;
 import estacionamientos.ms_tarifas.dto.HorarioTarifaResponseDTO;
 import estacionamientos.ms_tarifas.dto.TarifaResponseDTO;
 import estacionamientos.ms_tarifas.exception.ResourceNotFoundException;
+import estacionamientos.ms_tarifas.model.DiaTipoEnum;
 import estacionamientos.ms_tarifas.model.HorarioTarifas;
 import estacionamientos.ms_tarifas.model.Tarifas;
 import estacionamientos.ms_tarifas.repository.HorarioTarifasRepository;
@@ -46,7 +47,7 @@ class HorarioTarifasServiceTest {
         LocalDateTime t1 = LocalDateTime.of(LocalDate.now(), LocalTime.of(9, 0));
         LocalDateTime t2 = LocalDateTime.of(LocalDate.now(), LocalTime.of(18, 0));
         tarifaActiva = new Tarifas(1L, "Tarifa Normal", "Tarifa estándar", new BigDecimal("1500.00"), true);
-        horarioTarifaVigente = new HorarioTarifas(1L, tarifaActiva, "fds", t1, t2, BigDecimal.valueOf(0.5));
+        horarioTarifaVigente = new HorarioTarifas(1L, tarifaActiva, DiaTipoEnum.FIN_DE_SEMANA, t1, t2, BigDecimal.valueOf(0.5));
         tarifaDTO = new TarifaResponseDTO(1L, "Tarifa Normal", "Tarifa estándar", 1500.0, true);
     }
 
@@ -89,7 +90,7 @@ class HorarioTarifasServiceTest {
         LocalDateTime inicio = LocalDateTime.now().minusHours(1);
         LocalDateTime fin = LocalDateTime.now().plusHours(1);
         HorarioTarifaCreateDTO dto = new HorarioTarifaCreateDTO(1L, "LABORAL", inicio, fin, 1.0);
-        HorarioTarifas guardado = new HorarioTarifas(2L, tarifaActiva, "LABORAL", inicio, fin, BigDecimal.ONE);
+        HorarioTarifas guardado = new HorarioTarifas(2L, tarifaActiva, DiaTipoEnum.LABORAL, inicio, fin, BigDecimal.ONE);
 
         when(tarifasService.findEntityById(1L)).thenReturn(tarifaActiva);
         when(horarioTarifasRepository.save(any())).thenReturn(guardado);
@@ -125,7 +126,7 @@ class HorarioTarifasServiceTest {
     void findVigente_debeRetornarHorarioVigente() {
         LocalDateTime inicio = LocalDateTime.now().minusHours(1);
         LocalDateTime fin = LocalDateTime.now().plusHours(1);
-        HorarioTarifas horarioDia = new HorarioTarifas(3L, tarifaActiva, "LABORAL", inicio, fin, BigDecimal.ONE);
+        HorarioTarifas horarioDia = new HorarioTarifas(3L, tarifaActiva, DiaTipoEnum.LABORAL, inicio, fin, BigDecimal.ONE);
 
         when(horarioTarifasRepository.findAll()).thenReturn(List.of(horarioDia));
         when(tarifasService.toDTO(tarifaActiva)).thenReturn(tarifaDTO);

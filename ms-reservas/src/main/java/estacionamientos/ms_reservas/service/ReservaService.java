@@ -135,8 +135,17 @@ public class ReservaService {
             throw new ConflictException("No se puede confirmar, la reserva ya ha sido confirmada, finalizada o cancelada.");
         }
         reserva.setEstado(EstadoEnums.CONFIRMADA);
-        EspacioResponseDTO espacio = espacioClient.findById(reserva.getIdEspacio());
-        espacioClient.updateDisponibilidad(espacio.getId(), false);
+
+        EspacioResponseDTO espacio;
+        try {
+            espacio = espacioClient.findById(reserva.getIdEspacio());
+            espacioClient.updateDisponibilidad(espacio.getId(), false);
+        } catch (FeignException.NotFound e) {
+            throw new NotFoundException("Espacio no encontrado con id: " + reserva.getIdEspacio());
+        } catch (FeignException e) {
+            throw new NotFoundException("Error al consultar el espacio: " + e.getMessage());
+        }
+
         log.info("Reserva id={} confirmada, espacio id={} marcado como no disponible", reserva.getId(), espacio.getId());
         return toDTO(reservasRepository.save(reserva));
     }

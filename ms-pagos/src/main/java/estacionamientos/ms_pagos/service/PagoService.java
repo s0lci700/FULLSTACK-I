@@ -22,12 +22,12 @@ import estacionamientos.ms_pagos.dto.CobroCreateDTO;
 import estacionamientos.ms_pagos.dto.CobroResponseDTO;
 import estacionamientos.ms_pagos.dto.EspacioResponseDTO;
 import estacionamientos.ms_pagos.dto.HorarioTarifaResponseDTO;
-import estacionamientos.ms_pagos.dto.SuscripcionResponseDTO;
 import estacionamientos.ms_pagos.dto.TarifaResponseDTO;
 import estacionamientos.ms_pagos.dto.VehiculoResponseDTO;
 import estacionamientos.ms_pagos.exception.BusinessException;
 import estacionamientos.ms_pagos.exception.ResourceNotFoundException;
 import estacionamientos.ms_pagos.model.Cobro;
+import estacionamientos.ms_pagos.model.EstadoCobroEnum;
 import estacionamientos.ms_pagos.model.MetodoPago;
 import estacionamientos.ms_pagos.repository.CobroRepository;
 import estacionamientos.ms_pagos.repository.MetodoPagoRepository;
@@ -66,10 +66,10 @@ public class PagoService {
 
         validarSinCobroDuplicado(dto.getIdAcceso());
 
-        AccesoResponseDTO acceso = accesoClient.getById(dto.getIdAcceso());
-        TarifaResponseDTO tarifa = tarifaClient.getTarifaVigente();
+        AccesoResponseDTO acceso = fetchAcceso(dto.getIdAcceso());
+        TarifaResponseDTO tarifa = fetchTarifaVigente();
         MetodoPago metodoPago = fetchMetodoPago(dto.getIdMetodoPago());
-        ClienteResponseDTO cliente = clienteClient.getById(dto.getIdCliente());
+        ClienteResponseDTO cliente = fetchCliente(dto.getIdCliente());
 
         BigDecimal factorVehiculo = resolverFactorVehiculo(acceso.getIdVehiculo());
         BigDecimal factorEspacio = resolverFactorEspacio(acceso.getIdEspacio());
@@ -145,23 +145,72 @@ public class PagoService {
                 .orElseThrow(() -> new ResourceNotFoundException("MetodoPago no encontrado id=" + id));
     }
 
-    private BigDecimal resolverFactorVehiculo(Long idVehiculo) {
-        VehiculoResponseDTO vehiculo = vehiculoClient.getById(idVehiculo);
-        if (vehiculo.getIdTipoVehiculo() == null) {
-            return BigDecimal.ONE;
+    private AccesoResponseDTO fetchAcceso(Long idAcceso) {
+        try {
+            return accesoClient.getById(idAcceso);
+        } catch (FeignException.NotFound e) {
+            throw new ResourceNotFoundException("Acceso no encontrado id=" + idAcceso);
+        } catch (FeignException e) {
+            log.error("Error de comunicacion con ms-accesos (status {}): {}", e.status(), e.getMessage());
+            throw new BusinessException("No se pudo obtener el acceso: servicio no disponible");
         }
-        Float factor = tipoVehiculoClient.getById(vehiculo.getIdTipoVehiculo()).getFactorPrecio();
+    }
+
+    private TarifaResponseDTO fetchTarifaVigente() {
+        try {
+            return tarifaClient.getTarifaVigente();
+        } catch (FeignException.NotFound e) {
+            throw new ResourceNotFoundException("No hay tarifa vigente configurada");
+        } catch (FeignException e) {
+            log.error("Error de comunicacion con ms-tarifas (status {}): {}", e.status(), e.getMessage());
+            throw new BusinessException("No se pudo obtener la tarifa vigente: servicio no disponible");
+        }
+    }
+
+    private ClienteResponseDTO fetchCliente(Long idCliente) {
+        try {
+            return clienteClient.getById(idCliente);
+        } catch (FeignException.NotFound e) {
+            throw new ResourceNotFoundException("Cliente no encontrado id=" + idCliente);
+        } catch (FeignException e) {
+            log.error("Error de comunicacion con user-service (status {}): {}", e.status(), e.getMessage());
+            throw new BusinessException("No se pudo obtener el cliente: servicio no disponible");
+        }
+    }
+
+    private BigDecimal resolverFactorVehiculo(Long idVehiculo) {
+        Float factor;
+        try {
+            VehiculoResponseDTO vehiculo = vehiculoClient.getById(idVehiculo);
+            if (vehiculo.getIdTipoVehiculo() == null) {
+                return BigDecimal.ONE;
+            }
+            factor = tipoVehiculoClient.getById(vehiculo.getIdTipoVehiculo()).getFactorPrecio();
+        } catch (FeignException.NotFound e) {
+            throw new ResourceNotFoundException("Vehiculo o tipo de vehiculo no encontrado para id=" + idVehiculo);
+        } catch (FeignException e) {
+            log.error("Error de comunicacion con ms-vehiculos (status {}): {}", e.status(), e.getMessage());
+            throw new BusinessException("No se pudo obtener el factor de vehiculo: servicio no disponible");
+        }
         BigDecimal result = BigDecimal.valueOf(factor.doubleValue());
         log.info("Factor tipo vehiculo: {}", result);
         return result;
     }
 
     private BigDecimal resolverFactorEspacio(Long idEspacio) {
-        EspacioResponseDTO espacio = espacioClient.getById(idEspacio);
-        if (espacio.getTipoEspacio() == null) {
-            return BigDecimal.ONE;
+        Float factor;
+        try {
+            EspacioResponseDTO espacio = espacioClient.getById(idEspacio);
+            if (espacio.getTipoEspacio() == null) {
+                return BigDecimal.ONE;
+            }
+            factor = espacio.getTipoEspacio().getFactorPrecio();
+        } catch (FeignException.NotFound e) {
+            throw new ResourceNotFoundException("Espacio no encontrado id=" + idEspacio);
+        } catch (FeignException e) {
+            log.error("Error de comunicacion con ms-espacios (status {}): {}", e.status(), e.getMessage());
+            throw new BusinessException("No se pudo obtener el factor de espacio: servicio no disponible");
         }
-        Float factor = espacio.getTipoEspacio().getFactorPrecio();
         BigDecimal result = BigDecimal.valueOf(factor.doubleValue());
         log.info("Factor tipo espacio: {}", result);
         return result;
@@ -202,32 +251,6 @@ public class PagoService {
         BigDecimal desc = cliente.getTipoCliente().getDescuentoPct();
         log.info("Descuento tipo cliente aplicado: {}%", desc);
         return desc;
-    }
-    
-    private BigDecimal resolverDescuentoSuscripcion(Long idCliente) {
-        try {
-            ClienteResponseDTO cliente = clienteClient.getById(idCliente);
-            if (cliente == null) {
-                log.info("Cliente no encontrado para id {}, no se aplica descuento por suscripción", idCliente);
-                return BigDecimal.ZERO;
-            }
-            if (cliente.getActivo() == null || !cliente.getActivo()) {
-                log.info("Cliente inactivo para id {}, no se aplica descuento por suscripción", idCliente);
-                return BigDecimal.ZERO;
-            }
-            SuscripcionResponseDTO suscripcion = cliente.getSuscripcion();
-            if (suscripcion != null && suscripcion.getDescuentoPct() != null) {
-                BigDecimal desc = suscripcion.getDescuentoPct();
-                log.info("Descuento suscripción aplicado: {}%", desc);
-                return desc;
-            }
-            log.info("Cliente sin suscripción vigente, no se aplica descuento por suscripción");
-        } catch (FeignException.NotFound e) {
-            log.info("Cliente sin suscripción vigente, no se aplica descuento por suscripción");
-        } catch (FeignException e) {
-            log.error("Error de comunicacion con ms-clientes para obtener suscripción (status {}): {}", e.status(), e.getMessage());
-        }
-        return BigDecimal.ZERO;
     }
 
     // ── Cobro formula ──────────────────────────────────────────────────────
@@ -282,7 +305,7 @@ public class PagoService {
         cobro.setDescSuscripcion(descSuscripcion);
         cobro.setDescBanco(descBanco);
         cobro.setMontoFinal(montoFinal);
-        cobro.setEstado("PENDIENTE");
+        cobro.setEstado(EstadoCobroEnum.PENDIENTE);
         cobro.setFechaCobro(LocalDateTime.now());
         return cobro;
     }

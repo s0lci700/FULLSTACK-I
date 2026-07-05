@@ -7,6 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
@@ -61,6 +62,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<Map<String, Object>> manejarBodyVacio(HttpMessageNotReadableException ex) {
         return new ResponseEntity<>(construirRespuesta(HttpStatus.BAD_REQUEST, "BAD_REQUEST", "El cuerpo de la petición no puede estar vacío o es inválido"), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(FeignException.class)
+    public ResponseEntity<Map<String, Object>> manejarFeignException(FeignException ex) {
+        log.error("Error de comunicacion con servicio remoto: status={}, mensaje={}", ex.status(), ex.getMessage());
+        HttpStatus status = ex.status() > 0 && HttpStatus.resolve(ex.status()) != null
+                ? HttpStatus.resolve(ex.status())
+                : HttpStatus.BAD_GATEWAY;
+        return new ResponseEntity<>(construirRespuesta(status, "REMOTE_SERVICE_ERROR", "Error al comunicarse con un servicio remoto"), status);
     }
 
     @ExceptionHandler(Exception.class)

@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -30,9 +32,9 @@ public class HorarioTarifas {
     @JoinColumn(name = "id_tarifa", nullable = false)
     private Tarifas tarifa;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "dia_tipo", nullable = false)
-    // Debe ser un ENUM 
-    private String diaTipo;
+    private DiaTipoEnum diaTipo;
 
     @Column(name = "hora_inicio", nullable = false)
     private LocalDateTime horaInicio;

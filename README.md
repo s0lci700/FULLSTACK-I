@@ -214,7 +214,7 @@ Get-Content db\00_run_all.sql | mysql -u root
 
 ```powershell
 # Opción A — script .bat incluido en el ZIP Nativo (recomendado para revisión)
-arrancar-nativo.bat   # Fase 1: Eureka → Fase 2: Microservicios → Fase 3: API Gateway
+arrancar-nativo.bat   # Fase 1: Eureka → Fase 2: API Gateway → Fase 3: Microservicios
 
 # Opción B — gestor interactivo PowerShell (dashboard en vivo + start/stop/restart)
 .\scripts\manage.ps1
