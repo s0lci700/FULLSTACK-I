@@ -2,6 +2,7 @@ package estacionamientos.ms_tarifas.service;
 
 import estacionamientos.ms_tarifas.dto.TarifaCreateDTO;
 import estacionamientos.ms_tarifas.dto.TarifaResponseDTO;
+import estacionamientos.ms_tarifas.exception.ConflictException;
 import estacionamientos.ms_tarifas.exception.ResourceNotFoundException;
 import estacionamientos.ms_tarifas.model.Tarifas;
 import estacionamientos.ms_tarifas.repository.TarifasRepository;
@@ -107,14 +108,14 @@ class TarifasServiceTest {
     }
 
     @Test
-    @DisplayName("create debe lanzar IllegalArgumentException cuando el nombre ya existe")
-    void create_nombreDuplicado_debeLanzarIllegalArgument() {
+    @DisplayName("create debe lanzar ConflictException cuando el nombre ya existe")
+    void create_nombreDuplicado_debeLanzarConflictException() {
         // Arrange
         when(tarifasRepository.existsByNombre("Tarifa Normal")).thenReturn(true);
 
         // Act + Assert
         assertThatThrownBy(() -> tarifasService.create(new TarifaCreateDTO("Tarifa Normal", "desc", 1500.0, true)))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(ConflictException.class)
                 .hasMessageContaining("Tarifa Normal");
         verify(tarifasRepository, never()).save(any());
     }

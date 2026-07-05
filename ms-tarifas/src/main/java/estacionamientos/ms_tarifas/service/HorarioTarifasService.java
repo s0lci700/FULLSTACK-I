@@ -3,6 +3,7 @@ package estacionamientos.ms_tarifas.service;
 import estacionamientos.ms_tarifas.dto.HorarioTarifaCreateDTO;
 import estacionamientos.ms_tarifas.dto.HorarioTarifaResponseDTO;
 import estacionamientos.ms_tarifas.exception.ResourceNotFoundException;
+import estacionamientos.ms_tarifas.model.DiaTipoEnum;
 import estacionamientos.ms_tarifas.model.HorarioTarifas;
 import estacionamientos.ms_tarifas.model.Tarifas;
 import estacionamientos.ms_tarifas.repository.HorarioTarifasRepository;
@@ -67,7 +68,7 @@ public class HorarioTarifasService {
         Tarifas tarifa = tarifasService.findEntityById(dto.getIdTarifa());
         HorarioTarifas horario = new HorarioTarifas();
         horario.setTarifa(tarifa);
-        horario.setDiaTipo(dto.getDiaTipo());
+        horario.setDiaTipo(DiaTipoEnum.valueOf(dto.getDiaTipo()));
         horario.setHoraInicio(dto.getHoraInicio());
         horario.setHoraFin(dto.getHoraFin());
         horario.setMultiplicador(BigDecimal.valueOf(dto.getMultiplicador()));
@@ -91,7 +92,7 @@ public class HorarioTarifasService {
         return new HorarioTarifaResponseDTO(
                 horario.getId(),
                 tarifasService.toDTO(horario.getTarifa()),
-                horario.getDiaTipo(),
+                horario.getDiaTipo().name(),
                 horario.getHoraInicio(),
                 horario.getHoraFin(),
                 horario.getMultiplicador().doubleValue());

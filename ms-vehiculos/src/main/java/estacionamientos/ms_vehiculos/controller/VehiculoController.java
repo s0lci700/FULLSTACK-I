@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
+
 import estacionamientos.ms_vehiculos.dto.VehiculoCreateDTO;
 import estacionamientos.ms_vehiculos.dto.VehiculoResponseDTO;
 import estacionamientos.ms_vehiculos.dto.VehiculoUpdateDTO;
@@ -61,7 +63,7 @@ public class VehiculoController {
     @ApiResponse(responseCode = "201", description = "Vehículo creado correctamente")
     @ApiResponse(responseCode = "409", description = "Patente ya registrada")
     @PostMapping
-    public ResponseEntity<VehiculoResponseDTO> crear(@RequestBody VehiculoCreateDTO dto) {
+    public ResponseEntity<VehiculoResponseDTO> crear(@Valid @RequestBody VehiculoCreateDTO dto) {
         log.info("POST /api/vehiculos");
         return ResponseEntity.status(HttpStatus.CREATED).body(vehiculoService.crear(dto));
     }
@@ -70,7 +72,7 @@ public class VehiculoController {
     @ApiResponse(responseCode = "200", description = "Vehículo actualizado")
     @ApiResponse(responseCode = "404", description = "Vehículo no encontrado")
     @PutMapping("/{id}")
-    public ResponseEntity<VehiculoResponseDTO> actualizar(@PathVariable Long id, @RequestBody VehiculoUpdateDTO dto) {
+    public ResponseEntity<VehiculoResponseDTO> actualizar(@PathVariable Long id, @Valid @RequestBody VehiculoUpdateDTO dto) {
         log.info("PUT /api/vehiculos/{}", id);
         return ResponseEntity.ok(vehiculoService.actualizar(id, dto));
     }

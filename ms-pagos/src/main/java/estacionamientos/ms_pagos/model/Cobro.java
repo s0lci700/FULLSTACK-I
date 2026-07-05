@@ -45,8 +45,9 @@ public class Cobro {
     @Column(name = "monto_final", nullable = false, precision = 10, scale = 2)
     private BigDecimal montoFinal;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String estado;
+    private EstadoCobroEnum estado;
 
     @Column(nullable = false)
     private LocalDateTime fechaCobro;

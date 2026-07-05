@@ -4,6 +4,7 @@ import estacionamientos.ms_espacios.dto.EspacioCreateDTO;
 import estacionamientos.ms_espacios.dto.EspacioResponseDTO;
 import estacionamientos.ms_espacios.dto.EspacioUpdateDTO;
 import estacionamientos.ms_espacios.dto.TipoEspacioResponseDTO;
+import estacionamientos.ms_espacios.exception.ConflictException;
 import estacionamientos.ms_espacios.exception.ResourceNotFoundException;
 import estacionamientos.ms_espacios.model.Espacio;
 import estacionamientos.ms_espacios.model.TipoEspacio;
@@ -24,12 +25,6 @@ public class EspacioService {
     
     @Autowired
     TipoEspacioService tipoEspaciosService;
-
-    //public EspacioService(EspacioRepository espaciosRepository,
-     //       TipoEspacioService tipoEspaciosService) {
-     //   this.espaciosRepository = espaciosRepository;
-     //   this.tipoEspaciosService = tipoEspaciosService;
-    //}
 
     public List<EspacioResponseDTO> findAll() {
         log.info("Obteniendo todos los espacios");
@@ -63,7 +58,7 @@ public class EspacioService {
     public EspacioResponseDTO create(EspacioCreateDTO dto) {
         log.info("Creando espacio con numero: {}", dto.getNumero());
         if (espaciosRepository.existsByNumero(dto.getNumero())) {
-            throw new IllegalArgumentException("Ya existe un espacio con el numero: " + dto.getNumero());
+            throw new ConflictException("Ya existe un espacio con el numero: " + dto.getNumero());
         }
         TipoEspacio tipo = tipoEspaciosService.findEntityById(dto.getIdTipoEspacio());
         Espacio espacio = new Espacio();
@@ -86,7 +81,7 @@ public class EspacioService {
         // Validar numero unico solo si cambio
         if (!espacio.getNumero().equals(dto.getNumero())
                 && espaciosRepository.existsByNumero(dto.getNumero())) {
-            throw new IllegalArgumentException("Ya existe un espacio con el numero: " + dto.getNumero());
+            throw new ConflictException("Ya existe un espacio con el numero: " + dto.getNumero());
         }
         TipoEspacio tipo = tipoEspaciosService.findEntityById(dto.getIdTipoEspacio());
         espacio.setNumero(dto.getNumero());

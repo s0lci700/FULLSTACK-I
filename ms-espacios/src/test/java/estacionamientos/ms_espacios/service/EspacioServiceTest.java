@@ -3,6 +3,7 @@ package estacionamientos.ms_espacios.service;
 import estacionamientos.ms_espacios.dto.EspacioCreateDTO;
 import estacionamientos.ms_espacios.dto.EspacioResponseDTO;
 import estacionamientos.ms_espacios.dto.TipoEspacioResponseDTO;
+import estacionamientos.ms_espacios.exception.ConflictException;
 import estacionamientos.ms_espacios.exception.ResourceNotFoundException;
 import estacionamientos.ms_espacios.model.Espacio;
 import estacionamientos.ms_espacios.model.TipoEspacio;
@@ -118,7 +119,7 @@ class EspacioServiceTest {
     }
 
     @Test
-    @DisplayName("create debe lanzar IllegalArgumentException cuando el número está duplicado")
+    @DisplayName("create debe lanzar ConflictException cuando el número está duplicado")
     void create_numeroDuplicado_debeLanzarExcepcion() {
         // Arrange
         EspacioCreateDTO dto = new EspacioCreateDTO("A-01", "Norte", 1, 1L, true, true);
@@ -126,7 +127,7 @@ class EspacioServiceTest {
 
         // Act + Assert
         assertThatThrownBy(() -> espacioService.create(dto))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(ConflictException.class)
                 .hasMessageContaining("A-01");
         verify(espaciosRepository, never()).save(any(Espacio.class));
     }

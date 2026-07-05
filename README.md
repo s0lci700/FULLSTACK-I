@@ -9,15 +9,15 @@ Utilice los siguientes enlaces externos para descargar las versiones listas para
 
 | Componente | Descripción | Enlace de Descarga (Nube externa) |
 | :--- | :--- | :--- |
-| **📦 Versión Sin Docker** <br>*(Arranque Nativo)* | Archivo `.zip` con los `.jar` compilados de los 12 servicios y el script `arrancar-nativo.bat` ordenado por fases (Eureka → Microservicios → API Gateway). | [Descargar ZIP Nativo aquí](https://drive.google.com/file/d/1v-0tVJYfHZ0N5MIN4Q0CMVh-OGNxVVIn/view?usp=sharing) |
-| **🐳 Versión Con Docker** <br>*(Avance Examen Transversal)* | Archivo `.zip` con los `.jar`, el archivo `docker-compose.yml` y el script `arrancar-sistema.bat`. | [Descargar ZIP Docker aquí](https://drive.google.com/file/d/19SpzncjfkRIjHjj03vYgwRNV6BxKOXJl/view?usp=sharing) |
-| **🎥 Video de Defensa Técnica** <br>*(Evaluación Individual)* | Video explicativo del sistema funcionando, pruebas unitarias y aporte técnico individual. **Duración: 15 min (máx. 18 min).** | [Ver Video aquí](https://drive.google.com/file/d/1M0bczFXZNEn4xTenJ03cJwHNpaJ7Fw_4/view) |
+| **📦 Versión Sin Docker** <br>*(Arranque Nativo)* | Archivo `.zip` con los `.jar` compilados de los 12 servicios y el script `arrancar-nativo.bat` ordenado por fases (Eureka → Microservicios → API Gateway). | [Descargar ZIP Nativo aquí](ENLACE_A_DRIVE_PENDIENTE) |
+| **🐳 Versión Con Docker** <br>*(Avance Examen Transversal)* | Archivo `.zip` con los `.jar`, el archivo `docker-compose.yml` y el script `arrancar-sistema.bat`. | [Descargar ZIP Docker aquí](ENLACE_A_DRIVE_PENDIENTE) |
+| **🎥 Video de Defensa Técnica** <br>*(Evaluación Individual)* | Video explicativo del sistema funcionando, pruebas unitarias y aporte técnico individual. **Duración: 15 min (máx. 18 min).** | [Ver Video aquí](https://drive.google.com/file/d/1gMpwnvBKhsdM36QqrgThYKAzZQoNSqQT/view?usp=sharing) |
 
 ---
 
 ## Video explicativo de la defensa
 
-Enlace al video: https://drive.google.com/file/d/1M0bczFXZNEn4xTenJ03cJwHNpaJ7Fw_4/view
+Enlace al video: https://drive.google.com/file/d/1gMpwnvBKhsdM36QqrgThYKAzZQoNSqQT/view?usp=sharing
 
 ## Subtítulos o transcripción del video
 
@@ -214,7 +214,7 @@ Get-Content db\00_run_all.sql | mysql -u root
 
 ```powershell
 # Opción A — script .bat incluido en el ZIP Nativo (recomendado para revisión)
-arrancar-nativo.bat   # 1. Eureka Server → 2. Microservicios → 3. API Gateway
+arrancar-nativo.bat   # Fase 1: Eureka → Fase 2: API Gateway → Fase 3: Microservicios
 
 # Opción B — gestor interactivo PowerShell (dashboard en vivo + start/stop/restart)
 .\scripts\manage.ps1
@@ -223,18 +223,10 @@ arrancar-nativo.bat   # 1. Eureka Server → 2. Microservicios → 3. API Gatewa
 .\scripts\start-all.ps1
 
 # Opción D — arrancar individualmente respetando el orden
-cd eureka-server;    .\mvnw.cmd spring-boot:run  # 1° Eureka
-cd auth-service;     .\mvnw.cmd spring-boot:run  # 2° Microservicios (cualquier orden entre sí)
-cd user-service;     .\mvnw.cmd spring-boot:run
-cd security-service; .\mvnw.cmd spring-boot:run
-cd ms-vehiculos;     .\mvnw.cmd spring-boot:run
-cd ms-espacios;      .\mvnw.cmd spring-boot:run
-cd ms-tarifas;       .\mvnw.cmd spring-boot:run
-cd ms-reservas;      .\mvnw.cmd spring-boot:run
-cd ms-accesos;       .\mvnw.cmd spring-boot:run
-cd ms-pagos;         .\mvnw.cmd spring-boot:run
-cd ms-reportes;      .\mvnw.cmd spring-boot:run
-cd api-gateway;      .\mvnw.cmd spring-boot:run  # 3° API Gateway — último
+cd eureka-server; .\mvnw.cmd spring-boot:run  # 1° Eureka
+cd api-gateway;   .\mvnw.cmd spring-boot:run  # 2° Gateway
+cd auth-service;  .\mvnw.cmd spring-boot:run  # 3° Auth
+# ... resto en cualquier orden
 ```
 
 **Orden de arranque obligatorio:**
@@ -242,11 +234,11 @@ cd api-gateway;      .\mvnw.cmd spring-boot:run  # 3° API Gateway — último
 | Fase | Servicios |
 |------|-----------|
 | 1 | `eureka-server` — debe estar listo antes que cualquier otro |
-| 2 | `auth-service`, `user-service`, `security-service`, `ms-vehiculos`, `ms-espacios`, `ms-tarifas` |
-| 3 | `ms-reservas`, `ms-accesos` — dependen de fase 2 via Feign |
-| 4 | `ms-pagos` — depende de ms-accesos, ms-tarifas, user-service |
-| 5 | `ms-reportes` — depende de todos los servicios anteriores |
-| 6 | `api-gateway` — último, enruta hacia los servicios ya levantados |
+| 2 | `api-gateway` — punto de entrada |
+| 3 | `auth-service`, `user-service`, `security-service`, `ms-vehiculos`, `ms-espacios`, `ms-tarifas` |
+| 4 | `ms-reservas`, `ms-accesos` — dependen de fase 3 |
+| 5 | `ms-pagos` — depende de ms-accesos, ms-tarifas, user-service |
+| 6 | `ms-reportes` — último, consume todos los demás |
 
 ### 5. Verificar que todo está levantado
 

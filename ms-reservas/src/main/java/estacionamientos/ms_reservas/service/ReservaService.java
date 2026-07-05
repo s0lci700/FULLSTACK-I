@@ -13,6 +13,7 @@ import estacionamientos.ms_reservas.dto.EspacioResponseDTO;
 import estacionamientos.ms_reservas.dto.ReservaCreateDTO;
 import estacionamientos.ms_reservas.dto.ReservaResponseDTO;
 import estacionamientos.ms_reservas.dto.VehiculoResponseDTO;
+import estacionamientos.ms_reservas.exception.BusinessException;
 import estacionamientos.ms_reservas.exception.ConflictException;
 import estacionamientos.ms_reservas.exception.NotFoundException;
 import estacionamientos.ms_reservas.model.EstadoEnums;
@@ -66,6 +67,11 @@ public class ReservaService {
 
     @Transactional
     public ReservaResponseDTO create(ReservaCreateDTO reserva) {
+
+        if (reserva.getFechaFin() == null || reserva.getFechaInicio() == null
+                || !reserva.getFechaFin().isAfter(reserva.getFechaInicio())) {
+            throw new BusinessException("La fecha de fin debe ser posterior a la fecha de inicio");
+        }
 
         // clienteClient
         ClienteResponseDTO cliente;
@@ -129,8 +135,17 @@ public class ReservaService {
             throw new ConflictException("No se puede confirmar, la reserva ya ha sido confirmada, finalizada o cancelada.");
         }
         reserva.setEstado(EstadoEnums.CONFIRMADA);
-        EspacioResponseDTO espacio = espacioClient.findById(reserva.getIdEspacio());
-        espacioClient.updateDisponibilidad(espacio.getId(), false);
+
+        EspacioResponseDTO espacio;
+        try {
+            espacio = espacioClient.findById(reserva.getIdEspacio());
+            espacioClient.updateDisponibilidad(espacio.getId(), false);
+        } catch (FeignException.NotFound e) {
+            throw new NotFoundException("Espacio no encontrado con id: " + reserva.getIdEspacio());
+        } catch (FeignException e) {
+            throw new NotFoundException("Error al consultar el espacio: " + e.getMessage());
+        }
+
         log.info("Reserva id={} confirmada, espacio id={} marcado como no disponible", reserva.getId(), espacio.getId());
         return toDTO(reservasRepository.save(reserva));
     }
