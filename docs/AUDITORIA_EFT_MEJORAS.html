@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Auditoría EFT — Mejoras Aplicadas — Estacionamiento Inteligente</title>
+  <style>
+:root { --bg:#0f1117;--bg2:#1a1f2e;--border:#2d3748;--text:#e2e8f0;--text2:#94a3b8;--text3:#7b8ea6;--blue:#93c5fd; }
+*{box-sizing:border-box}
+body{margin:0;font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+.container{max-width:980px;margin:0 auto;padding:2rem}
+.back{display:inline-flex;gap:.4rem;color:var(--text3);text-decoration:none;font-size:.85rem;margin-bottom:1rem}
+.back:hover{color:var(--blue)}
+.header{border-bottom:1px solid var(--border);padding-bottom:1rem;margin-bottom:1.25rem}
+.header h1{margin:0;font-size:1.9rem}
+.header p{margin:.35rem 0 0;color:var(--text2);font-size:.92rem}
+main{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.25rem 1.5rem}
+a{color:var(--blue)}
+h1,h2,h3{color:#f8fafc}
+h2{margin-top:1.6rem;border-bottom:1px solid var(--border);padding-bottom:.35rem}
+h3{margin-top:1.2rem}
+p,li{color:var(--text2)}
+code{background:#111827;border:1px solid var(--border);padding:.1rem .35rem;border-radius:4px;color:#c4b5fd;font-family:Consolas,monospace}
+pre{background:#111827;border:1px solid var(--border);padding:.8rem;border-radius:8px;overflow:auto}
+pre code{border:none;background:none;padding:0;color:#e2e8f0}
+table{width:100%;border-collapse:collapse;margin:.8rem 0}
+th,td{border:1px solid var(--border);padding:.5rem .6rem;text-align:left}
+th{background:#1e2330;color:var(--text3);font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+blockquote{border-left:3px solid var(--border);margin:1rem 0;padding:.2rem .8rem;color:var(--text3)}
+hr{border:none;border-top:1px solid var(--border);margin:1.2rem 0}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a class="back" href="index.html">← Índice docs</a>
+    <div class="header">
+      <h1>Auditoría EFT — mejoras aplicadas (2026-07-05)</h1>
+      <p>Versión HTML legible generada desde <code>AUDITORIA_EFT_MEJORAS.md</code>. Referencia rápida para la defensa individual.</p>
+    </div>
+    <main>
+      <h2>Puntaje estimado</h2>
+      <p><strong>Antes: 74/100 → Después: ~93.5/100</strong> (estimación manual indicador por indicador, no un re-cálculo automatizado).</p>
+      <p>Los ~6.5 puntos restantes <strong>no son alcanzables solo con código</strong>:</p>
+      <ul>
+        <li><strong>IE 2.5.1 (Trello, 5%)</strong> — requiere evidencia real de un tablero actualizado (captura o export), no solo el link de texto en el README.</li>
+        <li><strong>IE 3.3.1 (despliegue en vivo, resto del 10%)</strong> — requiere ensayar/grabar una corrida real de los 12 servicios con Eureka mostrando todos <code>UP</code>.</li>
+      </ul>
+
+      <h2>1. GlobalExceptionHandler homogeneizado (los 12 servicios)</h2>
+      <p>Antes: 3 variantes distintas de shape de respuesta (<code>status</code> numérico vs <code>error</code> string), <code>BusinessException</code> solo en 2 de 12 servicios, <code>BadRequestException</code> no existía en ningún servicio real pese a estar documentada en <code>CLAUDE.md</code>, <code>ms-espacios</code>/<code>ms-tarifas</code> sin <code>ConflictException</code>.</p>
+      <p>Ahora: los 12 servicios comparten las mismas 4 excepciones canónicas (<code>NotFoundException</code>/<code>ResourceNotFoundException</code> → 404, <code>ConflictException</code> → 409, <code>BusinessException</code> → 422, <code>BadRequestException</code> → 400) con el mismo shape de respuesta JSON (<code>timestamp</code>, <code>error</code>, <code>mensaje</code>, y <code>campos</code> para errores de validación).</p>
+
+      <h2>2. Llamadas Feign sin protección</h2>
+      <p><code>ms-pagos/PagoService</code>: 5 de 6 llamadas Feign (<code>accesoClient</code>, <code>tarifaClient</code>, <code>clienteClient</code>, <code>vehiculoClient</code>+<code>tipoVehiculoClient</code>, <code>espacioClient</code>) no atrapaban <code>FeignException</code>. Ahora cada una traduce <code>FeignException.NotFound</code> → <code>ResourceNotFoundException</code> y <code>FeignException</code> genérica → <code>BusinessException</code>. Se agregó también un handler <code>FeignException</code> en el <code>GlobalExceptionHandler</code> como red de seguridad.</p>
+      <p><code>ms-reservas/ReservaService.confirmar()</code> y <code>ms-accesos/AccesoService.registrarSalida()</code>: llamadas sin try-catch (sus métodos hermanos <code>create()</code>/<code>registrarEntrada()</code> sí lo tenían) — ahora protegidas igual.</p>
+
+      <h2>3. Bugs puntuales corregidos</h2>
+      <ul>
+        <li><code>ms-vehiculos/VehiculoController</code>: faltaba <code>@Valid</code> en <code>crear()</code>/<code>actualizar()</code>.</li>
+        <li><code>ms-reservas/ReservaService.create()</code>: no validaba <code>fechaFin &gt; fechaInicio</code>.</li>
+        <li><code>user-service/ClienteSuscripcionService</code>: lanzaba <code>IllegalArgumentException</code> (500 sin handler) → ahora <code>ConflictException</code> (409).</li>
+        <li><code>ms-pagos/MetodoPagoCreateDTO</code>: se agregó <code>@NotNull</code> a IDs de banco/tarjeta, <code>@Pattern</code> a <code>ultimos4</code>, <code>@Min</code>/<code>@Max</code> a mes/año de vencimiento.</li>
+        <li><code>ms-espacios</code>/<code>ms-tarifas</code>: duplicados ahora lanzan <code>ConflictException</code> (409) en vez de <code>IllegalArgumentException</code> (400).</li>
+      </ul>
+
+      <h2>4. Modelado: String → enum</h2>
+      <ul>
+        <li><code>ms-pagos/Cobro.estado</code> → <code>EstadoCobroEnum</code> (PENDIENTE, PAGADO, ANULADO).</li>
+        <li><code>ms-tarifas/HorarioTarifas.diaTipo</code> → <code>DiaTipoEnum</code> (LABORAL, FIN_DE_SEMANA, FESTIVO).</li>
+      </ul>
+      <p>Ambos con <code>@Enumerated(EnumType.STRING)</code>, compatibles con las columnas <code>VARCHAR(20)</code> existentes sin cambios de schema. Los DTOs mantienen el contrato <code>String</code>, igual patrón que <code>Reserva.estado</code>/<code>Acceso.estado</code>.</p>
+
+      <h2>5. CRUD completo en catálogos de solo lectura</h2>
+      <table>
+        <thead><tr><th>Entidad</th><th>Servicio</th><th>Antes</th><th>Ahora</th></tr></thead>
+        <tbody>
+          <tr><td><code>Rol</code></td><td>auth-service</td><td>sin controller</td><td>CRUD completo</td></tr>
+          <tr><td><code>TipoCliente</code></td><td>user-service</td><td>solo GET</td><td>CRUD completo</td></tr>
+          <tr><td><code>Suscripcion</code></td><td>user-service</td><td>solo GET</td><td>CRUD completo (baja lógica)</td></tr>
+          <tr><td><code>TipoEspacio</code></td><td>ms-espacios</td><td>solo GET</td><td>CRUD completo</td></tr>
+          <tr><td><code>HorarioTarifas</code></td><td>ms-tarifas</td><td>sin PUT</td><td>+ PUT</td></tr>
+          <tr><td><code>MetodoPago</code></td><td>ms-pagos</td><td>sin PUT</td><td>+ PUT</td></tr>
+          <tr><td><code>TipoTarjeta</code></td><td>ms-pagos</td><td>sin PUT</td><td>+ PUT</td></tr>
+        </tbody>
+      </table>
+
+      <h2>6. Otros</h2>
+      <ul>
+        <li><code>README.md</code>: corregida contradicción de orden de arranque (Eureka → Gateway → Microservicios, coincidiendo con <code>scripts/start-all.ps1</code>).</li>
+        <li>Código muerto eliminado: <code>PagoService.resolverDescuentoSuscripcion()</code>, constructor comentado en <code>EspacioService</code>.</li>
+        <li><code>scripts/start-all.ps1</code>/<code>manage.ps1</code>: nuevo <code>-Troubleshoot</code>/comando <code>doctor</code> — ver <a href="PROBLEMA_MAVEN_LABORATORIO.html">PROBLEMA_MAVEN_LABORATORIO.html</a>.</li>
+      </ul>
+
+      <h2>Gaps menores que quedaron fuera (a propósito)</h2>
+      <ul>
+        <li><code>VehiculoService</code>/<code>TipoVehiculoService</code>: <code>@Slf4j</code> declarado pero sin llamadas <code>log.*</code> reales.</li>
+        <li>Naming inconsistente en catálogos: <code>/api/tipo-espacio</code> vs <code>/api/tipos-vehiculo</code> vs <code>/api/tipo-tarjetas</code> vs <code>/api/tipo-cliente</code>.</li>
+        <li><code>ClienteSuscripcion</code> sin <code>PUT</code>/<code>DELETE</code>, <code>RolPermiso</code> sin <code>PUT</code> — bajo impacto.</li>
+        <li><code>Reserva</code>/<code>Acceso</code>/<code>Cobro</code> sin <code>DELETE</code> genérico — <strong>decisión de diseño defendible</strong>: máquina de estados vía <code>PUT</code>. Mencionarlo así si preguntan en la defensa.</li>
+      </ul>
+
+      <h2>Decisión de arquitectura tomada</h2>
+      <p>Se homogeneizaron las 12 copias existentes del <code>GlobalExceptionHandler</code> en vez de centralizar en un módulo Maven compartido. Motivo: un módulo compartido es un cambio de arquitectura mayor en un proyecto multi-módulo con <code>database per service</code>, con más riesgo de romper el build a días del examen. El resultado práctico es el mismo sin tocar la estructura de módulos.</p>
+    </main>
+  </div>
+</body>
+</html>
