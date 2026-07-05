@@ -2,6 +2,7 @@ package estacionamientos.user_service.service;
 
 import estacionamientos.user_service.dto.ClienteSuscripcionCreateDTO;
 import estacionamientos.user_service.dto.ClienteSuscripcionResponseDTO;
+import estacionamientos.user_service.exception.ConflictException;
 import estacionamientos.user_service.model.Cliente;
 import estacionamientos.user_service.model.ClienteSuscripcion;
 import estacionamientos.user_service.model.Suscripcion;
@@ -42,7 +43,7 @@ public class ClienteSuscripcionService {
         log.info("Asignando suscripcion al cliente id: {}", clienteId);
         if (clienteSuscripcionRepository.existsByClienteIdAndSuscripcionIdAndActivoTrue(
                 clienteId, dto.getIdSuscripcion())) {
-            throw new IllegalArgumentException(
+            throw new ConflictException(
                     "El cliente ya tiene esta suscripción activa");
         }
         Cliente cliente = clienteService.findEntityById(clienteId);

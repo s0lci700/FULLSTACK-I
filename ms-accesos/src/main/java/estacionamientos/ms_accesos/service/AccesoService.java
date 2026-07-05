@@ -41,18 +41,24 @@ public AccesoResponseDTO registrarEntrada(AccesoCreateDTO dto) {
     try {
         reserva = reservaClient.findById(dto.getIdReserva());
     } catch (FeignException.NotFound e) {
+        log.warn("ConflictException: Reserva no encontrada con id: {}", dto.getIdReserva());
         throw new ConflictException("Reserva no encontrada con id: " + dto.getIdReserva());
     } catch (FeignException e) {
+        log.warn("ConflictException: Error al consultar la reserva: {}", e.getMessage());
         throw new ConflictException("Error al consultar la reserva: " + e.getMessage());
     }
 
     //Ahora esta validación sí tiene sentido (reserva nunca es null aquí)
     if (!reserva.getEstado().equals("CONFIRMADA")) {
+        log.warn("ConflictException: Reserva no válida para registrar entrada, idReserva={}, estado={}",
+                dto.getIdReserva(), reserva.getEstado());
         throw new ConflictException("Reserva no válida para registrar entrada");
     }
 
     accesoRepository.findByIdReserva(dto.getIdReserva()).ifPresent(
             acceso -> {
+                log.warn("ConflictException: Ya existe un acceso registrado para esta reserva, idReserva={}",
+                        dto.getIdReserva());
                 throw new ConflictException("Ya existe un acceso registrado para esta reserva");
             });
 
@@ -68,9 +74,12 @@ public AccesoResponseDTO registrarEntrada(AccesoCreateDTO dto) {
     try {
         espacioClient.updateDisponibilidad(reserva.getIdEspacio(), false);
     } catch (FeignException e) {
+        log.warn("ConflictException: Error al actualizar disponibilidad del espacio: {}", e.getMessage());
         throw new ConflictException("Error al actualizar disponibilidad del espacio: " + e.getMessage());
     }
 
+    log.info("Entrada registrada: idEspacio={}, idReserva={}, idVehiculo={}",
+            reserva.getIdEspacio(), dto.getIdReserva(), dto.getIdVehiculo());
     return toDTO(accesoRepository.save(acceso));
 }
 
@@ -80,6 +89,7 @@ public AccesoResponseDTO registrarEntrada(AccesoCreateDTO dto) {
                 .orElseThrow(() -> new NotFoundException("Acceso no encontrado"));
 
         if (acceso.getFechaHoraSalida() != null) {
+            log.warn("ConflictException: Salida ya registrada para este acceso, id={}", id);
             throw new ConflictException("Salida ya registrada para este acceso");
         }
 
@@ -93,6 +103,8 @@ public AccesoResponseDTO registrarEntrada(AccesoCreateDTO dto) {
         espacioClient.updateDisponibilidad(acceso.getIdEspacio(), true);
         reservaClient.finalizarReserva(acceso.getIdReserva());
 
+        log.info("Salida registrada: id={}, idEspacio={}, idReserva={}, minutos={}",
+                id, acceso.getIdEspacio(), acceso.getIdReserva(), minutos);
         return toDTO(accesoRepository.save(acceso));
     }
 

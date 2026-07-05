@@ -7,10 +7,13 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -24,16 +27,26 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<Map<String, Object>> manejarNotFound(ResourceNotFoundException ex) {
-        return new ResponseEntity<>(
-                construirRespuesta(HttpStatus.NOT_FOUND, "NOT_FOUND", ex.getMessage()),
-                HttpStatus.NOT_FOUND);
+        log.warn("ResourceNotFoundException: {}", ex.getMessage());
+        return new ResponseEntity<>(construirRespuesta(HttpStatus.NOT_FOUND, "NOT_FOUND", ex.getMessage()), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(ConflictException.class)
-    public ResponseEntity<Map<String, Object>> manejarConflict(ConflictException ex) {
-        return new ResponseEntity<>(
-                construirRespuesta(HttpStatus.CONFLICT, "CONFLICT", ex.getMessage()),
-                HttpStatus.CONFLICT);
+    public ResponseEntity<Map<String, Object>> manejarConflicto(ConflictException ex) {
+        log.warn("ConflictException: {}", ex.getMessage());
+        return new ResponseEntity<>(construirRespuesta(HttpStatus.CONFLICT, "CONFLICT", ex.getMessage()), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<Map<String, Object>> manejarBadRequest(BadRequestException ex) {
+        log.warn("BadRequestException: {}", ex.getMessage());
+        return new ResponseEntity<>(construirRespuesta(HttpStatus.BAD_REQUEST, "BAD_REQUEST", ex.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<Map<String, Object>> manejarBusinessException(BusinessException ex) {
+        log.warn("BusinessException: {}", ex.getMessage());
+        return new ResponseEntity<>(construirRespuesta(HttpStatus.UNPROCESSABLE_ENTITY, "BUSINESS_RULE_VIOLATION", ex.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -47,15 +60,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<Map<String, Object>> manejarBodyVacio(HttpMessageNotReadableException ex) {
-        return new ResponseEntity<>(
-                construirRespuesta(HttpStatus.BAD_REQUEST, "BAD_REQUEST", "El cuerpo de la petición no puede estar vacío o es inválido"),
-                HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(construirRespuesta(HttpStatus.BAD_REQUEST, "BAD_REQUEST", "El cuerpo de la petición no puede estar vacío o es inválido"), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> manejarErrorGeneral(Exception ex) {
-        return new ResponseEntity<>(
-                construirRespuesta(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", "Ocurrió un error inesperado"),
-                HttpStatus.INTERNAL_SERVER_ERROR);
+        log.error("Error inesperado: {}", ex.getMessage(), ex);
+        return new ResponseEntity<>(construirRespuesta(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", "Ocurrió un error inesperado"), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

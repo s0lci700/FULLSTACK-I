@@ -5,6 +5,7 @@ import estacionamientos.user_service.dto.ClienteSuscripcionCreateDTO;
 import estacionamientos.user_service.dto.ClienteSuscripcionResponseDTO;
 import estacionamientos.user_service.dto.SuscripcionResponseDTO;
 import estacionamientos.user_service.dto.TipoClienteResponseDTO;
+import estacionamientos.user_service.exception.ConflictException;
 import estacionamientos.user_service.model.Cliente;
 import estacionamientos.user_service.model.ClienteSuscripcion;
 import estacionamientos.user_service.model.Suscripcion;
@@ -77,14 +78,14 @@ class ClienteSuscripcionServiceTest {
     }
 
     @Test
-    @DisplayName("create lanza IllegalArgumentException cuando el cliente ya tiene esa suscripción activa")
-    void create_suscripcionDuplicada_debeLanzarIllegalArgument() {
+    @DisplayName("create lanza ConflictException cuando el cliente ya tiene esa suscripción activa")
+    void create_suscripcionDuplicada_debeLanzarConflictException() {
         when(clienteSuscripcionRepository
                 .existsByClienteIdAndSuscripcionIdAndActivoTrue(1L, 1L)).thenReturn(true);
 
         assertThatThrownBy(() -> clienteSuscripcionService.create(1L,
                 new ClienteSuscripcionCreateDTO(1L, LocalDate.now(), LocalDate.now().plusDays(30))))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(ConflictException.class)
                 .hasMessageContaining("activa");
     }
 

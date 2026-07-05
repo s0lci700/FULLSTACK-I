@@ -13,6 +13,7 @@ import estacionamientos.ms_reservas.dto.EspacioResponseDTO;
 import estacionamientos.ms_reservas.dto.ReservaCreateDTO;
 import estacionamientos.ms_reservas.dto.ReservaResponseDTO;
 import estacionamientos.ms_reservas.dto.VehiculoResponseDTO;
+import estacionamientos.ms_reservas.exception.BusinessException;
 import estacionamientos.ms_reservas.exception.ConflictException;
 import estacionamientos.ms_reservas.exception.NotFoundException;
 import estacionamientos.ms_reservas.model.EstadoEnums;
@@ -66,6 +67,11 @@ public class ReservaService {
 
     @Transactional
     public ReservaResponseDTO create(ReservaCreateDTO reserva) {
+
+        if (reserva.getFechaFin() == null || reserva.getFechaInicio() == null
+                || !reserva.getFechaFin().isAfter(reserva.getFechaInicio())) {
+            throw new BusinessException("La fecha de fin debe ser posterior a la fecha de inicio");
+        }
 
         // clienteClient
         ClienteResponseDTO cliente;

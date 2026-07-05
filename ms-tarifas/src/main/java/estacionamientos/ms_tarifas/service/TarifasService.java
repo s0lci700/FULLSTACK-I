@@ -3,6 +3,7 @@ package estacionamientos.ms_tarifas.service;
 import estacionamientos.ms_tarifas.dto.TarifaCreateDTO;
 import estacionamientos.ms_tarifas.dto.TarifaResponseDTO;
 import estacionamientos.ms_tarifas.dto.TarifaUpdateDTO;
+import estacionamientos.ms_tarifas.exception.ConflictException;
 import estacionamientos.ms_tarifas.exception.ResourceNotFoundException;
 import estacionamientos.ms_tarifas.model.Tarifas;
 import estacionamientos.ms_tarifas.repository.TarifasRepository;
@@ -55,7 +56,7 @@ public class TarifasService {
     public TarifaResponseDTO create(TarifaCreateDTO dto) {
         log.info("Creando tarifa: {}", dto.getNombre());
         if (tarifasRepository.existsByNombre(dto.getNombre())) {
-            throw new IllegalArgumentException("Ya existe una tarifa con el nombre: " + dto.getNombre());
+            throw new ConflictException("Ya existe una tarifa con el nombre: " + dto.getNombre());
         }
         Tarifas tarifa = new Tarifas();
         tarifa.setNombre(dto.getNombre());
@@ -75,7 +76,7 @@ public class TarifasService {
                 .orElseThrow(() -> new ResourceNotFoundException("Tarifa no encontrada con id: " + id));
         if (!tarifa.getNombre().equals(dto.getNombre())
                 && tarifasRepository.existsByNombre(dto.getNombre())) {
-            throw new IllegalArgumentException("Ya existe una tarifa con el nombre: " + dto.getNombre());
+            throw new ConflictException("Ya existe una tarifa con el nombre: " + dto.getNombre());
         }
         tarifa.setNombre(dto.getNombre());
         tarifa.setDescripcion(dto.getDescripcion());
