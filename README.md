@@ -11,13 +11,13 @@ Utilice los siguientes enlaces externos para descargar las versiones listas para
 | :--- | :--- | :--- |
 | **📦 Versión Sin Docker** <br>*(Arranque Nativo)* | Archivo `.zip` con los `.jar` compilados de los 12 servicios y el script `arrancar-nativo.bat` ordenado por fases (Eureka → Microservicios → API Gateway). | [Descargar ZIP Nativo aquí](https://drive.google.com/file/d/1v-0tVJYfHZ0N5MIN4Q0CMVh-OGNxVVIn/view?usp=sharing) |
 | **🐳 Versión Con Docker** <br>*(Avance Examen Transversal)* | Archivo `.zip` con los `.jar`, el archivo `docker-compose.yml` y el script `arrancar-sistema.bat`. | [Descargar ZIP Docker aquí](https://drive.google.com/file/d/19SpzncjfkRIjHjj03vYgwRNV6BxKOXJl/view?usp=sharing) |
-| **🎥 Video de Defensa Técnica** <br>*(Evaluación Individual)* | Video explicativo del sistema funcionando, pruebas unitarias y aporte técnico individual. **Duración: 15 min (máx. 18 min).** | [Ver Video aquí](https://drive.google.com/file/d/1gMpwnvBKhsdM36QqrgThYKAzZQoNSqQT/view?usp=sharing) |
+| **🎥 Video de Defensa Técnica** <br>*(Evaluación Individual)* | Video explicativo del sistema funcionando, pruebas unitarias y aporte técnico individual. **Duración: 15 min (máx. 18 min).** | [Ver Video aquí](https://drive.google.com/file/d/1M0bczFXZNEn4xTenJ03cJwHNpaJ7Fw_4/view) |
 
 ---
 
 ## Video explicativo de la defensa
 
-Enlace al video: https://drive.google.com/file/d/1gMpwnvBKhsdM36QqrgThYKAzZQoNSqQT/view?usp=sharing
+Enlace al video: https://drive.google.com/file/d/1M0bczFXZNEn4xTenJ03cJwHNpaJ7Fw_4/view
 
 ## Subtítulos o transcripción del video
 
